@@ -56,6 +56,8 @@ cat >/etc/cni/net.d/99-loopback.conf <<-EOF
 EOF
 ```
 
+更多CNI网络插件的说明请参考[sdn-handbook CNI 网络插件](https://feisky.gitbooks.io/sdn/container/cni/)。
+
 ## calico
 
 ```sh
@@ -86,6 +88,8 @@ kubectl apply -f https://gist.githubusercontent.com/feiskyer/0b00688584cc7ed9bd9
 - [cilium](https://github.com/cilium/cilium): BPF & XDP for containers.
 - [ovn-kubernetes](https://github.com/openvswitch/ovn-kubernetes)
 - [kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes)
+
+更多Kubernetes网络插件的说明可以参见[sdn-handbook Kubernetes网络插件](https://feisky.gitbooks.io/sdn/container/kubernetes.html)。
 
 ## 其他辅助工具
 
