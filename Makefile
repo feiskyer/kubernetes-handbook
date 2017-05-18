@@ -1,4 +1,4 @@
-BOOK_NAME := sdn-handbook
+BOOK_NAME := kubernetes-handbook
 BOOK_OUTPUT := _book
 
 .PHONY: build
