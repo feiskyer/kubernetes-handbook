@@ -65,6 +65,7 @@
       - [(8) 安装dashboard插件](deploy/centos/dashboard-addon-installation.md)
       - [(9) 安装heapster插件](deploy/centos/heapster-addon-installation.md)
       - [(10) 安装EFK插件](deploy/centos/efk-addon-installation.md)
+    - [4.1.5 Frakti Container Runtime](deploy/frakti/index.md)
   - [4.2 监控](monitor/index.md)
   - [4.3 日志](deploy/logging.md)
   - [4.4 高可用](ha/index.md)
