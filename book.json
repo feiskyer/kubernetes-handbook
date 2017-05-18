@@ -1,0 +1,10 @@
+{
+  "gitbook": ">= 3.2.2",
+  "plugins": ["mermaid", "katex"],
+  "pluginsConfig": {
+    "mathjax":{
+      "forceSVG": true
+    }
+  },
+  "generator": "site"
+}
