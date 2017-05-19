@@ -40,6 +40,7 @@ Kubernetes主要由以下几个核心组件组成：
 - Heapster提供资源监控
 - Dashboard提供GUI
 - Federation提供跨可用区的集群
+- Fluentd-elasticsearch提供集群日志采集、存储与查询
 
 
 ![](/images/14791969222306.png)
