@@ -1,13 +1,15 @@
-# Kubelet 概述  
-每个节点上都运行一个kubelet服务进程，默认监听10250端口，接收并执行master发来的指令，管理Pod及Pod中的容器。每个kubelet进程会在API Server上注册节点自身信息，定期向master节点汇报节点的资源使用情况，并通过cAdvisor监控节点和容器的资源。 
-  
+# Kubelet
+
+每个节点上都运行一个kubelet服务进程，默认监听10250端口，接收并执行master发来的指令，管理Pod及Pod中的容器。每个kubelet进程会在API Server上注册节点自身信息，定期向master节点汇报节点的资源使用情况，并通过cAdvisor监控节点和容器的资源。
+
 ##  节点管理  
 节点管理主要是节点自注册和节点状态更新：  
 (1) Kubelet可以通过设置启动参数 --register-node 来确定是否向API Server注册自己；  
 (2) 如果Kubelet没有选择自注册模式，则需要用户自己配置Node资源信息，同时需要告知Kubelet集群上的API Server的位置；  
 (3) Kubelet在启动时通过API Server注册节点信息，并定时向API Server发送节点新消息，API Server在接收到新消息后，将信息写入etcd   
-   
-## Pod管理  
+
+## Pod管理
+
 ### 获取Pod清单  
 Kubelet以PodSpec的方式工作。PodSpec是描述一个Pod的YAML或JSON对象。 kubelet采用一组通过各种机制提供的PodSpecs（主要通过apiserver），并确保这些PodSpecs中描述的Pod正常健康运行。  
   
@@ -16,7 +18,7 @@ Kubelet以PodSpec的方式工作。PodSpec是描述一个Pod的YAML或JSON对象
   (2) HTTP endpoint (URL)：启动参数 --manifest-url 设置。每20秒检查一次这个端点（可配置）。  
   (3) API Server：通过API Server监听etcd目录，同步Pod清单。  
   (4) HTTP server：kubelet侦听HTTP请求，并响应简单的API以提交新的Pod清单。  
-        
+
 ###  通过API Server获取Pod清单及创建Pod的过程  
 Kubelet通过API Server Client(Kubelet启动时创建)使用Watch加List的方式监听"/registry/nodes/$当前节点名"和“/registry/pods”目录，将获取的信息同步到本地缓存中。  
   
@@ -55,4 +57,21 @@ LivenessProbe探针包含在Pod定义的spec.containers.{某个容器}中。
 Kubernetes集群中，应用程序的执行情况可以在不同的级别上监测到，这些级别包括：容器、Pod、Service和整个集群。  
 Heapster项目为Kubernetes提供了一个基本的监控平台，它是集群级别的监控和事件数据集成器(Aggregator)。Heapster以Pod的方式运行在集群中，Heapster通过Kubelet发现所有运行在集群中的节点，并查看来自这些节点的资源使用情况。Kubelet通过cAdvisor获取其所在节点及容器的数据。Heapster通过带着关联标签的Pod分组这些信息，这些数据将被推到一个可配置的后端，用于存储和可视化展示。支持的后端包括InfluxDB(使用Grafana实现可视化)和Google Cloud Monitoring。  
 cAdvisor是一个开源的分析容器资源使用率和性能特性的代理工具，已集成到Kubernetes代码中。cAdvisor自动查找所有在其所在节点上的容器，自动采集CPU、内存、文件系统和网络使用的统计信息。cAdvisor通过它所在节点机的Root容器，采集并分析该节点机的全面使用情况。  
-cAdvisor通过其所在节点机的4194端口暴露一个简单的UI。    
+cAdvisor通过其所在节点机的4194端口暴露一个简单的UI。
+
+## 启动kubelet示例
+
+```sh
+/usr/bin/kubelet --kubeconfig=/etc/kubernetes/kubelet.conf \
+    --require-kubeconfig=true \
+    --pod-manifest-path=/etc/kubernetes/manifests \
+    --allow-privileged=true \
+    --network-plugin=cni \
+    --cni-conf-dir=/etc/cni/net.d \
+    --cni-bin-dir=/opt/cni/bin \
+    --cluster-dns=10.96.0.10 \
+    --cluster-domain=cluster.local \
+    --authorization-mode=Webhook \
+    --client-ca-file=/etc/kubernetes/pki/ca.crt \
+    --feature-gates=AllAlpha=true
+```
