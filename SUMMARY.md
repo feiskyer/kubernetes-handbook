@@ -28,15 +28,15 @@
     - Ingress
     - ThirdPartyResources
   - [2.3 核心组件的工作原理](components/index.md)
-    - Etcd
-    - API Server
-    - Scheduler
-    - Controller Manager
-    - Kubelet
-    - Kube Proxy
-    - Kube DNS
-    - hyperkube
-    - Federation
+    - [etcd](components/etcd.md)
+    - [API Server](components/apiserver.md)
+    - [Scheduler](components/scheduler.md)
+    - [Controller Manager](components/controller-manager.md)
+    - [kubelet](components/kubelet.md)
+    - [kube-proxy](components/kube-proxy.md)
+    - [Kube DNS](components/kube-dns.md)
+    - [hyperkube](components/hyperkube.md)
+    - [Federation](components/federation.md)
     - [kubeadm](architecture/kubeadm.md)
 - [3. 插件指南](plugins/index.md)
   - [3.1 认证和授权插件](plugins/auth.md)
@@ -53,8 +53,12 @@
     - [4.1.1 单机部署](deploy/single.md)
     - [4.1.2 集群部署](deploy/cluster.md)
     - [4.1.3 kubeadm](deploy/kubeadm.md)
-    - [4.1.4 附加组件](addons/index.md)
-    - [ 4.1.4 在CentOS上部署kubernetes1.6集群](deploy/centos/install-kbernetes1.6-on-centos.md)
+    - [4.1.4 Frakti Container Runtime](deploy/frakti/index.md)
+    - [4.1.5 附加组件](addons/index.md)
+      - [Dashboard](addons/dashboard.md)
+      - [Heapster](addons/heapster.md)
+      - [EFK](addons/efk.md)
+    - [4.1.6 在CentOS上部署kubernetes1.6集群](deploy/centos/install-kbernetes1.6-on-centos.md)
       - [(1) 创建TLS证书和秘钥](deploy/centos/create-tls-and-secret-key.md)
       - [(2) 创建kubeconfig 文件](deploy/centos/create-kubeconfig.md)
       - [(3) 创建高可用etcd集群](deploy/centos/etcd-cluster-installation.md)
@@ -65,24 +69,23 @@
       - [(8) 安装dashboard插件](deploy/centos/dashboard-addon-installation.md)
       - [(9) 安装heapster插件](deploy/centos/heapster-addon-installation.md)
       - [(10) 安装EFK插件](deploy/centos/efk-addon-installation.md)
-    - [4.1.5 Frakti Container Runtime](deploy/frakti/index.md)
   - [4.2 监控](monitor/index.md)
   - [4.3 日志](deploy/logging.md)
   - [4.4 高可用](ha/index.md)
   - [4.5 调试](debugging/index.md)
   - [4.6 kubernetes配置最佳实践](deploy/kubernetes-configuration-best-practice.md)
   - [4.7 安全配置](security/security-configuration.md)
-    * [4.7.1 Kubernetes中的RBAC支持](./security/rbac-support-in-kubernetes.md)
+    - [4.7.1 Kubernetes中的RBAC支持](./security/rbac-support-in-kubernetes.md)
   - [4.8 网络配置](network/network-configuration.md)
-     * [4.8.1 Kubernetes中的网络模式解析](network/network-modes-in-kubernetes.md)
+    - [4.8.1 Kubernetes中的网络模式解析](network/network-modes-in-kubernetes.md)
   - [4.9 存储配置](storage/storage-configuration.md)
     - [4.9.1 使用glusterfs做持久化存储](storage/using-glusterfs-for-persistent-storage.md)
 - [5. 服务发现与负载均衡](service-discovery-lb/service-discovery-and-load-balancing.md)
-  * [5.1 Ingress解析](service-discovery-lb/ingress-concept.md)
-  * [5.2 安装Traefik ingress](service-discovery-lb/traefik-ingress-installation.md)
-  * [5.3 分布式负载测试](service-discovery-lb/distributed-load-test.md)
-  * [5.4 网络和集群性能测试](service-discovery-lb/network-and-cluster-perfermance-test.md)
-  * [5.5 边缘节点配置](service-discovery-lb/edge-node-configuration.md)
+  - [5.1 Ingress解析](service-discovery-lb/ingress-concept.md)
+  - [5.2 安装Traefik ingress](service-discovery-lb/traefik-ingress-installation.md)
+  - [5.3 分布式负载测试](service-discovery-lb/distributed-load-test.md)
+  - [5.4 网络和集群性能测试](service-discovery-lb/network-and-cluster-perfermance-test.md)
+  - [5.5 边缘节点配置](service-discovery-lb/edge-node-configuration.md)
 - [6. 开发指南](dev/index.md)
   - [6.1 开发环境搭建](dev/index.md)
   - [6.2 单元测试和集成测试](dev/testing.md)
@@ -90,6 +93,7 @@
 - [7. 应用管理](apps/index.md)
   - [7.1 Helm](apps/helm-app.md)
   - [7.2 Deis workflow](apps/deis.md)
+  - 7.3 Operator
 - [8. 运维管理](ops/opration-administration.md)
   - [8.1 服务滚动升级](ops/service-rolling-update.md)
   - [8.2 应用日志收集](ops/app-log-collection.md)

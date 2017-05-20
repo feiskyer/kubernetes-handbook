@@ -5,6 +5,8 @@ Awesome-Kubernetes
 [![Build Status](https://travis-ci.org/ramitsurana/awesome-kubernetes.svg?branch=master)](https://travis-ci.org/ramitsurana/awesome-kubernetes)
 [![License](https://img.shields.io/badge/License-CC%204.0-brightgreen.svg)](http://creativecommons.org/licenses/by-nc/4.0/)
 
+<https://github.com/ramitsurana/awesome-kubernetes>
+
 A curated list for awesome kubernetes sources 
 Inspired by [@sindresorhus' awesome](https://github.com/sindresorhus/awesome)
 
@@ -62,14 +64,16 @@ Menu
 * [Installers](#installers)
 * [Main Resources](#main-resources)
 * [Useful Articles](#useful-articles)
-* [Cloud Providers](#cloud-providers)
+* [Managed Kubernetes](#managed-kubernetes)
+  * [Developer Platform](#developer-platform)
+  * [Enterprise Kubernetes Products](#enterprise-kubernetes-product)
+  * [On Premise](#on-premise)
+  * [Paas](#paas)
 * [Case Studies](#case-studies)
 * [Persistent Volume Providers](#persistent-volume-providers)
 * [Related Projects](#related-projects)
   * [Related Software](#related-software)
-* [Enterprise Kubernetes Products](#enterprise-kubernetes-products)
-* [Monitoring Services](#monitoring-services)
-* [Paas Providers](#paasproviders)    
+* [Monitoring Services](#monitoring-services)   
 * [Continuous Delivery](#continuous-delivery)
 * [Serverless Implementation](#serverless-implementation)
 * [Operators](#operators)
@@ -86,12 +90,12 @@ Menu
 * [Application deployment orchestration](#application-deployment-orchestration)
 * [Configuration](#configuration)
 * [Security](#security)
-* [Managed Kubernetes](#managed-kubernetes)
 * [Load balancing](#load-balancing)
 * [Developer platform](#developer-platform)
 * [Big Data](#big-data)
 * [Service Discovery](#service-discovery)
 * [Operating System](#operating-system)
+* [YAML/JSON Config](#yaml/json-config)
 * [Raspberry Pi](#raspberry-pi)
 * [Books](#books) :books:
 * [Slide Presentations](#slide-presentations)
@@ -142,9 +146,10 @@ Installers
 * [Bootkube](https://github.com/kubernetes-incubator/bootkube) - CoreOS - Cloud Agnostique - [Apache-2.0](https://github.com/kubernetes-incubator/bootkube/blob/master/LICENSE)
 * [Kube-aws](https://github.com/coreos/kube-aws) - CoreOS - AWS - [Apache-2.0](https://github.com/coreos/kube-aws/blob/master/CONTRIBUTING.md)
 * [Kismatic](https://github.com/apprenda/kismatic) - CentOS - Cloud Agnostique - [Apache-2.0](https://github.com/apprenda/kismatic/blob/master/LICENSE)
-* [Juju](https://jujucharms.com/canonical-kubernetes) - Ubuntu - Cloud Agnostique - [Proprietary](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues/235)
+* [Juju](https://jujucharms.com/canonical-kubernetes) - Ubuntu - Cloud Agnostique - [Apache-2.0](https://github.com/juju-solutions/bundle-canonical-kubernetes/blob/master/LICENSE)
 * [Terraform](https://github.com/kz8s/tack) - CoreOS - AWS - [MIT](https://github.com/kz8s/tack/blob/master/LICENSE)
 * [Supergiant](http://supergiant.io/) - CoreOS - Cloud Agnostique - [Apache-2.0](https://github.com/supergiant/supergiant/blob/master/LICENSE)
+* [Archon](https://github.com/kubeup/archon) - OS Agnostique - Cloud Agnostique - [Apache-2.0](https://github.com/kubeup/archon/blob/master/LICENSE)
 
 Main Resources
 =======================================================================
@@ -161,14 +166,13 @@ Useful Articles
 
 *A piece of writing included with others in a newspaper, magazine, or other publication*
 
-* [Kubernetes: Getting Started With a Local Deployment](http://www.jetstack.io/new-blog/2015/7/6/getting-started-with-a-local-deployment)
 * [Installation on Centos 7](http://severalnines.com/blog/installing-kubernetes-cluster-minions-centos7-manage-pods-services)
 *  [Packaging Multiple Resources together](http://blog.arungupta.me/kubernetes-application-package-multiple-resources-together/)
 *  [An Introduction to Kubernetes](https://www.digitalocean.com/community/tutorials/an-introduction-to-kubernetes) by [Justin Ellingwood](https://twitter.com/jmellingwood)
 *  [Scaling Docker with Kubernetes](http://www.infoq.com/articles/scaling-docker-with-kubernetes) by [Carlos Sanchez](https://twitter.com/csanchez)
 * [Creating a Kubernetes Cluster to Run Docker Formatted Container Images](https://access.redhat.com/articles/1353773) by [Chris Negus](https://twitter.com/linuxcricket)
 * [Containerizing Docker on Kubernetes !!](https://www.linkedin.com/pulse/containerizing-docker-kubernetes-ramit-surana) by [Ramit Surana](https://twitter.com/ramitsurana)
-* [Running Kubernetes Example on CoreOS, Part 1](https://coreos.com/blog/running-kubernetes-example-on-CoreOS-part-1/) by [Kelsey Hightower](https://twitter.com/kelseyhightower)
+* [Quay: Introducing an Application Registry for Kubernetes](https://coreos.com/blog/quay-application-registry-for-kubernetes.html) by Antoine Legrand
 * [Play With Kubernetes Quickly Using Docker](https://zwischenzugs.wordpress.com/2015/04/06/play-with-kubernetes-quickly-using-docker/)
 * [1 command to Kubernetes with Docker compose](http://sebgoa.blogspot.in/2015/04/1-command-to-kubernetes-with-docker.html) by [Sebastien Goasguen](https://twitter.com/sebgoa)
 * [Nginx Server Deployment using Kubernetes](http://containertutorials.com/get_started_kubernetes/k8s_example.html) by [Rajdeep Dua](https://www.twitter.com/rajdeepdua)
@@ -203,6 +207,7 @@ Useful Articles
 * [Kubernetes Authentication plugins and kubeconfig](http://www.dasblinkenlichten.com/kubernetes-authentication-plugins-and-kubeconfig/) by [Jon Langemak](https://twitter.com/blinken_lichten)
 * [Kubernetes with SaltStack revisited](http://www.dasblinkenlichten.com/kubernetes-with-saltstack-revisited/) by [Jon Langemak](https://twitter.com/blinken_lichten)
 * [Kubernetes Authentication - OpenID Connect](http://www.devoperandi.com/kubernetes-authentication-openid-connect/) by [Michael Ward](https://twitter.com/DevoperandI)
+* [How to Monitor Kubernetes: A 4-Part Series](https://sysdig.com/blog/monitoring-kubernetes-with-sysdig-cloud/)
 * [Logging - Kafka topic by namespace](http://www.devoperandi.com/logging-kafka-topic-by-kubernetes-namespace/) by [Michael Ward](https://twitter.com/DevoperandI)
 * [Achieving CI/CD with Kubernetes](http://theremotelab.com/blog/achieving-ci-cd-with-k8s/) by [Ramit Surana](https://twitter.com/ramitsurana)
 * [Kubernetes Monitoring Guide](https://www.datadoghq.com/blog/monitoring-kubernetes-era/) by [JM Saponaro](http://github.com/JayJayM)
@@ -211,21 +216,53 @@ Useful Articles
 * [Continuous Deployment with Google Container Engine and Kubernetes](https://semaphoreci.com/community/tutorials/continuous-deployment-with-google-container-engine-and-kubernetes)
 * [Handling Sensitive Data In A Docker Application with Kubernetes Secrets](https://scotch.io/tutorials/google-cloud-platform-iii-handling-sensitive-data-in-a-docker-application-with-kubernetes-secrets) by [John Kariuki ](https://twitter.com/_kar_is)
 * [How to Create and Use Kubernetes Secrets](http://linoxide.com/containers/create-use-kubernetes-secrets/) by [Mohamed Ez Ez](http://linoxide.com/author/mohamedez/)
+* [Microservice Monitoring in Kubernetes with Netsil](https://netsil.com/microservices-monitoring-kubernetes/) by [Matt Baldwin](https://twitter.com/baldwinmathew)
 
 
-Cloud Providers
+Managed Kubernetes
 =======================================================================
 
+  - [Platform9](https://platform9.com/)
+  - [Gravitational](https://github.com/gravitational)
+  - [KCluster](https://kcluster.io/)
+  - [OpenShift Online](https://www.openshift.com/devpreview/index.html)
+  - [Eldarion Cloud](http://eldarion.cloud/)
+  - [StackPoint Cloud](https://stackpointcloud.com/)
+  
+  
+  ### [Developer Platform](#developer-platform)
 
-* [GCE](https://cloud.google.com/compute/) - Google Compute Engine [default]
-* [GKE](https://cloud.google.com/container-engine/) - Google Container Engine
-* [AWS](http://aws.amazon.com/ec2) - Amazon EC2
-* [Azure](https://azure.microsoft.com/en-in/) - Microsoft Azure
-* [Vsphere](http://www.vmware.com/products/vsphere.html) - VMWare VSphere
-* [Rackspace](https://www.rackspace.com/en-in) - Rackspace
-* [Eldarion Cloud](http://eldarion.cloud/)
-* [StackPoint Cloud](https://stackpointcloud.com/)
- 
+  - [Fabric8](http://fabric8.io)
+   - [Spring Cloud integration](https://github.com/fabric8io/spring-cloud-kubernetes)
+  - [Mantl](http://mantl.io/)
+  - [goPaddle](http://www.gopaddle.io)
+  - [VAMP](http://vamp.io)
+  
+  
+  ### [Enterprise Kubernetes Products](#enterprise-kubernetes-products)
+
+  - [CoreOS Tectonic](https://tectonic.com)
+  - [OpenShift - Container Platform](https://www.openshift.com/container-platform/index.html)
+  
+  ### [On Premise](#on-premise)
+  
+   - [GCE](https://cloud.google.com/compute/) - Google Compute Engine [default]
+   - [GKE](https://cloud.google.com/container-engine/) - Google Container Engine
+   - [AWS](http://aws.amazon.com/ec2) - Amazon EC2
+   - [Azure](https://azure.microsoft.com/en-in/) - Microsoft Azure
+   - [Vsphere](http://www.vmware.com/products/vsphere.html) - VMWare VSphere
+   - [Rackspace](https://www.rackspace.com/en-in) - Rackspace
+  
+  ### [Paas](#paas)
+
+   *Kubernetes Platform as a Service providers*
+
+  - [Deis Workflow](https://deis.com/)
+  - [Gondor/Kel]
+  - [WSO2](http://wso2.com)
+  - [Rancher](http://rancher.com/running-kubernetes-aws-rancher/)
+  - [Kumoru](http://kumoru.io/)
+  - [Open Shift Origin](https://www.openshift.org/)
 
 Case Studies
 =======================================================================
@@ -235,6 +272,7 @@ Case Studies
 * [Building a Bank with Kubernetes](https://monzo.com/blog/2016/09/19/building-a-modern-bank-backend/)
 * [Bringing Pokemon Go to Google Cloud](https://cloudplatform.googleblog.com/2016/09/bringing-Pokemon-GO-to-life-on-Google-Cloud.html)
 * [Monitoring Kubernetes at Wayblazer](https://sysdig.com/blog/monitoring-docker-kubernetes-wayblazer/)
+* [Major League Soccer Monolith to Kubernetes Transition](https://sysdig.com/blog/monoliths-kubernetes-monitoring-transitioning-docker-major-league-soccer/)
 
 
 Persistent Volume Providers
@@ -248,6 +286,7 @@ Persistent Volume Providers
 * [OpenStack Cinder](https://wiki.openstack.org/cinder)
 * [CephRBD](http://ceph.com/ceph-storage/block-storage/)
 * [QuoByte](https://www.quobyte.com/)
+* [Kube-Aliyun](https://github.com/kubeup/kube-aliyun)
 
 Related Projects
 =======================================================================
@@ -262,15 +301,12 @@ Related Projects
 * [Hypernetes](https://github.com/hyperhq/hypernetes)
 * [Ubernetes](https://github.com/kubernetes/kubernetes/blob/master/docs/proposals/federation.md)
 * [kmachine](https://github.com/skippbox/kmachine)
-* [Supergiant](https://supergiant.io)
 * [Kubefuse](https://opencredo.com/introducing-kubefuse-file-system-kubernetes/)
-* [KubeSpray][https://github.com/kubespray]
-* [Bootkube](https://github.com/coreos/bootkube)
-* [Localkube](https://github.com/redspread/localkube)
+* [KubeSpray](https://github.com/kubespray)
 * [Kubernetes Ec2 Autoscaler](https://github.com/openai/kubernetes-ec2-autoscaler)
 * [Kubeform](https://capgemini.github.io/kubeform/)
-* [k8comp](https://github.com/cststack/k8comp)
 * [kube-openvpn](https://github.com/pieterlange/kube-openvpn)
+* [Archon](https://github.com/kubeup/archon) 
 * [Client Libraries](https://github.com/kubernetes/community/blob/master/contributors/devel/client-libraries.md)
 
 ## Package Managers
@@ -287,25 +323,13 @@ Related Projects
 * [Heapster](https://github.com/kubernetes/heapster)
 * [Kubedash](https://github.com/kubernetes/kubedash)
 * [Kube-ui](https://github.com/kubernetes/kube-ui)
+* [Netsil](https://github.com/netsil/manifests)
 * [Prometheus](http://prometheus.io)
 * [Sysdig Open Source](http://www.sysdig.org/)
 * [Sysdig Monitoring](https://www.sysdig.com/)
 * [Weave Scope](https://www.weave.works/products/weave-scope/)
 
-## Enterprise Kubernetes Products
 
-* [CoreOS Tectonic](https://tectonic.com)
-
-## PaaS Providers
-
-*Kubernetes Platform as a Service providers*
-
-* [OpenShift](https://www.openshift.com/)
-* [Deis Workflow](https://deis.com/)
-* [Gondor/Kel]
-* [WSO2](http://wso2.com)
-* [Rancher](http://rancher.com/running-kubernetes-aws-rancher/)
-* [Kumoru](http://kumoru.io/)
 
 ## Continuous Delivery
 
@@ -378,7 +402,9 @@ Related Projects
 * [Nuage](https://github.com/nuagenetworks/nuage-kubernetes)
 * [Kuryr](https://github.com/openstack/kuryr-kubernetes)
 * [Contiv](http://contiv.github.io/)
-
+* [Calico](https://www.projectcalico.org/)
+* [OpenVSwitch](http://openvswitch.org/)
+* [Kube-router](http://github.com/cloudnativelabs/kube-router)
 
 ## Service mesh
 
@@ -448,11 +474,7 @@ Related Projects
 * [Twistlock](https://www.twistlock.com/)
 * [Sysdig Falco](http://www.sysdig.org/falco/)
 
-## Managed Kubernetes
 
-* [Platform9](https://platform9.com/)
-* [Gravitational](https://github.com/gravitational)
-* [KCluster](https://kcluster.io/)
 
 ## Load balancing
 
@@ -460,13 +482,6 @@ Related Projects
 * [Traefik](https://traefik.io/)
 * [AppsCode Voyager - Secure HAProxy based Ingress Controller](https://github.com/appscode/voyager)
 
-## Developer platform
-
-* [Fabric8](http://fabric8.io)
-  * [Spring Cloud integration](https://github.com/fabric8io/spring-cloud-kubernetes)
-* [Mantl](http://mantl.io/)
-* [goPaddle](http://www.gopaddle.io)
-* [VAMP](http://vamp.io)
 
 ## Big Data
 
@@ -485,6 +500,10 @@ Related Projects
 * [CoreOS](http://coreos.com)
 * [Kurma](http://kurma.io)
 * [GCI](https://cloud.google.com/container-optimized-os/docs/)
+
+## YAML/JSON Config
+
+* [Kube.libsonnet](https://github.com/heptio/kube.libsonnet) - Currently Unstable
 
 Raspberry Pi
 =======================================================================
@@ -526,6 +545,7 @@ Slide Presentations
 * [Zero downtime-java-deployments-with-docker-and-kubernetes](http://www.slideshare.net/ArjanSchaaf/zero-downtimejavadeploymentswithdockerandkubernetes) by [Arjan Schaaf](https://www.linkedin.com/in/arjanschaaf)
 * [Kubernetes and CoreOS @ Athens Docker meetup](http://www.slideshare.net/mistio/kubernetes-and-coreos-athens-docker-meetup) by [Mist.io](https://twitter.com/mist_io)
 * [Achieving CI/CD with Kubernetes](http://www.slideshare.net/ramitsurana/achieving-cicd-with-kubernetes) by [Ramit Surana](https://twitter.com/ramitsurana)
+* [The Top 5 Metrics to Monitor in Kubernetes](https://www.slideshare.net/Sysdig/the-top-5-kubernetes-metrics-to-monitor)
 
 
 Videos
@@ -551,6 +571,7 @@ Videos
 * ["Managing Containers at Scale with CoreOS and Kubernetes" by Kelsey Hightower](https://www.youtube.com/watch?v=pozC9rBvAIs) by [Kelsey Hightower](https://twitter.com/kelseyhightower)
 * [Kubernetes: The Journey So Far - Greg DeMichillie](https://youtu.be/6a2Nirr8cI0) by [Greg DeMichillie](https://twitter.com/gregde)
 * [DevNation 2015 - Paul Bakker - Kubernetes: Beyond the basics](https://youtu.be/MuazGHiiGmA) by [Paul Bakker](https://twitter.com/pbakker)
+* [Kubernetes-Defined Monitoring](https://www.youtube.com/watch?v=ncSn3_9bfIQ)
 
 Interactive Learning Environments
 =======================================================================
@@ -577,6 +598,7 @@ Interesting Twitter Accounts
 * [KubeWeekly](https://twitter.com/kubeweekly)
 * [KubeFacts](https://twitter.com/kubefacts)
 * [Skippbox](https://twitter.com/skippbox)
+* [Sysdig](https://twitter.com/sysdig)
 
 
 Amazing People

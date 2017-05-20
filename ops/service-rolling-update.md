@@ -38,7 +38,7 @@ Deployment同样为Kubernetes的一个核心内容，主要职责同样是为了
 
 我们来创建一个特别简单的web服务，当你访问网页时，将输出一句版本信息。通过区分这句版本信息输出我们就可以断定升级是否完成。
 
-所有配置和代码见[manifests/test/rolling-update-test](manifests/test/rolling-update-test)目录。
+所有配置和代码见[manifests/test/rolling-update-test](../manifests/test/rolling-update-test)目录。
 
 **Web服务的代码main.go**
 
@@ -177,7 +177,7 @@ kubectl create -f rolling-update-test.yaml
 
 注意：172.20.0.119是我们之前使用keepalived创建的VIP。
 
-打开浏览器访问http://rolling-update-test.traefik.io将会看到以下输出：
+打开浏览器访问`http://rolling-update-test.traefik.io`将会看到以下输出：
 
 ```
 This is version 1.

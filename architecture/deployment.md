@@ -414,7 +414,7 @@ $ kubectl scale deployment nginx-deployment --replicas 10
 deployment "nginx-deployment" scaled
 ```
 
-假设你的集群中启用了[horizontal pod autoscaling](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough)，你可以给Deployment设置一个autoscaler，基于当前Pod的CPU利用率选择最少和最多的Pod数。
+假设你的集群中启用了[horizontal pod autoscaling](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough.md)，你可以给Deployment设置一个autoscaler，基于当前Pod的CPU利用率选择最少和最多的Pod数。
 
 ```shell
 $ kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
@@ -704,11 +704,11 @@ $ echo $?
 
 ### 金丝雀Deployment
 
-如果你想要使用Deployment对部分用户或服务器发布relaese，你可以创建多个Deployment，每个对一个release，参照[managing resources](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/cluster-administration/manage-deployment/#canary-deployments) 中对金丝雀模式的描述。
+如果你想要使用Deployment对部分用户或服务器发布relaese，你可以创建多个Deployment，每个对一个release，参照[managing resources](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/cluster-administration/manage-deployment.md#canary-deployments) 中对金丝雀模式的描述。
 
 ## 编写Deployment Spec
 
-在所有的Kubernetes配置中，Deployment也需要`apiVersion`，`kind`和`metadata`这些配置项。配置文件的通用使用说明查看[部署应用](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tutorials/stateless-application/run-stateless-application-deployment)，配置容器，和[使用kubeclt管理资源](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tutorials/object-management-kubectl/object-management)文档。
+在所有的Kubernetes配置中，Deployment也需要`apiVersion`，`kind`和`metadata`这些配置项。配置文件的通用使用说明查看[部署应用](https://github.com/kubernetes/kubernetes.github.io/blob/release-1.6/docs/tutorials/stateless-application/run-stateless-application-deployment.md)，配置容器，和[使用kubeclt管理资源](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tutorials/object-management-kubectl/object-management.md)文档。
 
 Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#spec-and-status).
 
@@ -716,11 +716,11 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
  `.spec.template` 是 `.spec`中唯一要求的字段。
 
-`.spec.template` 是 [pod template](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/replication-controller/#pod-template). 它跟 [Pod](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/pods)有一模一样的schema，除了它是嵌套的并且不需要`apiVersion` 和 `kind`字段。
+`.spec.template` 是 [pod template](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/replication-controller.md#pod-template). 它跟 [Pod](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/pods)有一模一样的schema，除了它是嵌套的并且不需要`apiVersion` 和 `kind`字段。
 
 另外为了划分Pod的范围，Deployment中的pod template必须指定适当的label（不要跟其他controller重复了，参考[selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/controllers/deployment.md#selector)）和适当的重启策略。
 
-[`.spec.template.spec.restartPolicy`](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/pods/pod-lifecycle) 可以设置为 `Always` , 如果不指定的话这就是默认配置。
+[`.spec.template.spec.restartPolicy`](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/pods/pod-lifecycle.md) 可以设置为 `Always` , 如果不指定的话这就是默认配置。
 
 ### Replicas
 
@@ -728,7 +728,7 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
 ### Selector
 
-`.spec.selector`是可选字段，用来指定 [label selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/overview/working-with-objects/labels) ，圈定Deployment管理的pod范围。
+`.spec.selector`是可选字段，用来指定 [label selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/overview/working-with-objects/labels.md) ，圈定Deployment管理的pod范围。
 
 如果被指定， `.spec.selector` 必须匹配 `.spec.template.metadata.labels`，否则它将被API拒绝。如果 `.spec.selector` 没有被指定， `.spec.selector.matchLabels` 默认是 `.spec.template.metadata.labels`。
 
@@ -770,7 +770,7 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
 ### Min Ready Seconds
 
-`.spec.minReadySeconds`是一个可选配置项，用来指定没有任何容器crash的Pod并被认为是可用状态的最小秒数。默认是0（Pod在ready后就会被认为是可用状态）。进一步了解什么什么后Pod会被认为是ready状态，参阅 [Container Probes](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/pods/pod-lifecycle/#container-probes)。
+`.spec.minReadySeconds`是一个可选配置项，用来指定没有任何容器crash的Pod并被认为是可用状态的最小秒数。默认是0（Pod在ready后就会被认为是可用状态）。进一步了解什么什么后Pod会被认为是ready状态，参阅 [Container Probes](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/pods/pod-lifecycle.md#container-probes)。
 
 ### Rollback To
 

@@ -28,7 +28,7 @@
 + RBAC 授权
 + kublet TLS BootStrapping
 + kubedns、dashboard、heapster(influxdb、grafana)、EFK(elasticsearch、fluentd、kibana) 集群插件
-+ 私有docker镜像仓库[harbor](github.com/vmware/harbor)（请自行部署，harbor提供离线安装包，直接使用docker-compose启动即可）
++ 私有docker镜像仓库[harbor](https://github.com/vmware/harbor)（请自行部署，harbor提供离线安装包，直接使用docker-compose启动即可）
 
 ## 步骤介绍
 
@@ -39,7 +39,7 @@
 - [5 部署高可用master集群](master-installation.md)
 - [6 部署node节点](node-installation.md)
 - [7 安装kubedns插件](kubedns-addon-installation.md)
-- [8 安装dashboard插件](dashboard-addon-installation.md.md)
+- [8 安装dashboard插件](dashboard-addon-installation.md)
 - [9 安装heapster插件](heapster-addon-installation.md)
 - [10 安装EFK插件](efk-addon-installation.md)
 

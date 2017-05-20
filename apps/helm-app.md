@@ -71,11 +71,11 @@ To connect to your database:
     $ mysql -h quieting-warthog-mysql -p
 ```
 
-更多命令的使用方法可以参考[Helm命令参考](helm.html)。
+更多命令的使用方法可以参考[Helm命令参考](helm.md)。
 
 ## Helm工作原理
 
-见[Helm工作原理](basic.html)。
+见[Helm工作原理](basic.md)。
 
 ## 链接
 

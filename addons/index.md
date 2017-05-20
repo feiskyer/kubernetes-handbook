@@ -1,6 +1,6 @@
 # Kubernetes Addons
 
-- [Dashboard](dashboard.html)
-- [Heapster](heapster.html)
-- [EFK](efk.html)
+- [Dashboard](dashboard.md)
+- [Heapster](heapster.md)
+- [EFK](efk.md)
 

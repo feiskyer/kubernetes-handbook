@@ -286,7 +286,7 @@ KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns=10.254.0.2 --experimental-bo
 + 建议在 `--kubeconfig` 配置文件中指定 `kube-apiserver` 地址，如果未指定 `--api-servers` 选项，则必须指定 `--require-kubeconfig` 选项后才从配置文件中读取 kube-apiserver 的地址，否则 kubelet 启动后将找不到 kube-apiserver (日志中提示未找到 API Server），`kubectl get nodes` 不会返回对应的 Node 信息;
 + `--cluster-dns` 指定 kubedns 的 Service IP(可以先分配，后续创建 kubedns 服务时指定该 IP)，`--cluster-domain` 指定域名后缀，这两个参数同时指定后才会生效；
 
-完整 unit 见 [kubelet.service](./systemd/kubelet.service)
+完整 unit 见 [kubelet.service](../../systemd/kubelet.service)
 
 ### 启动kublet
 
@@ -379,7 +379,7 @@ KUBE_PROXY_ARGS="--bind-address=172.20.0.113 --hostname-override=172.20.0.113 --
 + `--kubeconfig` 指定的配置文件嵌入了 kube-apiserver 的地址、用户名、证书、秘钥等请求和认证信息；
 + 预定义的 RoleBinding `cluster-admin` 将User `system:kube-proxy` 与 Role `system:node-proxier` 绑定，该 Role 授予了调用 `kube-apiserver` Proxy 相关 API 的权限；
 
-完整 unit 见 [kube-proxy.service](./systemd/kube-proxy.service)
+完整 unit 见 [kube-proxy.service](../../systemd/kube-proxy.service)
 
 ### 启动 kube-proxy
 
