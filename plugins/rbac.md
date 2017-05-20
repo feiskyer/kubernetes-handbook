@@ -1,8 +1,8 @@
-## Kubernetes中的RBAC 支持
+# RBAC
 
 > 在Kubernetes1.6版本中新增角色访问控制机制（Role-Based Access，RBAC）让集群管理员可以针对特定使用者或服务账号的角色，进行更精确的资源访问控制。在RBAC中，权限与角色相关联，用户通过成为适当角色的成员而得到这些角色的权限。这就极大地简化了权限的管理。在一个组织中，角色是为了完成各种工作而创造，用户则依据它的责任和资格来被指派相应的角色，用户可以很容易地从一个角色被指派到另一个角色。
 
-### 前言
+## 前言
 
 本文翻译自[RBAC Support in Kubernetes](http://blog.kubernetes.io/2017/04/rbac-support-in-kubernetes.html)，转载自[kubernetes中文社区](https://www.kubernetes.org.cn/1879.html)，译者催总，[Jimmy Song](http://rootsongjc.github.com/about)做了稍许修改。该文章是[5天内了解Kubernetes1.6新特性](http://blog.kubernetes.io/2017/03/five-days-of-kubernetes-1.6.html)的系列文章之一。
 
@@ -10,7 +10,7 @@ One of the highlights of the [Kubernetes 1.6](http://blog.kubernetes.io/2017/03/
 
 本文主要关注新特性和最佳实践。
 
-### RBAC vs ABAC
+## RBAC vs ABAC
 
 目前kubernetes中已经有一系列l [鉴权机制](https://kubernetes.io/docs/admin/authorization/)。鉴权的作用是，决定一个用户是否有权使用 Kubernetes API 做某些事情。它除了会影响 kubectl 等组件之外，还会对一些运行在集群内部并对集群进行操作的软件产生作用，例如使用了 Kubernetes 插件的 Jenkins，或者是利用 Kubernetes API 进行软件部署的 Helm。ABAC 和 RBAC 都能够对访问策略进行配置。
 
@@ -20,7 +20,7 @@ ABAC（Attribute Based Access Control）本来是不错的概念，但是在 Kub
 
 因为 Kubernetes 社区的投入和偏好，相对于 ABAC 而言，RBAC 是更好的选择。
 
-### 基础概念
+## 基础概念
 
 需要理解 RBAC 一些基础的概念和思路，RBAC 是让用户能够访问 [Kubernetes API 资源](https://kubernetes.io/docs/api-reference/v1.6/)的授权方式。
 
@@ -42,7 +42,7 @@ RoleBinding 把角色映射到用户，从而让这些用户继承角色在 name
 
 另外还要考虑cluster roles和cluster role binding。cluster role和cluster role binding方法跟role和role binding一样，出了它们有更广的scope。详细差别请访问 [role binding与clsuter role binding](https://kubernetes.io/docs/admin/authorization/rbac/#rolebinding-and-clusterrolebinding).
 
-### Kubernetes中的RBAC
+## Kubernetes中的RBAC
 
 RBAC 现在被 Kubernetes 深度集成，并使用他给系统组件进行授权。[System Roles](https://kubernetes.io/docs/admin/authorization/rbac/#default-roles-and-role-bindings) 一般具有前缀`system:`，很容易识别：
 
@@ -109,12 +109,9 @@ $ curl -ik \
 
 目前RBAC已经足够了，ABAC可能会被弃用。在可见的未来ABAC依然会保留在kubernetes中，不过开发的重心已经转移到了RBAC。 
 
-### 参考
+## 参考文档
 
- [RBAC documentation](https://kubernetes.io/docs/admin/authorization/rbac/)
-
-[Google Cloud Next talks 1](https://www.youtube.com/watch?v=Cd4JU7qzYbE#t=8m01s )
-
-[Google Cloud Next talks 2](https://www.youtube.com/watch?v=18P7cFc6nTU#t=41m06s )
-
-[在Kubernetes Pod中使用Service Account访问API Server](http://tonybai.com/2017/03/03/access-api-server-from-a-pod-through-serviceaccount/)
+- [RBAC documentation](https://kubernetes.io/docs/admin/authorization/rbac/)
+- [Google Cloud Next talks 1](https://www.youtube.com/watch?v=Cd4JU7qzYbE#t=8m01s )
+- [Google Cloud Next talks 2](https://www.youtube.com/watch?v=18P7cFc6nTU#t=41m06s )
+- [在Kubernetes Pod中使用Service Account访问API Server](http://tonybai.com/2017/03/03/access-api-server-from-a-pod-through-serviceaccount/)

@@ -1,4 +1,4 @@
-# Kubernetes部署
+# Kubernetes常用技巧
 
 - [单机部署](single.md)
 - [集群部署](cluster.md)

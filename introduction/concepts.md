@@ -1,4 +1,4 @@
-# Kubernetes核心概念
+# Kubernetes基本概念
 
 ## Pod
 

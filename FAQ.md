@@ -1,8 +1,4 @@
-## 问题记录
-
-安装、使用kubernetes的过程中遇到的所有问题的记录。
-
-推荐直接在Kubernetes的GitHub上[提issue](https://github.com/kubernetes/kubernetes/issues/new)，在此记录所提交的issue。
+# FAQ
 
 ## 1.[Failed to start ContainerManager failed to initialise top level QOS containers #43856](https://github.com/kubernetes/kubernetes/issues/43856)
 
