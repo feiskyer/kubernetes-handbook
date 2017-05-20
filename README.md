@@ -27,4 +27,3 @@ Kubernetes发展非常迅速，已经成为容器编排领域的领导者。Kube
 ## 贡献者
 
 感谢所有的贡献者，贡献者列表见[这里](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)。
-
