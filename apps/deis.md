@@ -1,5 +1,9 @@
 # Deis workflow
 
+Deis workflow是基于Kubernetes的PaaS管理平台，进一步简化了应用的打包、部署和服务发现。
+
+![](https://deis.com/docs/workflow/diagrams/Git_Push_Flow.png)
+
 ## Deis架构
 
 ![](https://deis.com/docs/workflow/diagrams/Workflow_Overview.png)

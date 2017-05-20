@@ -205,7 +205,7 @@ kubectl set image deployment/rolling-update-test rolling-update-test=sz-pg-oam-d
 kubectl rollout status deployment/rolling-update-test
 ```
 
-升级完成后在浏览器中刷新http://rolling-update-test.traefik.io将会看到以下输出：
+升级完成后在浏览器中刷新`http://rolling-update-test.traefik.io`将会看到以下输出：
 
 ```
 This is version 2.

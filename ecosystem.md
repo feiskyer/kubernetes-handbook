@@ -54,8 +54,6 @@
     - http://mantl.io/
     - [https://github.com/hyperhq/
         <wbr>hypernetes](https://github.com/hyperhq/hypernetes)
-    - [https://github.com/vmturbo/
-        <wbr>kubernetes](https://github.com/vmturbo/kubernetes) 
     - [https://www.joyent.com/
         <wbr>containerpilot](https://www.joyent.com/containerpilot)
 * PaaS on Kubernetes

@@ -86,15 +86,15 @@ $ kubectl scale --replicas=20 replicationcontrollers locust-worker
 
 打开`http://traefik.locust.io`页面，点击`Edit`输入伪造的用户数和用户每秒发送的请求个数，点击`Start Swarming`就可以开始测试了。
 
-![locust-start-swarming](../images/locust-start-swarming.jpg)
+![locust-start-swarming](../../images/locust-start-swarming.jpg)
 
 在测试过程中调整`sample-webapp`的pod个数（默认设置了1个pod），观察pod的负载变化情况。
 
-![sample-webapp-rc](../images/sample-webapp-rc.jpg)
+![sample-webapp-rc](../../images/sample-webapp-rc.jpg)
 
 从一段时间的观察中可以看到负载被平均分配给了3个pod。
 
 在locust的页面中可以实时观察也可以下载测试结果。
 
-![locust-dashboard](../images/locust-dashboard.jpg)
+![locust-dashboard](../../images/locust-dashboard.jpg)
 

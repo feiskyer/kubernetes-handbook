@@ -262,7 +262,6 @@ Services to securely store your Docker images.
 ## Linter / Validator
 * [dockerfile_lint](https://github.com/projectatomic/dockerfile_lint) - A rule-based 'linter' for Dockerfiles by [@redhataccess](https://github.com/redhataccess)
 * [Hadolint](https://github.com/lukasmartinelli/hadolint) - A Dockerfile linter written in Haskell by [@lukasmartinelli](https://github.com/lukasmartinelli)
-* [Lorry](https://lorry.io/) - Lorry is a docker-compose.yml validator and composer by [@CenturyLinkLabs][CenturyLinkLabs]
 * [Whale-linter](https://github.com/jeromepin/whale-linter) - A simple and small Dockerfile linter written in Python3+ without dependencies by [@jeromepin](https://github.com/jeromepin)
 
 ## Local Container Manager
@@ -345,7 +344,6 @@ Services to securely store your Docker images.
 * [ContainerShip](https://github.com/containership/containership) A simple container management platform [containership]
 * [CoreOS][coreos] - Linux for Massive Server Deployments https://coreos.com/
 * [Crane](https://github.com/Dataman-Cloud/crane) - Control plane based on docker built-in swarm [@Dataman-Cloud](https://github.com/Dataman-Cloud)
-* [Deploying a Containerized App on a Public Node with Mesos](https://docs.mesosphere.com/usage/tutorials/containerized-app/) - Docker plus Mesosphere provides an easy way to automate and scale deployment of containers in a production environment
 * [ElasticKube](https://github.com/ElasticBox/elastickube) - Open source management platform for Kubernetes.
 * [Fleet](https://github.com/coreos/fleet) - A Distributed init System providing low-level orchestration [coreos.com]
 * [Flocker](https://github.com/ClusterHQ/flocker) - Flocker is a data volume manager and multi-host Docker cluster management tool by [@ClusterHQ](https://github.com/ClusterHQ)

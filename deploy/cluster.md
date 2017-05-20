@@ -2,7 +2,7 @@
 
 ## Kubernetes集群架构
 
-![](../ha/ha.png)
+![](../practice/images/ha.png)
 
 ### etcd集群
 

@@ -185,6 +185,6 @@ Etcd v3 对过期机制也做了改进，过期时间设置在lease上，然后k
 
 * [Etcd website](https://coreos.com/etcd/)
 * [Etcd github](https://github.com/coreos/etcd/)
-* [Projects using etcd](https://github.com/coreos/etcd/blob/master/Documentation/libraries-and-tools.md)
+* [Projects using etcd](https://github.com/coreos/etcd/blob/master/Documentation/production-users.md)
 * http://jolestar.com/etcd-architecture/
 * [etcd从应用场景到是实现原理的全方位解读](http://www.infoq.com/cn/articles/etcd-interpretation-application-scenario-implement-principle)

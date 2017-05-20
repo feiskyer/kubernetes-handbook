@@ -2,7 +2,7 @@
 
 我们复用kubernetes的三台主机做glusterfs存储。
 
-以下步骤参考自：https://www.xf80.com/2017/04/21/kubernetes-glusterfs/
+以下步骤参考自`https://www.xf80.com/2017/04/21/kubernetes-glusterfs/`
 
 ## 安装glusterfs
 
@@ -350,9 +350,6 @@ index.html
 
 ## 参考
 
-[在kubernetes中安装glusterfs](https://www.xf80.com/2017/04/21/kubernetes-glusterfs/?utm_source=tuicool&utm_medium=referral#kubernetes-glusterfs)
-
-[CentOS 7 安装 GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)
-
-[GlusterFS with kubernetes](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs)
+- [CentOS 7 安装 GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)
+- [GlusterFS with kubernetes](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs)
 

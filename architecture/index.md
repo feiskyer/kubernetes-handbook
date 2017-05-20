@@ -69,5 +69,4 @@ Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，�
 - <http://queue.acm.org/detail.cfm?id=2898444>
 - <http://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43438.pdf>
 - <http://thenewstack.io/kubernetes-an-overview>
-- [Kbernetes architectual roadmap](https://docs.google.com/document/d/1XkjVm4bOeiVkj-Xt1LgoGiqWsBfNozJ51dyI-ljzt1o)和[slide](https://docs.google.com/presentation/d/1GpELyzXOGEPY0Y1ft26yMNV19ROKt8eMN67vDSSHglk/edit)
-
+- Kbernetes architectual roadmap

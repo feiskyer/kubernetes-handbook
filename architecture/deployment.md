@@ -716,7 +716,7 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
  `.spec.template` 是 `.spec`中唯一要求的字段。
 
-`.spec.template` 是 [pod template](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/replication-controller.md#pod-template). 它跟 [Pod](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/pods)有一模一样的schema，除了它是嵌套的并且不需要`apiVersion` 和 `kind`字段。
+`.spec.template` 是 [pod template](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/#pod-template). 它跟 [Pod](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/user-guide/pods)有一模一样的schema，除了它是嵌套的并且不需要`apiVersion` 和 `kind`字段。
 
 另外为了划分Pod的范围，Deployment中的pod template必须指定适当的label（不要跟其他controller重复了，参考[selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/controllers/deployment.md#selector)）和适当的重启策略。
 
@@ -748,7 +748,7 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
 #### Rolling Update Deployment
 
-`.spec.strategy.type==RollingUpdate`时，Deployment使用[rolling update](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tasks/run-application/rolling-update-replication-controller) 的方式更新Pod 。你可以指定`maxUnavailable` 和 `maxSurge` 来控制 rolling update 进程。
+`.spec.strategy.type==RollingUpdate`时，Deployment使用[rolling update](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tasks/run-application/rolling-update-replication-controller.md) 的方式更新Pod 。你可以指定`maxUnavailable` 和 `maxSurge` 来控制 rolling update 进程。
 
 ##### Max Unavailable
 
