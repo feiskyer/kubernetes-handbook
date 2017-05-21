@@ -49,11 +49,9 @@ Kubernetes官方提供了EFK的日志收集解决方案，但是这种方案并�
 
 该方案在扩展性、个性化、部署和后期维护方面都能做到均衡，因此选择该方案。
 
-![logstash日志收集架构图](../images/filebeat-log-collector.jpg)
+![logstash日志收集架构图](images/filebeat-log-collector.jpg)
 
-我们创建了自己的logstash镜像。创建过程和使用方式见https://github.com/rootsongjc/docker-images
-
-镜像地址：`index.tenxcloud.com/jimmy/filebeat:5.4.0`
+我们创建了自己的logstash镜像，镜像地址为：`index.tenxcloud.com/jimmy/filebeat:5.4.0`
 
 ### 测试
 
@@ -130,7 +128,7 @@ data:
 
 **说明**
 
-该文件中包含了配置文件filebeat的配置文件的[ConfigMap](http://rootsongjc.github.io/blogs/kubernetes-configmap-introduction/)，因此不需要再定义环境变量。
+该文件中包含了配置文件filebeat的配置文件的ConfigMap，因此不需要再定义环境变量。
 
 当然你也可以不同ConfigMap，通过传统的传递环境变量的方式来配置filebeat。
 
@@ -163,7 +161,14 @@ data:
 - 将app的`/usr/local/TalkingData/logs`目录挂载到filebeat的`/log`目录下。
 - 该文件可以在`manifests/test/filebeat-test.yaml`找到。 
 - 我使用了自己的私有镜像仓库，测试时请换成自己的应用镜像。
-- Filebeat的环境变量的值配置请参考https://github.com/rootsongjc/docker-images
+- Filebeat的环境变量的值配置
+  ```
+  ENV ES_SERVER 172.23.5.255:9200
+  ENV INDEX filebeat-test
+  ENV INPUT_TYPE log
+  ENV ES_USERNAME elastic
+  ENV ES_PASSWORD changeme
+  ```
 
 **创建应用**
 
@@ -181,4 +186,4 @@ green open filebeat-2017.05.17             1qatsSajSYqAV42_XYwLsQ 5 1   1189    
 
 访问Kibana的web页面，查看`filebeat-2017.05.17`的索引，可以看到logstash收集到了app日志。
 
-![Kibana页面](../images/filebeat-test-kibana.jpg)
+![Kibana页面](images/filebeat-test-kibana.jpg)

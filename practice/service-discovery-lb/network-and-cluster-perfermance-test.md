@@ -23,7 +23,7 @@ Ingress Host：traefik.sample-webapp.io
 - [Locust](http://locust.io)：一个简单易用的用户负载测试工具，用来测试web或其他系统能够同时处理的并发用户数。
 - curl
 - [kubemark](https://github.com/kubernetes/kubernetes/tree/master/test/e2e)
-- 测试程序：sample-webapp，源码见Github [kubernetes的分布式负载测试](https://github.com/rootsongjc/distributed-load-testing-using-kubernetes)
+- 测试程序：sample-webapp，源码见Github [kubernetes的分布式负载测试](https://github.com/feiskyer/kubernetes-handbook/blob/master/practice/service-discovery-lb/distributed-load-test.md)
 
 **测试说明**
 

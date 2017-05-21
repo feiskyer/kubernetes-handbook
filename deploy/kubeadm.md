@@ -1,5 +1,23 @@
 # kubeadm
 
+> 统一化安装脚本
+
+```sh
+# on master
+git clone https://github.com/feiskyer/ops
+cd ops
+kubernetes/setup_kubernetes.sh
+
+# on node
+git clone https://github.com/feiskyer/ops
+cd ops
+export TOKEN=xxxxx
+export MASTER_IP=xx.xx.xx.xx
+kubernetes/add_docker_node.sh
+```
+
+以下是详细的安装步骤。
+
 ## 初始化系统
 
 所有机器都需要初始化docker和kubelet。

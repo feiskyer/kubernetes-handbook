@@ -2,13 +2,7 @@
 
 ## Ingress简介
 
-如果你还不了解，ingress是什么，可以先看下我翻译的Kubernetes官网上ingress的介绍[Kubernetes Ingress解析](http://rootsongjc.github.io/blogs/kubernetes-ingress-resource/)。
-
-**理解Ingress**
-
 简单的说，ingress就是从kubernetes集群外访问集群的入口，将用户的URL请求转发到不同的service上。Ingress相当于nginx、apache等负载均衡方向代理服务器，其中还包括规则定义，即URL的路由信息，路由信息得的刷新由[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)来提供。
-
-**理解Ingress Controller**
 
 Ingress Controller 实质上可以理解为是个监视器，Ingress Controller 通过不断地跟 kubernetes API 打交道，实时的感知后端 service、pod 等变化，比如新增和减少 pod，service 增加与减少等；当得到这些变化信息后，Ingress Controller 再结合下文的 Ingress 生成配置，然后更新反向代理负载均衡器，并刷新其配置，达到服务发现的作用。
 
@@ -18,7 +12,7 @@ Ingress Controller 实质上可以理解为是个监视器，Ingress Controller 
 
 [Traefik](https://traefik.io/)是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API等等后端模型。
 
-以下配置文件可以在[kubernetes-handbook](https://github.com/rootsongjc/kubernetes-handbook)GitHub仓库中的[manifests/traefik-ingress/](../manifests/traefik-ingress)目录下找到。
+以下配置文件可以在[kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook)GitHub仓库中的[manifests/traefik-ingress/](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/traefik-ingress)目录下找到。
 
 **创建ingress-rbac.yaml**
 
@@ -166,7 +160,7 @@ kubectl create -f .
 
 访问该地址`http://172.20.0.115:8580/`将可以看到dashboard。
 
-![kubernetes-dashboard](../../images/traefik-dashboard.jpg)
+![kubernetes-dashboard](images/traefik-dashboard.jpg)
 
 左侧黄色部分部分列出的是所有的rule，右侧绿色部分是所有的backend。
 
@@ -218,11 +212,11 @@ Traefik会解析http请求header里的Host参数将流量转发给Ingress配置�
 
 修改hosts后就就可以在kubernetes集群外访问以上两个service，如下图：
 
-![traefik-nginx](../../images/traefik-nginx.jpg)
+![traefik-nginx](images/traefik-nginx.jpg)
 
 
 
-![traefik-guestbook](../../images/traefik-guestbook.jpg)
+![traefik-guestbook](images/traefik-guestbook.jpg)
 
 
 ## 参考

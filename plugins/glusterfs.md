@@ -2,8 +2,6 @@
 
 我们复用kubernetes的三台主机做glusterfs存储。
 
-以下步骤参考自`https://www.xf80.com/2017/04/21/kubernetes-glusterfs/`
-
 ## 安装glusterfs
 
 我们直接在物理机上使用yum安装，如果你选择在kubernetes上安装，请参考：https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md
@@ -137,7 +135,7 @@ $ gluster volume set k8s-volume performance.write-behind-window-size 1024MB
 
 官方的文档见：https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs
 
-以下用到的所有yaml和json配置文件可以在[glusterfs](../manifests/glusterfs)中找到。注意替换其中私有镜像地址为你自己的镜像地址。
+以下用到的所有yaml和json配置文件可以在[glusterfs](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/glusterfs)中找到。注意替换其中私有镜像地址为你自己的镜像地址。
 
 
 ## kubernetes安装客户端

@@ -112,7 +112,6 @@ K8s在1.3版本中发布了alpha版的基于角色的访问控制（Role-based A
 
 从K8s的系统架构、技术概念和设计理念，我们可以看到K8s系统最核心的两个设计理念：一个是**容错性**，一个是**易扩展性**。容错性实际是保证K8s系统稳定性和安全性的基础，易扩展性是保证K8s对变更友好，可以快速迭代增加新功能的基础。
 
-按照分布式系统一致性算法Paxos发明人计算机科学家[Leslie Lamport](http://research.microsoft.com/users/lamport/pubs/pubs.html)的理念，一个分布式系统有两类特性：安全性Safety和活性Liveness。安全性保证系统的稳定，保证系统不会崩溃，不会出现业务错误，不会做坏事，是严格约束的；活性使得系统可以提供功能，提高性能，增加易用性，让系统可以在用户“看到的时间内”做些好事，是尽力而为的。K8s系统的设计理念正好与Lamport安全性与活性的理念不谋而合，也正是因为K8s在引入功能和技术的时候，非常好地划分了安全性和活性，才可以让K8s能有这么快版本迭代，快速引入像RBAC、Federation和PetSet这种新功能。
 
 \[1\] [http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01](http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01)
 

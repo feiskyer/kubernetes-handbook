@@ -3,21 +3,24 @@
 ## 配置开发环境
 
 ```sh
-apt-get install -y gcc make socat git
+apt-get install -y gcc make socat git build-essential
 
 # install docker
-curl -fsSL https://get.docker.com/ | sh
+# latest version docker is not validated now, install an old version.
+# curl -fsSL https://get.docker.com/ | sh
+sh -c 'echo "deb https://apt.dockerproject.org/repo ubuntu-$(lsb_release -cs) main" > /etc/apt/sources.list.d/docker.list'
+curl -fsSL https://apt.dockerproject.org/gpg | sudo apt-key add -
+apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D
+apt-get update
+apt-get -y install "docker-engine=1.13.1-0~ubuntu-$(lsb_release -cs)"
 
 # install etcd
-curl -L https://github.com/coreos/etcd/releases/download/v3.0.10/etcd-v3.0.10-linux-amd64.tar.gz -o etcd-v3.0.10-linux-amd64.tar.gz && tar xzvf etcd-v3.0.10-linux-amd64.tar.gz && /bin/cp -f etcd-v3.0.10-linux-amd64/{etcd,etcdctl} /usr/bin && rm -rf etcd-v3.0.10-linux-amd64*
+curl -L https://github.com/coreos/etcd/releases/download/v3.1.8/etcd-v3.1.8-linux-amd64.tar.gz -o etcd-v3.1.8-linux-amd64.tar.gz && tar xzvf etcd-v3.1.8-linux-amd64.tar.gz && /bin/cp -f etcd-v3.1.8-linux-amd64/{etcd,etcdctl} /usr/bin && rm -rf etcd-v3.1.8-linux-amd64*
 
 # install golang
 curl -sL https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz | tar -C /usr/local -zxf -
 export GOPATH=/gopath
 export PATH=$PATH:$GOPATH/bin:/usr/local/bin:/usr/local/go/bin/
-
-# Get essential tools for building kubernetes
-go get -u github.com/jteeuwen/go-bindata/go-bindata
 
 # Get kubernetes code
 mkdir -p $GOPATH/src/k8s.io
@@ -26,7 +29,6 @@ cd $GOPATH/src/k8s.io/kubernetes
 
 # Start a local cluster
 export KUBERNETES_PROVIDER=local
-# export EXPERIMENTAL_CRI=true
 # export ALLOW_SECURITY_CONTEXT=yes
 # set dockerd --selinux-enabled
 # export NET_PLUGIN=kubenet
@@ -44,18 +46,6 @@ cluster/kubectl.sh
 
 ```sh
 make quick-release
-```
-
-## 容器集成开发环境
-
-```
-hyper run -it feisky/kubernetes-dev bash
-# /hack/start-hyperd.sh
-# /hack/start-docker.sh
-# /hack/start-frakti.sh
-# /hack/start-kubernetes-frakti.sh
-# /hack/setup-kubectl.sh
-# cluster/kubectl.sh
 ```
 
 ## 单元测试
@@ -80,16 +70,14 @@ go run hack/e2e.go -v -test --test_args='--ginkgo.focus=Feature:SecurityContext'
 
 ```sh
 export KUBERNETES_PROVIDER=local
-make test-e2e-node FOCUS="InitContainer" TEST_ARGS="--runtime-integration-type=cri"
+make test-e2e-node FOCUS="InitContainer"
 ```
 
 ## Bot命令
 
 - Jenkins verification: `@k8s-bot verify test this`
 - GCE E2E: `@k8s-bot cvm gce e2e test this`
-- Test all: `@k8s-bot test this please, issue #IGNORE`
-- CRI test: `@k8s-bot cri test this.`
-- Verity test: `@k8s-bot verify test this`
+- Test all: `@k8s-bot test this please`
 - **LGTM (only applied if you are one of assignees):**: `/lgtm`
 - LGTM cancel: `/lgtm cancel`
 
@@ -100,8 +88,8 @@ make test-e2e-node FOCUS="InitContainer" TEST_ARGS="--runtime-integration-type=c
 拉取pull request到本地：
 
 ```sh
-git fetch upstream pull/324/head:branch
-git fetch upstream pull/365/merge:branch
+git fetch upstream pull/365/merge:branch-fix-1
+git checkout branch-fix-1
 ```
 
 或者配置`.git/config`并运行`git fetch`拉取所有的pull requests:
@@ -110,22 +98,27 @@ git fetch upstream pull/365/merge:branch
     fetch = +refs/pull/*:refs/remotes/origin/pull/*
 ```
 
-## 用docker-machine创建虚拟机的方法
-
-```sh
-docker-machine create --driver google --google-project xxxx --google-machine-type n1-standard-2 --google-disk-size 30 kubernetes
-```
-
 ## Minikube启动本地cluster
 
 ```sh
-$ minikube get-k8s-versions
-The following Kubernetes versions are available:
-    - v1.5.1
-    - v1.4.3
-    ...
+# install minikube
+$ brew cask install minikube
+$ brew install docker-machine-driver-xhyve
+# docker-machine-driver-xhyve need root owner and uid
+$ sudo chown root:wheel $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+$ sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
 
+# start minikube.
 # http proxy is required in China
-$ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port --docker-env HTTPS_PROXY=http://proxy-ip:port --vm-driver=xhyve --kubernetes-version="v1.6.2"
+$ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port --docker-env HTTPS_PROXY=http://proxy-ip:port --vm-driver=xhyve
 ```
 
+## 容器集成开发环境
+
+```sh
+hyper run -it feisky/kubernetes-dev bash
+# /hack/start-docker.sh
+# /hack/start-kubernetes.sh
+# /hack/setup-kubectl.sh
+# cluster/kubectl.sh
+```

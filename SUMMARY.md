@@ -13,10 +13,10 @@
   - [2.1 设计理念](architecture/concepts.md)
   - [2.2 主要概念](architecture/objects.md)
     - [2.2.1 Pod, Service, Namespace和Node](introduction/concepts.md)
-    - [2.2.2 Service](architecture/Service.md)
-    - [2.2.3 Volume和Persistent Volume](architecture/Volume.md)
+    - [2.2.2 Service](architecture/service.md)
+    - [2.2.3 Volume和Persistent Volume](architecture/volume.md)
     - [2.2.4 Deployment](architecture/deployment.md)
-    - [2.2.5 Secret](architecture/Secret.md)
+    - [2.2.5 Secret](architecture/secret.md)
     - [2.2.6 StatefulSet](architecture/statefulset.md)
     - [2.2.7 DaemonSet](architecture/daemonset.md)
     - [2.2.8 ServiceAccount](architecture/serviceaccount.md)
@@ -90,10 +90,10 @@
 
 ## 开发与社区贡献
 
-- [6. 开发指南](dev/index.md)
-  - [6.1 开发环境搭建](dev/index.md)
-  - [6.2 单元测试和集成测试](dev/testing.md)
-  - [6.3 社区贡献](dev/contribute.md)
+- [6. 开发指南](devel/index.md)
+  - [6.1 开发环境搭建](devel/index.md)
+  - [6.2 单元测试和集成测试](devel/testing.md)
+  - [6.3 社区贡献](devel/contribute.md)
 
 ## 附录
 
@@ -101,5 +101,5 @@
   - [7.1 awesome-docker](appendix/awesome-docker.md)
   - [7.2 awesome-kubernetes](appendix/awesome-kubernetes.md)
   - [7.3 Kubernetes ecosystem](ecosystem.md)
-  - [7.4 参考文档](reference.md)
-  - [7.5 FAQ](FAQ.md)
+  - [7.4 FAQ](FAQ.md)
+  - [7.5 参考文档](reference.md)

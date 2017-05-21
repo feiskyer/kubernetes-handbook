@@ -10,6 +10,8 @@
 
 ## 集群联邦
 
+集群联邦（Federation）用于跨可用区的Kubernetes集群，需要配合云服务商（如GCE、AWS）一起实现。
+
 ![](federation.png)
 
 ## Kubernetes单机版

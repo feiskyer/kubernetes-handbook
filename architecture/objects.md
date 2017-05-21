@@ -1,5 +1,7 @@
 # 主要概念
 
+Kubernetes主要概念和对象介绍。
+
 - Pod, Service, Namespace和Node
 - Service
 - Volume和Persistent Volume

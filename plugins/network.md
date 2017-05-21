@@ -6,13 +6,13 @@ Kubernetes有着丰富的网络插件，方便用户自定义所需的网络。
 
 * kubenet：这是一个基于CNI bridge的网络插件，也是目前推荐的默认插件
 * CNI：CNI网络插件，需要用户将网络配置放到`/etc/cni/net.d`目录中，并将CNI插件的二进制文件放入`/opt/cni/bin`
-* exec：通过第三方的可执行文件来为容器配置网络，将在v1.6中移除，见[PR](https://github.com/kubernetes/kubernetes/pull/39254)_
+* ~~exec：通过第三方的可执行文件来为容器配置网络，已在v1.6中移除([#39254](https://github.com/kubernetes/kubernetes/pull/39254))~~
 
 ## CNI plugin
 
 安装CNI：
 
-```
+```sh
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -29,7 +29,7 @@ yum install -y kubernetes-cni
 
 配置CNI brige插件：
 
-```
+```sh
     mkdir -p /etc/cni/net.d
 cat >/etc/cni/net.d/10-mynet.conf <<-EOF
 {
@@ -61,21 +61,27 @@ EOF
 ## calico
 
 ```sh
-# kubectl apply -f http://docs.projectcalico.org/v2.0/getting-started/kubernetes/installation/hosted/kubeadm/calico.yaml
-kubectl apply -f https://gist.githubusercontent.com/feiskyer/0f952c7dadbfcefd2ce81ba7ea24a8ca/raw/92addea398bbc4d4a1dcff8a98c1ac334c8acb26/calico.yaml
+kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
 ```
+
+calico详细介绍见[这里](https://sdn.feisky.xyz/container/calico/)。
 
 ## flannel
 
 ```sh
-kubectl apply -f https://gist.githubusercontent.com/feiskyer/1e7a95f27c391a35af47881eb20131d7/raw/4266f05355590fa185bc8e50c0f50d2841993d20/flannel.yaml
+kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel-rbac.yml
+kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 ```
+
+flannel详细介绍见[这里](https://sdn.feisky.xyz/container/calico/)。
 
 ## weave
 
 ```sh
-kubectl apply -f https://gist.githubusercontent.com/feiskyer/0b00688584cc7ed9bd9a993adddae5e3/raw/67f3558e32d5c76be38e36ef713cc46deb2a74ca/weave.yaml
+kubectl apply -f https://git.io/weave-kube
 ```
+
+weave详细介绍见[这里](https://sdn.feisky.xyz/container/weave/)。
 
 ## 第三方插件
 
@@ -90,8 +96,4 @@ kubectl apply -f https://gist.githubusercontent.com/feiskyer/0b00688584cc7ed9bd9
 - [kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes)
 
 更多Kubernetes网络插件的说明可以参见[sdn-handbook Kubernetes网络插件](https://feisky.gitbooks.io/sdn/container/kubernetes.html)。
-
-## 其他辅助工具
-
-- [Weave Scope](https://www.weave.works/documentation/scope-latest-installing/#k8s)是一个监控和可视化Pod/Service的工具。
 

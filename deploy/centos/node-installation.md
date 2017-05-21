@@ -2,7 +2,7 @@
 
 kubernetes node 节点包含如下组件：
 
-+ Flanneld：参考我之前写的文章[Kubernetes基于Flannel的网络配置](http://rootsongjc.github.io/blogs/kubernetes-network-config/)，之前没有配置TLS，现在需要在serivce配置文件中增加TLS配置。
++ Flanneld：参考[Kubernetes flannel插件](https://sdn.feisky.xyz/container/flannel/)
 + Docker1.12.5：docker的安装很简单，这里也不说了。
 + kubelet
 + kube-proxy
@@ -22,9 +22,9 @@ apiserver  bootstrap.kubeconfig  config  controller-manager  kubelet  kube-proxy
 
 ## 配置Flanneld
 
-参考我之前写的文章[Kubernetes基于Flannel的网络配置](http://rootsongjc.github.io/blogs/kubernetes-network-config/)，之前没有配置TLS，现在需要在serivce配置文件中增加TLS配置。
+flannel的部署可以参考[kubernetes flannel插件](https://sdn.feisky.xyz/container/flannel/)。
 
-直接使用yum安装flanneld即可。
+也可以直接使用yum安装并手动配置：
 
 ```shell
 yum install -y flannel
@@ -286,7 +286,7 @@ KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns=10.254.0.2 --experimental-bo
 + 建议在 `--kubeconfig` 配置文件中指定 `kube-apiserver` 地址，如果未指定 `--api-servers` 选项，则必须指定 `--require-kubeconfig` 选项后才从配置文件中读取 kube-apiserver 的地址，否则 kubelet 启动后将找不到 kube-apiserver (日志中提示未找到 API Server），`kubectl get nodes` 不会返回对应的 Node 信息;
 + `--cluster-dns` 指定 kubedns 的 Service IP(可以先分配，后续创建 kubedns 服务时指定该 IP)，`--cluster-domain` 指定域名后缀，这两个参数同时指定后才会生效；
 
-完整 unit 见 [kubelet.service](../../systemd/kubelet.service)
+完整 unit 见 [kubelet.service](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/kubelet.service)
 
 ### 启动kublet
 
@@ -379,7 +379,7 @@ KUBE_PROXY_ARGS="--bind-address=172.20.0.113 --hostname-override=172.20.0.113 --
 + `--kubeconfig` 指定的配置文件嵌入了 kube-apiserver 的地址、用户名、证书、秘钥等请求和认证信息；
 + 预定义的 RoleBinding `cluster-admin` 将User `system:kube-proxy` 与 Role `system:node-proxier` 绑定，该 Role 授予了调用 `kube-apiserver` Proxy 相关 API 的权限；
 
-完整 unit 见 [kube-proxy.service](../../systemd/kube-proxy.service)
+完整 unit 见 [kube-proxy.service](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/kube-proxy.service)
 
 ### 启动 kube-proxy
 

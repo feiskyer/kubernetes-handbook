@@ -32,7 +32,17 @@ data:
   username: YWRtaW4=
 ```
 
-接着，就可以创建secret了：`kubectl create -f secrets.yml`。
+创建secret：`kubectl create -f secrets.yml`。
+
+如果是从文件创建secret，则可以用更简单的kubectl命令，比如创建tls的secret：
+
+```sh
+$ kubectl create secret generic helloworld-tls \
+  --from-file=key.pem \
+  --from-file=cert.pem
+```
+
+## Secret引用
 
 创建好secret之后，有两种方式来使用它： 
 
@@ -110,20 +120,11 @@ $ kubectl create secret docker-registry myregistrykey --docker-server=DOCKER_REG
 secret "myregistrykey" created.
 ```
 
-也可以直接读取`~/.docker/config.json`的内容来创建：
+也可以直接读取`~/.dockercfg`的内容来创建：
 
 ```sh
-$ cat ~/.docker/config.json | base64
-$ cat > myregistrykey.yaml <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: myregistrykey
-data:
-  .dockerconfigjson: UmVhbGx5IHJlYWxseSByZWVlZWVlZWVlZWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGx5eXl5eXl5eXl5eXl5eXl5eXl5eSBsbGxsbGxsbGxsbGxsbG9vb29vb29vb29vb29vb29vb29vb29vb29vb25ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubmdnZ2dnZ2dnZ2dnZ2dnZ2dnZ2cgYXV0aCBrZXlzCg==
-type: kubernetes.io/dockerconfigjson
-EOF
-$ kubectl create -f myregistrykey.yaml
+$ kubectl create secret docker-registry myregistrykey \
+  --from-file="~/.dockercfg"
 ```
 
 在创建Pod的时候，通过`imagePullSecrets`来引用刚创建的`myregistrykey`:
@@ -156,5 +157,3 @@ ca.crt
 namespace
 token
 ```
-
-

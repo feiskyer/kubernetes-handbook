@@ -4,9 +4,7 @@
 
 ## 前言
 
-本文翻译自[RBAC Support in Kubernetes](http://blog.kubernetes.io/2017/04/rbac-support-in-kubernetes.html)，转载自[kubernetes中文社区](https://www.kubernetes.org.cn/1879.html)，译者催总，[Jimmy Song](http://rootsongjc.github.com/about)做了稍许修改。该文章是[5天内了解Kubernetes1.6新特性](http://blog.kubernetes.io/2017/03/five-days-of-kubernetes-1.6.html)的系列文章之一。
-
-One of the highlights of the [Kubernetes 1.6](http://blog.kubernetes.io/2017/03/kubernetes-1.6-multi-user-multi-workloads-at-scale.html)中的一个亮点时RBAC访问控制机制升级到了beta版本。RBAC，基于角色的访问控制机制，是用来管理kubernetes集群中资源访问权限的机制。使用RBAC可以很方便的更新访问授权策略而不用重启集群。
+[Kubernetes 1.6](http://blog.kubernetes.io/2017/03/kubernetes-1.6-multi-user-multi-workloads-at-scale.html)中的一个亮点时RBAC访问控制机制升级到了beta版本。RBAC，基于角色的访问控制机制，是用来管理kubernetes集群中资源访问权限的机制。使用RBAC可以很方便的更新访问授权策略而不用重启集群。
 
 本文主要关注新特性和最佳实践。
 
@@ -24,7 +22,7 @@ ABAC（Attribute Based Access Control）本来是不错的概念，但是在 Kub
 
 需要理解 RBAC 一些基础的概念和思路，RBAC 是让用户能够访问 [Kubernetes API 资源](https://kubernetes.io/docs/api-reference/v1.6/)的授权方式。
 
-![RBAC架构图1](../images/rbac1.png)
+![RBAC架构图1](images/rbac1.png)
 
 在 RBAC 中定义了两个对象，用于描述在用户和资源之间的连接权限。
 
@@ -36,7 +34,7 @@ ABAC（Attribute Based Access Control）本来是不错的概念，但是在 Kub
 
 RoleBinding 把角色映射到用户，从而让这些用户继承角色在 namespace 中的权限。ClusterRoleBinding 让用户继承 ClusterRole 在整个集群中的权限。
 
-![RBAC架构图2](../images/rbac2.png)
+![RBAC架构图2](images/rbac2.png)
 
 
 
@@ -111,7 +109,10 @@ $ curl -ik \
 
 ## 参考文档
 
+> 说明：本文翻译自[RBAC Support in Kubernetes](http://blog.kubernetes.io/2017/04/rbac-support-in-kubernetes.html)，转载自[kubernetes中文社区](https://www.kubernetes.org.cn/1879.html)，译者催总，[Jimmy Song](http://rootsongjc.github.com/about)做了稍许修改。该文章是[5天内了解Kubernetes1.6新特性](http://blog.kubernetes.io/2017/03/five-days-of-kubernetes-1.6.html)的系列文章之一。
+
 - [RBAC documentation](https://kubernetes.io/docs/admin/authorization/rbac/)
 - [Google Cloud Next talks 1](https://www.youtube.com/watch?v=Cd4JU7qzYbE#t=8m01s )
 - [Google Cloud Next talks 2](https://www.youtube.com/watch?v=18P7cFc6nTU#t=41m06s )
 - [在Kubernetes Pod中使用Service Account访问API Server](http://tonybai.com/2017/03/03/access-api-server-from-a-pod-through-serviceaccount/)
+

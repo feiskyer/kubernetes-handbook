@@ -43,15 +43,15 @@ Kubernetes主要由以下几个核心组件组成：
 - Fluentd-elasticsearch提供集群日志采集、存储与查询
 
 
-![](/images/14791969222306.png)
+![](images/14791969222306.png)
 
-![](/images/14791969311297.png)
+![](images/14791969311297.png)
 
 ### 分层架构
 
 Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如下图所示
 
-![](/images/14937095836427.jpg)
+![](images/14937095836427.jpg)
 
 * 核心层：Kubernetes最核心的功能，对外提供API构建高层的应用，对内提供插件式应用执行环境
 * 应用层：部署（无状态应用、有状态应用、批处理任务、集群应用等）和路由（服务发现、DNS解析等）
@@ -61,7 +61,7 @@ Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，�
   * Kubernetes外部：日志、监控、配置管理、CI、CD、Workflow、FaaS、OTS应用、ChatOps等
   * Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
 
-> 关于分层架构，可以关注下Kubernetes社区正在推进的[Kbernetes architectual roadmap](https://docs.google.com/document/d/1XkjVm4bOeiVkj-Xt1LgoGiqWsBfNozJ51dyI-ljzt1o)和[slide](https://docs.google.com/presentation/d/1GpELyzXOGEPY0Y1ft26yMNV19ROKt8eMN67vDSSHglk/edit)。
+> 关于分层架构，可以关注下Kubernetes社区正在推进的Kubernetes architectual roadmap (`https://docs.google.com/document/d/1XkjVm4bOeiVkj-Xt1LgoGiqWsBfNozJ51dyI-ljzt1o`，需要加入kubernetes-dev google groups才可以查看)。
 
 ## 参考文档
 

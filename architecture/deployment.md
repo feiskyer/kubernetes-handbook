@@ -82,7 +82,7 @@ Deployment为Pod和Replica Set（下一代Replication Controller）提供声明�
 
 下载示例文件并执行命令：
 
-```shell
+```sh
 $ kubectl create -f docs/user-guide/nginx-deployment.yaml --record
 deployment "nginx-deployment" created
 ```
@@ -91,7 +91,7 @@ deployment "nginx-deployment" created
 
 然后立即执行`get`í将获得如下结果：
 
-```shell
+```sh
 $ kubectl get deployments
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         0         0            0           1s
@@ -101,7 +101,7 @@ nginx-deployment   3         0         0            0           1s
 
 过几秒后再执行`get`命令，将获得如下输出：
 
-```shell
+```sh
 $ kubectl get deployments
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         3         3            3           18s
@@ -109,7 +109,7 @@ nginx-deployment   3         3         3            3           18s
 
 我们可以看到Deployment已经创建了3个replica，所有的replica都已经是最新的了（包含最新的pod template），可用的（根据Deployment中的`.spec.minReadySeconds`声明，处于已就绪状态的pod的最少个数）。执行`kubectl get rs`和`kubectl get pods`会显示Replica Set（RS）和Pod已创建。
 
-```shell
+```sh
 $ kubectl get rs
 NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-2035384211   3         3         0       18s
@@ -117,7 +117,7 @@ nginx-deployment-2035384211   3         3         0       18s
 
 你可能会注意到Replica Set的名字总是`<Deployment的名字>-<pod template的hash值>`。
 
-```shell
+```sh
 $ kubectl get pods --show-labels
 NAME                                READY     STATUS    RESTARTS   AGE       LABELS
 nginx-deployment-2035384211-7ci7o   1/1       Running   0          18s       app=nginx,pod-template-hash=2035384211
@@ -135,21 +135,21 @@ nginx-deployment-2035384211-qqcnn   1/1       Running   0          18s       app
 
 假如我们现在想要让nginx pod使用`nginx:1.9.1`的镜像来代替原来的`nginx:1.7.9`的镜像。
 
-```shell
+```sh
 $ kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1
 deployment "nginx-deployment" image updated
 ```
 
 我们可以使用`edit`命令来编辑Deployment，修改 `.spec.template.spec.containers[0].image` ，将`nginx:1.7.9` 改写成 `nginx:1.9.1`。
 
-```shell
+```sh
 $ kubectl edit deployment/nginx-deployment
 deployment "nginx-deployment" edited
 ```
 
 查看rollout的状态，只要执行：
 
-```shell
+```sh
 $ kubectl rollout status deployment/nginx-deployment
 Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
 deployment "nginx-deployment" successfully rolled out
@@ -157,7 +157,7 @@ deployment "nginx-deployment" successfully rolled out
 
 Rollout成功后，`get` Deployment：
 
-```shell
+```sh
 $ kubectl get deployments
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         3         3            3           36s
@@ -171,7 +171,7 @@ We can run `kubectl get rs` to see that the Deployment updated the Pods by creat
 
 我们通过执行`kubectl get rs`可以看到Deployment更新了Pod，通过创建一个新的Replica Set并扩容了3个replica，同时将原来的Replica Set缩容到了0个replica。
 
-```shell
+```sh
 $ kubectl get rs
 NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-1564180365   3         3         0       6s
@@ -180,7 +180,7 @@ nginx-deployment-2035384211   0         0         0       36s
 
 执行 `get pods`只会看到当前的新的pod:
 
-```shell
+```sh
 $ kubectl get pods
 NAME                                READY     STATUS    RESTARTS   AGE
 nginx-deployment-1564180365-khku8   1/1       Running   0          14s
@@ -198,7 +198,7 @@ Deployment同时也可以确保只创建出超过期望数量的一定数量的P
 
 例如，如果你自己看下上面的Deployment，你会发现，开始创建一个新的Pod，然后删除一些旧的Pod再创建一个新的。当新的Pod创建出来之前不会杀掉旧的Pod。这样能够确保可用的Pod数量至少有2个，Pod的总数最多4个。
 
-```shell
+```sh
 $ kubectl describe deployments
 Name:           nginx-deployment
 Namespace:      default
@@ -248,14 +248,14 @@ Events:
 
 假设我们在更新Deployment的时候犯了一个拼写错误，将镜像的名字写成了`nginx:1.91`，而正确的名字应该是`nginx:1.9.1`：
 
-```shell
+```sh
 $ kubectl set image deployment/nginx-deployment nginx=nginx:1.91
 deployment "nginx-deployment" image updated
 ```
 
 Rollout将会卡住。
 
-```shell
+```sh
 $ kubectl rollout status deployments nginx-deployment
 Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
 ```
@@ -264,7 +264,7 @@ Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
 
 你会看到旧的replicas（nginx-deployment-1564180365 和 nginx-deployment-2035384211）和新的replicas （nginx-deployment-3066724191）数目都是2个。
 
-```shell
+```sh
 $ kubectl get rs
 NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-1564180365   2         2         0       25s
@@ -274,7 +274,7 @@ nginx-deployment-3066724191   2         2         2       6s
 
 看下创建Pod，你会看到有两个新的呃Replica Set创建的Pod处于ImagePullBackOff状态，循环拉取镜像。
 
-```shell
+```sh
 $ kubectl get pods
 NAME                                READY     STATUS             RESTARTS   AGE
 nginx-deployment-1564180365-70iae   1/1       Running            0          25s
@@ -285,7 +285,7 @@ nginx-deployment-3066724191-eocby   0/1       ImagePullBackOff   0          6s
 
 注意，Deployment controller会自动停止坏的rollout，并停止扩容新的Replica Set。
 
-```shell
+```sh
 $ kubectl describe deployment
 Name:           nginx-deployment
 Namespace:      default
@@ -318,7 +318,7 @@ Events:
 
 首先，检查下Deployment的revision：
 
-```shell
+```sh
 $ kubectl rollout history deployment/nginx-deployment
 deployments "nginx-deployment":
 REVISION    CHANGE-CAUSE
@@ -331,7 +331,7 @@ REVISION    CHANGE-CAUSE
 
 查看单个revision的详细信息：
 
-```shell
+```sh
 $ kubectl rollout history deployment/nginx-deployment --revision=2
 deployments "nginx-deployment" revision 2
   Labels:       app=nginx
@@ -352,14 +352,14 @@ deployments "nginx-deployment" revision 2
 
 现在，我们可以决定回退当前的rollout到之前的版本：
 
-```shell
+```sh
 $ kubectl rollout undo deployment/nginx-deployment
 deployment "nginx-deployment" rolled back
 ```
 
 也可以使用 `--revision`参数指定某个历史版本：
 
-```shell
+```sh
 $ kubectl rollout undo deployment/nginx-deployment --to-revision=2
 deployment "nginx-deployment" rolled back
 ```
@@ -368,7 +368,7 @@ deployment "nginx-deployment" rolled back
 
 该Deployment现在已经回退到了先前的稳定版本。如你所见，Deployment controller产生了一个回退到revison 2的`DeploymentRollback`的event。
 
-```shell
+```sh
 $ kubectl get deployment
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         3         3            3           30m
@@ -409,14 +409,14 @@ Events:
 
 你可以使用以下命令扩容Deployment：
 
-```shell
+```sh
 $ kubectl scale deployment nginx-deployment --replicas 10
 deployment "nginx-deployment" scaled
 ```
 
 假设你的集群中启用了[horizontal pod autoscaling](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough.md)，你可以给Deployment设置一个autoscaler，基于当前Pod的CPU利用率选择最少和最多的Pod数。
 
-```shell
+```sh
 $ kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
 deployment "nginx-deployment" autoscaled
 ```
@@ -427,7 +427,7 @@ RollingUpdate Deployment支持同时运行一个应用的多个版本。当你�
 
 例如，你正在运行中含有10个replica的Deployment。maxSurge=3，maxUnavailable=2。
 
-```shell
+```sh
 $ kubectl get deploy
 NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment     10        10        10           10          50s
@@ -435,14 +435,14 @@ nginx-deployment     10        10        10           10          50s
 
 你更新了一个镜像，而在集群内部无法解析。
 
-```shell
+```sh
 $ kubectl set image deploy/nginx-deployment nginx=nginx:sometag
 deployment "nginx-deployment" image updated
 ```
 
 镜像更新启动了一个包含ReplicaSet nginx-deployment-1989198191的新的rollout，但是它被阻塞了，因为我们上面提到的maxUnavailable。
 
-```shell
+```sh
 $ kubectl get rs
 NAME                          DESIRED   CURRENT   READY     AGE
 nginx-deployment-1989198191   5         5         0         9s
@@ -453,7 +453,7 @@ nginx-deployment-618515232    8         8         8         1m
 
 在我们上面的例子中，3个replica将添加到旧的ReplicaSet中，2个replica将添加到新的ReplicaSet中。rollout进程最终会将所有的replica移动到新的ReplicaSet中，假设新的replica成为健康状态。
 
-```shell
+```sh
 $ kubectl get deploy
 NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment     15        18        7            8           7m
@@ -469,7 +469,7 @@ nginx-deployment-618515232    11        11        11        7m
 
 例如使用刚刚创建Deployment：
 
-```shell
+```sh
 $ kubectl get deploy
 NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx     3         3         3            3           1m
@@ -480,21 +480,21 @@ nginx-2142116321   3         3         3         1m
 
 使用以下命令暂停Deployment：
 
-```shell
+```sh
 $ kubectl rollout pause deployment/nginx-deployment
 deployment "nginx-deployment" paused
 ```
 
 然后更新Deplyment中的镜像：
 
-```shell
+```sh
 $ kubectl set image deploy/nginx nginx=nginx:1.9.1
 deployment "nginx-deployment" image updated
 ```
 
 注意新的rollout启动了：
 
-```shell
+```sh
 $ kubectl rollout history deploy/nginx
 deployments "nginx"
 REVISION  CHANGE-CAUSE
@@ -507,7 +507,7 @@ nginx-2142116321   3         3         3         2m
 
 你可以进行任意多次更新，例如更新使用的资源：
 
-```shell
+```sh
 $ kubectl set resources deployment nginx -c=nginx --limits=cpu=200m,memory=512Mi
 deployment "nginx" resource requirements updated
 ```
@@ -516,7 +516,7 @@ Deployment暂停前的初始状态将继续它的功能，而不会对Deployment
 
 最后，恢复这个Deployment，观察完成更新的ReplicaSet已经创建出来了：
 
-```shell
+```sh
 $ kubectl rollout resume deploy nginx
 deployment "nginx" resumed
 $ KUBECTL get rs -w
