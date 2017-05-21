@@ -12,7 +12,7 @@
 - [2. 核心原理](architecture/index.md)
   - [2.1 设计理念](architecture/concepts.md)
   - [2.2 主要概念](architecture/objects.md)
-    - [2.2.1 Pod, Service, Namespace和Node](introduction/concepts.md)
+    - [2.2.1 Pod, Namespace和Node](introduction/concepts.md)
     - [2.2.2 Service](architecture/service.md)
     - [2.2.3 Volume和Persistent Volume](architecture/volume.md)
     - [2.2.4 Deployment](architecture/deployment.md)
