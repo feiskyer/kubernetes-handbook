@@ -1,0 +1,2 @@
+*.md linguist-language=Markdown
+**/*.md linguist-language=Markdown
