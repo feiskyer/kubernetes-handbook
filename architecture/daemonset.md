@@ -70,6 +70,10 @@ spec:
 nodeAffinity目前支持两种：requiredDuringSchedulingIgnoredDuringExecution和preferredDuringSchedulingIgnoredDuringExecution，分别代表必须满足条件和优选条件。比如下面的例子代表调度到包含标签`kubernetes.io/e2e-az-name`并且值为e2e-az1或e2e-az2的Node上，并且优选还带有标签`another-node-label-key=another-node-label-value`的Node。
 
 ```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
 spec:
   affinity:
     nodeAffinity:
@@ -89,6 +93,9 @@ spec:
             operator: In
             values:
             - another-node-label-value
+  containers:
+  - name: with-node-affinity
+    image: gcr.io/google_containers/pause:2.0
 ```
 
 ### podAffinity示例
@@ -125,6 +132,9 @@ spec:
               values:
               - S2
           topologyKey: kubernetes.io/hostname
+  containers:
+  - name: with-pod-affinity
+    image: gcr.io/google_containers/pause:2.0
 ```
 
 ## 静态Pod
