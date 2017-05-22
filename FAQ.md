@@ -65,10 +65,8 @@ dd: error writing 'test': No space left on device
 10486870016 bytes (10GB) copied, 14.6692s, 715MB/s
 ```
 
-从截图中
+## 参考文档
 
-**参考**
+- [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+- [Resource Design Proposals](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/resources.md)
 
-[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-
-[Resource Design Proposals](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/resources.md)
