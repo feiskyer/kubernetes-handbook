@@ -267,7 +267,7 @@ Calico在每一个计算节点利用Linux Kernel实现了一个高效的vRouter�
 
 此外，Calico基于iptables还提供了丰富而灵活的网络Policy，保证通过各个节点上的ACLs来提供Workload的多租户隔离、安全组以及其他可达性限制等功能。
 
-## [OVN](../../ovs/ovn-kubernetes.md)
+## [OVN](../ovn-kubernetes.md)
 
 [OVN (Open Virtual Network)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是OVS提供的原生虚拟化网络方案，旨在解决传统SDN架构（比如Neutron DVR）的性能问题。
 
