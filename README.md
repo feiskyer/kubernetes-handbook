@@ -1,6 +1,6 @@
 # Kubernetes指南
 
-Kubernetes是谷歌开源的容器集群管理系统，是Google多年大规模容器管理技术Borg的开源版本，也是CNCF最重要的组件之一，主要功能包括：
+Kubernetes是谷歌开源的容器集群管理系统，是Google多年大规模容器管理技术Borg的开源版本，也是CNCF最重要的项目之一，主要功能包括：
 
 - 基于容器的应用部署、维护和滚动升级
 - 负载均衡和服务发现
@@ -10,9 +10,10 @@ Kubernetes是谷歌开源的容器集群管理系统，是Google多年大规模�
 - 广泛的Volume支持
 - 插件机制保证扩展性
 
-Kubernetes发展非常迅速，已经成为容器编排领域的领导者。Kubernetes的中文资料也非常丰富，但系统化和紧跟社区更新的则就比较少见了。《Kubernetes指南》开源电子书旨在整理平时在开发和使用Kubernetes时的参考指南和实践总结，更是为了形成一个系统化的参考指南以方便查阅。欢迎大家关注，更欢迎大家一起添加更多更好的内容。
-
-注：如无特殊说明，本指南所有文档近适用于Kubernetes v1.6+。
+Kubernetes发展非常迅速，已经成为容器编排领域的领导者。Kubernetes的中文资料也非常丰富，但系统化和紧跟社区更新的则就比较少见了。《Kubernetes指南》开源电子书旨在整理平时在开发和使用Kubernetes时的参考指南和实践总结，形成一个系统化的参考指南以方便查阅。欢迎大家关注和添加完善内容。
+<!-- Place this tag where you want the button to render. -->
+<a class="github-button" href="https://github.com/feiskyer/kubernetes-handbook" data-icon="octicon-star" data-size="large" aria-label="Star feiskyer/kubernetes-handbook on GitHub">Star</a>
+注：如无特殊说明，本指南所有文档仅适用于Kubernetes v1.6及以上版本。
 
 ## 在线阅读
 
@@ -27,4 +28,3 @@ Kubernetes发展非常迅速，已经成为容器编排领域的领导者。Kube
 ## 贡献者
 
 感谢所有的贡献者，贡献者列表见[这里](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)。
-
