@@ -11,8 +11,7 @@ Kubernetes是谷歌开源的容器集群管理系统，是Google多年大规模�
 - 插件机制保证扩展性
 
 Kubernetes发展非常迅速，已经成为容器编排领域的领导者。Kubernetes的中文资料也非常丰富，但系统化和紧跟社区更新的则就比较少见了。《Kubernetes指南》开源电子书旨在整理平时在开发和使用Kubernetes时的参考指南和实践总结，形成一个系统化的参考指南以方便查阅。欢迎大家关注和添加完善内容。
-<!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/feiskyer/kubernetes-handbook" data-icon="octicon-star" data-size="large" aria-label="Star feiskyer/kubernetes-handbook on GitHub">Star</a>
+
 注：如无特殊说明，本指南所有文档仅适用于Kubernetes v1.6及以上版本。
 
 ## 在线阅读
