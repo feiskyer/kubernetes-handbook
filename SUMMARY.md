@@ -25,13 +25,12 @@
     - [2.2.11 ReplicationController和ReplicaSet](architecture/replicaset.md)
     - [2.2.12 Job](architecture/job.md)
     - [2.2.13 CronJob](architecture/cronjob.md)
-    - 2.2.14 SecurityContext
-    - 2.2.15 Resource Quota
-    - 2.2.16 Pod Security Policy
-    - 2.2.17 Horizontal Pod Autoscaling
-    - 2.2.18 Network Policy
-    - [2.2.19 Ingress](architecture/ingress.md)
-    - 2.2.20 ThirdPartyResources
+    - [2.2.14 SecurityContext和PSP](architecture/security-context.md)
+    - [2.2.15 Resource Quota](architecture/quota.md)
+    - [2.2.16 Horizontal Pod Autoscaling](architecture/autoscaling.md)
+    - [2.2.17 Network Policy](architecture/network-policy.md)
+    - [2.2.18 Ingress](architecture/ingress.md)
+    - [2.2.19 ThirdPartyResources](architecture/thirdpartyresources.md)
   - [2.3 核心组件](components/index.md)
     - [2.3.1 etcd](components/etcd.md)
     - [2.3.2 API Server](components/apiserver.md)
