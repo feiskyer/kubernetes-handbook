@@ -15,16 +15,16 @@ kubectl提供了大量的子命令，方便管理Kubernetes集群中的各种功
 
 - cluster信息：Kubernetes server地址
 - 用户信息：用户名、密码或密钥
-- Context：cluster和用户信息的组合
+- Context：cluster、用户信息以及Namespace的组合
 
 示例
 
 ```sh
-$ kubectl config set-credentials myself --username=admin --password=secret
-$ kubectl config set-cluster local-server --server=http://localhost:8080
-$ kubectl config set-context default-context --cluster=local-server --user=myself --namespace=default
-$ kubectl config use-context default-context
-$ kubectl config view
+kubectl config set-credentials myself --username=admin --password=secret
+kubectl config set-cluster local-server --server=http://localhost:8080
+kubectl config set-context default-context --cluster=local-server --user=myself --namespace=default
+kubectl config use-context default-context
+kubectl config view
 ```
 
 ## 常用命令格式
