@@ -122,3 +122,13 @@ hyper run -it feisky/kubernetes-dev bash
 # /hack/setup-kubectl.sh
 # cluster/kubectl.sh
 ```
+
+## 常用链接
+
+- [Kubernetes TestGrid](https://k8s-testgrid.appspot.com/)，包含所有的测试历史
+- [Kuberentes Submit Queue Status](https://submit-queue.k8s.io/#/queue)，包含所有的PR状态以及正在合并的PR队列
+- [Node Performance Dashboard](http://146.148.52.109/#/builds)，包含Node组性能测试报告
+- [Kubernetes Performance Dashboard](http://perf-dash.k8s.io/)，包含Density和Load测试报告
+- [Kubernetes PR Dashboard](https://k8s-gubernator.appspot.com/pr)，包含主要关注的PR列表（需要github登录）
+- [Jenkins Logs](https://k8s-gubernator.appspot.com/)和[Prow Status](http://prow.k8s.io/?type=presubmit)，包含所有PR的jenkins测试日志
+
