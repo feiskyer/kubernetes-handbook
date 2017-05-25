@@ -45,7 +45,7 @@ my-new-cron-object   CronTab.v1.stable.example.com
 
 ## ThirdPartyResources与RBAC
 
-注意ThirdPartyResources不是namespace-scoped的资源，在普通用户使用之前需要配置权限。
+注意ThirdPartyResources不是namespace-scoped的资源，在普通用户使用之前需要绑定ClusterRole权限。
 
 ```sh
 $ cat cron-rbac.yaml

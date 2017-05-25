@@ -16,5 +16,3 @@
   - [(8) 安装dashboard插件](centos/dashboard-addon-installation.md)
   - [(9) 安装heapster插件](centos/heapster-addon-installation.md)
   - [(10) 安装EFK插件](centos/efk-addon-installation.md)
-
-

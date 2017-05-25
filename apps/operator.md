@@ -11,3 +11,5 @@
 - https://github.com/upmc-enterprises/elasticsearch-operator
 - https://github.com/pires/nats-operator
 - https://github.com/rosskukulinski/rethinkdb-operator
+- https://istio.io/
+
