@@ -1,13 +1,15 @@
 # Kubernetes应用管理
 
-Kubernetes应用及manifest的管理方法。目前最常用了还是自己管理manifest，比如kubernetes项目就提供了很多应用的示例
+本章介绍Kubernetes manifest以及应用的管理方法。
+
+目前最常用的是手动管理manifest，比如kubernetes github代码库就提供了很多的manifest示例
 
 - https://github.com/kubernetes/kubernetes/tree/master/examples
 - https://github.com/kubernetes/contrib
 - https://github.com/kubernetes/ingress
 
-开源社区也在推动更易用的manifest和应用管理，如
+手动管理的一个问题就是繁琐，特别是应用复杂并且Manifest比较多的时候，还需要考虑他们之间部署关系。Kubernetes开源社区正在推动更易用的管理方法，如
 
-- [Helm](helm-app.md)
-- [Deis](deis.md)
-- [operator](operator.md)
+- [Helm](helm-app.md)提供了一些常见应用的模版
+- [operator](operator.md)则提供了一种有状态应用的管理模式
+- [Deis](deis.md)在Kubernetes之上提供了一个PaaS平台
