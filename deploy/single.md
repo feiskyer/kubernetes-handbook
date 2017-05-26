@@ -5,21 +5,27 @@
 首先下载kubectl
 
 ```sh
-curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.5.2/bin/linux/amd64/kubectl
+curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl
 chmod +x kubectl
 ```
 
-然后启动minikube
+安装minikube
 
 ```sh
-$ minikube start
-Starting local Kubernetes cluster...  
-Kubectl is now configured to use the cluster.
-$ kubectl cluster-info
-Kubernetes master is running at https://192.168.64.12:8443
-kubernetes-dashboard is running at https://192.168.64.12:8443/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
+# install minikube
+$ brew cask install minikube
+$ brew install docker-machine-driver-xhyve
+# docker-machine-driver-xhyve need root owner and uid
+$ sudo chown root:wheel $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+$ sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+```
 
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.   
+最后启动minikube
+
+```sh
+# start minikube.
+# http proxy is required in China
+$ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port --docker-env HTTPS_PROXY=http://proxy-ip:port --vm-driver=xhyve
 ```
 
 ## 开发版
