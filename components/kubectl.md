@@ -48,8 +48,6 @@ kubectl config view
 |Job|`--restart=OnFailure`|
 |CronJob|`--schedule=<cron>`|
 
-
-
 ## 命令行自动补全
 
 Linux系统Bash：
@@ -88,6 +86,21 @@ Starting to serve on 127.0.0.1:8080
 ```sh
 curl http://localhost:8080/api/v1/namespaces/default/pods
 ```
+
+## kubectl drain
+
+```
+kubectl drain NODE [Options]
+```
+
+- 它会删除该NODE上由ReplicationController, ReplicaSet, DaemonSet, StatefulSet or Job创建的Pod
+- 不删除mirror pods（因为不可通过API删除mirror pods）
+- 如果还有其它类型的Pod（比如不通过RC而直接通过kubectl create的Pod）并且没有--force选项，该命令会直接失败
+- 如果命令中增加了--force选项，则会强制删除这些不是通过ReplicationController, Job或者DaemonSet创建的Pod
+
+有的时候不需要evict pod，只需要标记Node不可调用，可以用`kubectl cordon`命令。
+
+恢复的话只需要运行`kubectl uncordon NODE`将NODE重新改成可调度状态。
 
 ## 附录
 
