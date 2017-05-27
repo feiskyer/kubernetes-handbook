@@ -17,5 +17,5 @@
 - AlwaysDeny
 - AlwaysAllow
 - ABAC (Attribute-Based Access Control)
-- RBAC (Role-Based Access Control)
+- [RBAC (Role-Based Access Control)](rbac.md)
 - Webhook
