@@ -2,7 +2,12 @@
 
 我们知道默认情况下容器的数据都是非持久化的，在容器消亡以后数据也跟着丢失，所以Docker提供了Volume机制以便将数据持久化存储。类似的，Kubernetes提供了更强大的Volume机制和丰富的插件，解决了容器数据持久化和容器间共享数据的问题。
 
-## Volume
+与Docker不同，Kubernetes Volume的生命周期与Pod绑定
+
+- 容器挂掉后Kubelet再次重启容器时，Volume的数据依然还在
+- 而Pod删除时，Volume才会清理。数据是否丢失取决于具体的Volume类型，比如emptyDir的数据会丢失，而PV的数据则不会丢
+
+## Volume类型
 
 目前，Kubernetes支持以下Volume类型：
 
@@ -21,122 +26,39 @@
 - persistentVolumeClaim
 - downwardAPI
 - azureFileVolume
+- azureDisk
 - vsphereVolume
+- Quobyte
+- PortworxVolume
+- ScaleIO
 - flexvolume
 
 注意，这些volume并非全部都是持久化的，比如emptyDir、secret、gitRepo等，这些volume会随着Pod的消亡而消失。
 
-## PersistentVolume
-
-对于持久化的Volume，PersistentVolume (PV)和PersistentVolumeClaim (PVC)提供了更方便的管理卷的方法：PV提供网络存储资源，而PVC请求存储资源。这样，设置持久化的工作流包括配置底层文件系统或者云数据卷、创建持久性数据卷、最后创建claim来将pod跟数据卷关联起来。PV和PVC可以将pod和数据卷解耦，pod不需要知道确切的文件系统或者支持它的持久化引擎。
-
-### PV
-
-PersistentVolume（PV）是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PV 跟 Volume (卷) 类似，不过会有独立于 Pod 的生命周期。比如一个NFS的PV可以定义为
-
-```yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv0003
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    path: /tmp
-    server: 172.17.0.2
-```
-
-PV的访问模式有三种：
-
-* 第一种，ReadWriteOnce：是最基本的方式，可读可写，但只支持被单个Pod挂载。
-* 第二种，ReadOnlyMany：可以以只读的方式被多个Pod挂载。
-* 第三种，ReadWriteMany：这种存储可以以读写的方式被多个Pod共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是NFS。在PVC绑定PV时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
-
-### StorageClass
-
-上面通过手动的方式创建了一个NFS Volume，这在管理很多Volume的时候不太方便。Kubernetes还提供了[StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses)来动态创建PV，不仅节省了管理员的时间，还可以封装不同类型的存储供PVC选用。
-
-GCE的例子：
-
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1beta1
-metadata:
-  name: slow
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-standard
-  zone: us-central1-a
-```
-
-Ceph RBD的例子：
-
-```yaml
- apiVersion: storage.k8s.io/v1beta1
-  kind: StorageClass
-  metadata:
-    name: fast
-  provisioner: kubernetes.io/rbd
-  parameters:
-    monitors: 10.16.153.105:6789
-    adminId: kube
-    adminSecretName: ceph-secret
-    adminSecretNamespace: kube-system
-    pool: kube
-    userId: kube
-    userSecretName: ceph-secret-user
-```
-
-### PVC
-
-PV是存储资源，而PersistentVolumeClaim (PVC) 是对PV的请求。PVC跟Pod类似：Pod消费Node的源，而PVC消费PV资源；Pod能够请求CPU和内存资源，而PVC请求特定大小和访问模式的数据卷。
-
-```yaml
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: myclaim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 8Gi
-  selector:
-    matchLabels:
-      release: "stable"
-    matchExpressions:
-      - {key: environment, operator: In, values: [dev]}
-
-```
-
-PVC可以直接挂载到Pod中：
-
-```yaml
-kind: Pod
-apiVersion: v1
-metadata:
-  name: mypod
-spec:
-  containers:
-    - name: myfrontend
-      image: dockerfile/nginx
-      volumeMounts:
-      - mountPath: "/var/www/html"
-        name: mypd
-  volumes:
-    - name: mypd
-      persistentVolumeClaim:
-        claimName: myclaim
-```
-
 ## emptyDir
 
-如果Pod配置了emptyDir类型Volume， Pod 被分配到Node上时候，会创建emptyDir，只要Pod运行在Node上，emptyDir都会存在（容器挂掉不会导致emptyDir丢失数据），但是如果Pod从Node上被删除（Pod被删除，或者Pod发生迁移），emptyDir也会被删除，并且永久丢失。
+如果Pod设置了emptyDir类型Volume， Pod 被分配到Node上时候，会创建emptyDir，只要Pod运行在Node上，emptyDir都会存在（容器挂掉不会导致emptyDir丢失数据），但是如果Pod从Node上被删除（Pod被删除，或者Pod发生迁移），emptyDir也会被删除，并且永久丢失。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+  - image: gcr.io/google_containers/test-webserver
+    name: test-container
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
+```
+
+## hostPath
+
+hostPath允许挂载Node上的文件系统到Pod里面去。如果Pod需要使用Node上的文件，可以使用hostPath。
 
 ```yaml
 apiVersion: v1
@@ -153,23 +75,10 @@ spec:
   volumes:
   - name: test-volume
     hostPath:
-      # directory location on host
       path: /data
 ```
 
-## 其他Volume说明
-
-### hostPath
-
-hostPath允许挂载Node上的文件系统到Pod里面去。如果Pod有需要使用Node上的文件，可以使用hostPath。
-
-```yaml
-- hostPath:
-  path: /tmp/data
-  name: data
-```
-
-### NFS
+## NFS
 
 NFS 是Network File System的缩写，即网络文件系统。Kubernetes中通过简单地配置就可以挂载NFS到Pod中，而NFS中的数据是可以永久保存的，同时NFS支持同时写操作。
 
@@ -182,9 +91,76 @@ volumes:
     path: "/"
 ```
 
-### FlexVolume
+## gcePersistentDisk
 
-注意要把volume plugin放到`/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>`，plugin要实现`init/attach/detach/mount/umount`等命令（可参考lvm的[示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/flexvolume)）。
+gcePersistentDisk可以挂载GCE上的永久磁盘到容器，需要Kubernetes运行在GCE的VM中。
+
+```yaml
+volumes:
+  - name: test-volume
+    # This GCE PD must already exist.
+    gcePersistentDisk:
+      pdName: my-data-disk
+      fsType: ext4
+```
+
+## awsElasticBlockStore
+
+awsElasticBlockStore可以挂载AWS上的EBS盘到容器，需要Kubernetes运行在AWS的EC2上。
+
+```yaml
+volumes:
+  - name: test-volume
+    # This AWS EBS volume must already exist.
+    awsElasticBlockStore:
+      volumeID: <volume-id>
+      fsType: ext4
+```
+
+## gitRepo
+
+gitRepo volume将git代码下拉到指定的容器路径中
+
+```yaml
+  volumes:
+  - name: git-volume
+    gitRepo:
+      repository: "git@somewhere:me/my-git-repository.git"
+      revision: "22f1d8406d464b0c0874075539c1f2e96c253775"
+```
+
+## 使用subPath
+
+Pod的多个容器使用同一个Volume时，subPath非常有用
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-lamp-site
+spec:
+    containers:
+    - name: mysql
+      image: mysql
+      volumeMounts:
+      - mountPath: /var/lib/mysql
+        name: site-data
+        subPath: mysql
+    - name: php
+      image: php
+      volumeMounts:
+      - mountPath: /var/www/html
+        name: site-data
+        subPath: html
+    volumes:
+    - name: site-data
+      persistentVolumeClaim:
+        claimName: my-lamp-site-data
+```
+
+## FlexVolume
+
+如果内置的这些Volume不满足要求，则可以使用FlexVolume实现自己的Volume插件。注意要把volume plugin放到`/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>`，plugin要实现`init/attach/detach/mount/umount`等命令（可参考lvm的[示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/flexvolume)）。
 
 ```yaml
   - name: test
@@ -197,3 +173,17 @@ volumes:
         volumegroup: "kube_vg"
 ```
 
+## 其他的Volume参考示例
+
+- [iSCSI Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/iscsi)
+- [cephfs Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/cephfs)
+- [Flocker Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/flocker)
+- [GlusterFS Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs)
+- [RBD Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/rbd)
+- [Secret Volume示例](secret.md#将secret挂载到volume中)
+- [downwardAPI Volume示例](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
+- [AzureFileVolume示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/azure_file/README.md)
+- [AzureDiskVolume示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/azure_disk/README.md)
+- [Quobyte Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/quobyte)
+- [PortworxVolume Volume示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/portworx/README.md)
+- [ScaleIO Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio)

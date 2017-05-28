@@ -11,15 +11,111 @@ Kubernetes在设计之初就充分考虑了针对容器的服务发现与负载�
 
 ![](media/14735737093456.jpg)
 
-Service是对一组提供相同功能的Pods的抽象，并为它们提供一个统一的入口。借助Service，应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service通过标签来选取服务后端，一般配合Replication Controller或者Deployment来保证后端容器的正常运行。
+Service是对一组提供相同功能的Pods的抽象，并为它们提供一个统一的入口。借助Service，应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service通过标签来选取服务后端，一般配合Replication Controller或者Deployment来保证后端容器的正常运行。这些匹配标签的Pod IP和端口列表组成endpoints，由kube-proxy负责将服务IP负载均衡到这些endpoints上。
 
-Service有三种类型：
+Service有四种类型：
 
 - ClusterIP：默认类型，自动分配一个仅cluster内部可以访问的虚拟IP
 - NodePort：在ClusterIP基础上为Service在每台机器上绑定一个端口，这样就可以通过`<NodeIP>:NodePort`来访问该服务
 - LoadBalancer：在NodePort的基础上，借助cloud provider创建一个外部的负载均衡器，并将请求转发到`<NodeIP>:NodePort`
+- ExternalName：将服务通过DNS CNAME记录方式转发到指定的域名（通过`spec.externlName`设定）。需要kube-dns版本在1.7以上。
 
 另外，也可以将已有的服务以Service的形式加入到Kubernetes集群中来，只需要在创建Service的时候不指定Label selector，而是在Service创建好后手动为其添加endpoint。
+
+### Service定义
+
+Service的定义也是通过yaml或json，比如下面定义了一个名为nginx的服务，将服务的80端口转发到default namespace中带有标签`run=nginx`的Pod的80端口
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+  sessionAffinity: None
+  type: ClusterIP
+```
+
+```sh
+# service自动分配了Cluster IP 10.0.0.108
+$ kubectl get service nginx
+NAME      CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+nginx     10.0.0.108   <none>        80/TCP    18m
+# 自动创建的endpoint
+$ kubectl get endpoints nginx
+NAME      ENDPOINTS       AGE
+nginx     172.17.0.5:80   18m
+# Service自动关联endpoint
+$ kubectl describe service nginx
+Name:			nginx
+Namespace:		default
+Labels:			run=nginx
+Annotations:		<none>
+Selector:		run=nginx
+Type:			ClusterIP
+IP:			10.0.0.108
+Port:			<unset>	80/TCP
+Endpoints:		172.17.0.5:80
+Session Affinity:	None
+Events:			<none>
+```
+
+### 不指定Selectors的服务
+
+在创建Service的时候，也可以不指定Selectors，用来将service转发到kubernetes集群外部的服务（而不是Pod）。目前支持两种方法
+
+（1）自定义endpoint，即创建同名的service和endpoint，在endpoint中设置外部服务的IP和端口
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: my-service
+subsets:
+  - addresses:
+      - ip: 1.2.3.4
+    ports:
+      - port: 9376
+```
+
+（2）通过DNS转发，在service定义中指定externalName。此时DNS服务会给`<service-name>.<namespace>.svc.cluster.local`创建一个CNAME记录，其值为`my.database.example.com`。并且，该服务不会自动分配Cluster IP，需要通过service的DNS来访问（这种服务也称为Headless Service）。
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: my.database.example.com
+```
+
+### Headless服务
+
+Headless服务即不需要Cluster IP的服务，即在创建服务的时候指定`spec.clusterIP=None`。包括两种类型
+
+- 不指定Selectors，但设置externalName，即上面的（2），通过CNAME记录处理
+- 指定Selectors，通过DNS A记录设置后端endpoint列表
 
 ## Ingress Controller
 
@@ -62,6 +158,8 @@ spec:
 注意Ingress本身并不会自动创建负载均衡器，cluster中需要运行一个ingress controller来根据Ingress的定义来管理负载均衡器。目前社区提供了nginx和gce的参考实现。
 
 Traefik提供了易用的Ingress Controller，使用方法见<https://docs.traefik.io/user-guide/kubernetes/>。
+
+更多Ingress和Ingress Controller的介绍参见[ingress](ingress.md)。
 
 ## Service Load Balancer
 

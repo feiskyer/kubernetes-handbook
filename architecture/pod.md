@@ -12,9 +12,9 @@ Pod的特征
 - 优雅终止：Pod删除的时候先给其内的进程发送SIGTERM，等待一段时间（grace period）后才强制停止依然还在运行的进程
 - 特权容器（通过SecurityContext配置）具有改变系统配置的权限（在网络插件中大量应用）
 
-## PodSpec
+## Pod定义
 
-PodSpec描述了Pod和其内Container的运行环境以及期望状态，比如一个最简单的nginx pod可以定义为
+通过yaml或json描述Pod和其内Container的运行环境以及期望状态，比如一个最简单的nginx pod可以定义为
 
 ```yaml
 apiVersion: v1
