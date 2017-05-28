@@ -1,27 +1,82 @@
 # Service Account
 
-Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务，它不同于User account：
+Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的。它与User account不同
 
-- User account是为人设计的，而service account则是为了Pod中的进程；
+- User account是为人设计的，而service account则是为Pod中的进程调用Kubernetes API而设计；
 - User account是跨namespace的，而service account则是仅局限它所在的namespace；
-- 开启ServiceAccount（默认开启）后，每个namespace都会自动创建一个Service account，并把其secret挂载到每一个Pod中
-  - 默认ServiceAccount为default，自动关联一个访问kubernetes API的[Secret](Secret.md)
+- 每个namespace都会自动创建一个default service account
+- Token controller检测service account的创建，并为它们创建[secret](secret.md)
+- 开启ServiceAccount Admission Controller后
   - 每个Pod在创建后都会自动设置`spec.serviceAccount`为default（除非指定了其他ServiceAccout）
-  - 每个container启动后都会挂载对应的token和`ca.crt`到`/var/run/secrets/kubernetes.io/serviceaccount/`
-
-## 创建新的Service Account
+  - 验证Pod引用的service account已经存在，否则拒绝创建
+  - 如果Pod没有指定ImagePullSecrets，则把service account的ImagePullSecrets加到Pod中
+  - 每个container启动后都会挂载该service account的token和`ca.crt`到`/var/run/secrets/kubernetes.io/serviceaccount/`
 
 ```sh
-$ cat > /tmp/serviceaccount.yaml <<EOF
+$ kubectl exec nginx-3137573019-md1u2 ls /run/secrets/kubernetes.io/serviceaccount
+ca.crt
+namespace
+token
+```
+
+## 创建Service Account
+
+```sh
+$ kubectl create serviceaccount jenkins
+serviceaccount "jenkins" created
+$ kubectl get serviceaccounts jenkins -o yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: build-robot
+  creationTimestamp: 2017-05-27T14:32:25Z
+  name: jenkins
   namespace: default
-EOF
-$ kubectl create -f /tmp/serviceaccount.yaml
-serviceaccounts/build-robot
-``` 
+  resourceVersion: "45559"
+  selfLink: /api/v1/namespaces/default/serviceaccounts/jenkins
+  uid: 4d66eb4c-42e9-11e7-9860-ee7d8982865f
+secrets:
+- name: jenkins-token-l9v7v
+```
+
+自动创建的secret：
+
+```sh
+kubectl get secret jenkins-token-l9v7v -o yaml
+apiVersion: v1
+data:
+  ca.crt: (APISERVER CA BASE64 ENCODED)
+  namespace: ZGVmYXVsdA==
+  token: (BEARER TOKEN BASE64 ENCODED)
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: jenkins
+    kubernetes.io/service-account.uid: 4d66eb4c-42e9-11e7-9860-ee7d8982865f
+  creationTimestamp: 2017-05-27T14:32:25Z
+  name: jenkins-token-l9v7v
+  namespace: default
+  resourceVersion: "45558"
+  selfLink: /api/v1/namespaces/default/secrets/jenkins-token-l9v7v
+  uid: 4d697992-42e9-11e7-9860-ee7d8982865f
+type: kubernetes.io/service-account-token
+```
+
+## 添加ImagePullSecrets
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: 2015-08-07T22:02:39Z
+  name: default
+  namespace: default
+  selfLink: /api/v1/namespaces/default/serviceaccounts/default
+  uid: 052fb0f4-3d50-11e5-b066-42010af0d7b6
+secrets:
+- name: default-token-uudge
+imagePullSecrets:
+- name: myregistrykey
+```
 
 ## 授权
 
