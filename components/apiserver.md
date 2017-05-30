@@ -15,6 +15,40 @@ kube-apiserver支持同时提供https（默认监听在6443端口）和http API�
 $ kubectl --v=8 get pods
 ```
 
+## OpenAPI和Swagger
+
+通过`/swaggerapi`可以查看Swagger API，`/swagger.json`查看OpenAPI。
+
+开启`--enable-swagger-ui=true`后还可以通过`/swagger-ui`访问Swagger UI。
+
+## 访问控制
+
+Kubernetes API的每个请求都会经过多阶段的访问控制之后才会被接受，这包括认证、授权以及接纳控制（Admission Control）等。
+
+![](images/access_control.png)
+
+### 认证
+
+开启TLS时，所有的请求都需要首先认证。Kubernetes支持多种认证机制，并支持同时开启多个认证插件（只要有一个认证通过即可）。如果认证成功，则用户的`username`会传入授权模块做进一步授权验证；而对于认证失败的请求则返回HTTP 401。
+
+> **[warning] Kubernetes不管理用户**
+>
+> 虽然Kubernetes认证和授权用到了username，但Kubernetes并不直接管理用户，不能创建`user`对象，也不存储username。
+
+更多认证模块的使用方法可以参考[Kubernetes认证插件](../plugins/auth.md#认证)。
+
+### 授权
+
+认证之后的请求就到了授权模块。跟认证类似，Kubernetes也支持多种授权机制，并支持同时开启多个授权插件（只要有一个验证通过即可）。如果授权成功，则用户的请求会发送到接纳控制模块做进一步的请求验证；而对于授权失败的请求则返回HTTP 403.
+
+更多授权模块的使用方法可以参考[Kubernetes授权插件](../plugins/auth.md#授权)。
+
+### 接纳控制
+
+接纳控制（Admission Control）用来对请求做进一步的验证或添加默认参数。不同于授权和认证只关心请求的用户和操作，接纳控制还处理请求的内容，并且仅对创建、更新、删除或连接（如代理）等有效，而对读操作无效。接纳控制也支持同时开启多个插件，它们依次调用，只有全部插件都通过的请求才可以放过进入系统。
+
+更多接纳控制模块的使用方法可以参考[Kubernetes接纳控制](../plugins/admisson.md)。
+
 ## 启动apiserver示例
 
 ```sh
