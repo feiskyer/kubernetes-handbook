@@ -11,7 +11,7 @@ kube-dns为Kubernetes集群提供命名服务，作为addon的方式部署。
   - SRV record：生成`_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster.local`
 - Pod
   - A record：`pod-ip-address.my-namespace.pod.cluster.local`
-  - 指定hostname和subdomain：`hostname.custom-subdomain.default.svc.cluster.local`
+  - 指定hostname和subdomain：`hostname.custom-subdomain.default.svc.cluster.local`，如下所示
 
 ```yaml
 apiVersion: v1
@@ -31,6 +31,8 @@ spec:
     name: busybox
 ```
 
-## 参考文档
+## 启动kube-dns示例
 
-- [DNS Pods and Services](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
+```sh
+kube-dns --domain=cluster.local. --dns-port=10053 --v=2
+```
