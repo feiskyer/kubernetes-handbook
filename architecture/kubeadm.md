@@ -1,8 +1,10 @@
 # kubeadm工作原理
 
+kubeadm是Kubernetes主推的部署工具之一，正在快速迭代开发中。
+
 ## 初始化系统
 
-所有机器都需要初始化docker和kubelet。这是因为kubeadm依赖kubelet来启动Master组件，比如kube-apiserver、kube-manager-controller、kube-scheduler、kube-proxy等。
+所有机器都需要初始化容器执行引擎（如docker或frakti等）和kubelet。这是因为kubeadm依赖kubelet来启动Master组件，比如kube-apiserver、kube-manager-controller、kube-scheduler、kube-proxy等。
 
 ## 安装master
 
