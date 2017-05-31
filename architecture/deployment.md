@@ -89,7 +89,7 @@ deployment "nginx-deployment" created
 
 将kubectl的 `—record` 的flag设置为 `true`可以在annotation中记录当前命令创建或者升级了该资源。这在未来会很有用，例如，查看在每个Deployment revision中执行了哪些命令。
 
-然后立即执行`get`í将获得如下结果：
+然后立即执行`get`将获得如下结果：
 
 ```sh
 $ kubectl get deployments
@@ -167,8 +167,6 @@ UP-TO-DATE的replica的数目已经达到了配置中要求的数目。
 
 CURRENT的replica数表示Deployment管理的replica数量，AVAILABLE的replica数是当前可用的replica数量。
 
-We can run `kubectl get rs` to see that the Deployment updated the Pods by creating a new Replica Set and scaling it up to 3 replicas, as well as scaling down the old Replica Set to 0 replicas.
-
 我们通过执行`kubectl get rs`可以看到Deployment更新了Pod，通过创建一个新的Replica Set并扩容了3个replica，同时将原来的Replica Set缩容到了0个replica。
 
 ```sh
@@ -234,17 +232,17 @@ Events:
 
 如果你更新了一个的已存在并正在进行中的Deployment，每次更新Deployment都会创建一个新的Replica Set并扩容它，同时回滚之前扩容的Replica Set——将它添加到旧的Replica Set列表，开始缩容。
 
-例如，假如你创建了一个有5个`niginx:1.7.9` replica的Deployment，但是当还只有3个`nginx:1.7.9`的replica创建出来的时候你就开始更新含有5个`nginx:1.9.1` replica的Deployment。在这种情况下，Deployment会立即杀掉已创建的3个`nginx:1.7.9`的Pod，并开始创建`nginx:1.9.1`的Pod。它不会等到所有的5个`nginx:1.7.9`的Pod都创建完成后才开始改变航道。
+例如，假如你创建了一个有5个`niginx:1.7.9` replica的Deployment，但是当还只有3个`nginx:1.7.9`的replica创建出来的时候你就开始更新含有5个`nginx:1.9.1` replica的Deployment。在这种情况下，Deployment会立即杀掉已创建的3个`nginx:1.7.9`的Pod，并开始创建`nginx:1.9.1`的Pod。它不会等到所有的5个`nginx:1.7.9`的Pod都创建完成后才开始执行滚动更新。
 
 ## 回退Deployment
 
 有时候你可能想回退一个Deployment，例如，当Deployment不稳定时，比如一直crash looping。
 
-默认情况下，kubernetes会在系统中保存前两次的Deployment的rollout历史记录，以便你可以随时会退（你可以修改`revision history limit`来更改保存的revision数）。ß
+默认情况下，kubernetes会在系统中保存前两次的Deployment的rollout历史记录，以便你可以随时回退（你可以修改`revision history limit`来更改保存的revision数）。ß
 
 **注意：** 只要Deployment的rollout被触发就会创建一个revision。也就是说当且仅当Deployment的Pod template（如`.spec.template`）被更改，例如更新template中的label和容器镜像时，就会创建出一个新的revision。
 
-其他的更新，比如扩容Deployment不会创建revision——因此我们可以很方便的手动或者自动扩容。这意味着当你回退到历史revision是，直邮Deployment中的Pod template部分才会回退。
+其他的更新，比如扩容Deployment不会创建revision——因此我们可以很方便的手动或者自动扩容。这意味着当你回退到历史revision是，只有Deployment中的Pod template部分才会回退。
 
 假设我们在更新Deployment的时候犯了一个拼写错误，将镜像的名字写成了`nginx:1.91`，而正确的名字应该是`nginx:1.9.1`：
 
@@ -272,7 +270,7 @@ nginx-deployment-2035384211   0         0         0       36s
 nginx-deployment-3066724191   2         2         2       6s
 ```
 
-看下创建Pod，你会看到有两个新的呃Replica Set创建的Pod处于ImagePullBackOff状态，循环拉取镜像。
+看下创建Pod，你会看到有两个新的Replica Set创建的Pod处于ImagePullBackOff状态，循环拉取镜像。
 
 ```sh
 $ kubectl get pods
@@ -357,7 +355,7 @@ $ kubectl rollout undo deployment/nginx-deployment
 deployment "nginx-deployment" rolled back
 ```
 
-也可以使用 `--revision`参数指定某个历史版本：
+也可以使用 `--to-revision`参数指定某个历史版本：
 
 ```sh
 $ kubectl rollout undo deployment/nginx-deployment --to-revision=2
@@ -423,7 +421,7 @@ deployment "nginx-deployment" autoscaled
 
 ## 比例扩容
 
-RollingUpdate Deployment支持同时运行一个应用的多个版本。当你活着autoscaler扩容RollingUpdate Deployment的时候，正在中途的rollout（进行中或者已经暂停的），为了降低风险，Deployment controller将会平衡已存在的活动中的ReplicaSets（有Pod的ReplicaSets）和新加入的replicas。这被称为比例扩容。
+RollingUpdate Deployment支持同时运行一个应用的多个版本。当你或者autoscaler扩容一个正在rollout中（进行中或者已经暂停）的 RollingUpdate Deployment的时候，为了降低风险，Deployment controller将会平衡已存在的active的ReplicaSets（有Pod的ReplicaSets）和新加入的replicas。这被称为比例扩容。
 
 例如，你正在运行中含有10个replica的Deployment。maxSurge=3，maxUnavailable=2。
 
@@ -449,7 +447,7 @@ nginx-deployment-1989198191   5         5         0         9s
 nginx-deployment-618515232    8         8         8         1m
 ```
 
-然后发起了一个新的Deployment扩容请求。autoscaler将Deployment的repllica数目增加到了15个。Deployment controller需要判断在哪里增加这5个新的replica。如果我们没有谁用比例扩容，所有的5个replica都会加到一个新的ReplicaSet中。如果使用比例扩容，新添加的replica将传播到所有的ReplicaSet中。大的部分加入replica数最多的ReplicaSet中，小的部分加入到replica数少的ReplciaSet中。0个replica的ReplicaSet不会被扩容。
+然后发起了一个新的Deployment扩容请求。autoscaler将Deployment的repllica数目增加到了15个。Deployment controller需要判断在哪里增加这5个新的replica。如果我们没有使用比例扩容，所有的5个replica都会加到一个新的ReplicaSet中。如果使用比例扩容，新添加的replica将传播到所有的ReplicaSet中。大的部分加入replica数最多的ReplicaSet中，小的部分加入到replica数少的ReplciaSet中。0个replica的ReplicaSet不会被扩容。
 
 在我们上面的例子中，3个replica将添加到旧的ReplicaSet中，2个replica将添加到新的ReplicaSet中。rollout进程最终会将所有的replica移动到新的ReplicaSet中，假设新的replica成为健康状态。
 
@@ -465,7 +463,7 @@ nginx-deployment-618515232    11        11        11        7m
 
 ## 暂停和恢复Deployment
 
-你可以在出发一次或多次更新前暂停一个Deployment，然后再恢复它。这样你就能多次暂停和恢复Deployment，在此期间进行一些修复工作，而不会出发不必要的rollout。
+你可以在触发一次或多次更新前暂停一个Deployment，然后再恢复它。这样你就能多次暂停和恢复Deployment，在此期间进行一些修复工作，而不会触发不必要的rollout。
 
 例如使用刚刚创建Deployment：
 
@@ -579,7 +577,7 @@ $ echo $?
 
 ### Failed Deployment
 
-你的Deployment在尝试部署新的ReplicaSet的时候可能卡住，用于也不会完成。这可能是因为以下几个因素引起的：
+你的Deployment在尝试部署新的ReplicaSet的时候可能卡住，永远也不会完成。这可能是因为以下几个因素引起的：
 
 - 无效的引用
 - 不可读的probe failure
@@ -596,8 +594,6 @@ $ echo $?
 $ kubectl patch deployment/nginx-deployment -p '{"spec":{"progressDeadlineSeconds":600}}'
 "nginx-deployment" patched
 ```
-
-Once the deadline has been exceeded, the Deployment controller adds a  with the following attributes to the Deployment's
 
 当超过截止时间后，Deployment controller会在Deployment的 `status.conditions`中增加一条DeploymentCondition，它包括如下属性：
 
@@ -678,7 +674,8 @@ Conditions:
 
 ```
 
-`Type=Available`、 `Status=True` 以为这你的Deployment有最小可用性。 最小可用性是在Deployment策略中指定的参数。`Type=Progressing` 、 `Status=True`意味着你的Deployment 或者在部署过程中，或者已经成功部署，达到了期望的最少的可用replica数量（查看特定状态的Reason——在我们的例子中`Reason=NewReplicaSetAvailable` 意味着Deployment已经完成）。
+`Type=Available`、 `Status=True` 意味着你的Deployment有最小可用性。 最小可用性是在Deployment策略中指定的参数。  
+`Type=Progressing` 、 `Status=True`意味着你的Deployment 或者在部署过程中，或者已经成功部署，达到了期望的最少的可用replica数量（查看特定状态的Reason——在我们的例子中`Reason=NewReplicaSetAvailable` 意味着Deployment已经完成）。
 
 你可以使用`kubectl rollout status`命令查看Deployment进程是否失败。当Deployment过程超过了deadline，`kubectl rollout status`将返回非0的exit code。
 
@@ -692,19 +689,19 @@ $ echo $?
 
 ### 操作失败的Deployment
 
-所有对完成的Deployment的操作都适用于失败的Deployment。你可以对它阔／缩容，回退到历史版本，你甚至可以多次暂停它来应用Deployment pod template。
+所有对完成的Deployment的操作都适用于失败的Deployment。你可以对它扩／缩容，回退到历史版本，你甚至可以多次暂停它来应用Deployment pod template。
 
 ## 清理Policy
 
-你可以设置Deployment中的 `.spec.revisionHistoryLimit` 项来指定保留多少旧的ReplicaSet。 余下的将在后台被当作垃圾收集。默认的，所有的revision历史就都会被保留。在未来的版本中，将会更改为2。
+你可以设置Deployment中的 `.spec.revisionHistoryLimit` 项来指定保留多少旧的ReplicaSet。 余下的将在后台被当作垃圾收集。默认的，所有的revision历史都会被保留。在未来的版本中，将会更改为2。
 
 **注意：** 将该值设置为0，将导致所有的Deployment历史记录都会被清除，该Deploynent就无法再回退了。
 
 ## 用例
 
-### 金丝雀Deployment
+### Canary Deployment
 
-如果你想要使用Deployment对部分用户或服务器发布relaese，你可以创建多个Deployment，每个对一个release，参照[managing resources](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/cluster-administration/manage-deployment.md#canary-deployments) 中对金丝雀模式的描述。
+如果你想要使用Deployment对部分用户或服务器发布relaese，你可以创建多个Deployment，每个对一个release，参照[managing resources](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/cluster-administration/manage-deployment.md#canary-deployments) 中对canary模式的描述。
 
 ## 编写Deployment Spec
 
@@ -770,7 +767,7 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
 ### Min Ready Seconds
 
-`.spec.minReadySeconds`是一个可选配置项，用来指定没有任何容器crash的Pod并被认为是可用状态的最小秒数。默认是0（Pod在ready后就会被认为是可用状态）。进一步了解什么什么后Pod会被认为是ready状态，参阅 [Container Probes](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/pods/pod-lifecycle.md#container-probes)。
+`.spec.minReadySeconds`是一个可选配置项，用来指定没有任何容器crash的Pod并被认为是可用状态的最小秒数。默认是0（Pod在ready后就会被认为是可用状态）。进一步了解什么时候Pod会被认为是ready状态，参阅 [Container Probes](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/pods/pod-lifecycle.md#container-probes)。
 
 ### Rollback To
 
@@ -784,13 +781,13 @@ Deployment也需要 [`.spec` section](https://github.com/kubernetes/community/bl
 
 Deployment revision history存储在它控制的ReplicaSets中。
 
-`.spec.revisionHistoryLimit` 是一个可选配置项，用来指定可以保留的旧的ReplicaSet数量。该理想值取决于心Deployment的频率和稳定性。如果该值没有设置的话，默认所有旧的Replicaset或会被保留，将资源存储在etcd中，是用`kubectl get rs`查看输出。每个Deployment的该配置都保存在ReplicaSet中，然而，一旦你删除的旧的RepelicaSet，你的Deployment就无法再回退到那个revison了。
+`.spec.revisionHistoryLimit` 是一个可选配置项，用来指定可以保留的旧的ReplicaSet数量。该理想值取决于心Deployment的频率和稳定性。如果该值没有设置的话，默认所有旧的Replicaset或会被保留，将资源存储在etcd中，使用`kubectl get rs`查看输出。每个Deployment的该配置都保存在ReplicaSet中，然而，一旦你删除的旧的RepelicaSet，你的Deployment就无法再回退到那个revison了。
 
 如果你将该值设置为0，所有具有0个replica的ReplicaSet都会被删除。在这种情况下，新的Deployment rollout无法撤销，因为revision history都被清理掉了。
 
 ### Paused
 
-`.spec.paused`是可以可选配置项，boolean值。用来指定暂停和恢复Deployment。Paused和没有paused的Deployment之间的唯一区别就是，所有对paused deployment中的PodTemplateSpec的修改都不会触发新的rollout。Deployment被创建之后默认是非paused。
+`.spec.paused`是可以可选配置项，boolean值。用来指定暂停和恢复Deployment。Paused和非paused的Deployment之间的唯一区别就是，所有对paused deployment中的PodTemplateSpec的修改都不会触发新的rollout。Deployment被创建之后默认是非paused。
 
 ## Alternative to Deployments
 
