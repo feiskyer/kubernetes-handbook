@@ -49,8 +49,9 @@
 ## 插件指南
 
 - [3. 插件扩展](plugins/index.md)
-  - [3.1 认证和授权](plugins/auth.md)
-    - [RBAC](plugins/rbac.md)
+  - [3.1 访问控制](plugins/auth.md)
+    - [RBAC授权](plugins/rbac.md)
+    - [接纳控制](plugins/admission.md)
   - [3.2 网络](network/index.md)
     - [网络模型和插件](network/index.md)
     - [CNI](network/cni/index.md)
