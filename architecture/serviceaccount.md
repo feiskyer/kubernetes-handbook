@@ -80,7 +80,7 @@ imagePullSecrets:
 
 ## 授权
 
-Service Account为服务提供了一种方便的认知机制，但它不关心授权的问题。可以配合[RBAC](https://kubernetes.io/docs/admin/authorization/#a-quick-note-on-service-accounts)来为Service Account鉴权：
+Service Account为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合[RBAC](https://kubernetes.io/docs/admin/authorization/#a-quick-note-on-service-accounts)来为Service Account鉴权：
 - 配置`--authorization-mode=RBAC`和`--runtime-config=rbac.authorization.k8s.io/v1alpha1`
 - 配置`--authorization-rbac-super-user=admin`
 - 定义Role、ClusterRole、RoleBinding或ClusterRoleBinding
