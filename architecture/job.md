@@ -1,11 +1,11 @@
 # Job
 
-Job负责批处理任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个Pod成功结束。
+Job负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个Pod成功结束。
 
 Kubernetes支持以下几种Job：
 
 - 非并行Job：通常创建一个Pod直至其成功结束
-- 固定结束次数的Job：设置`.spec.completions`，创建`.spec.completions`个Pod并成功结束
+- 固定结束次数的Job：设置`.spec.completions`，创建多个Pod，直到`.spec.completions`个Pod成功结束
 - 带有工作队列的并行Job：设置`.spec.Parallelism`但不设置`.spec.completions`，当所有Pod结束并且至少一个成功时，Job就认为是成功
 
 根据`.spec.completions`和`.spec.Parallelism`的设置，可以将Job划分为以下几种pattern：
