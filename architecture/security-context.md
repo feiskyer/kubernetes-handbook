@@ -66,7 +66,7 @@ PSP需要API Server开启`extensions/v1beta1/podsecuritypolicy`，并且配置`P
 |runAsUser|user ID|
 |supplementalGroups|允许的补充用户组|
 |fsGroup|volume FSGroup|
-|readOnlyRootFilesystem|只读跟文件系统|
+|readOnlyRootFilesystem|只读根文件系统|
 
 ### 示例
 
