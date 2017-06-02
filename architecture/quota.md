@@ -4,7 +4,7 @@
 
 它的工作原理为
 
-- 资源配额应用在Namespace上，并且每个Namespace之多只能有一个`ResourceQuota`对象
+- 资源配额应用在Namespace上，并且每个Namespace最多只能有一个`ResourceQuota`对象
 - 开启计算资源配额后，创建容器时必须配置计算资源请求或限制（也可以用[LimitRange](https://kubernetes.io/docs/tasks/administer-cluster/cpu-memory-limit/)设置默认值）
 - 用户超额后禁止创建新的资源
 
