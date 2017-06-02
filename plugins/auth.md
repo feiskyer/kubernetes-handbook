@@ -138,6 +138,8 @@ Kubernetes发给webhook server的请求格式为
 }
 ```
 
+示例：[kubernetes-github-authn](https://github.com/oursky/kubernetes-github-authn)实现了一个基于WebHook的github认证。
+
 ### 认证代理
 
 API Server需要配置
@@ -264,3 +266,4 @@ API Server请求Webhook server的格式为
   }
 }
 ```
+
