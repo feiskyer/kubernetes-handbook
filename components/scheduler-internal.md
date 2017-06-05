@@ -48,7 +48,7 @@ For given pod:
 
 kube-scheduler调度分为两个阶段，predicate和priority
 
-- predicate：删选符合条件的节点
+- predicate：过滤不符合条件的节点
 - priority：优先级排序，选择优先级最高的节点
 
 predicates策略
