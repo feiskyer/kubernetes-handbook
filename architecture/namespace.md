@@ -6,7 +6,7 @@ Namespace常用来隔离不同的用户，比如Kubernetes自带的服务一般�
 
 ## Namespace操作
 
-> `kubectl`可以通过`--namespace`或者`-n`选项指定namespace。如果不指定，默认为default。
+> `kubectl`可以通过`--namespace`或者`-n`选项指定namespace。如果不指定，默认为default。查看操作下,也可以通过设置--all-namespace=true来查看所有namespace下的资源。
 
 ### 查询
 
@@ -17,17 +17,29 @@ default       Active    11d
 kube-system   Active    11d
 ```
 
+注意：namespace包含两种状态"Active"和"Terminating"。在namespace删除过程中，namespace状态被设置成"Terminating"。
+
+
 ### 创建
 
 ```sh
+(1) 命令行直接创建
+$ kubectl create namespace new-namespace
+    
+(2) 通过文件创建
 $ cat my-namespace.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
   name: new-namespace
-
+    
 $ kubectl create -f ./my-namespace.yaml
+
 ```
+
+注意：命名空间名称满足正则表达式`[a-z0-9]([-a-z0-9]*[a-z0-9])?`,最大长度为63位
+
+
 
 ### 删除
 
@@ -35,4 +47,5 @@ $ kubectl create -f ./my-namespace.yaml
 $ kubectl delete namespaces new-namespace
 ```
 
-注意，删除一个namespace会自动删除所有属于该namespace的资源。
+注意： 1、删除一个namespace会自动删除所有属于该namespace的资源。
+       2、 `default`和`kube-system`命名空间不可删除。
