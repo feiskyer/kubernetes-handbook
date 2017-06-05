@@ -47,5 +47,7 @@ $ kubectl create -f ./my-namespace.yaml
 $ kubectl delete namespaces new-namespace
 ```
 
-注意： 1、删除一个namespace会自动删除所有属于该namespace的资源。
-       2、 `default`和`kube-system`命名空间不可删除。
+注意：
+
+1. 删除一个namespace会自动删除所有属于该namespace的资源。
+2. `default`和`kube-system`命名空间不可删除。
