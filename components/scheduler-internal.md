@@ -79,12 +79,12 @@ priorities策略
 - NodePreferAvoidPodsPriority：alpha.kubernetes.io/preferAvoidPods字段判断,权重为10000，避免其他优先级策略的影响
 - NodeAffinityPriority：优先调度到匹配NodeAffinity的节点上
 - TaintTolerationPriority：优先调度到匹配TaintToleration的节点上
-- ServiceSpreadingPriority：尽量将同一个service的Pod分布到不同节点上，已经被SelectorSpreadPriority替换[默认未使用]
+- ServiceSpreadingPriority：尽量将同一个service的Pod分布到不同节点上，已经被SelectorSpreadPriority替代[默认未使用]
 - EqualPriority：将所有节点的优先级设置为1[默认未使用]
 - ImageLocalityPriority：尽量将使用大镜像的容器调度到已经下拉了该镜像的节点上[默认未使用]
 - MostRequestedPriority：尽量调度到已经使用过的Node上，特别适用于cluster-autoscaler[默认未使用]
 
-> **代码入口路径**
+> ** [warning] 代码入口路径**
 >
 > 与Kubernetes其他组件的入口不同(其他都是位于`cmd/`目录)，kube-schedular的入口在`plugin/cmd/kube-scheduler`。
 >
