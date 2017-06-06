@@ -48,7 +48,9 @@ spec:
 
 ## Pod Security Policies（PSP）
 
-PSP需要API Server开启`extensions/v1beta1/podsecuritypolicy`，并且配置`PodSecurityPolicy` admission控制器。
+Pod Security Policies（PSP）是集群级的Pod安全策略，应用到集群内部所有Pod以及Volume。
+
+使用PSP需要API Server开启`extensions/v1beta1/podsecuritypolicy`，并且配置`PodSecurityPolicy` admission控制器。
 
 ### 支持的控制项
 

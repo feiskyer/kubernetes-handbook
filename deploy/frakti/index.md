@@ -1,23 +1,5 @@
 # Frakti运行时部署指南
 
-<!-- TOC -->
-
-- [Frakti运行时部署指南](#frakti运行时部署指南)
-    - [简介](#简介)
-    - [Allinone安装方法](#allinone安装方法)
-    - [集群部署](#集群部署)
-        - [安装hyperd](#安装hyperd)
-        - [安装docker](#安装docker)
-        - [安装frakti](#安装frakti)
-        - [安装CNI](#安装cni)
-        - [安装Kubelet](#安装kubelet)
-        - [配置Master](#配置master)
-        - [配置Node](#配置node)
-        - [配置CNI网络路由](#配置cni网络路由)
-    - [参考文档](#参考文档)
-
-<!-- /TOC -->
-
 ## 简介
 
 Frakti是一个基于Kubelet CRI的运行时，它提供了hypervisor级别的隔离性，特别适用于运行不可信应用以及多租户场景下。Frakti实现了一个混合运行时：

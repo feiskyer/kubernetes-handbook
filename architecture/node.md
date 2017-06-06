@@ -41,15 +41,16 @@ Node是Pod真正运行的主机，可以物理机，也可以是虚拟机。为�
 
 ## Taints和tolerations
 
-Taints和tolerations用于保证Pod不被调度到不合适的Node上，Taint应用于Node上，而toleration则应用于Pod上；Toleration是可选的。
+Taints和tolerations用于保证Pod不被调度到不合适的Node上，Taint应用于Node上，而toleration则应用于Pod上（Toleration是可选的）。
 
-比如，假设node1上应用以下几个taint
+比如，可以使用taint命令给node1添加taints：
 
 ```sh
 kubectl taint nodes node1 key1=value1:NoSchedule
-kubectl taint nodes node1 key1=value1:NoExecute
-kubectl taint nodes node1 key2=value2:NoSchedule
+kubectl taint nodes node1 key1=value2:NoExecute
 ```
+
+Taints和tolerations的具体使用方法请参考[调度器章节](../components/scheduler.md#Taints和tolerations)。
 
 ## Node维护模式
 
