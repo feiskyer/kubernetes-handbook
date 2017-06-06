@@ -64,9 +64,108 @@ spec:
 
 注意，这里的重启是指在Pod所在Node上面本地重启，并不会调度到其他Node上去。
 
+## 环境变量
+
+环境变量为容器提供了一些重要的资源，包括容器和Pod的基本信息以及集群中服务的信息等：
+
+(1) hostname
+
+`HOSTNAME`环境变量保存了该Pod的hostname。
+
+（2）容器和Pod的基本信息
+
+Pod的名字、命名空间、IP以及容器的计算资源限制等可以以[Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)的方式获取并存储到环境变量中。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "sh", "-c"]
+      args:
+      - env
+      resources:
+        requests:
+          memory: "32Mi"
+          cpu: "125m"
+        limits:
+          memory: "64Mi"
+          cpu: "250m"
+      env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MY_POD_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        - name: MY_CPU_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: test-container
+              resource: requests.cpu
+        - name: MY_CPU_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: test-container
+              resource: limits.cpu
+        - name: MY_MEM_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: test-container
+              resource: requests.memory
+        - name: MY_MEM_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: test-container
+              resource: limits.memory
+  restartPolicy: Never
+```
+
+(3) 集群中服务的信息
+
+容器的环境变量中还包括了容器运行前创建的所有服务的信息，比如默认的kubernetes服务对应了环境变量
+
+```
+KUBERNETES_PORT_443_TCP_ADDR=10.0.0.1
+KUBERNETES_SERVICE_HOST=10.0.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.0.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.0.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+```
+
+由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用[DNS](../components/kube-dns.md)来解析服务。
+
 ## 资源限制
 
-Kubernetes通过cgroups提供容器资源管理的功能，可以限制每个容器的CPU和内存使用等。比如限制nginx容器最多只用50%的CPU和128MB的内存：
+Kubernetes通过cgroups限制容器的CPU和内存等计算资源，包括requests（请求，调度器保证调度到资源充足的Node上）和limits（上限）等：
+
+- `spec.containers[].resources.limits.cpu`：CPU上限，可以短暂超过，容器也不会被停止
+- `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被停止或调度到其他资源充足的机器上
+- `spec.containers[].resources.requests.cpu`：CPU请求，可以超过
+- `spec.containers[].resources.requests.memory`：内存请求，可以超过；但如果超过，容器可能会在Node内存不足时清理
+
+比如nginx容器请求30%的CPU和56MB的内存，但限制最多只用50%的CPU和128MB的内存：
 
 ```yaml
 apiVersion: v1
@@ -80,16 +179,19 @@ spec:
     - image: nginx
       name: nginx
       resources:
+        requests:
+          cpu: "300m"
+          memory: "56Mi"
         limits:
           cpu: "500m"
           memory: "128Mi"
 ```
 
-注意，CPU的单位是milicpu，500mcpu=0.5cpu；而内存单位包括E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki等。
+注意，CPU的单位是milicpu，500mcpu=0.5cpu；而内存的单位则包括E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki等。
 
 ## 健康检查
 
-为了确保容器在部署后确实处在正常运行状态，Kubernetes提供了两种探针（Probe，支持exec、tcp和http方式）来探测容器的状态：
+为了确保容器在部署后确实处在正常运行状态，Kubernetes提供了两种探针（Probe，支持exec、tcp和httpGet方式）来探测容器的状态：
 
 - LivenessProbe：探测应用是否处于健康状态，如果不健康则删除重建改容器
 - ReadinessProbe：探测应用是否启动完成并且处于正常服务状态，如果不正常则更新容器的状态
@@ -163,12 +265,19 @@ spec:
     emptyDir: {}
 ```
 
-## Hooks
+## 容器生命周期钩子
 
-支持两种Hook：
+容器生命周期钩子（Container Lifecycle Hooks）监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数。支持两种钩子：
 
-- postStart： 容器启动后执行，注意由于是异步执行，它无法保证一定在ENTRYPOINT之后运行
-- preStop：容器停止前执行，常用于资源清理
+- postStart： 容器启动后执行，注意由于是异步执行，它无法保证一定在ENTRYPOINT之后运行。如果失败，容器会被杀死，并根据RestartPolicy决定是否重启
+- preStop：容器停止前执行，常用于资源清理。如果失败，容器同样也会被杀死
+
+而钩子的回调函数支持两种方式：
+
+- exec：在容器内执行命令
+- httpGet：向指定URL发起GET请求
+
+postStart和preStop钩子示例：
 
 ```yaml
 apiVersion: v1
@@ -239,6 +348,48 @@ spec:
         drop:
         - KILL
 ```
+
+## 限制网络带宽
+
+可以通过给Pod增加`kubernetes.io/ingress-bandwidth`和`kubernetes.io/egress-bandwidth`这两个annotation来限制Pod的网络带宽
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: qos
+  annotations:
+    kubernetes.io/ingress-bandwidth: 3M
+    kubernetes.io/egress-bandwidth: 4M
+spec:
+  containers:
+  - name: iperf3
+    image: networkstatic/iperf3
+    command:
+    - iperf3
+    - -s
+```
+
+> **[warning] 仅kubenet支持限制带宽**
+>
+> 目前只有kubenet网络插件支持限制网络带宽，其他CNI网络插件暂不支持这个功能。
+
+kubenet的网络带宽限制其实是通过tc来实现的
+
+```sh
+# setup qdisc (only once)
+tc qdisc add dev cbr0 root handle 1: htb default 30
+# download rate
+tc class add dev cbr0 parent 1: classid 1:2 htb rate 3Mbit
+tc filter add dev cbr0 protocol ip parent 1:0 prio 1 u32 match ip dst 10.1.0.3/32 flowid 1:2
+# upload rate
+tc class add dev cbr0 parent 1: classid 1:3 htb rate 4Mbit
+tc filter add dev cbr0 protocol ip parent 1:0 prio 1 u32 match ip src 10.1.0.3/32 flowid 1:3
+```
+
+## 调度到指定的Node上
+
+可以通过nodeSelector、nodeAffinity、podAffinity以及Taints和tolerations等来将Pod调度到需要的Node上。具体使用方法请参考[调度器章节](../components/scheduler.md)。
 
 ## 参考文档
 
