@@ -80,6 +80,7 @@
       - [负载测试](practice/service-discovery-lb/distributed-load-test.md)
       - [网络测试](practice/service-discovery-lb/network-and-cluster-perfermance-test.md)
       - [边缘节点配置](practice/service-discovery-lb/edge-node-configuration.md)
+    - [minikube Ingress](practice/minikube-ingress.md)
   - [4.7 Cloud Provider](plugins/cloud-provider.md)
   - [4.8 Scheduler扩展](plugins/scheduler.md)
 

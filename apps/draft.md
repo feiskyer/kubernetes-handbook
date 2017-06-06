@@ -12,7 +12,7 @@ Draft主要由三个命令组成
 
 由于Draft需要构建镜像并部署应用到Kubernetes集群，因而在安装Draft之前需要
 
-- 部署一个Kubernetes集群，部署方法可以参考[kubernetes部署方法](../deploy/index.md)（注意minikube的支持还有问题，暂时不要使用[minikube](../deploy/single.md)集群）
+- 部署一个Kubernetes集群，部署方法可以参考[kubernetes部署方法](../deploy/index.md)
 - 安装并初始化helm（需要v2.4.x版本，并且不要忘记运行`helm init`），具体步骤可以参考[helm使用方法](helm-app.md)
 - 注册docker registry账号，比如[Docker Hub](https://hub.docker.com/)或[Quay.io](https://quay.io/)
 - 配置Ingress Controller并在DNS中设置通配符域`*`的A记录（如`*.draft.example.com`）到Ingress IP地址。最简单的Ingress Controller创建方式是使用helm：
@@ -23,6 +23,10 @@ $ helm install stable/nginx-ingress --namespace=kube-system --name=nginx-ingress
 # 等待ingress controller配置完成，并记下外网IP
 $ kubectl --namespace kube-system get services -w nginx-ingress-nginx-ingress-controller
 ```
+
+> **[info] minikube Ingress Controller**
+>
+> minikube中配置和使用Ingress Controller的方法可以参考[这里](../practice/minikube-ingress.md)。
 
 初始化好Kubernetes集群和Helm后，可以在[这里](https://github.com/Azure/draft/blob/master/docs/install.md)下载draft二进制文件，并配置draft
 
