@@ -54,6 +54,31 @@ spec:
 
 更多挂载存储卷的方法参考[Volume](volume.md)。
 
+## 私有镜像
+
+在使用私有镜像时，需要创建一个docker registry secret，并在容器中引用。
+
+创建docker registry secret：
+
+```sh
+kubectl create secret docker-registry regsecret --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+```
+
+容器中引用该secret：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: private-reg
+spec:
+  containers:
+    - name: private-reg-container
+      image: <your-private-image>
+  imagePullSecrets:
+    - name: regsecret
+```
+
 ## RestartPoliy
 
 支持三种RestartPolicy
