@@ -5,6 +5,7 @@
   - [kubeadm](kubeadm.md)
   - [frakti](frakti/index.md)
   - [证书生成示例](certificate.md)
+- [kubectl客户端](kubectl.md)
 - [在CentOS上部署kubernetes1.6集群](centos/install-kbernetes1.6-on-centos.md)
   - [(1) 创建TLS证书和秘钥](centos/create-tls-and-secret-key.md)
   - [(2) 创建kubeconfig 文件](centos/create-kubeconfig.md)
