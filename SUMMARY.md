@@ -58,11 +58,12 @@
     - [kubeadm](deploy/kubeadm.md)
     - [Frakti+Hyper](deploy/frakti/index.md)
     - [CentOS手动部署](https://github.com/feiskyer/kubernetes-handbook/blob/master/deploy/centos/install-kbernetes1.6-on-centos.md)
-  - [4.3 附加组件](addons/index.md)
+  - [4.3 kubectl客户端](deploy/kubectl.md)
+  - [4.4 附加组件](addons/index.md)
     - [Dashboard](addons/dashboard.md)
     - [Heapster](addons/heapster.md)
     - [EFK](addons/efk.md)
-  - [4.4 推荐配置](deploy/kubernetes-configuration-best-practice.md)
+  - [4.5 推荐配置](deploy/kubernetes-configuration-best-practice.md)
 
 ## 插件指南
 
@@ -105,6 +106,7 @@
   - [6.3 Draft](apps/draft.md)
   - [6.4 Operator](apps/operator.md)
   - [6.5 Deis workflow](apps/deis.md)
+  - [6.6 Kompose](apps/kompose.md)
 - [7. 实践案例](practice/index.md)
   - [7.1 监控](monitor/index.md)
   - [7.2 日志](deploy/logging.md)
