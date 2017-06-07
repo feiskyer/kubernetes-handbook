@@ -173,6 +173,48 @@ spec:
         volumegroup: "kube_vg"
 ```
 
+## Projected
+
+Projected volume将多个Volume源映射到同一个目录中，支持secret、downwardAPI和configMap。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-test
+spec:
+  containers:
+  - name: container-test
+    image: busybox
+    volumeMounts:
+    - name: all-in-one
+      mountPath: "/projected-volume"
+      readOnly: true
+  volumes:
+  - name: all-in-one
+    projected:
+      sources:
+      - secret:
+          name: mysecret
+          items:
+            - key: username
+              path: my-group/my-username
+      - downwardAPI:
+          items:
+            - path: "labels"
+              fieldRef:
+                fieldPath: metadata.labels
+            - path: "cpu_limit"
+              resourceFieldRef:
+                containerName: container-test
+                resource: limits.cpu
+      - configMap:
+          name: myconfigmap
+          items:
+            - key: config
+              path: my-group/my-config
+```
+
 ## 其他的Volume参考示例
 
 - [iSCSI Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/iscsi)
