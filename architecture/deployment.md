@@ -490,7 +490,7 @@ $ kubectl set image deploy/nginx nginx=nginx:1.9.1
 deployment "nginx-deployment" image updated
 ```
 
-注意新的rollout启动了：
+注意没有启动新的rollout：
 
 ```sh
 $ kubectl rollout history deploy/nginx
