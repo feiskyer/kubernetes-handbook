@@ -108,10 +108,13 @@
   - [6.5 Deis workflow](apps/deis.md)
   - [6.6 Kompose](apps/kompose.md)
 - [7. 实践案例](practice/index.md)
-  - [7.1 监控](monitor/index.md)
-  - [7.2 日志](deploy/logging.md)
-  - [7.3 高可用](practice/ha.md)
-  - [7.4 调试](practice/debugging.md)
+  - [监控](monitor/index.md)
+  - [日志](deploy/logging.md)
+  - [高可用](practice/ha.md)
+  - [调试](practice/debugging.md)
+  - [端口映射](practice/portmap.md)
+  - [端口转发](practice/portforward.md)
+  - [GPU](practice/gpu.md)
 
 ## 开发与社区贡献
 
