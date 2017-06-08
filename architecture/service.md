@@ -117,6 +117,14 @@ Headless服务即不需要Cluster IP的服务，即在创建服务的时候指�
 - 不指定Selectors，但设置externalName，即上面的（2），通过CNAME记录处理
 - 指定Selectors，通过DNS A记录设置后端endpoint列表
 
+### 保留源IP
+
+各种类型的Service对源IP的处理方法不同：
+
+- ClusterIP Service：使用iptables模式，集群内部的源IP会保留（不做SNAT）。如果client和server pod在同一个Node上，那源IP就是client pod的IP地址；如果在不同的Node上，源IP则取决于网络插件是如何处理的，比如使用flannel时，源IP是node flannel IP地址。
+- NodePort Service：源IP会做SNAT，server pod看到的源IP是Node IP。为了避免这种情况，可以给service加上annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`，让service只代理本地endpoint的请求（如果没有本地endpoint则直接丢包），从而保留源IP。
+- LoadBalancer Service：源IP会做SNAT，server pod看到的源IP是Node IP。在GKE/GCE中，添加annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`后可以自动从负载均衡器中删除没有本地endpoint的Node。
+
 ## Ingress Controller
 
 Service虽然解决了服务发现和负载均衡的问题，但它在使用上还是有一些限制，比如
