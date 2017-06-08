@@ -12,6 +12,8 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
 
 ## 示例
 
+下面的例子展示了bridge+[portmap](https://github.com/containernetworking/plugins/tree/master/plugins/meta/portmap)插件的用法。
+
 ```
 # cat /root/mynet.conflist
 {
@@ -95,11 +97,3 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
 ```
 # CNI_PATH=/opt/cni/bin NETCONFPATH=/root ./cnitool del mynet /var/run/netns/test
 ```
-
-## 相关PR
-
-* https://github.com/containernetworking/cni/pull/440
-* https://github.com/containernetworking/plugins/pull/1
-* https://github.com/kubernetes/kubernetes/pull/42202 (merged)
-* https://github.com/containernetworking/cni/pull/420
-* https://github.com/containernetworking/cni/pull/420
