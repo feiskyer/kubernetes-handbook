@@ -8,6 +8,10 @@ ThirdPartyResources是一种无需改变代码就可以扩展Kubernetes API的�
 - versions：版本列表
 - 其他：还可以保护任何其他自定义的属性
 
+> **[warning] ThirdPartyResources将在v1.7弃用**
+>
+> ThirdPartyResources将在v1.7弃用，并在未来版本中删除。建议从v1.7开始，迁移到[CustomResourceDefinition](https://github.com/kubernetes/kubernetes.github.io/blob/release-1.7/docs/tasks/access-kubernetes-api/extend-api-custom-resource-definitions.md)。
+
 下面的例子会创建一个`/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/...`的API
 
 ```sh
