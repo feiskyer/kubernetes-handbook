@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/gitbook
+    docker:
+      - image: node
+    steps:
+      - checkout
+      - run:
+          name: install-cli
+          command: npm install gitbook-cli -g
+      - run:
+          name: install-gitbook
+          command: gitbook install
+      - run:
+          name: build
+          command: gitbook build
+      - store_artifacts:
+          path: _book
+
