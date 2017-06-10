@@ -1,12 +1,13 @@
 # Kargo 集群安裝
-[Kargo](https://github.com/kubernetes-incubator/kargo) 是 Kubernetes incubator 中的项目，目标是提供 Production Ready Kubernetes 部署方案，该项目基础是透过 Ansible Playbook 来定义系统与 Kubernetes 集群部署的任务，现在 Kargo 有以下几个特点：
 
-* 可以部署在 AWS, GCE, Azure, OpenStack 與裸机.
+[Kargo](https://github.com/kubernetes-incubator/kargo) 是 Kubernetes incubator 中的项目，目标是提供 Production Ready Kubernetes 部署方案，该项目基础是通过 Ansible Playbook 来定义系统与 Kubernetes 集群部署的任务，具有以下几个特点：
+
+* 可以部署在 AWS, GCE, Azure, OpenStack以及裸机上.
 * 部署 High Available Kubernetes 集群.
 * 可组合性(Composable)，可自行选择 Network Plugin (flannel, calico, canal, weave) 来部署.
 * 支持多种 Linux distributions(CoreOS, Debian Jessie, Ubuntu 16.04, CentOS/RHEL7).
 
-本篇将说明如何透过 Kargo 部署 Kubernetes 至裸机节点，安装版本如下所示：
+本篇将说明如何通过 Kargo 部署 Kubernetes 至裸机节点，安装版本如下所示：
 
 * Kubernetes v1.6.1
 * Etcd v3.1.6
@@ -26,6 +27,7 @@
 > 这边 master 为主要控制节点，node 为工作节点。
 
 ## 预先准备资讯
+
 * 所有节点的网路之间可以互相通信。
 * `部署节点(这边为 master1)`对其他节点不需要 SSH 密码即可登入。
 * 所有节点都拥有 Sudoer 权限，并且不需要输入密码。
@@ -49,7 +51,7 @@ $ sudo apt-get update && sudo apt-get install -y ansible git cowsay python-pip p
 ```
 
 ##安装 Kargo 与准备部署资讯
-首先透过 pypi 安装 kargo-cli，虽然官方说已经改成 Go 语言版本的工具，但是根本没在更新，所以目前暂时用 pypi 版本：
+首先通过 pypi 安装 kargo-cli，虽然官方说已经改成 Go 语言版本的工具，但是根本没在更新，所以目前暂时用 pypi 版本：
 ```sh
 $ sudo pip install -U kargo
 ```
@@ -71,7 +73,7 @@ $ cat ~/.kargo/inventory/inventory.cfg
 ```
 > 也可以自己新建`inventory`来描述部署节点。
 
-完成后透过以下指令进行部署 Kubernetes 集群：
+完成后通过以下指令进行部署 Kubernetes 集群：
 ```sh
 $ time kargo deploy --verbose -u root -k .ssh/id_rsa -n flannel
 Run kubernetes cluster deployment with the above command ? [Y/n]y
