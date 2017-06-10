@@ -48,7 +48,7 @@ spec:
 
 ## Pod Security Policies（PSP）
 
-Pod Security Policies（PSP）是集群级的Pod安全策略，应用到集群内部所有Pod以及Volume。
+Pod Security Policies（PSP）是集群级的Pod安全策略，自动为集群内的Pod和Volume设置Security Context。
 
 使用PSP需要API Server开启`extensions/v1beta1/podsecuritypolicy`，并且配置`PodSecurityPolicy` admission控制器。
 
@@ -93,4 +93,72 @@ spec:
     max: 8080
   volumes:
   - '*'
+```
+
+## SELinux
+
+SELinux (Security-Enhanced Linux) 是一种强制访问控制（mandatory access control）的实现。它的作法是以最小权限原则（principle of least privilege）为基础，在Linux核心中使用Linux安全模块（Linux Security Modules）。SELinux主要由美国国家安全局开发，并于2000年12月22日发行给开放源代码的开发社区。
+
+可以通过runcon来为进程设置安全策略，ls和ps的-Z参数可以查看文件或进程的安全策略。
+
+### 开启与关闭SELinux
+
+修改/etc/selinux/config文件方法：
+
+- 开启：SELINUX=enforcing
+- 关闭：SELINUX=disabled
+
+通过命令临时修改：
+
+- 开启：setenforce 1
+- 关闭：setenforce 0
+
+查询SELinux状态：
+
+```
+$ getenforce
+```
+
+### 示例
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-world
+spec:
+  containers:
+  - image: gcr.io/google_containers/busybox:1.24
+    name: test-container
+    command:
+    - sleep
+    - "6000"
+    volumeMounts:
+    - mountPath: /mounted_volume
+      name: test-volume
+  restartPolicy: Never
+  hostPID: false
+  hostIPC: false
+  securityContext:
+    seLinuxOptions:
+      level: "s0:c2,c3"
+  volumes:
+  - name: test-volume
+    emptyDir: {}
+```
+
+这会自动给docker容器生成如下的`HostConfig.Binds`:
+
+```
+/var/lib/kubelet/pods/f734678c-95de-11e6-89b0-42010a8c0002/volumes/kubernetes.io~empty-dir/test-volume:/mounted_volume:Z
+/var/lib/kubelet/pods/f734678c-95de-11e6-89b0-42010a8c0002/volumes/kubernetes.io~secret/default-token-88xxa:/var/run/secrets/kubernetes.io/serviceaccount:ro,Z
+/var/lib/kubelet/pods/f734678c-95de-11e6-89b0-42010a8c0002/etc-hosts:/etc/hosts
+```
+
+对应的volume也都会正确设置SELinux：
+
+```
+$ ls -Z /var/lib/kubelet/pods/f734678c-95de-11e6-89b0-42010a8c0002/volumes
+drwxr-xr-x. root root unconfined_u:object_r:svirt_sandbox_file_t:s0:c2,c3 kubernetes.io~empty-dir
+drwxr-xr-x. root root unconfined_u:object_r:svirt_sandbox_file_t:s0:c2,c3 kubernetes.io~secret
 ```
