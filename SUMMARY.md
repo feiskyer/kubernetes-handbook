@@ -116,6 +116,7 @@
   - [端口映射](practice/portmap.md)
   - [端口转发](practice/portforward.md)
   - [GPU](practice/gpu.md)
+  - [容器安全](practice/security.md)
 
 ## 开发与社区贡献
 
