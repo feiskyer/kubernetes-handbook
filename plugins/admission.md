@@ -16,7 +16,7 @@ Kubernetes目前提供了以下几种准入控制插件
 - LimitRanger：为Pod设置默认资源请求和限制，需要在namespace中创建一个LimitRange对象
 - InitialResources：根据镜像的历史使用记录，为容器设置默认资源请求和限制
 - NamespaceLifecycle：确保处于termination状态的namespace不再接收新的对象创建请求，并拒绝请求不存在的namespace
-- DefaultStorageClass：为PVC设置默认StorageClass（见[这里](../architecture/persistent-volume.md#StorageClass)
+- DefaultStorageClass：为PVC设置默认StorageClass（见[这里](../concepts/persistent-volume.md#StorageClass)
 - DefaultTolerationSeconds：设置Pod的默认forgiveness toleration为5分钟
 - PodSecurityPolicy：使用Pod Security Policies时必须开启
 

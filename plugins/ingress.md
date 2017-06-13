@@ -1,6 +1,6 @@
 # Ingress Controller扩展
 
-[Ingress](../architecture/ingress.md)为Kubernetes集群中的服务提供了外部入口以及路由，而Ingress Controller监测Ingress和Service资源的变更并并根据规则配置负载均衡和提供访问入口。
+[Ingress](../concepts/ingress.md)为Kubernetes集群中的服务提供了外部入口以及路由，而Ingress Controller监测Ingress和Service资源的变更并并根据规则配置负载均衡和提供访问入口。
 
 ## 如何开发Ingress Controller扩展
 
@@ -19,4 +19,4 @@
 
 ## Ingress使用方法
 
-具体Ingress的使用方法可以参考[这里](../architecture/ingress.md)。
+具体Ingress的使用方法可以参考[这里](../concepts/ingress.md)。

@@ -9,3 +9,5 @@
 - [Kubernetes the hard way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
 - [Kubernetes Bootcamp](https://kubernetesbootcamp.github.io/kubernetes-bootcamp/index.html)
 - [Design patterns for container-based distributed systems](https://www.usenix.org/system/files/conference/hotcloud16/hotcloud16_burns.pdf)
+- [Awesome Kubernetes](https://github.com/ramitsurana/awesome-kubernetes)
+- [Awesome Docker](https://github.com/veggiemonk/awesome-docker)

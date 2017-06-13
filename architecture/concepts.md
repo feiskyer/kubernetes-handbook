@@ -112,6 +112,6 @@ K8s在1.3版本中发布了alpha版的基于角色的访问控制（Role-based A
 
 从K8s的系统架构、技术概念和设计理念，我们可以看到K8s系统最核心的两个设计理念：一个是**容错性**，一个是**易扩展性**。容错性实际是保证K8s系统稳定性和安全性的基础，易扩展性是保证K8s对变更友好，可以快速迭代增加新功能的基础。
 
+## 参考文档
 
-\[1\] [http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01](http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01)
-
+* [Kubernetes与云原生应用](http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01)

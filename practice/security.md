@@ -10,7 +10,7 @@ Kubernetes提供了多种机制来限制容器的行为，减少容器攻击面�
 
 ## Security Context和Pod Security Policy
 
-请参考[这里](../architecture/security-context.md)。
+请参考[这里](../concepts/security-context.md)。
 
 ## Sysctls
 

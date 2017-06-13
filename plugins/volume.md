@@ -1,6 +1,6 @@
 # Volume插件扩展
 
-Kubernetes已经提供丰富的[Volume](../architecture/volume.md)和[Persistent Volume](../architecture/persistent-volume.md)插件，可以根据需要使用这些插件给容器提供持久化存储。
+Kubernetes已经提供丰富的[Volume](../concepts/volume.md)和[Persistent Volume](../concepts/persistent-volume.md)插件，可以根据需要使用这些插件给容器提供持久化存储。
 
 如果内置的这些Volume还不满足要求，则可以使用FlexVolume实现自己的Volume插件。
 

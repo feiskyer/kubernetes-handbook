@@ -24,7 +24,6 @@ kubeadm init kubeadm init --pod-network-cidr 10.244.0.0/16 --kubernetes-version 
 - 配置RBAC并设置Master node只运行控制平面组件
 - 创建附加服务，比如kube-proxy和kube-dns
 
-
 ## 配置Network plugin
 
 kubeadm在初始化时并不关心网络插件，默认情况下，kubelet配置使用CNI插件，这样就需要用户来额外初始化网络插件。
@@ -99,4 +98,3 @@ kubeadm reset
 ## 参考文档
 
 - [kubeadm Setup Tool](https://kubernetes.io/docs/admin/kubeadm/)
-

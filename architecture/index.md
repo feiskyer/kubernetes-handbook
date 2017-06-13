@@ -10,7 +10,7 @@ Borg是谷歌内部的大规模集群管理系统，负责对谷歌内部很多�
 
 Borg主要由BorgMaster、Borglet、borgcfg和Scheduler组成，如下图所示
 
-![borg](media/borg.png)
+![borg](images/borg.png)
 
 * BorgMaster是整个集群的大脑，负责维护整个集群的状态，并将数据持久化到Paxos存储中；
 * Scheduer负责任务的调度，根据应用的特点将其调度到具体的机器上去；
@@ -21,7 +21,7 @@ Borg主要由BorgMaster、Borglet、borgcfg和Scheduler组成，如下图所示
 
 Kubernetes借鉴了Borg的设计理念，比如Pod、Service、Labels和单Pod单IP等。Kubernetes的整体架构跟Borg非常像，如下图所示
 
-![architecture](media/architecture.png)
+![architecture](images/architecture.png)
 
 Kubernetes主要由以下几个核心组件组成： 
 
