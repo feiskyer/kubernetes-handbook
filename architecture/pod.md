@@ -231,22 +231,15 @@ metadata:
 spec:
     containers:
     - image: nginx
-    imagePullPolicy: Always
-    name: http
-    resources: {}
-    terminationMessagePath: /dev/termination-log
-    terminationMessagePolicy: File
-    resources:
-        limits:
-        cpu: "500m"
-        memory: "128Mi"
-    livenessProbe:
+      imagePullPolicy: Always
+      name: http
+      livenessProbe:
         httpGet:
         path: /
         port: 80
         initialDelaySeconds: 15
         timeoutSeconds: 1
-    readinessProbe:
+      readinessProbe:
         httpGet:
         path: /ping
         port: 80
