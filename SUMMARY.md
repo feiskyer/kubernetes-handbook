@@ -1,6 +1,7 @@
 # Summary
 
 - [前言](README.md)
+- [如何贡献](CONTRIBUTING.md)
 - [1. Kubernetes简介](introduction/index.md)
   - [1.1 基本概念](introduction/concepts.md)
   - [1.2 Kubernetes 101](introduction/101.md)
@@ -34,6 +35,7 @@
     - [Ingress](concepts/ingress.md)
     - [ThirdPartyResources](concepts/thirdpartyresources.md)
     - [ConfigMap](concepts/configmap.md)
+    - [PodPreset](concepts/podpreset.md)
 - [3. 核心组件](components/index.md)
   - [3.1 etcd](components/etcd.md)
   - [3.2 API Server](components/apiserver.md)
