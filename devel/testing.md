@@ -4,13 +4,13 @@
 
 单元测试仅依赖于源代码，是测试代码逻辑是否符合预期的最简单方法。
 
-**运行所有的单元测试**
+### 运行所有的单元测试
 
-```
+```sh
 make test
 ```
 
-**仅测试指定的package**
+### 仅测试指定的package
 
 ```sh
 # 单个package
@@ -25,9 +25,9 @@ make test WHAT=./pkg/{api,kubelet}
 go test -v k8s.io/kubernetes/pkg/kubelet
 ```
 
-**仅测试指定package的某个测试case**
+### 仅测试指定package的某个测试case
 
-```
+```sh
 # Runs TestValidatePod in pkg/api/validation with the verbose flag set
 make test WHAT=./pkg/api/validation KUBE_GOFLAGS="-v" KUBE_TEST_ARGS='-run ^TestValidatePod$'
 
@@ -37,11 +37,11 @@ make test WHAT=./pkg/api/validation KUBE_GOFLAGS="-v" KUBE_TEST_ARGS="-run Valid
 
 或者直接用`go test`
 
-```
+```sh
 go test -v k8s.io/kubernetes/pkg/api/validation -run ^TestValidatePod$
 ```
 
-**并行测试**
+### 并行测试
 
 并行测试是root out flakes的一种有效方法：
 
@@ -50,15 +50,15 @@ go test -v k8s.io/kubernetes/pkg/api/validation -run ^TestValidatePod$
 make test PARALLEL=2 ITERATION=5
 ```
 
-**生成测试报告**
+### 生成测试报告
 
-```
+```sh
 make test KUBE_COVER=y
 ```
 
 ## Benchmark测试
 
-```
+```sh
 go test ./pkg/apiserver -benchmem -run=XXX -bench=BenchmarkWatch
 ```
 
@@ -66,20 +66,20 @@ go test ./pkg/apiserver -benchmem -run=XXX -bench=BenchmarkWatch
 
 Kubernetes集成测试需要安装etcd（只要按照即可，不需要启动），比如
 
-```
+```sh
 hack/install-etcd.sh  # Installs in ./third_party/etcd
 echo export PATH="\$PATH:$(pwd)/third_party/etcd" >> ~/.profile  # Add to PATH
 ```
 
 集成测试会在需要的时候自动启动etcd和kubernetes服务，并运行[test/integration](https://github.com/kubernetes/kubernetes/tree/master/test/integration)里面的测试。
 
-**运行所有集成测试**
+### 运行所有集成测试
 
 ```sh
 make test-integration  # Run all integration tests.
 ```
 
-**指定集成测试用例**
+### 指定集成测试用例
 
 ```sh
 # Run integration test TestPodUpdateActiveDeadlineSeconds with the verbose flag set.
@@ -98,26 +98,26 @@ make ginkgo
 export KUBERNETES_PROVIDER=local
 ```
 
-**启动cluster，测试，最后停止cluster**
+### 启动cluster，测试，最后停止cluster
 
 ```sh
 # build Kubernetes, up a cluster, run tests, and tear everything down
 go run hack/e2e.go -- -v --build --up --test --down
 ```
 
-**仅测试指定的用例**
+### 仅测试指定的用例
 
 ```sh
 go run hack/e2e.go -v -test --test_args='--ginkgo.focus=Kubectl\sclient\s\[k8s\.io\]\sKubectl\srolling\-update\sshould\ssupport\srolling\-update\sto\ssame\simage\s\[Conformance\]$'
 ```
 
-**略过测试用例**
+### 跳过测试用例
 
 ```sh
 go run hack/e2e.go -- -v --test --test_args="--ginkgo.skip=Pods.*env
 ```
 
-**并行测试**
+### 并行测试
 
 ```sh
 # Run tests in parallel, skip any that must be run serially
@@ -127,13 +127,13 @@ GINKGO_PARALLEL=y go run hack/e2e.go --v --test --test_args="--ginkgo.skip=\[Ser
 GINKGO_PARALLEL=y go run hack/e2e.go --v --test --test_args="--ginkgo.skip=\[Serial\] --delete-namespace-on-failure=false"
 ```
 
-**清理测试**
+### 清理测试资源
 
 ```sh
 go run hack/e2e.go -- -v --down
 ```
 
-**有用的`-ctl`**
+### 有用的`-ctl`
 
 ```sh
 # -ctl can be used to quickly call kubectl against your e2e cluster. Useful for

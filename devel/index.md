@@ -19,7 +19,7 @@ apt-get -y install "docker-engine=1.13.1-0~ubuntu-$(lsb_release -cs)"
 curl -L https://github.com/coreos/etcd/releases/download/v3.1.8/etcd-v3.1.8-linux-amd64.tar.gz -o etcd-v3.1.8-linux-amd64.tar.gz && tar xzvf etcd-v3.1.8-linux-amd64.tar.gz && /bin/cp -f etcd-v3.1.8-linux-amd64/{etcd,etcdctl} /usr/bin && rm -rf etcd-v3.1.8-linux-amd64*
 
 # 安装Go
-curl -sL https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz | tar -C /usr/local -zxf -
+curl -sL https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz | tar -C /usr/local -zxf -
 export GOPATH=/gopath
 export PATH=$PATH:$GOPATH/bin:/usr/local/bin:/usr/local/go/bin/
 
@@ -94,16 +94,6 @@ git checkout branch-fix-1
 
 ```
     fetch = +refs/pull/*:refs/remotes/origin/pull/*
-```
-
-## 容器集成开发环境
-
-```sh
-hyper run -it feisky/kubernetes-dev bash
-# /hack/start-docker.sh
-# /hack/start-kubernetes.sh
-# /hack/setup-kubectl.sh
-# cluster/kubectl.sh
 ```
 
 ## 其他参考

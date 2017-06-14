@@ -11,7 +11,7 @@
 ## 核心原理
 
 - [2. 核心原理](architecture/index.md)
-  - [2.1 架构原理](architecture/index.md)
+  - [2.1 架构原理](architecture/architecture.md)
     - [设计理念](architecture/concepts.md)
   - [2.2 主要概念](concepts/index.md)
     - [Pod](concepts/pod.md)
@@ -76,7 +76,7 @@
     - [RBAC授权](plugins/rbac.md)
     - [准入控制](plugins/admission.md)
   - [5.2 网络](network/index.md)
-    - [网络模型和插件](network/index.md)
+    - [网络模型和插件](network/network.md)
     - [CNI](network/cni/index.md)
       - [CNI介绍](network/cni/index.md)
       - [Flannel](network/flannel/index.md)
