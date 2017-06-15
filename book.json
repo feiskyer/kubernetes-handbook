@@ -12,24 +12,18 @@
         "editlink",
         "-lunr",
         "-search",
-        "page-footer-ex",
         "search-plus"
     ],
     "pdf": {
         "toc": true,
         "pageNumbers": true,
-        "fontSize": 11
+        "fontSize": 12
     },
     "pluginsConfig": {
         "page-treeview": {
             "copyright": "Copyright &#169; Pengfei Ni",
             "minHeaderCount": "2",
             "minHeaderDeep": "2"
-        },
-        "page-footer-ex": {
-            "copyright": "<a href=\"https://github.com/feiskyer/kubernetes-handbook\">Kubernetes Handbook</a>",
-            "update_label": "Updated @",
-            "update_format": "YYYY-MM-DD HH:mm:ss"
         },
         "github-buttons": {
             "repo": "feiskyer/kubernetes-handbook",
