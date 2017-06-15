@@ -17,7 +17,7 @@
     "pdf": {
         "toc": true,
         "pageNumbers": true,
-        "fontSize": 10.5
+        "fontSize": 11
     },
     "pluginsConfig": {
         "page-treeview": {
