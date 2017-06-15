@@ -40,6 +40,7 @@
   - [3.1 etcd](components/etcd.md)
   - [3.2 API Server](components/apiserver.md)
     - [工作原理](components/apiserver-internal.md)
+    - [访问API](components/api-access.md)
   - [3.3 Scheduler](components/scheduler.md)
     - [工作原理](components/scheduler-internal.md)
   - [3.4 Controller Manager](components/controller-manager.md)
