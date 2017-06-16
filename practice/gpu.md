@@ -14,16 +14,75 @@ Kubernetes支持容器请求GPU资源（目前仅支持NVIDIA GPU），在深度
 
 ```yaml
 apiVersion: v1
-kind: pod
+kind: Pod
+metadata:
+  name: tensorflow
 spec:
+  restartPolicy: Never
   containers:
-    - image: gcr.io/tensorflow/tensorflow:latest-gpu
-      name: gpu-container-1
-      command: ["python"]
-      args: ["-u", "-c", "import tensorflow"]
-      resources: 
-        limits: 
-          alpha.kubernetes.io/nvidia-gpu: 2 # requesting 2 GPUs
+  - image: gcr.io/tensorflow/tensorflow:latest-gpu
+    name: gpu-container-1
+    command: ["python"]
+    env:
+    - name: LD_LIBRARY_PATH
+      value: /usr/lib/nvidia
+    args:
+    - -u
+    - -c
+    - from tensorflow.python.client import device_lib; print device_lib.list_local_devices()
+    resources: 
+      limits: 
+        alpha.kubernetes.io/nvidia-gpu: 1 # requests one GPU
+    volumeMounts:
+    - mountPath: /usr/local/nvidia/bin
+      name: bin
+    - mountPath: /usr/lib/nvidia
+      name: lib
+    - mountPath: /usr/lib/x86_64-linux-gnu/libcuda.so
+      name: libcuda-so
+    - mountPath: /usr/lib/x86_64-linux-gnu/libcuda.so.1
+      name: libcuda-so-1
+    - mountPath: /usr/lib/x86_64-linux-gnu/libcuda.so.375.66
+      name: libcuda-so-375-66
+  volumes:
+    - name: bin
+      hostPath:
+        path: /usr/lib/nvidia-375/bin
+    - name: lib
+      hostPath:
+        path: /usr/lib/nvidia-375
+    - name: libcuda-so
+      hostPath:
+        path: /usr/lib/x86_64-linux-gnu/libcuda.so
+    - name: libcuda-so-1
+      hostPath:
+        path: /usr/lib/x86_64-linux-gnu/libcuda.so.1
+    - name: libcuda-so-375-66
+      hostPath:
+        path: /usr/lib/x86_64-linux-gnu/libcuda.so.375.66
+```
+
+```sh
+$ kubectl create -f pod.yaml
+pod "tensorflow" created
+
+$ kubectl logs tensorflow
+...
+[name: "/cpu:0"
+device_type: "CPU"
+memory_limit: 268435456
+locality {
+}
+incarnation: 9675741273569321173
+, name: "/gpu:0"
+device_type: "GPU"
+memory_limit: 11332668621
+locality {
+  bus_id: 1
+}
+incarnation: 7807115828340118187
+physical_device_desc: "device: 0, name: Tesla K80, pci bus id: 0000:00:04.0"
+]
 ```
 
 注意
@@ -84,7 +143,7 @@ spec:
 
 ## 使用CUDA库
 
-NVIDIA Cuda Toolkit和cuDNN等需要预先安装在所有Node上。为了访问`/usr/lib/nvidia-367`，容器需要运行在特权模式，并将CUDA库以hostPath Volume的形式传给容器。
+NVIDIA Cuda Toolkit和cuDNN等需要预先安装在所有Node上。为了访问`/usr/lib/nvidia-375`，需要将CUDA库以hostPath volume的形式传给容器：
 
 ```yaml
 apiVersion: batch/v1
@@ -122,6 +181,38 @@ spec:
       restartPolicy: Never
 ```
 
+```sh
+$ kubectl create -f job.yaml
+job "nvidia-smi" created
+
+$ kubectl get job
+NAME         DESIRED   SUCCESSFUL   AGE
+nvidia-smi   1         1            14m
+
+$ kubectl get pod -a
+NAME               READY     STATUS      RESTARTS   AGE
+nvidia-smi-kwd2m   0/1       Completed   0          14m
+
+$ kubectl logs nvidia-smi-kwd2m
+Fri Jun 16 19:49:53 2017
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 375.66                 Driver Version: 375.66                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla K80           Off  | 0000:00:04.0     Off |                    0 |
+| N/A   74C    P0    80W / 149W |      0MiB / 11439MiB |    100%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID  Type  Process name                               Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+```
+
 ## 附录：CUDA安装方法
 
 安装CUDA：
@@ -139,11 +230,35 @@ fi
 
 安装cuDNN：
 
-首先到网站<https://developer.nvidia.com/cudnn>注册，并下载cuDNN v5.1，然后
+首先到网站<https://developer.nvidia.com/cudnn>注册，并下载cuDNN v5.1，然后运行命令安装
 
 ```sh
-tar xvzf cudnn-8.0-linux-x64-v5.1-ga.tgz
+tar zxvf cudnn-8.0-linux-x64-v5.1.tgz
+ln -s /usr/local/cuda-8.0 /usr/local/cuda
 sudo cp -P cuda/include/cudnn.h /usr/local/cuda/include
 sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda/lib64
 sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*
+```
+
+安装完成后，可以运行nvidia-smi查看GPU设备的状态
+
+```sh
+$ nvidia-smi
+Fri Jun 16 19:33:35 2017
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 375.66                 Driver Version: 375.66                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla K80           Off  | 0000:00:04.0     Off |                    0 |
+| N/A   74C    P0    80W / 149W |      0MiB / 11439MiB |    100%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID  Type  Process name                               Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
 ```
