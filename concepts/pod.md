@@ -181,6 +181,17 @@ KUBERNETES_PORT_443_TCP_PORT=443
 
 由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用[DNS](../components/kube-dns.md)来解析服务。
 
+##ImagePullPolicy
+支持三种ImagePullPolicy
+
+- Always：不管镜像是否存在都会进行一次拉取。
+- Never：不管镜像是否存在都会进行不拉取
+- IfNotPresent：只有镜像不存在时，才会进行镜像拉取。
+
+注意：  默认为IfNotPresent，但:latest标签的镜像默认为Always。
+        拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。
+        生产环境中应该尽量避免使用:latest标签。
+
 ## 资源限制
 
 Kubernetes通过cgroups限制容器的CPU和内存等计算资源，包括requests（请求，调度器保证调度到资源充足的Node上）和limits（上限）等：
