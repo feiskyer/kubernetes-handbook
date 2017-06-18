@@ -64,6 +64,17 @@ spec:
 
 注意，这里的重启是指在Pod所在Node上面本地重启，并不会调度到其他Node上去。
 
+##ImagePullPolicy
+支持三种ImagePullPolicy
+
+- Always：不管镜像是否存在都会进行一次拉取。
+- Never：不管镜像是否存在都会进行不拉取
+- IfNotPresent：只有镜像不存在时，才会进行镜像拉取。
+
+注意：  默认为IfNotPresent，但:latest标签的镜像默认为Always。
+        拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。
+        生产环境中应该尽量避免使用:latest标签。
+
 ## 资源限制
 
 Kubernetes通过cgroups提供容器资源管理的功能，可以限制每个容器的CPU和内存使用等。比如限制nginx容器最多只用50%的CPU和128MB的内存：
