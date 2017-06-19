@@ -63,6 +63,19 @@ MacOS zsh
 source <(kubectl completion zsh)
 ```
 
+## 日志查看
+`kubectl logs`用于显示pod运行中，容器内程序输出到标准输出的内容。跟docker的logs命令类似。
+```sh
+  # Return snapshot logs from pod nginx with only one container
+  kubectl logs nginx
+  
+  # Return snapshot of previous terminated ruby container logs from pod web-1
+  kubectl logs -p -c ruby web-1
+  
+  # Begin streaming the logs of the ruby container in pod web-1
+  kubectl logs -f -c ruby web-1
+```
+
 ## 端口转发
 
 `kubectl port-forward`用于将本地端口转发到指定的Pod。
