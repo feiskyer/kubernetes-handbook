@@ -181,16 +181,19 @@ KUBERNETES_PORT_443_TCP_PORT=443
 
 由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用[DNS](../components/kube-dns.md)来解析服务。
 
-##ImagePullPolicy
+## ImagePullPolicy
+
 支持三种ImagePullPolicy
 
 - Always：不管镜像是否存在都会进行一次拉取。
-- Never：不管镜像是否存在都会进行不拉取
+- Never：不管镜像是否存在都不会进行拉取
 - IfNotPresent：只有镜像不存在时，才会进行镜像拉取。
 
-注意：  默认为IfNotPresent，但:latest标签的镜像默认为Always。
-        拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。
-        生产环境中应该尽量避免使用:latest标签。
+注意：  
+
+- 默认为`IfNotPresent`，但`:latest`标签的镜像默认为`Always`。
+- 拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。
+- 生产环境中应该尽量避免使用`:latest`标签，而开发环境中可以借助`:latest`标签自动拉取最新的镜像。
 
 ## 资源限制
 
