@@ -76,6 +76,25 @@ source <(kubectl completion zsh)
   kubectl logs -f -c ruby web-1
 ```
 
+## 连接到一个正在运行的容器
+`kubectl attach`用于连接到一个正在运行的容器。跟docker的attach命令类似。
+```sh
+  # Get output from running pod 123456-7890, using the first container by default
+  kubectl attach 123456-7890
+  
+  # Get output from ruby-container from pod 123456-7890
+  kubectl attach 123456-7890 -c ruby-container
+  
+  # Switch to raw terminal mode, sends stdin to 'bash' in ruby-container from pod 123456-7890
+  # and sends stdout/stderr from 'bash' back to the client
+  kubectl attach 123456-7890 -c ruby-container -i -t
+
+Options:
+  -c, --container='': Container name. If omitted, the first container in the pod will be chosen
+  -i, --stdin=false: Pass stdin to the container
+  -t, --tty=false: Stdin is a TTY
+```
+
 ## 端口转发
 
 `kubectl port-forward`用于将本地端口转发到指定的Pod。
