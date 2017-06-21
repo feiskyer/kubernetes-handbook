@@ -1,6 +1,6 @@
-# kube-schedular工作原理
+# kube-scheduler工作原理
 
-kube-schedular调度原理：
+kube-scheduler调度原理：
 
 ```
 For given pod:
