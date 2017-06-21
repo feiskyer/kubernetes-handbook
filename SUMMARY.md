@@ -113,6 +113,7 @@
   - [Operator](apps/operator.md)
   - [Deis workflow](apps/deis.md)
   - [Kompose](apps/kompose.md)
+  - [Istio](apps/istio.md)
 - [7. 实践案例](practice/index.md)
   - [监控](monitor/index.md)
   - [日志](deploy/logging.md)
