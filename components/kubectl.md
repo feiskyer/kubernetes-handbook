@@ -127,6 +127,11 @@ kubectl port-forward mypod 8888:5000
 $ kubectl proxy --port=8080
 Starting to serve on 127.0.0.1:8080
 ```
+可以通过代理地址`http://localhost:8080/api/`来直接访问Kubernetes API，比如查询Pod列表
+```sh
+curl http://localhost:8080/api/v1/namespaces/default/pods
+```
+
 ## 文件拷贝
 `kubectl cp`支持从容器中拷贝，或者拷贝文件到容器中
 ```sh
@@ -147,12 +152,6 @@ Options:
 ```
 注意：文件拷贝依赖于tar命令，所以容器中需要能够执行tar命令
 
-
-可以通过代理地址`http://localhost:8080/api/`来直接访问Kubernetes API，比如查询Pod列表
-
-```sh
-curl http://localhost:8080/api/v1/namespaces/default/pods
-```
 
 ## kubectl drain
 
