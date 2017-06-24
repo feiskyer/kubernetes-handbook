@@ -131,4 +131,4 @@ dr-xr-xr-x   13 root     root             0 Feb 14 13:16 sys
 -rwxr-xr-x    1 root     root       5651357 Feb 14 13:15 webserver
 ```
 
-Kubernetes社区也在提议增加一个`kubectl debug`命令，用类似的方式在Pod中启动一个新容器来调试运行中的进程，可以参见<https://github.com/kubernetes/kubernetes/pull/35584>。
+Kubernetes社区也在提议增加一个`kubectl debug`命令，用类似的方式在Pod中启动一个新容器来调试运行中的进程，可以参见<https://github.com/kubernetes/community/pull/649>。
