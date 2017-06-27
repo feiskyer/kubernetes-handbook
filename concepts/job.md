@@ -51,9 +51,49 @@ spec:
       restartPolicy: Never
 ```
 
-```
+```sh
+# 创建Job
 $ kubectl create -f ./job.yaml
 job "pi" created
+# 查看Job的状态
+$ kubectl describe job pi
+Name:		pi
+Namespace:	default
+Selector:	controller-uid=cd37a621-5b02-11e7-b56e-76933ddd7f55
+Labels:		controller-uid=cd37a621-5b02-11e7-b56e-76933ddd7f55
+		job-name=pi
+Annotations:	<none>
+Parallelism:	1
+Completions:	1
+Start Time:	Tue, 27 Jun 2017 14:35:24 +0800
+Pods Statuses:	0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:	controller-uid=cd37a621-5b02-11e7-b56e-76933ddd7f55
+		job-name=pi
+  Containers:
+   pi:
+    Image:	perl
+    Port:
+    Command:
+      perl
+      -Mbignum=bpi
+      -wle
+      print bpi(2000)
+    Environment:	<none>
+    Mounts:		<none>
+  Volumes:		<none>
+Events:
+  FirstSeen	LastSeen	Count	From		SubObjectPath	Type		Reason			Message
+  ---------	--------	-----	----		-------------	--------	------			-------
+  2m		2m		1	job-controller			Normal		SuccessfulCreate	Created pod: pi-nltxv
+
+# 使用'job-name=pi'标签查询属于该Job的Pod
+# 注意不要忘记'--show-all'选项显示已经成功（或失败）的Pod
+$ kubectl get pod --show-all -l job-name=pi
+NAME       READY     STATUS      RESTARTS   AGE
+pi-nltxv   0/1       Completed   0          3m
+
+# 使用jsonpath获取pod ID并查看Pod的日志
 $ pods=$(kubectl get pods --selector=job-name=pi --output=jsonpath={.items..metadata.name})
 $ kubectl logs $pods
 3.141592653589793238462643383279502...
