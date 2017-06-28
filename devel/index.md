@@ -99,7 +99,7 @@ git checkout branch-fix-1
 ## 其他参考
 
 - 编译release版：`make quick-release`
-- 测试命令：[kubernetes test-infra](https://github.com/kubernetes/test-infra/blob/master/prow/commands.md)。
+- 测试命令：[kubernetes test-infra](https://github.com/kubernetes/test-infra/blob/master/commands.md)。
 - [Kubernetes TestGrid](https://k8s-testgrid.appspot.com/)，包含所有的测试历史
 - [Kuberentes Submit Queue Status](https://submit-queue.k8s.io/#/queue)，包含所有的PR状态以及正在合并的PR队列
 - [Node Performance Dashboard](http://146.148.52.109/#/builds)，包含Node组性能测试报告
