@@ -33,7 +33,7 @@ kubelet --container-runtime=remote --container-runtime-endpoint=/var/run/frakti.
 - HyperContainer: <https://github.com/kubernetes/frakti>，支持Kubernetes v1.6/v1.7，提供基于hypervisor和docker的混合运行时，适用于运行非可信应用，如多租户和NFV等场景
 - Rkt: <https://github.com/kubernetes-incubator/rktlet>，开发中
 - Runc有两个实现，cri-o和cri-containerd
-  - [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)，支持kubernetes v1.7
-  - [cri-o](https://github.com/kubernetes-incubator/cri-o)，支持Kubernetes v1.6/v1.7，底层运行时支持runc和intel clear container
+  - [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)，支持kubernetes v1.7。
+  - [cri-o](https://github.com/kubernetes-incubator/cri-o)，支持Kubernetes v1.6/v1.7，底层运行时支持runc和intel clear container。
 - Mirantis: <https://github.com/Mirantis/virtlet>，直接管理libvirt虚拟机，镜像须是qcow2格式
 - Infranetes: <https://github.com/apporbit/infranetes>，直接管理IaaS平台虚拟机，如GCE、AWS等
