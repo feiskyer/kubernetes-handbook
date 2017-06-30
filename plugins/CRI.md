@@ -4,7 +4,7 @@ Container Runtime Interface (CRI)是Kubelet 1.5/1.6中主要负责的一块项�
 
 ![](images/cri.png)
 
-CRI最早从从1.4版就开始设计讨论和开发，在v1.5中发布第一个测试版。在v1.6时已经有了很多外部Runtime，如frakti、cri-o的alpha支持。
+CRI最早从从1.4版就开始设计讨论和开发，在v1.5中发布第一个测试版。在v1.6时已经有了很多外部Runtime，如frakti、cri-o的alpha支持。v1.7版本新增了containerd的alpha支持，而frakti和cri-o则升级到beta支持。
 
 ## CRI接口
 
@@ -29,11 +29,11 @@ kubelet --container-runtime=remote --container-runtime-endpoint=/var/run/frakti.
 
 目前，有多家厂商都在基于CRI集成自己的容器引擎，其中包括
 
-- Docker: 核心代码依然保留在kubelet内部，依然是最稳定和特性支持最好的Runtime
-- HyperContainer: <https://github.com/kubernetes/frakti>，已支持Kubernetes v1.6，提供基于hypervisor和docker的混合运行时，适用于运行非可信应用（如多租户场景）
+- Docker: 核心代码依然保留在kubelet内部（[pkg/kubelet/dockershim](https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/dockershim)），依然是最稳定和特性支持最好的Runtime
+- HyperContainer: <https://github.com/kubernetes/frakti>，支持Kubernetes v1.6/v1.7，提供基于hypervisor和docker的混合运行时，适用于运行非可信应用，如多租户和NFV等场景
 - Rkt: <https://github.com/kubernetes-incubator/rktlet>，开发中
 - Runc有两个实现，cri-o和cri-containerd
-  - [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)，开发中
-  - [cri-o](https://github.com/kubernetes-incubator/cri-o)，已支持Kubernetes v1.6，支持runc和intel clear container
+  - [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)，支持kubernetes v1.7
+  - [cri-o](https://github.com/kubernetes-incubator/cri-o)，支持Kubernetes v1.6/v1.7，底层运行时支持runc和intel clear container
 - Mirantis: <https://github.com/Mirantis/virtlet>，直接管理libvirt虚拟机，镜像须是qcow2格式
 - Infranetes: <https://github.com/apporbit/infranetes>，直接管理IaaS平台虚拟机，如GCE、AWS等
