@@ -139,3 +139,19 @@ kubeadm join --token $token ${master_ip}
 kubeadm reset
 ```
 
+## 动态升级
+
+kubeadm将在v1.8支持动态升级，目前升级还需要手动操作。
+
+### 升级Master
+
+1. 升级安装包 `apt-get upgrade && apt-get update`
+2. 重启kubelet `systemctl restart kubelet`
+3. 删除kube-proxy DaemonSet `KUBECONFIG=/etc/kubernetes/admin.conf kubectl delete daemonset kube-proxy -n kube-system`
+4. kubeadm init --skip-preflight-checks --kubernetes-version v1.7.0
+5. 更新CNI插件
+
+### 升级Node
+
+1. 升级安装包 `apt-get upgrade && apt-get update`
+2. 重启kubelet `systemctl restart kubelet`
