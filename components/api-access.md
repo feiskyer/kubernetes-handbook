@@ -15,3 +15,4 @@
 
 - [v1.5 API Reference](https://kubernetes.io/docs/api-reference/v1.5/)
 - [v1.6 API Reference](https://kubernetes.io/docs/api-reference/v1.6)
+- [v1.7 API Reference](https://kubernetes.io/docs/api-reference/v1.7/)
