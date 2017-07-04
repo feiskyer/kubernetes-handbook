@@ -19,12 +19,86 @@ Kubernetes目前提供了以下几种准入控制插件
 - DefaultStorageClass：为PVC设置默认StorageClass（见[这里](../concepts/persistent-volume.md#StorageClass)
 - DefaultTolerationSeconds：设置Pod的默认forgiveness toleration为5分钟
 - PodSecurityPolicy：使用Pod Security Policies时必须开启
+- NodeRestriction：限制kubelet仅可访问node、endpoint、pod、service以及secret、configmap、PV和PVC等相关的资源（仅适用于v1.7+）
+
+Kubernetes v1.7+还支持Initializers和GenericAdmissionWebhook，可以用来方便地扩展准入控制。
+
+## Initializers
+
+Initializers可以用来给资源执行策略或者配置默认选项，包括Initializers控制器和用户定义的Initializer任务，控制器负责执行用户提交的任务，并完成后将任务从`metadata.initializers`列表中删除。
+
+Initializers的开启方法为
+
+- kube-apiserver配置`--admission-control=...,Initializer`
+- kube-apiserver开启`admissionregistration.k8s.io/v1alpha1` API，即配置`--runtime-config=admissionregistration.k8s.io/v1alpha1`
+- 部署Initializers控制器
+
+另外，可以使用`initializerconfigurations`来自定义哪些资源开启Initializer功能
+
+```yaml
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: InitializerConfiguration
+metadata:
+  name: example-config
+spec:
+  initializers:
+    # the name needs to be fully qualified, i.e., containing at least two "."
+    - name: podimage.example.com
+      rules:
+        # apiGroups, apiVersion, resources all support wildcard "*".
+        # "*" cannot be mixed with non-wildcard.
+        - apiGroups:
+            - ""
+          apiVersions:
+            - v1
+          resources:
+            - pods
+```
+
+> 注意，如果不需要修改对象的话，建议使用性能更好的GenericAdmissionWebhook。
+
+## GenericAdmissionWebhook
+
+GenericAdmissionWebhook提供了一种Webhook方式的准入控制机制，它不会改变请求对象，但可以用来验证用户的请求。
+
+GenericAdmissionWebhook的开启方法
+
+- kube-apiserver配置`--admission-control=...,GenericAdmissionWebhook`
+- kube-apiserver开启`admissionregistration.k8s.io/v1alpha1` API，即配置`--runtime-config=admissionregistration.k8s.io/v1alpha1`
+- 实现并部署webhook准入控制器，参考[这里](https://github.com/caesarxuchao/example-webhook-admission-controller)的示例
+
+注意，webhook准入控制器必须使用TLS，并需要通过`externaladmissionhookconfigurations.clientConfig.caBundle`向kube-apiserver注册：
+
+```yaml
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ExternalAdmissionHookConfiguration
+metadata:
+  name: example-config
+externalAdmissionHooks:
+- name: pod-image.k8s.io
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    resources:
+    - pods
+  # fail upon a communication error with the webhook admission controller
+  # Other options: Ignore
+  failurePolicy: Fail
+  clientConfig:
+    caBundle: <pem encoded ca cert that signs the server cert used by the webhook>
+    service:
+      name: <name of the front-end service>
+      namespace: <namespace of the front-end service>
+```
 
 ## 推荐配置
 
-对于Kubernetes >= 1.6.0，推荐API Server开启以下插件
+对于Kubernetes >= 1.6.0，推荐kube-apiserver开启以下插件
 
 ```sh
 --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,ResourceQuota,DefaultTolerationSeconds
 ```
-
