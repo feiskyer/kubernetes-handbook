@@ -159,3 +159,66 @@ ca.crt
 namespace
 token
 ```
+
+## 存储加密
+
+v1.7+版本支持将Secret数据加密存储到etcd中，只需要在apiserver启动时配置`--experimental-encryption-provider-config`。加密配置格式为
+
+```yaml
+kind: EncryptionConfig
+apiVersion: v1
+resources:
+  - resources:
+    - secrets
+    providers:
+    - aescbc:
+        keys:
+        - name: key1
+          secret: c2VjcmV0IGlzIHNlY3VyZQ==
+        - name: key2
+          secret: dGhpcyBpcyBwYXNzd29yZA==
+    - identity: {}
+    - aesgcm:
+        keys:
+        - name: key1
+          secret: c2VjcmV0IGlzIHNlY3VyZQ==
+        - name: key2
+          secret: dGhpcyBpcyBwYXNzd29yZA==
+    - secretbox:
+        keys:
+        - name: key1
+          secret: YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY=
+```
+
+其中
+
+- resources.resources是Kubernetes的资源名
+- resources.providers是加密方法，支持以下几种
+  - identity：不加密
+  - aescbc：AES-CBC加密
+  - secretbox：XSalsa20和Poly1305加密
+  - aesgcm：AES-GCM加密
+
+Secret是在写存储的时候加密，因而可以对已有的secret执行update操作来保证所有的secrets都加密
+
+```sh
+kubectl get secrets -o json | kubectl update -f -
+```
+
+如果想取消secret加密的话，只需要把`identity`放到providers的第一个位置即可（aescbc还要留着以便访问已存储的secret）：
+
+```yaml
+kind: EncryptionConfig
+apiVersion: v1
+resources:
+  - resources:
+    - secrets
+    providers:
+    - identity: {}
+    - aescbc:
+        keys:
+        - name: key1
+          secret: c2VjcmV0IGlzIHNlY3VyZQ==
+        - name: key2
+          secret: dGhpcyBpcyBwYXNzd29yZA==
+```
