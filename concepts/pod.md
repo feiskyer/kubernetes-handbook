@@ -329,34 +329,6 @@ spec:
           command: ["/usr/sbin/nginx","-s","quit"]
 ```
 
-## 指定Node
-
-通过nodeSelector，一个Pod可以指定它所想要运行的Node节点。
-
-首先给Node加上标签：
-
-```sh
-kubectl label nodes <your-node-name> disktype=ssd
-```
-
-接着，指定该Pod只想运行在带有`disktype=ssd`标签的Node上：
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    env: test
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    imagePullPolicy: IfNotPresent
-  nodeSelector:
-    disktype: ssd
-```
-
 ## 使用Capabilities
 
 默认情况下，容器都是以非特权容器的方式运行。比如，不能在容器中创建虚拟网卡、配置虚拟网络。
@@ -421,7 +393,93 @@ tc filter add dev cbr0 protocol ip parent 1:0 prio 1 u32 match ip src 10.1.0.3/3
 
 ## 调度到指定的Node上
 
-可以通过nodeSelector、nodeAffinity、podAffinity以及Taints和tolerations等来将Pod调度到需要的Node上。具体使用方法请参考[调度器章节](../components/scheduler.md)。
+可以通过nodeSelector、nodeAffinity、podAffinity以及Taints和tolerations等来将Pod调度到需要的Node上。
+
+比如，使用nodeSelector，首先给Node加上标签：
+
+```sh
+kubectl label nodes <your-node-name> disktype=ssd
+```
+
+接着，指定该Pod只想运行在带有`disktype=ssd`标签的Node上：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disktype: ssd
+```
+
+nodeAffinity、podAffinity以及Taints和tolerations等的使用方法请参考[调度器章节](../components/scheduler.md)。
+
+## 自定义hosts
+
+默认情况下，容器的`/etc/hosts`是kubelet自动生成的，并且仅包含localhost和podName等。不建议在容器内直接修改`/etc/hosts`文件，因为在Pod启动或重启时会被覆盖。
+
+默认的`/etc/hosts`文件格式如下，其中`nginx-4217019353-fb2c5`是podName：
+
+```sh
+$ kubectl exec nginx-4217019353-fb2c5 -- cat /etc/hosts
+# Kubernetes-managed hosts file.
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+fe00::0	ip6-mcastprefix
+fe00::1	ip6-allnodes
+fe00::2	ip6-allrouters
+10.244.1.4	nginx-4217019353-fb2c5
+```
+
+从v1.7开始，可以通过`pod.Spec.HostAliases`来增加hosts内容，如
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostaliases-pod
+spec:
+  hostAliases:
+  - ip: "127.0.0.1"
+    hostnames:
+    - "foo.local"
+    - "bar.local"
+  - ip: "10.1.2.3"
+    hostnames:
+    - "foo.remote"
+    - "bar.remote"
+  containers:
+  - name: cat-hosts
+    image: busybox
+    command:
+    - cat
+    args:
+    - "/etc/hosts"
+```
+
+```sh
+$ kubectl logs hostaliases-pod
+# Kubernetes-managed hosts file.
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+fe00::0	ip6-mcastprefix
+fe00::1	ip6-allnodes
+fe00::2	ip6-allrouters
+10.244.1.5	hostaliases-pod
+127.0.0.1	foo.local
+127.0.0.1	bar.local
+10.1.2.3	foo.remote
+10.1.2.3	bar.remote
+```
 
 ## 参考文档
 
