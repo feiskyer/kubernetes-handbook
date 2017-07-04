@@ -20,6 +20,7 @@
     - [Service](concepts/service.md)
     - [Volume](concepts/volume.md)
     - [Persistent Volume](concepts/persistent-volume.md)
+    - [Local Volume](concepts/local-volume.md)
     - [Deployment](concepts/deployment.md)
     - [Secret](concepts/secret.md)
     - [StatefulSet](concepts/statefulset.md)
@@ -33,14 +34,16 @@
     - [Horizontal Pod Autoscaling](concepts/autoscaling.md)
     - [Network Policy](concepts/network-policy.md)
     - [Ingress](concepts/ingress.md)
-    - [ThirdPartyResources](concepts/thirdpartyresources.md)
     - [ConfigMap](concepts/configmap.md)
     - [PodPreset](concepts/podpreset.md)
+    - [ThirdPartyResources](concepts/thirdpartyresources.md)
+    - [[CustomResourceDefinition](concepts/customresourcedefinition.md)]
 - [3. 核心组件](components/index.md)
   - [3.1 etcd](components/etcd.md)
   - [3.2 API Server](components/apiserver.md)
     - [工作原理](components/apiserver-internal.md)
     - [访问API](components/api-access.md)
+    - [扩展API](components/api-aggregation.md)
   - [3.3 Scheduler](components/scheduler.md)
     - [工作原理](components/scheduler-internal.md)
   - [3.4 Controller Manager](components/controller-manager.md)
@@ -123,6 +126,7 @@
   - [端口转发](practice/portforward.md)
   - [GPU](practice/gpu.md)
   - [容器安全](practice/security.md)
+  - [审计](practice/audit.md)
 
 ## 开发与社区贡献
 
