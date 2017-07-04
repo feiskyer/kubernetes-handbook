@@ -185,6 +185,7 @@ Kubernetes授权仅处理以下的请求属性：
 - ABAC
 - RBAC
 - Webhook
+- Node
 
 > **[info] AlwaysDeny和AlwaysAllow**
 >
@@ -267,3 +268,10 @@ API Server请求Webhook server的格式为
 }
 ```
 
+### Node授权
+
+v1.7+支持Node授权，配合`NodeRestriction`准入控制来限制kubelet仅可访问node、endpoint、pod、service以及secret、configmap、PV和PVC等相关的资源，配置方法为
+
+`--authorization-mode=Node,RBAC --admission-control=...,NodeRestriction,...`
+
+注意，kubelet认证需要使用`system:nodes`组，并使用用户名`system:node:<nodeName>`。
