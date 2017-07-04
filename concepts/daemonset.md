@@ -41,6 +41,35 @@ spec:
            name: varlog
 ```
 
+## 滚动更新
+
+v1.6+支持DaemonSet的滚动更新，可以通过`.spec.updateStrategy.type`设置更新策略。目前支持两种策略
+
+- OnDelete：默认策略，更新模板后，只有手动删除了旧的Pod后才会创建新的Pod
+- RollingUpdate：更新DaemonSet模版后，自动删除旧的Pod并创建新的Pod
+
+在使用RollingUpdate策略时，还可以设置
+
+- `.spec.updateStrategy.rollingUpdate.maxUnavailable`, 默认1
+- `spec.minReadySeconds`，默认0
+
+### 回滚
+
+v1.7+还支持回滚
+
+```sh
+# 查询历史版本
+$ kubectl rollout history daemonset <daemonset-name>
+
+# 查询某个历史版本的详细信息
+$ kubectl rollout history daemonset <daemonset-name> --revision=1
+
+# 回滚
+$ kubectl rollout undo daemonset <daemonset-name> --to-revision=<revision>
+# 查询回滚状态
+$ kubectl rollout status ds/<daemonset-name>
+```
+
 ## 指定Node节点
 
 DaemonSet会忽略Node的unschedulable状态，有两种方式来指定Pod只运行在指定的Node节点上：
@@ -148,4 +177,3 @@ kubelet --pod-manifest-path=/etc/kubernetes/manifests
 然后将所需要的Pod定义文件放到指定的manifest目录中。
 
 注意：静态Pod不能通过API Server来删除，但可以通过删除manifest文件来自动删除对应的Pod。
-
