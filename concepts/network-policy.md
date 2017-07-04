@@ -4,14 +4,41 @@ Network Policy提供了基于策略的网络控制，用于隔离应用并减少
 
 在使用Network Policy之前，需要注意
 
-- apiserver开启`extensions/v1beta1/networkpolicies`
+- v1.6以及以前的版本需要在apiserver开启`extensions/v1beta1/networkpolicies`
+- v1.7+版本Network Policy已经GA，API版本为`networking.k8s.io/v1`
 - 网络插件要支持Network Policy，如Calico、Romana、Weave Net和trireme等
 
 ## 策略
 
 ### Namespace隔离
 
-默认情况下，所有Pod之间是全通的。每个Namespace可以配置独立的网络策略，来隔离Pod之间的流量。比如隔离namespace的所有Pod之间的流量（包括从外部到该namespace中所有Pod的流量以及namespace内部Pod相互之间的流量）：
+默认情况下，所有Pod之间是全通的。每个Namespace可以配置独立的网络策略，来隔离Pod之间的流量。
+
+v1.7+版本通过创建匹配所有Pod的Network Policy来作为默认的网络策略，比如默认拒绝所有Pod之间通信
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector:
+```
+
+而默认允许所有Pod通信的策略为
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all
+spec:
+  podSelector:
+  ingress:
+  - {}
+```
+
+而v1.6版本则通过Annotation来隔离namespace的所有Pod之间的流量，包括从外部到该namespace中所有Pod的流量以及namespace内部Pod相互之间的流量：
 
 ```sh
 kubectl annotate ns <namespace> "net.beta.kubernetes.io/network-policy={\"ingress\": {\"isolation\": \"DefaultDeny\"}}"
@@ -27,7 +54,9 @@ kubectl annotate ns <namespace> "net.beta.kubernetes.io/network-policy={\"ingres
 - 允许带有`project=myprojects`标签的namespace中所有Pod访问default namespace中带有`role=db`标签Pod的6379端口
 
 ```yaml
-apiVersion: extensions/v1beta1
+# v1.6以及更老的版本应该使用extensions/v1beta1
+# apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: test-network-policy
@@ -51,7 +80,7 @@ spec:
 
 ## 示例
 
-以calico为例看一下Network Policy的具体用法。
+以calico为例看一下Network Policy的具体用法（使用kubernetes v1.6版本）。
 
 首先配置kubelet使用CNI网络插件
 
@@ -91,6 +120,7 @@ Connecting to nginx (10.100.0.16:80)
 开启default namespace的DefaultDeny Network Policy后，其他Pod（包括namespace外部）不能访问nginx了：
 
 ```sh
+# annotate仅适用于v1.6及以前版本，v1.7+需要创建默认拒绝策略
 $ kubectl annotate ns default "net.beta.kubernetes.io/network-policy={\"ingress\": {\"isolation\": \"DefaultDeny\"}}"
 
 $ kubectl run busybox --rm -ti --image=busybox /bin/sh
@@ -109,6 +139,7 @@ wget: download timed out
 ```sh
 $ cat nginx-policy.yaml
 kind: NetworkPolicy
+# v1.7中版本号为networking.k8s.io/v1
 apiVersion: extensions/v1beta1
 metadata:
   name: access-nginx
@@ -153,6 +184,7 @@ Connecting to nginx (10.100.0.16:80)
 
 ```sh
 $ cat nginx-external-policy.yaml
+# v1.7中版本号为networking.k8s.io/v1
 apiVersion: extensions/v1beta1
 kind: NetworkPolicy
 metadata:
