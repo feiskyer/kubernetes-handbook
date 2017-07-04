@@ -141,6 +141,113 @@ $ kubectl delete service nginx
 $ kubectl delete pvc www-web-0 www-web-1
 ```
 
+## 更新StatefulSet
+
+v1.7+支持StatefulSet的自动更新，通过`spec.updateStrategy`设置更新策略。目前支持两种策略
+
+- OnDelete：当`.spec.template`更新时，并不立即删除旧的Pod，而是等待用户手动删除这些旧Pod后自动创建新Pod。这是默认的更新策略，兼容v1.6版本的行为
+- RollingUpdate：当`.spec.template`更新时，自动删除旧的Pod并创建新Pod替换。在更新时，这些Pod是按逆序的方式进行，依次删除、创建并等待Pod变成Ready状态才进行下一个Pod的更新。
+
+### Partitions
+
+RollingUpdate还支持Partitions，通过`.spec.updateStrategy.rollingUpdate.partition`来设置。当partition设置后，只有序号大于或等于partition的Pod会在`.spec.template`更新的时候滚动更新，而其余的Pod则保持不变（即便是删除后也是用以前的版本重新创建）。
+
+```sh
+# 设置partition为3
+$ kubectl patch statefulset web -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":3}}}}'
+statefulset "web" patched
+
+# 更新StatefulSet
+$ kubectl patch statefulset web --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"gcr.io/google_containers/nginx-slim:0.7"}]'
+statefulset "web" patched
+
+# 验证更新
+$ kubectl delete po web-2
+pod "web-2" deleted
+$ kubectl get po -lapp=nginx -w
+NAME      READY     STATUS              RESTARTS   AGE
+web-0     1/1       Running             0          4m
+web-1     1/1       Running             0          4m
+web-2     0/1       ContainerCreating   0          11s
+web-2     1/1       Running   0         18s
+```
+
+## Pod管理策略
+
+v1.7+可以通过`.spec.podManagementPolicy`设置Pod管理策略，支持两种方式
+
+- OrderedReady：默认的策略，按照Pod的次序依次创建每个Pod并等待Ready之后才创建后面的Pod
+- Parallel：并行创建或删除Pod（不等待前面的Pod Ready就开始创建所有的Pod）
+
+### Parallel示例
+
+```yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  podManagementPolicy: "Parallel"
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: gcr.io/google_containers/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+```
+
+可以看到，所有Pod是并行创建的
+
+```sh
+$ kubectl create -f webp.yaml 
+service "nginx" created
+statefulset "web" created
+
+$ kubectl get po -lapp=nginx -w
+NAME      READY     STATUS    RESTARTS   AGE
+web-0     0/1       Pending   0          0s
+web-0     0/1       Pending   0         0s
+web-1     0/1       Pending   0         0s
+web-1     0/1       Pending   0         0s
+web-0     0/1       ContainerCreating   0         0s
+web-1     0/1       ContainerCreating   0         0s
+web-0     1/1       Running   0         10s
+web-1     1/1       Running   0         10s
+```
+
 ## zookeeper
 
 另外一个更能说明StatefulSet强大功能的示例为[zookeeper.yaml](zookeeper.txt)。
@@ -324,7 +431,3 @@ kubectl create -f zookeeper.yaml
 2. 所有Pod的Volume必须使用PersistentVolume或者是管理员事先创建好
 3. 为了保证数据安全，删除StatefulSet时不会删除Volume
 4. StatefulSet需要一个Headless Service来定义DNS domain，需要在StatefulSet之前创建好
-5. 目前StatefulSet还没有feature complete，比如更新操作还需要手动patch。
-
-
-更多可以参考[Kubernetes文档](https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/)。
