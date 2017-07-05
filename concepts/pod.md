@@ -395,6 +395,8 @@ tc filter add dev cbr0 protocol ip parent 1:0 prio 1 u32 match ip src 10.1.0.3/3
 
 可以通过nodeSelector、nodeAffinity、podAffinity以及Taints和tolerations等来将Pod调度到需要的Node上。
 
+也可以通过设置nodeName参数，将Pod调度到制定node节点上。
+
 比如，使用nodeSelector，首先给Node加上标签：
 
 ```sh
