@@ -195,6 +195,68 @@ KUBERNETES_PORT_443_TCP_PORT=443
 - 拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。
 - 生产环境中应该尽量避免使用`:latest`标签，而开发环境中可以借助`:latest`标签自动拉取最新的镜像。
 
+## dnsPolicy
+设置Pod中容器访问DNS的策略
+
+-ClusterFirst：优先基于cluster domaim 后缀，通过kube-dns查询
+-Default：优先从kubelet中配置的DNS查询
+
+注意：
+- 默认配置的dnsPolicy是ClusterFirst
+
+## hostIPC
+使用主机的IPC命名空间，默认为False
+
+## hostNetwork
+使用主机的网络命名空间，默认为False
+
+## hostPID
+使用主机的PID命名空间，默认为False
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox1
+  labels:
+    name: busybox
+spec:
+  hostIPC: true
+  hostPID: true
+  hostNetwork: true
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "3600"
+    name: busybox
+```
+
+## hostname
+设置Pod中的hostname，如果未设置默认使用PodName作为Pod的hostname
+
+## subdomain
+设置Pod的子域名，默认为空
+
+- 指定hostname为busybox-2和subdomain为default-subdomain，完整域名为`busybox-2.default-subdomain.default.svc.cluster.local`：
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox2
+  labels:
+    name: busybox
+spec:
+  hostname: busybox-2
+  subdomain: default-subdomain
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "3600"
+    name: busybox
+```
+
 ## 资源限制
 
 Kubernetes通过cgroups限制容器的CPU和内存等计算资源，包括requests（请求，调度器保证调度到资源充足的Node上）和limits（上限）等：
