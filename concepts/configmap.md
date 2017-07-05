@@ -4,16 +4,18 @@ ConfigMap用于保存配置数据的键值对，可以用来保存单个属性�
 
 ## ConfigMap创建
 
-可以使用`kubectl create configmap`从文件、目录或者key-value字符串创建等创建ConfigMap。
+可以使用`kubectl create configmap`从文件、目录或者key-value字符串创建等创建ConfigMap。也可以通过`kubectl create -f file`创建。
 
+### 从key-value字符串创建
 ```sh
-# 从key-value字符串创建ConfigMap
 $ kubectl create configmap special-config --from-literal=special.how=very
 configmap "special-config" created
 $ kubectl get configmap special-config -o go-template='{{.data}}'
 map[special.how:very]
+```
 
-# 从env文件创建
+### 从env文件创建
+```sh
 $ echo -e "a=b\nc=d" | tee config.env
 a=b
 c=d
@@ -21,8 +23,9 @@ $ kubectl create configmap special-config --from-env-file=config.env
 configmap "special-config" created
 $ kubectl get configmap special-config -o go-template='{{.data}}'
 map[a:b c:d]
-
-# 从目录创建
+```
+### 从目录创建
+```sh
 $ mkdir config
 $ echo a>config/a
 $ echo b>config/b
@@ -33,17 +36,31 @@ map[a:a
  b:b
 ]
 ```
+### 从文件Yaml/Json文件创建
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: default
+data:
+  special.how: very
+  special.type: charm
+```
+```sh
+$ kubectl create  -f  config.yaml
+configmap "special-config" created
+```
 
 ## ConfigMap使用
 
-ConfigMap可以通过多种方式在Pod中使用，比如设置环境变量、设置容器命令行参数、在Volume中创建配置文件等。
+ConfigMap可以通过三种方式在Pod中使用，三种分别方式为：设置环境变量、设置容器命令行参数以及在Volume中直接挂载文件或目录。
 
 > **[warning] 注意**
 >
 > - ConfigMap必须在Pod引用它之前创建
 > - 使用`envFrom`时，将会自动忽略无效的键
-
-### 用作环境变量
+> - Pod只能使用同一个命名空间内的ConfigMap
 
 首先创建ConfigMap：
 
@@ -52,7 +69,7 @@ $ kubectl create configmap special-config --from-literal=special.how=very --from
 $ kubectl create configmap env-config --from-literal=log_level=INFO
 ```
 
-然后以环境变量方式引用
+### 用作环境变量
 
 ```yaml
 apiVersion: v1
@@ -81,7 +98,7 @@ spec:
   restartPolicy: Never
 ```
 
-当pod运行结束后，它的输出会包括
+当Pod结束后会输出
 
 ```
 SPECIAL_LEVEL_KEY=very
@@ -123,9 +140,9 @@ spec:
 very charm
 ```
 
-### 用作Volume配置文件
+### 使用volume将ConfigMap作为文件或目录直接挂载，
 
-可以直接用ConfigMap的数据填充Volume
+将创建的ConfigMap直接挂载至Pod的/etc/config目录下，其中每一个key-value键值对都会生成一个文件，key为文件名，value为内容
 
 ```yaml
 apiVersion: v1
@@ -153,7 +170,7 @@ spec:
 very
 ```
 
-当然，也可以指定Volume的路径
+将创建的ConfigMap中special.how这个key挂载到/etc/config目录下的一个相对路径/keys/special.level。如果存在同名文件，直接覆盖。其他的key不挂载
 
 ```yaml
 apiVersion: v1
@@ -173,7 +190,13 @@ spec:
       configMap:
         name: special-config
         items:
-        - key: special.level
-          path: /keys
+        - key: special.how
+          path: keys/special.level
   restartPolicy: Never
 ```
+当Pod结束后会输出
+
+```
+very
+```
+
