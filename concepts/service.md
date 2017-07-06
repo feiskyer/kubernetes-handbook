@@ -117,6 +117,74 @@ Headless服务即不需要Cluster IP的服务，即在创建服务的时候指�
 - 不指定Selectors，但设置externalName，即上面的（2），通过CNAME记录处理
 - 指定Selectors，通过DNS A记录设置后端endpoint列表
 
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  clusterIP: None
+  ports:
+  - name: tcp-80-80-3b6tl
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: default
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx:latest
+        imagePullPolicy: Always
+        name: nginx
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 200m
+            memory: 128Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+```
+```sh
+# 查询创建的nginx服务
+$ kubectl get service --all-namespaces=true
+NAMESPACE     NAME         CLUSTER-IP      EXTERNAL-IP      PORT(S)         AGE
+default       nginx        None            <none>           80/TCP          5m
+kube-system   kube-dns     172.26.255.70   <none>           53/UDP,53/TCP   1d
+$ kubectl get pod 
+NAME                       READY     STATUS    RESTARTS   AGE       IP           NODE
+nginx-2204978904-6o5dg     1/1       Running   0          14s       172.26.2.5   10.0.0.2
+nginx-2204978904-qyilx     1/1       Running   0          14s       172.26.1.5   10.0.0.8
+$ dig @172.26.255.70  nginx.default.svc.cluster.local 
+;; ANSWER SECTION:
+nginx.default.svc.cluster.local. 30 IN	A	172.26.1.5
+nginx.default.svc.cluster.local. 30 IN	A	172.26.2.5
+```
+备注： 其中dig命令查询的信息中，部分信息省略
+
 ### 保留源IP
 
 各种类型的Service对源IP的处理方法不同：
