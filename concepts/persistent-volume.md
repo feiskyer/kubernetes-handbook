@@ -55,9 +55,23 @@ PV的回收策略（persistentVolumeReclaimPolicy）也有三种
 
 上面通过手动的方式创建了一个NFS Volume，这在管理很多Volume的时候不太方便。Kubernetes还提供了[StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses)来动态创建PV，不仅节省了管理员的时间，还可以封装不同类型的存储供PVC选用。
 
-在使用PVC时，可以通过`DefaultStorageClass` Admission Controller定义默认的Storage Class，以供未指定storageClassName的PVC使用。
+在使用PVC时，可以通过`DefaultStorageClass`准入控制给未指定storageClassName的PVC自动添加默认的StorageClass。默认的StorageClass带有annotation `storageclass.kubernetes.io/is-default-class=true`。
 
-GCE的例子：
+#### 修改默认StorageClass
+
+取消原来的默认StorageClass
+
+```sh
+kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+```
+
+标记新的默认StorageClass
+
+```sh
+kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
+#### GCE示例
 
 ```yaml
 kind: StorageClass
@@ -70,7 +84,7 @@ parameters:
   zone: us-central1-a
 ```
 
-Ceph RBD的例子：
+#### Ceph RBD示例
 
 ```yaml
  apiVersion: storage.k8s.io/v1beta1
@@ -88,7 +102,7 @@ Ceph RBD的例子：
     userSecretName: ceph-secret-user
 ```
 
-Glusterfs
+#### Glusterfs示例
 
 ```yaml
 apiVersion: storage.k8s.io/v1
@@ -108,7 +122,7 @@ parameters:
   volumetype: "replicate:3"
 ```
 
-OpenStack Cinder
+#### OpenStack Cinder示例
 
 ```yaml
 kind: StorageClass
@@ -121,7 +135,7 @@ parameters:
   availability: nova
 ```
 
-Ceph RBD
+#### Ceph RBD示例
 
 ```yaml
 apiVersion: storage.k8s.io/v1
