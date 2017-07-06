@@ -254,8 +254,8 @@ Traefik提供了易用的Ingress Controller，使用方法见<https://docs.traef
 
 ## 参考资料
 
-- http://kubernetes.io/docs/user-guide/services/
-- http://kubernetes.io/docs/user-guide/ingress/
+- https://kubernetes.io/docs/concepts/services-networking/service/
+- https://kubernetes.io/docs/concepts/services-networking/ingress/
 - https://github.com/kubernetes/contrib/tree/master/service-loadbalancer
 - https://www.nginx.com/blog/load-balancing-kubernetes-services-nginx-plus/
 - https://github.com/weaveworks/flux
