@@ -64,7 +64,9 @@ source <(kubectl completion zsh)
 ```
 
 ## 日志查看
+
 `kubectl logs`用于显示pod运行中，容器内程序输出到标准输出的内容。跟docker的logs命令类似。
+
 ```sh
   # Return snapshot logs from pod nginx with only one container
   kubectl logs nginx
@@ -77,6 +79,7 @@ source <(kubectl completion zsh)
 ```
 
 ## 连接到一个正在运行的容器
+
 `kubectl attach`用于连接到一个正在运行的容器。跟docker的attach命令类似。
 ```sh
   # Get output from running pod 123456-7890, using the first container by default
@@ -94,7 +97,9 @@ Options:
   -i, --stdin=false: Pass stdin to the container
   -t, --tty=false: Stdin is a TTY
 ```
+
 ## 在容器内部执行命令
+
 `kubectl exec`用于在一个正在运行的容器执行命令。跟docker的exec命令类似。
 ```sh
   # Get output from running 'date' from pod 123456-7890, using the first container by default
@@ -115,6 +120,7 @@ Options:
 ```
 
 ## 端口转发
+
 `kubectl port-forward`用于将本地端口转发到指定的Pod。
 ```sh
 # Listen on port 8888 locally, forwarding to 5000 in the pod
@@ -122,6 +128,7 @@ kubectl port-forward mypod 8888:5000
 ```
 
 ## API Server 代理
+
 `kubectl proxy`命令提供了一个Kubernetes API服务的HTTP代理。
 ```sh
 $ kubectl proxy --port=8080
@@ -133,7 +140,9 @@ curl http://localhost:8080/api/v1/namespaces/default/pods
 ```
 
 ## 文件拷贝
+
 `kubectl cp`支持从容器中拷贝，或者拷贝文件到容器中
+
 ```sh
   # Copy /tmp/foo_dir local directory to /tmp/bar_dir in a remote pod in the default namespace
   kubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
@@ -152,7 +161,6 @@ Options:
 ```
 注意：文件拷贝依赖于tar命令，所以容器中需要能够执行tar命令
 
-
 ## kubectl drain
 
 ```
@@ -167,6 +175,32 @@ kubectl drain NODE [Options]
 有的时候不需要evict pod，只需要标记Node不可调用，可以用`kubectl cordon`命令。
 
 恢复的话只需要运行`kubectl uncordon NODE`将NODE重新改成可调度状态。
+
+## kubectl插件
+
+kubectl插件提供了一种扩展kubectl的机制，比如添加新的子命令。插件可以以任何语言编写，只需要满足以下条件即可
+
+- 插件放在`~/.kube/plugins`或环境变量`KUBECTL_PLUGINS_PATH`指定的目录中
+- 插件的格式为`子目录/可执行文件或脚本`且子目录中要包括`plugin.yaml`配置文件
+
+比如
+
+```sh
+$ tree
+.
+└── hello
+    └── plugin.yaml
+
+1 directory, 1 file
+
+$ cat hello/plugin.yaml
+name: "hello"
+shortDesc: "Hello kubectl plugin!"
+command: "echo Hello plugins!"
+
+$ kubectl plugin hello
+Hello plugins!
+```
 
 ## 附录
 
