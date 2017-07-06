@@ -147,9 +147,97 @@ $ kubefed join gondor --host-cluster-context=rivendell --cluster-context=gondor_
 
 ## 集群查询
 
+查询注册到Federation的kubernetes集群列表
+
 ```sh
-# 查询kubernetes集群列表
 $ kubectl --context=federation get clusters
+```
+
+## ClusterSelector
+
+v1.7+支持使用annotation `federation.alpha.kubernetes.io/cluster-selector`为新对象选择kubernetes集群。该annotation的值是一个json数组，比如
+
+```yaml
+  metadata:
+    annotations:
+      federation.alpha.kubernetes.io/cluster-selector: '[{"key": "pci", "operator":
+        "In", "values": ["true"]}, {"key": "environment", "operator": "NotIn", "values":
+        ["test"]}]'
+```
+
+每条记录包含三个键值
+
+- key：集群的label名字
+- operator：包括In, NotIn, Exists, DoesNotExist, Gt, Lt
+- values：集群的label值
+
+## 策略调度
+
+> 注：仅v1.7+支持策略调度。
+
+开启策略调度的方法
+
+（1）创建ConfigMap
+
+```sh
+kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes.github.io/master/docs/tutorials/federation/scheduling-policy-admission.yaml
+```
+
+（2） 编辑federation-apiserver
+
+```
+kubectl -n federation-system edit deployment federation-apiserver
+```
+
+增加选项：
+
+```
+--admission-control=SchedulingPolicy
+--admission-control-config-file=/etc/kubernetes/admission/config.yml
+```
+
+增加volume：
+
+```
+- name: admission-config
+  configMap:
+    name: admission
+```
+
+增加volumeMounts:
+
+```
+volumeMounts:
+- name: admission-config
+  mountPath: /etc/kubernetes/admission
+```
+
+（3）部署外部策略引擎，如[Open Policy Agent (OPA)](http://www.openpolicyagent.org)
+
+```
+kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes.github.io/master/docs/tutorials/federation/policy-engine-service.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes.github.io/master/docs/tutorials/federation/policy-engine-deployment.yaml
+```
+
+（4）创建namespace `kube-federation-scheduling-policy`以供外部策略引擎使用
+
+```
+kubectl --context=federation create namespace kube-federation-scheduling-policy
+```
+
+（5）创建策略
+
+```
+wget https://raw.githubusercontent.com/kubernetes/kubernetes.github.io/master/docs/tutorials/federation/policy.rego
+kubectl --context=federation -n kube-federation-scheduling-policy create configmap scheduling-policy --from-file=policy.rego
+```
+
+（6）验证策略
+
+```
+kubectl --context=federation annotate clusters cluster-name-1 pci-certified=true
+kubectl --context=federation create -f https://raw.githubusercontent.com/kubernetes/kubernetes.github.io/master/docs/tutorials/federation/replicaset-example-policy.yaml
+kubectl --context=federation get rs nginx-pci -o jsonpath='{.metadata.annotations}'
 ```
 
 ## 集群联邦使用
@@ -190,7 +278,6 @@ $ kubectl --context=federation-cluster describe services nginx
 - `nginx.mynamespace.myfederation.`
 - `nginx.mynamespace.myfederation.svc.example.com.`
 - `nginx.mynamespace.myfederation.svc.us-central1.example.com.`
-
 
 ## 删除集群
 
