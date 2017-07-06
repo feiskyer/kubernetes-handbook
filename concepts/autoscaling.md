@@ -106,3 +106,30 @@ status:
       currentAverageUtilization: 0
       currentAverageValue: 0
 ```
+
+## 状态条件
+
+v1.7+可以在客户端中看到Kubernetes为HorizontalPodAutoscaler设置的状态条件`status.conditions`，用来判断HorizontalPodAutoscaler是否可以扩展（AbleToScale）、是否开启扩展（AbleToScale）以及是否受到限制（ScalingLimitted）。
+
+```sh
+$ kubectl describe hpa cm-test
+Name:                           cm-test
+Namespace:                      prom
+Labels:                         <none>
+Annotations:                    <none>
+CreationTimestamp:              Fri, 16 Jun 2017 18:09:22 +0000
+Reference:                      ReplicationController/cm-test
+Metrics:                        ( current / target )
+  "http_requests" on pods:      66m / 500m
+Min replicas:                   1
+Max replicas:                   4
+ReplicationController pods:     1 current / 1 desired
+Conditions:
+  Type                  Status  Reason                  Message
+  ----                  ------  ------                  -------
+  AbleToScale           True    ReadyForNewScale        the last scale time was sufficiently old as to warrant a new scale
+  ScalingActive         True    ValidMetricFound        the HPA was able to successfully calculate a replica count from pods metric http_requests
+  ScalingLimited        False   DesiredWithinRange      the desired replica count is within the acceptible range
+Events:
+```
+
