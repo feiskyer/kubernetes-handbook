@@ -51,3 +51,11 @@ $ kubectl delete namespaces new-namespace
 
 1. 删除一个namespace会自动删除所有属于该namespace的资源。
 2. `default`和`kube-system`命名空间不可删除。
+3. PersistentVolumes是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的。
+4. Events是否属于namespace取决于产生events的对象。
+
+
+## 参考文档
+
+- [Kubernetes Namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
+- [Share a Cluster with Namespaces](https://kubernetes.io/docs/tasks/administer-cluster/namespaces/)
