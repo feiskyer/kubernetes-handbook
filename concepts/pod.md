@@ -195,8 +195,8 @@ KUBERNETES_PORT_443_TCP_PORT=443
 - 拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。
 - 生产环境中应该尽量避免使用`:latest`标签，而开发环境中可以借助`:latest`标签自动拉取最新的镜像。
 
-## dnsPolicy
-设置Pod中容器访问DNS的策略
+## 访问DNS的策略
+通过设置dnsPolicy参数，设置Pod中容器访问DNS的策略
 
 -ClusterFirst：优先基于cluster domaim 后缀，通过kube-dns查询
 -Default：优先从kubelet中配置的DNS查询
@@ -204,14 +204,14 @@ KUBERNETES_PORT_443_TCP_PORT=443
 注意：
 - 默认配置的dnsPolicy是ClusterFirst
 
-## hostIPC
-使用主机的IPC命名空间，默认为False
+## 使用主机的IPC命名空间
+通过设置hostIPC参数True，使用主机的IPC命名空间，默认为False
 
-## hostNetwork
-使用主机的网络命名空间，默认为False
+## 使用主机的网络命名空间
+通过设置hostNetwork参数True，使用主机的网络命名空间，默认为False
 
-## hostPID
-使用主机的PID命名空间，默认为False
+## 使用主机的PID空间
+通过设置hostPID参数True，使用主机的PID命名空间，默认为False
 
 ```yaml
 apiVersion: v1
@@ -232,11 +232,11 @@ spec:
     name: busybox
 ```
 
-## hostname
-设置Pod中的hostname，如果未设置默认使用PodName作为Pod的hostname
+## 设置Pod中的hostname
+通过hostname参数实现，如果未设置默认使用PodName作为Pod的hostname
 
-## subdomain
-设置Pod的子域名，默认为空
+## 设置Pod的子域名
+通过subdomain参数设置Pod的子域名，默认为空
 
 - 指定hostname为busybox-2和subdomain为default-subdomain，完整域名为`busybox-2.default-subdomain.default.svc.cluster.local`：
 ```yaml
