@@ -43,12 +43,13 @@ Calico通过Pool和Profile的方式实现了docker CNM网络：
 For Kubeadm 1.5 with Kubernetes 1.5.x:
 
 ```
-kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/calico.yaml
+kubectl apply -f http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/hosted/kubeadm/1.5/calico.yaml
 ```
+
 For Kubeadm 1.6 with Kubernetes 1.6.x:
 
 ```
-kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+kubectl apply -f http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
 ```
 
 ## Calico的不足
