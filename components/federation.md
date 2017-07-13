@@ -287,7 +287,7 @@ $ kubefed unjoin gondor --host-cluster-context=rivendell
 
 ## 删除集群联邦
 
-集群联邦控制平面的删除功能还在开发中，目前卡伊通过删除namespace `federation-system`的方法来清理（注意pv不会删除）：
+集群联邦控制平面的删除功能还在开发中，目前可以通过删除namespace `federation-system`的方法来清理（注意pv不会删除）：
 
 ```sh
 $ kubectl delete ns federation-system
