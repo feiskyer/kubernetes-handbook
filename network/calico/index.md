@@ -52,6 +52,63 @@ For Kubeadm 1.6 with Kubernetes 1.6.x:
 kubectl apply -f http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
 ```
 
+这会在Pod中启动Calico-etcd，在所有Node上启动bird6、felix以及confd，并配置CNI网络为calico插件：
+
+![](calico-components.png)
+
+```sh
+# Calico相关进程
+$ ps -ef | grep calico | grep -v grep
+root      9012  8995  0 14:51 ?        00:00:00 /bin/sh -c /usr/local/bin/etcd --name=calico --data-dir=/var/etcd/calico-data --advertise-client-urls=http://$CALICO_ETCD_IP:6666 --listen-client-urls=http://0.0.0.0:6666 --listen-peer-urls=http://0.0.0.0:6667
+root      9038  9012  0 14:51 ?        00:00:01 /usr/local/bin/etcd --name=calico --data-dir=/var/etcd/calico-data --advertise-client-urls=http://10.146.0.2:6666 --listen-client-urls=http://0.0.0.0:6666 --listen-peer-urls=http://0.0.0.0:6667
+root      9326  9325  0 14:51 ?        00:00:00 bird6 -R -s /var/run/calico/bird6.ctl -d -c /etc/calico/confd/config/bird6.cfg
+root      9327  9322  0 14:51 ?        00:00:00 confd -confdir=/etc/calico/confd -interval=5 -watch --log-level=debug -node=http://10.96.232.136:6666 -client-key= -client-cert= -client-ca-keys=
+root      9328  9324  0 14:51 ?        00:00:00 bird -R -s /var/run/calico/bird.ctl -d -c /etc/calico/confd/config/bird.cfg
+root      9329  9323  1 14:51 ?        00:00:04 calico-felix
+```
+
+```sh
+# CNI网络插件配置
+$ cat /etc/cni/net.d/10-calico.conf
+{
+    "name": "k8s-pod-network",
+    "cniVersion": "0.1.0",
+    "type": "calico",
+    "etcd_endpoints": "http://10.96.232.136:6666",
+    "log_level": "info",
+    "ipam": {
+        "type": "calico-ipam"
+    },
+    "policy": {
+        "type": "k8s",
+         "k8s_api_root": "https://10.96.0.1:443",
+         "k8s_auth_token": "<token>"
+    },
+    "kubernetes": {
+        "kubeconfig": "/etc/cni/net.d/calico-kubeconfig"
+    }
+}
+
+$ cat /etc/cni/net.d/calico-kubeconfig
+# Kubeconfig file for Calico CNI plugin.
+apiVersion: v1
+kind: Config
+clusters:
+- name: local
+  cluster:
+    insecure-skip-tls-verify: true
+users:
+- name: calico
+contexts:
+- name: calico-context
+  context:
+    cluster: local
+    user: calico
+current-context: calico-context
+```
+
+![](calico-flow.png)
+
 ## Calico的不足
 
 - 既然是三层实现，当然不支持VRF
