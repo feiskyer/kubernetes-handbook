@@ -1,6 +1,6 @@
 # kube-scheduler
 
-kube-scheduler负责分配调度Pod到集群内的节点上，它监听kube-apiserve，查询还未分配Node的Pod，然后根据调度策略为这些Pod分配节点（更新Pod的`NodeName`字段）。
+kube-scheduler负责分配调度Pod到集群内的节点上，它监听kube-apiserver，查询还未分配Node的Pod，然后根据调度策略为这些Pod分配节点（更新Pod的`NodeName`字段）。
 
 调度器需要充分考虑诸多的因素：
 
