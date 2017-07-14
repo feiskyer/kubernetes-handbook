@@ -139,5 +139,6 @@
 
 - [9. 附录](appendix/index.md)
   - [生态圈](appendix/ecosystem.md)
+  - [Play-With-Kubernetes](appendix/play-with-k8s.md)
   - [FAQ](appendix/FAQ.md)
   - [参考文档](appendix/reference.md)
