@@ -1,4 +1,4 @@
-﻿# kube-dns
+# kube-dns
 
 kube-dns为Kubernetes集群提供命名服务，一般通过addon的方式部署，从v1.3版本开始，成为了一个内建的自启动服务。
 
@@ -66,5 +66,6 @@ dnsmasq-nanny -v=2 -logtostderr -configDir=/etc/k8s/dns/dnsmasq-nanny -restartDn
 sidecar --v=2 --logtostderr --probe=kubedns,127.0.0.1:10053,kubernetes.default.svc.cluster.local.,5,A --probe=dnsmasq,127.0.0.1:53,kubernetes.default.svc.cluster.local.,5,A
 ```
 
-参考链接：
-[dns-pod-service 介绍](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
+## 参考文档
+
+- [dns-pod-service 介绍](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
