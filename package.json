@@ -1,0 +1,33 @@
+{
+  "name": "kubernetes-handbook",
+  "version": "1.0.0",
+  "description": "Kubernetes是谷歌开源的容器集群管理系统，是Google多年大规模容器管理技术Borg的开源版本，也是CNCF最重要的项目之一，主要功能包括：",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "gitbook-cli": "^2.3.1",
+    "gitbook-plugin-alerts": "^0.1.1",
+    "gitbook-plugin-editlink": "^1.0.2",
+    "gitbook-plugin-github": "^2.0.0",
+    "gitbook-plugin-github-buttons": "^2.1.0",
+    "gitbook-plugin-mermaid": "^0.0.9",
+    "gitbook-plugin-page-treeview": "^2.9.7",
+    "gitbook-plugin-search-plus": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feiskyer/kubernetes-handbook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/feiskyer/kubernetes-handbook/issues"
+  },
+  "homepage": "https://github.com/feiskyer/kubernetes-handbook#readme"
+}
