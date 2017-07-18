@@ -1,13 +1,13 @@
-# Kargo 集群安裝
+# Kubespray 集群安裝
 
-[Kargo](https://github.com/kubernetes-incubator/kargo) 是 Kubernetes incubator 中的项目，目标是提供 Production Ready Kubernetes 部署方案，该项目基础是通过 Ansible Playbook 来定义系统与 Kubernetes 集群部署的任务，具有以下几个特点：
+[Kubespray](https://github.com/kubernetes-incubator/kubespray) 是 Kubernetes incubator 中的项目，目标是提供 Production Ready Kubernetes 部署方案，该项目基础是通过 Ansible Playbook 来定义系统与 Kubernetes 集群部署的任务，具有以下几个特点：
 
 * 可以部署在 AWS, GCE, Azure, OpenStack以及裸机上.
 * 部署 High Available Kubernetes 集群.
 * 可组合性(Composable)，可自行选择 Network Plugin (flannel, calico, canal, weave) 来部署.
 * 支持多种 Linux distributions(CoreOS, Debian Jessie, Ubuntu 16.04, CentOS/RHEL7).
 
-本篇将说明如何通过 Kargo 部署 Kubernetes 至裸机节点，安装版本如下所示：
+本篇将说明如何通过 Kubespray 部署 Kubernetes 至裸机节点，安装版本如下所示：
 
 * Kubernetes v1.6.1
 * Etcd v3.1.6
@@ -40,7 +40,7 @@
 $ echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
 ```
 
-* `部署节点(这边为 master1)`安装 Ansible > 2.2.0。
+* `部署节点(这边为 master1)`安装 Ansible >= 2.3.0。
 
 Ubuntu 16.04 安装 Ansible:
 ```sh
@@ -50,32 +50,32 @@ $ sudo apt-add-repository -y ppa:ansible/ansible
 $ sudo apt-get update && sudo apt-get install -y ansible git cowsay python-pip python-netaddr libssl-dev
 ```
 
-##安装 Kargo 与准备部署资讯
-首先通过 pypi 安装 kargo-cli，虽然官方说已经改成 Go 语言版本的工具，但是根本没在更新，所以目前暂时用 pypi 版本：
+##安装 Kubespray 与准备部署资讯
+首先通过 pypi 安装 kubespray-cli，虽然官方说已经改成 Go 语言版本的工具，但是根本没在更新，所以目前暂时用 pypi 版本：
 ```sh
-$ sudo pip install -U kargo
+$ sudo pip install -U kubespray
 ```
 
-安裝完成後，新增配置檔`/etc/kargo/kargo.yml`，並加入以下內容：
+安裝完成後，新增配置檔`/etc/kubespray/kubespray.yml`，並加入以下內容：
 ```sh
-$ mkdir /etc/kargo
-$ cat <<EOF > /etc/kargo/kargo.yml
-kargo_git_repo: "https://github.com/kubernetes-incubator/kargo.git"
+$ mkdir /etc/kubespray
+$ cat <<EOF > /etc/kubespray/kubespray.yml
+kubespray_git_repo: "https://github.com/kubernetes-incubator/kubespray.git"
 # Logging options
 loglevel: "info"
 EOF
 ```
 
-接着用 kargo cli 来产生 inventory 文件：
+接着用 kubespray cli 来产生 inventory 文件：
 ```sh
-$ kargo prepare --masters master1 --etcds master1 --nodes node1 node2 node3
-$ cat ~/.kargo/inventory/inventory.cfg
+$ kubespray prepare --masters master1 --etcds master1 --nodes node1 node2 node3
+$ cat ~/.kubespray/inventory/inventory.cfg
 ```
 > 也可以自己新建`inventory`来描述部署节点。
 
 完成后通过以下指令进行部署 Kubernetes 集群：
 ```sh
-$ time kargo deploy --verbose -u root -k .ssh/id_rsa -n flannel
+$ time kubespray deploy --verbose -u root -k .ssh/id_rsa -n flannel
 Run kubernetes cluster deployment with the above command ? [Y/n]y
 ...
 master1                    : ok=368  changed=89   unreachable=0    failed=0
