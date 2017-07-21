@@ -130,13 +130,22 @@ kubectl port-forward mypod 8888:5000
 ## API Server 代理
 
 `kubectl proxy`命令提供了一个Kubernetes API服务的HTTP代理。
+
 ```sh
 $ kubectl proxy --port=8080
 Starting to serve on 127.0.0.1:8080
 ```
+
 可以通过代理地址`http://localhost:8080/api/`来直接访问Kubernetes API，比如查询Pod列表
+
 ```sh
 curl http://localhost:8080/api/v1/namespaces/default/pods
+```
+
+注意，如果通过`--address`指定了非localhost的地址，则访问8080端口时会报未授权的错误，可以设置`--accept-hosts`来避免这个问题（**不推荐生产环境这么设置**）：
+
+```sh
+kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$'
 ```
 
 ## 文件拷贝
