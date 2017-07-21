@@ -78,7 +78,6 @@ curl -L -s https://git.io/kube-dashboard  | sed 's/targetPort: 9090/targetPort: 
 
 稍等一会，在页面上方会显示Dashborad服务的端口号，点击端口号就可以访问Dashboard页面。
 
-
 ## 添加新的节点
 
 点击"ADD NEW INSTANCE"，并在新INSTANCE的TERMINAL中输入前面第一步记住的`kubeadm join`命令，如
