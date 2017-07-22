@@ -281,3 +281,11 @@ v1.7+支持Node授权，配合`NodeRestriction`准入控制来限制kubelet仅�
 `--authorization-mode=Node,RBAC --admission-control=...,NodeRestriction,...`
 
 注意，kubelet认证需要使用`system:nodes`组，并使用用户名`system:node:<nodeName>`。
+
+
+## 参考文档
+
+- [Authenticating](https://kubernetes.io/docs/admin/authentication/)
+- [Authorization](https://kubernetes.io/docs/admin/authorization/)
+- [Bootstrap Tokens](https://kubernetes.io/docs/admin/bootstrap-tokens/)
+- [Managing Service Accounts](https://kubernetes.io/docs/admin/service-accounts-admin/)
