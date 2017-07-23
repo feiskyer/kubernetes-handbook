@@ -1,6 +1,6 @@
 # 访问控制
 
-Kubernetes 对于访问 API 来说提供了三个步骤的安全措施来进行访问控制：认证、授权和 Admission Control。认证解决用户是谁的问题，授权解决用户能做什么的问题，Admission Control更多是资源管理方面的作用。通过合理的权限管理，能够保证系统的安全可靠。
+Kubernetes 对 API 访问提供了三种安全访问控制措施：认证、授权和 Admission Control。认证解决用户是谁的问题，授权解决用户能做什么的问题，Admission Control则是资源管理方面的作用。通过合理的权限管理，能够保证系统的安全可靠。
 
 Kubernetes集群的所有操作基本上都是通过kube-apiserver这个组件进行的，它提供HTTP RESTful形式的API供集群内外客户端调用。需要注意的是：认证授权过程只存在HTTPS形式的API中。也就是说，如果客户端使用HTTP连接到kube-apiserver，那么是不会进行认证授权的。所以说，可以这么设置，在集群内部组件间通信使用HTTP，集群外部就使用HTTPS，这样既增加了安全性，也不至于太复杂。
 
