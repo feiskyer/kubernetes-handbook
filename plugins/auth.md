@@ -1,6 +1,12 @@
 # 访问控制
 
-Kubernetes提供了多种访问控制机制，包括用户认证、授权以及准入控制等。
+Kubernetes 对 API 访问提供了三种安全访问控制措施：认证、授权和 Admission Control。认证解决用户是谁的问题，授权解决用户能做什么的问题，Admission Control则是资源管理方面的作用。通过合理的权限管理，能够保证系统的安全可靠。
+
+Kubernetes集群的所有操作基本上都是通过kube-apiserver这个组件进行的，它提供HTTP RESTful形式的API供集群内外客户端调用。需要注意的是：认证授权过程只存在HTTPS形式的API中。也就是说，如果客户端使用HTTP连接到kube-apiserver，那么是不会进行认证授权的。所以说，可以这么设置，在集群内部组件间通信使用HTTP，集群外部就使用HTTPS，这样既增加了安全性，也不至于太复杂。
+
+下图是 API 访问要经过的三个步骤，前面两个是认证和授权，第三个是 Admission Control。
+
+![](images/authentication.png)
 
 ## 认证
 
@@ -275,3 +281,11 @@ v1.7+支持Node授权，配合`NodeRestriction`准入控制来限制kubelet仅�
 `--authorization-mode=Node,RBAC --admission-control=...,NodeRestriction,...`
 
 注意，kubelet认证需要使用`system:nodes`组，并使用用户名`system:node:<nodeName>`。
+
+
+## 参考文档
+
+- [Authenticating](https://kubernetes.io/docs/admin/authentication/)
+- [Authorization](https://kubernetes.io/docs/admin/authorization/)
+- [Bootstrap Tokens](https://kubernetes.io/docs/admin/bootstrap-tokens/)
+- [Managing Service Accounts](https://kubernetes.io/docs/admin/service-accounts-admin/)
