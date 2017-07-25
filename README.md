@@ -18,7 +18,7 @@ Kubernetes发展非常迅速，已经成为容器编排领域的领导者。Kube
 
 可以通过[GitBook](https://feisky.gitbooks.io/kubernetes)或者[Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)来在线阅读。
 
-也可以下载[ePub](https://www.gitbook.com/download/epub/book/feisky/kubernetes)或者[PDF](https://www.gitbook.com/download/pdf/book/feisky/kubernetes)版本。
+也可以点击[这里](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)下载InfoQ帮助制作和发布的ePub、PDF和MOBI电子书。
 
 ## 项目源码
 
