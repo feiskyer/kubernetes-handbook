@@ -9,6 +9,14 @@ CNI插件包括两部分：
   - 清理网络: DelNetwork(net *NetworkConfig, rt *RuntimeConf) error
 - IPAM Plugin负责给容器分配IP地址，主要实现包括host-local和dhcp。
 
+Kubernetes Pod 中的其他容器都是Pod所属pause容器的网络，创建过程为：
+
+1. kubelet 先创建pause容器生成network namespace
+2. 调用网络CNI driver
+3. CNI driver 根据配置调用具体的cni 插件
+4. cni 插件给pause 容器配置网络
+5. pod 中其他的容器都使用 pause 容器的网络
+
 ![](Chart_Container-Network-Interface-Drivers.png)
 
 所有CNI插件均支持通过环境变量和标准输入传入参数：
