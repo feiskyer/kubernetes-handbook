@@ -14,7 +14,9 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
 
 下面的例子展示了bridge+[portmap](https://github.com/containernetworking/plugins/tree/master/plugins/meta/portmap)插件的用法。
 
-```
+首先，配置CNI网络使用bridge+portmap插件：
+
+```sh
 # cat /root/mynet.conflist
 {
   "name": "mynet",
@@ -41,7 +43,9 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
 }
 ```
 
-```
+然后通过`CAP_ARGS`设置端口映射参数：
+
+```sh
 # export CAP_ARGS='{
     "portMappings": [
         {
@@ -52,7 +56,11 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
         }
     ]
 }'
+```
 
+测试添加网络接口：
+
+```sh
 # ip netns add test
 # CNI_PATH=/opt/cni/bin NETCONFPATH=/root ./cnitool add mynet /var/run/netns/test
 {
@@ -88,12 +96,17 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
 }
 ```
 
-```
+可以从iptables规则中看到添加的规则：
+
+```sh
 # iptables-save | grep 10.244.10.7
 -A CNI-DN-be1eedf7a76853f303ebd -d 127.0.0.1/32 -p tcp -m tcp --dport 9090 -j DNAT --to-destination 10.244.10.7:80
 -A CNI-SN-be1eedf7a76853f303ebd -s 127.0.0.1/32 -d 10.244.10.7/32 -p tcp -m tcp --dport 80 -j MASQUERADE
 ```
 
+最后，清理网络接口：
+
 ```
 # CNI_PATH=/opt/cni/bin NETCONFPATH=/root ./cnitool del mynet /var/run/netns/test
 ```
+
