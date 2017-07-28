@@ -12,7 +12,9 @@ Kubernetes是谷歌开源的容器集群管理系统，是Google多年大规模�
 
 Kubernetes发展非常迅速，已经成为容器编排领域的领导者。
 
-![](media/14731186543149.jpg)
+![](media/infographic_ExcitedAboutKubernetes_Sep.png)
+
+(图片来自[Apprenda](https://apprenda.com/blog/customers-really-using-kubernetes/))
 
 ## Kubernetes架构
 

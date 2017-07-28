@@ -112,6 +112,7 @@
   - [滚动升级](apps/service-rolling-update.md)
   - [Helm](apps/helm-app.md)
     - [Helm参考](apps/helm.md)
+    - [Helm原理](apps/helm-basic.md)
   - [Draft](apps/draft.md)
   - [Operator](apps/operator.md)
   - [Deis workflow](apps/deis.md)

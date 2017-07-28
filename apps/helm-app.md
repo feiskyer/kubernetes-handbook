@@ -1,4 +1,4 @@
-# Kubernetes应用管理--Helm
+# Helm
 
 [Helm](https://github.com/kubernetes/helm)是一个类似于yum/apt/[homebrew](https://brew.sh/)的Kubernetes应用管理工具。Helm使用[Chart](https://github.com/kubernetes/charts)来管理Kubernetes manifest文件。
 
@@ -75,16 +75,15 @@ To connect to your database:
 
 ## Helm工作原理
 
-见[Helm工作原理](basic.md)。
+见[Helm工作原理](helm-basic.md)。
 
-## 链接
+## Helm Repository
 
-### Helm文档
+官方repository:
 
-* https://github.com/kubernetes/helm
 * https://github.com/kubernetes/charts
 
-### 第三方Helm repository
+第三方repository:
 
 * https://github.com/deis/charts
 * https://github.com/bitnami/charts
@@ -94,10 +93,11 @@ To connect to your database:
 * https://github.com/helm/charts
 * https://github.com/jackzampolin/tick-charts
 
-### 常用Helm插件
+## 常用Helm插件
 
 1.  [helm-tiller](https://github.com/adamreese/helm-tiller) - Additional commands to work with Tiller
 2.  [Technosophos's Helm Plugins](https://github.com/technosophos/helm-plugins) - Plugins for GitHub, Keybase, and GPG
 3.  [helm-template](https://github.com/technosophos/helm-template) - Debug/render templates client-side
 4.  [Helm Value Store](https://github.com/skuid/helm-value-store) - Plugin for working with Helm deployment values
 5. [Drone.io Helm Plugin](http://plugins.drone.io/ipedrazas/drone-helm/) - Run Helm inside of the Drone CI/CD system
+
