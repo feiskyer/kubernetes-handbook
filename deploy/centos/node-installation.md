@@ -44,8 +44,7 @@ Before=docker.service
 [Service]
 Type=notify
 EnvironmentFile=/etc/sysconfig/flanneld
-EnvironmentFile=-/etc/sysconfig/docker-network
-ExecStart=/usr/bin/flanneld-start \
+ExecStart=/usr/bin/flanneld \
   -etcd-endpoints=${ETCD_ENDPOINTS} \
   -etcd-prefix=${ETCD_PREFIX} \
   FLANNEL_OPTIONS
