@@ -1,4 +1,4 @@
-# 访问控制
+﻿# 访问控制
 
 Kubernetes 对 API 访问提供了三种安全访问控制措施：认证、授权和 Admission Control。认证解决用户是谁的问题，授权解决用户能做什么的问题，Admission Control则是资源管理方面的作用。通过合理的权限管理，能够保证系统的安全可靠。
 
@@ -113,15 +113,19 @@ API Server需要配置
 clusters:
   - name: name-of-remote-authn-service
     cluster:
-      certificate-authority: /path/to/ca.pem         # CA for verifying the remote service.
-      server: https://authn.example.com/authenticate # URL of remote service to query. Must use 'https'.
-
+      # CA for verifying the remote service.
+      certificate-authority: /path/to/ca.pem  
+      # URL of remote service to query. Must use 'https'.
+      server: https://authn.example.com/authenticate 
+      
 # users refers to the API server's webhook configuration.
 users:
   - name: name-of-api-server
     user:
-      client-certificate: /path/to/cert.pem # cert for the webhook plugin to use
-      client-key: /path/to/key.pem          # key matching the cert
+      # cert for the webhook plugin to use
+      client-certificate: /path/to/cert.pem 
+       # key matching the cert
+      client-key: /path/to/key.pem         
 
 # kubeconfig files require a context. Provide one for the API server.
 current-context: webhook
@@ -176,7 +180,7 @@ API Server需要配置
 
 ## 授权
 
-认证之后的请求就到了授权模块。跟认证类似，Kubernetes也支持多种授权机制，并支持同时开启多个授权插件（只要有一个验证通过即可）。如果授权成功，则用户的请求会发送到准入控制模块做进一步的请求验证；而对于授权失败的请求则返回HTTP 403.
+授权主要是用于对集群资源的访问控制，通过检查请求包含的相关属性值，与相对应的访问策略相比较，API请求必须满足某些策略才能被处理。跟认证类似，Kubernetes也支持多种授权机制，并支持同时开启多个授权插件（只要有一个验证通过即可）。如果授权成功，则用户的请求会发送到准入控制模块做进一步的请求验证；对于授权失败的请求则返回HTTP 403。
 
 Kubernetes授权仅处理以下的请求属性：
 
@@ -203,9 +207,34 @@ Kubernetes授权仅处理以下的请求属性：
 使用ABAC授权需要API Server配置`--authorization-policy-file=SOME_FILENAME`，文件格式为每行一个json对象，比如
 
 ```json
-{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"group":"system:authenticated",  "nonResourcePath": "*", "readonly": true}}
-{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"group":"system:unauthenticated", "nonResourcePath": "*", "readonly": true}}
-{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"admin",     "namespace": "*",              "resource": "*",         "apiGroup": "*"                   }}
+{
+    "apiVersion": "abac.authorization.kubernetes.io/v1beta1",
+    "kind": "Policy",
+    "spec": {
+        "group": "system:authenticated",
+        "nonResourcePath": "*",
+        "readonly": true
+    }
+}
+{
+    "apiVersion": "abac.authorization.kubernetes.io/v1beta1",
+    "kind": "Policy",
+    "spec": {
+        "group": "system:unauthenticated",
+        "nonResourcePath": "*",
+        "readonly": true
+    }
+}
+{
+    "apiVersion": "abac.authorization.kubernetes.io/v1beta1",
+    "kind": "Policy",
+    "spec": {
+        "user": "admin",
+        "namespace": "*",
+        "resource": "*",
+        "apiGroup": "*"
+    }
+}
 ```
 
 ### RBAC授权
@@ -221,15 +250,19 @@ Kubernetes授权仅处理以下的请求属性：
 clusters:
   - name: name-of-remote-authz-service
     cluster:
-      certificate-authority: /path/to/ca.pem      # CA for verifying the remote service.
-      server: https://authz.example.com/authorize # URL of remote service to query. Must use 'https'.
-
+      # CA for verifying the remote service.
+      certificate-authority: /path/to/ca.pem  
+      # URL of remote service to query. Must use 'https'.
+      server: https://authz.example.com/authorize 
+      
 # users refers to the API Server's webhook configuration.
 users:
   - name: name-of-api-server
     user:
-      client-certificate: /path/to/cert.pem # cert for the webhook plugin to use
-      client-key: /path/to/key.pem          # key matching the cert
+      # cert for the webhook plugin to use
+      client-certificate: /path/to/cert.pem 
+       # key matching the cert
+      client-key: /path/to/key.pem         
 
 # kubeconfig files require a context. Provide one for the API Server.
 current-context: webhook
@@ -289,3 +322,6 @@ v1.7+支持Node授权，配合`NodeRestriction`准入控制来限制kubelet仅�
 - [Authorization](https://kubernetes.io/docs/admin/authorization/)
 - [Bootstrap Tokens](https://kubernetes.io/docs/admin/bootstrap-tokens/)
 - [Managing Service Accounts](https://kubernetes.io/docs/admin/service-accounts-admin/)
+- [ABAC Mode](https://kubernetes.io/docs/admin/authorization/abac/)
+- [Webhook Mode](https://kubernetes.io/docs/admin/authorization/webhook/)
+- [Node Authorization](https://kubernetes.io/docs/admin/authorization/node/)
