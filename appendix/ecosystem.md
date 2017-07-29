@@ -150,7 +150,7 @@
     * [Sematext](https://sematext.com/)
     * [Sumo Logic](https://github.com/jdumars/sumokube)
 * RPC
-    * Grpc
+    * [Grpc](https://github.com/grpc/grpc)
     * [Micro](https://github.com/micro/kubernetes)
 * Load balancing
     * Nginx Plus
