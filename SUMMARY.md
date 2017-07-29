@@ -1,4 +1,4 @@
-# Summary
+﻿# Summary
 
 - [前言](README.md)
 - [如何贡献](CONTRIBUTING.md)
@@ -37,7 +37,7 @@
     - [ConfigMap](concepts/configmap.md)
     - [PodPreset](concepts/podpreset.md)
     - [ThirdPartyResources](concepts/thirdpartyresources.md)
-    - [[CustomResourceDefinition](concepts/customresourcedefinition.md)]
+    - [CustomResourceDefinition](concepts/customresourcedefinition.md)
 - [3. 核心组件](components/index.md)
   - [3.1 etcd](components/etcd.md)
   - [3.2 API Server](components/apiserver.md)
