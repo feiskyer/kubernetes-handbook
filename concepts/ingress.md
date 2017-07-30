@@ -8,11 +8,17 @@
 - 集群：Kubernetes管理的一组服务器集合；
 - 边界路由器：为局域网和Internet路由数据包的路由器，执行防火墙保护局域网络；
 - 集群网络：遵循Kubernetes[网络模型](https://kubernetes.io/docs/admin/networking/)实现群集内的通信的具体实现，比如[flannel](https://github.com/coreos/flannel#flannel) 和 [OVS](https://kubernetes.io/docs/admin/ovs-networking/)。
-- 服务：使用标签选择器标识一组pod成为的Kubernetes [Service](https://kubernetes.io/docs/user-guide/services/)。 除非另有说明，否则服务的虚拟IP仅可在集群内部访问。
+- 服务：Kubernetes 的服务(Service)是使用标签选择器标识的一组pod [Service](https://kubernetes.io/docs/user-guide/services/)。 除非另有说明，否则服务的虚拟IP仅可在集群内部访问。
 
 ## 什么是Ingress？
 
-通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。
+通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy通过边缘路由器(edge router)将其转发给相关的Pod或者丢弃。如下图所示
+```
+   internet
+        |
+  ------------
+  [ Services ]
+```
 
 而Ingress就是为进入集群的请求提供路由规则的集合，如下图所示
 
@@ -226,6 +232,10 @@ test      -                       178.91.123.132
 当然，也可以通过`kubectl replace -f new-ingress.yaml`命令来更新，其中new-ingress.yaml是修改过的Ingress yaml。
 
 ## Ingress Controller
+
+Ingress 正常工作需要集群中运行 Ingress Controller。Ingress Controller 与其他作为 kube-controller-manager 中的在集群创建时自动启动的 controller 成员不同，需要用户选择最适合自己集群的 Ingress Controller，或者自己实现一个。  
+
+Ingress Controller 以 Kubernetes Pod 的方式部署，以 daemon 方式运行，保持 watch Apiserver 的 /ingress 接口以更新 Ingress 资源，以满足 Ingress 的请求.
 
 - [traefik ingress](../practice/service-discovery-lb/traefik-ingress-installation.md)提供了一个traefik ingress的实践案例
 - [kubernetes/ingress](https://github.com/kubernetes/ingress/tree/master)提供了更多的Ingress示例
