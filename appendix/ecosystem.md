@@ -61,11 +61,11 @@
     - [https://www.joyent.com/
         <wbr>containerpilot](https://www.joyent.com/containerpilot)
 * PaaS on Kubernetes
-    - Openshift
-    - Deis Workflow
+    - [Openshift](http://openshift.com/)
+    - [Deis Workflow](https://deis.com/workflow/)
     - Gondor/Kel
     - WSO2
-    - Rancher
+    - [Rancher](http://rancher.com/)
     - Kumoru
 * Serverless implementations
     - Funktion
