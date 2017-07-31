@@ -74,16 +74,6 @@ kind: CronTab
 metadata:
   finalizers:
   - finalizer.stable.example.com
-spec:
-  group: stable.example.com
-  version: v1
-  scope: Namespaced
-  names:
-    plural: crontabs
-    singular: crontab
-    kind: CronTab
-    shortNames:
-    - ct
 ```
 
 Finalizer指定后，客户端删除对象的操作只会设置`metadata.deletionTimestamp`而不是直接删除。这会触发正在监听CRD的控制器，控制器执行一些删除前的清理操作，从列表中删除自己的finalizer，然后再重新发起一个删除操作。此时，被删除的对象才会真正删除。
