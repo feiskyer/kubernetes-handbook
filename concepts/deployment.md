@@ -695,7 +695,7 @@ $ echo $?
 
 你可以设置Deployment中的 `.spec.revisionHistoryLimit` 项来指定保留多少旧的ReplicaSet。 余下的将在后台被当作垃圾收集。默认的，所有的revision历史都会被保留。在未来的版本中，将会更改为2。
 
-**注意：** 将该值设置为0，将导致所有的Deployment历史记录都会被清除，该Deploynent就无法再回退了。
+**注意：** 将该值设置为0，将导致该Deployment的所有历史记录都被清除，也就无法回退了。
 
 ## 用例
 
