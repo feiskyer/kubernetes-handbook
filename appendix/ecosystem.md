@@ -62,10 +62,15 @@
         <wbr>containerpilot](https://www.joyent.com/containerpilot)
 * PaaS on Kubernetes
     - [Openshift](http://openshift.com/)
+     - Red Hat® OpenShift is a container application platform that brings docker and Kubernetes to the enterprise.
     - [Deis Workflow](https://deis.com/workflow/)
+     - The open source PaaS for Kubernetes.
     - [Gondor/Kel](http://www.kelproject.com/)
+     - An open-source, Kubernetes-based PaaS built in Python and Go
     - [WSO2](http://wso2.com/)
+     - WSO2 Private PaaS delivers standard, on-premise, application, integration, data, identity, governance, and analytics Platform as a Service (PaaS) to your IT project teams.  
     - [Rancher](http://rancher.com/)
+     - Simple, easy-to-use container management.It contains Cattle,Kubernetes,Messos and Docker Swarm orchestrations.
 * Serverless implementations
     - Funktion
     - [Fission](https://github.com/platform9/fission)
