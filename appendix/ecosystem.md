@@ -63,10 +63,9 @@
 * PaaS on Kubernetes
     - [Openshift](http://openshift.com/)
     - [Deis Workflow](https://deis.com/workflow/)
-    - Gondor/Kel
-    - WSO2
+    - [Gondor/Kel](http://www.kelproject.com/)
+    - [WSO2](http://wso2.com/)
     - [Rancher](http://rancher.com/)
-    - Kumoru
 * Serverless implementations
     - Funktion
     - [Fission](https://github.com/platform9/fission)
