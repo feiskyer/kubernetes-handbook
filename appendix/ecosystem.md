@@ -59,18 +59,27 @@
     - [https://www.joyent.com/
         <wbr>containerpilot](https://www.joyent.com/containerpilot)
 * PaaS on Kubernetes
-    - Openshift
-    - Deis Workflow
-    - Gondor/Kel
-    - WSO2
-    - Rancher
-    - Kumoru
+    - [Openshift](http://openshift.com/)
+     - Red Hat® OpenShift is a container application platform that brings docker and Kubernetes to the enterprise.
+    - [Deis Workflow](https://deis.com/workflow/)
+     - The open source PaaS for Kubernetes.
+    - [Gondor/Kel](http://www.kelproject.com/)
+     - An open-source, Kubernetes-based PaaS built in Python and Go
+    - [WSO2](http://wso2.com/)
+     - WSO2 Private PaaS delivers standard, on-premise, application, integration, data, identity, governance, and analytics Platform as a Service (PaaS) to your IT project teams.  
+    - [Rancher](http://rancher.com/)
+     - Simple, easy-to-use container management.It contains Cattle,Kubernetes,Messos and Docker Swarm orchestrations.
 * Serverless implementations
-    - Funktion
+    - [Funktion](https://funktion.fabric8.io/)
+     - open source event based lambda programming for kubernetes 
     - [Fission](https://github.com/platform9/fission)
-    - Kubeless
-    - OpenWhisk
-    - Iron.io
+     - Fission: Serverless Functions for Kubernetes
+    - [Kubeless](https://github.com/kubeless/kubeless)
+     - kubeless is a Kubernetes-native serverless framework. It is currently under active development lead by the Kubernetes group at Bitnami,
+    - [OpenWhisk](http://openwhisk.incubator.apache.org/)
+     - Apache OpenWhisk is a serverless, open source cloud platform
+    - [Iron.io](https://www.iron.io/)
+     - Serverless Multi-cloud for Enteprise, Open Source.
 * Application frameworks
     * [Spring Cloud](http://www.nicolaferraro.stfi.re/2016/10/23/hot-reconfiguration-of-microservices-on-kubernetes/)
 * API Management
