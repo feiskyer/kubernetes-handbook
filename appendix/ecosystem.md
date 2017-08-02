@@ -27,7 +27,6 @@
     - https://stackpoint.io/#/
     - [http://gravitational.com/
         <wbr>telekube/](http://gravitational.com/telekube/)
-    - https://kcluster.io/
     - [http://www.stratoscale.com/
         <wbr>products/kubernetes-as-a-
         <wbr>service/](http://www.stratoscale.com/products/kubernetes-as-a-service/)
@@ -55,7 +54,6 @@
         <wbr>VMware-Introduces-Kubernetes-
         <wbr>as-a-Service-on-Photon-
         <wbr>Platform.2104598.html](http://www.vmware.com/company/news/releases/vmw-newsfeed.VMware-Introduces-Kubernetes-as-a-Service-on-Photon-Platform.2104598.html)
-    - http://mantl.io/
     - [https://github.com/hyperhq/
         <wbr>hypernetes](https://github.com/hyperhq/hypernetes)
     - [https://www.joyent.com/

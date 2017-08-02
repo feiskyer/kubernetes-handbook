@@ -27,5 +27,5 @@ Romana是Panic Networks在2016年提出的开源项目，旨在解决Overlay方�
 
 - <http://romana.io/>
 - <https://github.com/romana/romana>
-- <http://romana.io/how/background/>
+- <http://romana.io/how/romana_basics/>
 

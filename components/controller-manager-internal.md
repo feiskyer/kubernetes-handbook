@@ -46,7 +46,7 @@ cloud-controller-manager在Kubernetes启用Cloud Provider的时候才需要，�
 
 在启动时设置`--leader-elect=true`后，controller manager会使用多节点选主的方式选择主节点。只有主节点才会调用`StartControllers()`启动所有控制器，而其他从节点则仅执行选主算法。
 
-多节点选主的实现方法见[leaderelection.go](https://github.com/kubernetes/kubernetes/blob/master/pkg/client/leaderelection/leaderelection.go)。它实现了两种资源锁（Endpoint或ConfigMap，kube-controller-manager和cloud-controller-manager都使用Endpoint锁），通过更新资源的Annotation（`control-plane.alpha.kubernetes.io/leader`），来确定主从关系。
+多节点选主的实现方法见[leaderelection.go](https://github.com/kubernetes/client-go/blob/master/tools/leaderelection/leaderelection.go)。它实现了两种资源锁（Endpoint或ConfigMap，kube-controller-manager和cloud-controller-manager都使用Endpoint锁），通过更新资源的Annotation（`control-plane.alpha.kubernetes.io/leader`），来确定主从关系。
 
 ## 如何保证高性能
 

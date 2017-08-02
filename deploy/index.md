@@ -3,7 +3,7 @@
 - [单机部署](single.md)
 - [集群部署](cluster.md)
   - [kubeadm](kubeadm.md)
-  - [kargo](kargo.md)
+  - [Kubespray](kubespray.md)
   - [frakti](frakti/index.md)
   - [证书生成示例](certificate.md)
 - [kubectl客户端](kubectl.md)

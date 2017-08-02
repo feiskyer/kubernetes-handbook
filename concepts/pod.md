@@ -549,5 +549,5 @@ fe00::2	ip6-allrouters
 
 - [What is Pod?](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes Pod Lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
-- [Container capabilities](https://kubernetes.io/docs/concepts/policy/container-capabilities/)
+- [Container capabilities](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container)
 - [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)

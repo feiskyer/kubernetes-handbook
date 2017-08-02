@@ -313,7 +313,9 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 
 ## [CNI Plugin Chains](cni-chain.md)
 
-CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行每个插件。这对支持portmapping、vm等非常有帮助。
+CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行每个插件。这对支持端口映射（portmapping）、虚拟机等非常有帮助。
+
+使用方法请参考[这里](cni-chain.md)。
 
 ## 其他
 
