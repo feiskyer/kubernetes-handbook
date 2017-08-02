@@ -35,6 +35,7 @@ Linkerd路由将请求处理分解为多个步骤
 
 - (1) IDENTIFICATION：为实际请求设置逻辑名字（即请求的目的服务），如默认将HTTP请求`GET http://example/hello`赋值名字`/svc/example`
 - (2) BINDING：dtabs负责将逻辑名与客户端名字绑定起来，客户端名字总是以`/#`或`/$`开头，比如
+
 ```sh
 # 假设dtab为
 /env => /#/io.l5d.serversets/discovery
@@ -45,6 +46,7 @@ Linkerd路由将请求处理分解为多个步骤
 /env/prod/users
 /#/io.l5d.serversets/discovery/prod/users
 ```
+
 - (3) RESOLUTION：namer负责解析客户端名，并得到真实的服务地址（IP+端口）
 - (4) LOAD BALANCING：根据负载均衡算法选择如何发送请求
 
