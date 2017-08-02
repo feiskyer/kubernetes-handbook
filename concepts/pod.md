@@ -196,21 +196,22 @@ KUBERNETES_PORT_443_TCP_PORT=443
 - 生产环境中应该尽量避免使用`:latest`标签，而开发环境中可以借助`:latest`标签自动拉取最新的镜像。
 
 ## 访问DNS的策略
+
 通过设置dnsPolicy参数，设置Pod中容器访问DNS的策略
 
--ClusterFirst：优先基于cluster domaim 后缀，通过kube-dns查询
--Default：优先从kubelet中配置的DNS查询
-
-注意：
-- 默认配置的dnsPolicy是ClusterFirst
+- ClusterFirst：优先基于cluster domain 后缀，通过kube-dns查询 (默认策略)
+- Default：优先从kubelet中配置的DNS查询
 
 ## 使用主机的IPC命名空间
+
 通过设置hostIPC参数True，使用主机的IPC命名空间，默认为False
 
 ## 使用主机的网络命名空间
+
 通过设置hostNetwork参数True，使用主机的网络命名空间，默认为False
 
 ## 使用主机的PID空间
+
 通过设置hostPID参数True，使用主机的PID命名空间，默认为False
 
 ```yaml
@@ -233,12 +234,15 @@ spec:
 ```
 
 ## 设置Pod中的hostname
+
 通过hostname参数实现，如果未设置默认使用PodName作为Pod的hostname
 
 ## 设置Pod的子域名
-通过subdomain参数设置Pod的子域名，默认为空
 
-- 指定hostname为busybox-2和subdomain为default-subdomain，完整域名为`busybox-2.default-subdomain.default.svc.cluster.local`：
+通过subdomain参数设置Pod的子域名，默认为空。
+
+比如，指定hostname为busybox-2和subdomain为default-subdomain，完整域名为`busybox-2.default-subdomain.default.svc.cluster.local`：
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -254,6 +258,22 @@ spec:
     command:
       - sleep
       - "3600"
+    name: busybox
+```
+
+注意：
+
+- 默认情况下，DNS为Pod生成的A记录格式为`pod-ip-address.my-namespace.pod.cluster.local`，如`1-2-3-4.default.pod.cluster.local`
+- 上面的示例还需要在default namespace中创建一个名为`default-subdomain`（即subdomain）的headless service
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: default-subdomain
+spec:
+  clusterIP: None
+  selector:
     name: busybox
 ```
 
@@ -311,14 +331,15 @@ spec:
       name: http
       livenessProbe:
         httpGet:
-        path: /
-        port: 80
+          path: /
+          port: 80
         initialDelaySeconds: 15
         timeoutSeconds: 1
       readinessProbe:
-        httpGet:
-        path: /ping
-        port: 80
+        exec:
+          command:
+          - cat
+          - /usr/share/nginx/html/index.html
         initialDelaySeconds: 5
         timeoutSeconds: 1
 ```
