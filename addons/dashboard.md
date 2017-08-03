@@ -2,13 +2,13 @@
 
 Kubernetes Dashboard的部署非常简单，只需要运行
 
-```
+```sh
 kubectl create -f https://git.io/kube-dashboard
 ```
 
 稍等一会，dashborad就会创建好
 
-```
+```sh
 $ kubectl -n kube-system get service kubernetes-dashboard
 NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 kubernetes-dashboard   10.101.211.212   <nodes>       80:32729/TCP   1m
@@ -33,10 +33,9 @@ Events:            <none>
 
 通常情况下，建议Dashboard服务以https的方式运行，在访问它之前我们需要将证书导入系统中:
 
-```
+```sh
 openssl pkcs12 -export -in apiserver-kubelet-client.crt -inkey apiserver-kubelet-client.key -out kube.p12
 curl -sSL -E ./kube.p12:password -k https://nodeIP:6443/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
 ```
 
 将kube.p12导入系统就可以用浏览器来访问了。注意，如果nodeIP不在证书CN里面，则需要做个hosts映射。
-

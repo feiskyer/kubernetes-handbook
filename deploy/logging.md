@@ -2,9 +2,9 @@
 
 ELK可谓是容器日志收集、处理和搜索的黄金搭档:
 
-* Logstash（或者Fluentd）负责收集日志
-* Elasticsearch存储日志并提供搜索
-* Kibana负责日志查询和展示
+- Logstash（或者Fluentd）负责收集日志
+- Elasticsearch存储日志并提供搜索
+- Kibana负责日志查询和展示
 
 注意：Kubernetes默认使用fluentd（以DaemonSet的方式启动）来收集日志，并将收集的日志发送给elasticsearch。
 
@@ -12,7 +12,7 @@ ELK可谓是容器日志收集、处理和搜索的黄金搭档:
 
 在使用`cluster/kube-up.sh`部署集群的时候，可以设置`KUBE_LOGGING_DESTINATION`环境变量自动部署Elasticsearch和Kibana，并使用fluentd收集日志(配置参考[addons/fluentd-elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch))：
 
-```
+```sh
 KUBE_LOGGING_DESTINATION=elasticsearch
 KUBE_ENABLE_NODE_LOGGING=true
 cluster/kube-up.sh
@@ -22,168 +22,64 @@ cluster/kube-up.sh
 
 如果需要集成其他的日志方案，还可以自定义docker的log driver，将日志发送到splunk或者awslogs等。
 
-## 应用日志收集
+## 部署方法
 
-在进行日志收集的过程中，我们首先想到的是使用Logstash，因为它是ELK stack中的重要成员，但是在测试过程中发现，Logstash是基于JDK的，在没有产生日志的情况单纯启动Logstash就大概要消耗**500M**内存，在每个Pod中都启动一个日志收集组件的情况下，使用logstash有点浪费系统资源，经人推荐我们选择使用**Filebeat**替代，经测试单独启动Filebeat容器大约会消耗**12M**内存，比起logstash相当轻量级。
+由于Fluentd daemonset只会调度到带有标签`kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true`的Node上，需要给Node设置标签
 
-### 方案选择
-
-Kubernetes官方提供了EFK的日志收集解决方案，但是这种方案并不适合所有的业务场景，它本身就有一些局限性，例如：
-
-- 所有日志都必须是out前台输出，真实业务场景中无法保证所有日志都在前台输出
-- 只能有一个日志输出文件，而真实业务场景中往往有多个日志输出文件
-- Fluentd并不是常用的日志收集工具，我们更习惯用logstash，现使用filebeat替代
-- 我们已经有自己的ELK集群且有专人维护，没有必要再在kubernetes上做一个日志收集服务
-
-基于以上几个原因，我们决定使用自己的ELK集群。
-
-**Kubernetes集群中的日志收集解决方案**
-
-| **编号** | **方案**                               | **优点**                                   | **缺点**                          |
-| ------ | ------------------------------------ | ---------------------------------------- | ------------------------------- |
-| **1**  | 每个app的镜像中都集成日志收集组件                   | 部署方便，kubernetes的yaml文件无须特别配置，可以为每个app自定义日志收集配置 | 强耦合，不方便应用和日志收集组件升级和维护且会导致镜像过大   |
-| **2**  | 单独创建一个日志收集组件跟app的容器一起运行在同一个pod中      | 低耦合，扩展性强，方便维护和升级                         | 需要对kubernetes的yaml文件进行单独配置，略显繁琐 |
-| **3**  | 将所有的Pod的日志都挂载到宿主机上，每台主机上单独起一个日志收集Pod | 完全解耦，性能最高，管理起来最方便                        | 需要统一日志收集规则，目录和输出方式              |
-
-综合以上优缺点，我们选择使用方案二。
-
-该方案在扩展性、个性化、部署和后期维护方面都能做到均衡，因此选择该方案。
-
-![logstash日志收集架构图](images/filebeat-log-collector.jpg)
-
-我们创建了自己的logstash镜像，镜像地址为：`index.tenxcloud.com/jimmy/filebeat:5.4.0`
-
-### 测试
-
-我们部署一个应用filebeat来收集日志的功能测试。
-
-创建应用yaml文件`filebeat-test.yaml`。
-
-```yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: filebeat-test
-  namespace: default
-spec:
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        k8s-app: filebeat-test
-    spec:
-      containers:
-      - image: sz-pg-oam-docker-hub-001.tendcloud.com/library/filebeat:5.4.0
-        name: filebeat
-        volumeMounts:
-        - name: app-logs
-          mountPath: /log
-        - name: filebeat-config
-          mountPath: /etc/filebeat/
-      - image: sz-pg-oam-docker-hub-001.tendcloud.com/library/analytics-docker-test:Build_8
-        name : app
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: app-logs
-          mountPath: /usr/local/TalkingData/logs
-      volumes:
-      - name: app-logs
-        emptyDir: {}
-      - name: filebeat-config
-        configMap:
-          name: filebeat-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: filebeat-test
-  labels:
-    app: filebeat-test
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    name: http
-  selector:
-    run: filebeat-test
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: filebeat-config
-data:
-  filebeat.yml: |
-    filebeat.prospectors:
-    - input_type: log
-      paths:
-        - "/log/*"
-        - "/log/usermange/common/*"
-    output.elasticsearch:
-      hosts: ["172.23.5.255:9200"]
-    username: "elastic"
-    password: "changeme"
-    index: "filebeat-test"
+```sh
+kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true
 ```
 
-**说明**
+然后下载manifest部署：
 
-该文件中包含了配置文件filebeat的配置文件的ConfigMap，因此不需要再定义环境变量。
-
-当然你也可以不同ConfigMap，通过传统的传递环境变量的方式来配置filebeat。
-
-例如对filebeat的容器进行如下配置：
-
-```
-      containers:
-      - image: sz-pg-oam-docker-hub-001.tendcloud.com/library/filebeat:5.4.0
-        name: filebeat
-        volumeMounts:
-        - name: app-logs
-          mountPath: /log
-        env: 
-        - name: PATHS
-          value: "/log/*"
-        - name: ES_SERVER
-          value: 172.23.5.255:9200
-        - name: INDEX
-          value: logstash-docker
-        - name: INPUT_TYPE
-          value: log
+```sh
+$ git clone https://github.com/kubernetes/kubernetes
+$ cd cluster/addons/fluentd-elasticsearch
+$ kubectl apply -f .
+clusterrole "elasticsearch-logging" configured
+clusterrolebinding "elasticsearch-logging" configured
+replicationcontroller "elasticsearch-logging-v1" configured
+service "elasticsearch-logging" configured
+serviceaccount "elasticsearch-logging" configured
+clusterrole "fluentd-es" configured
+clusterrolebinding "fluentd-es" configured
+daemonset "fluentd-es-v1.24" configured
+serviceaccount "fluentd-es" configured
+deployment "kibana-logging" configured
+service "kibana-logging" configured
 ```
 
-目前使用这种方式会有个问题，及时`PATHS`只能传递单个目录，如果想传递多个目录需要修改filebeat镜像的`docker-entrypoint.sh`脚本，对该环境变量进行解析增加filebeat.yml文件中的PATHS列表。
+注意：Kibana容器第一次启动的时候会用较长的时间（Optimizing and caching bundles for kibana and statusPage. This may take a few minutes），可以通过日志观察初始化的情况
 
-推荐使用ConfigMap，这样filebeat的配置就能够更灵活。
-
-**注意事项**
-
-- 将app的`/usr/local/TalkingData/logs`目录挂载到filebeat的`/log`目录下。
-- 该文件可以在`manifests/test/filebeat-test.yaml`找到。 
-- 我使用了自己的私有镜像仓库，测试时请换成自己的应用镜像。
-- Filebeat的环境变量的值配置
-  ```
-  ENV ES_SERVER 172.23.5.255:9200
-  ENV INDEX filebeat-test
-  ENV INPUT_TYPE log
-  ENV ES_USERNAME elastic
-  ENV ES_PASSWORD changeme
-  ```
-
-**创建应用**
-
-部署Deployment
-
-```
-kubectl create -f filebeat-test.yaml
+```sh
+$ kubectl -n kube-system logs kibana-logging-1237565573-p88lm -f
 ```
 
-查看`http://172.23.5.255:9200/_cat/indices`将可以看到列表有这样的indices：
+## 访问Kibana
 
+可以从`kubectl cluster-info`的输出中找到Kibana服务的访问地址，注意需要在浏览器中导入apiserver证书才可以认证：
+
+```sh
+$ kubectl cluster-info | grep Kibana
+Kibana is running at https://10.0.4.3:6443/api/v1/namespaces/kube-system/services/kibana-logging/proxy
 ```
-green open filebeat-2017.05.17             1qatsSajSYqAV42_XYwLsQ 5 1   1189     0     1mb   588kb
+
+这里采用另外一种方式，使用kubectl代理来访问（不需要导入证书）：
+
+```sh
+# 启动代理
+kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 ```
 
-访问Kibana的web页面，查看`filebeat-2017.05.17`的索引，可以看到logstash收集到了app日志。
+然后打开`http://<master-ip>:8080/api/v1/proxy/namespaces/kube-system/services/kibana-logging/app/kibana#`。在 Settings -> Indices 页面创建一个 index，选中 Index contains time-based events，使用默认的 `logstash-*` pattern，点击 Create。
 
-![Kibana页面](images/filebeat-test-kibana.jpg)
+![](images/kibana.png)
+
+## Filebeat
+
+除了Fluentd和Logstash，还可以使用[Filebeat](https://www.elastic.co/products/beats/filebeat)来收集日志，使用方法可以参考[使用Filebeat收集Kubernetes中的应用日志](http://rootsongjc.github.io/blogs/kubernetes-filebeat/)。
+
+## 参考文档
+
+- [Logging Agent For Elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch)
+- [Logging Using Elasticsearch and Kibana](https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/)
