@@ -45,9 +45,9 @@ PV的访问模式（accessModes）有三种：
 * ReadOnlyMany（ROX）：可以以只读的方式被多个Pod挂载。
 * ReadWriteMany（RWX）：这种存储可以以读写的方式被多个Pod共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是NFS。在PVC绑定PV时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
 
-PV的回收策略（persistentVolumeReclaimPolicy）也有三种
+PV的回收策略（persistentVolumeReclaimPolicy，即PVC释放卷的时候PV该如何操作）也有三种
 
-- Retain，不清理保留Volume（需要手动清理）
+- Retain，不清理, 保留Volume（需要手动清理）
 - Recycle，删除数据，即`rm -rf /thevolume/*`（只有NFS和HostPath支持）
 - Delete，删除存储资源，比如删除AWS EBS卷（只有AWS EBS, GCE PD, Azure Disk和Cinder支持）
 
@@ -55,7 +55,9 @@ PV的回收策略（persistentVolumeReclaimPolicy）也有三种
 
 上面通过手动的方式创建了一个NFS Volume，这在管理很多Volume的时候不太方便。Kubernetes还提供了[StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses)来动态创建PV，不仅节省了管理员的时间，还可以封装不同类型的存储供PVC选用。
 
-在使用PVC时，可以通过`DefaultStorageClass`准入控制给未指定storageClassName的PVC自动添加默认的StorageClass。默认的StorageClass带有annotation `storageclass.kubernetes.io/is-default-class=true`。
+在使用PVC时，可以通过`DefaultStorageClass`准入控制设置默认StorageClass, 即给未设置storageClassName的PVC自动添加默认的StorageClass。
+
+默认的StorageClass带有annotation `storageclass.kubernetes.io/is-default-class=true`。
 
 #### 修改默认StorageClass
 
@@ -82,24 +84,6 @@ provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-standard
   zone: us-central1-a
-```
-
-#### Ceph RBD示例
-
-```yaml
- apiVersion: storage.k8s.io/v1beta1
-  kind: StorageClass
-  metadata:
-    name: fast
-  provisioner: kubernetes.io/rbd
-  parameters:
-    monitors: 10.16.153.105:6789
-    adminId: kube
-    adminSecretName: ceph-secret
-    adminSecretNamespace: kube-system
-    pool: kube
-    userId: kube
-    userSecretName: ceph-secret-user
 ```
 
 #### Glusterfs示例
