@@ -312,7 +312,7 @@ spec:
 
 ## 健康检查
 
-为了确保容器在部署后确实处在正常运行状态，Kubernetes提供了两种探针（Probe，支持exec、tcp和httpGet方式）来探测容器的状态：
+为了确保容器在部署后确实处在正常运行状态，Kubernetes提供了3种探针（Probe，支持exec、tcpSocket和httpGet方式）来探测容器的状态：
 
 - LivenessProbe：探测应用是否处于健康状态，如果不健康则删除重建改容器
 - ReadinessProbe：探测应用是否启动完成并且处于正常服务状态，如果不正常则更新容器的状态
@@ -333,6 +333,9 @@ spec:
         httpGet:
           path: /
           port: 80
+          httpHeaders:
+          - name: X-Custom-Header
+            value: Awesome
         initialDelaySeconds: 15
         timeoutSeconds: 1
       readinessProbe:
@@ -342,6 +345,20 @@ spec:
           - /usr/share/nginx/html/index.html
         initialDelaySeconds: 5
         timeoutSeconds: 1
+    - name: goproxy
+      image: gcr.io/google_containers/goproxy:0.1
+      ports:
+      - containerPort: 8080
+      readinessProbe:
+        tcpSocket:
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 10
+      livenessProbe:
+        tcpSocket:
+          port: 8080
+        initialDelaySeconds: 15
+        periodSeconds: 20
 ```
 
 ## Init Container
@@ -571,4 +588,6 @@ fe00::2	ip6-allrouters
 - [What is Pod?](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes Pod Lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
 - [Container capabilities](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container)
+- [Configure Liveness and Readiness Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)
 - [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
+
