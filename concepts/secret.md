@@ -1,4 +1,4 @@
-# Secret
+﻿# Secret
 
 Secret解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。
 
@@ -222,3 +222,17 @@ resources:
         - name: key2
           secret: dGhpcyBpcyBwYXNzd29yZA==
 ```
+
+## Secret与ConfigMap对比
+
+相同点：
+- key/value的形式
+- 属于某个特定的namespace
+- 可以导出到环境变量
+- 可以通过目录/文件形式挂载(支持挂载所有key和部分key)
+
+不同点：
+- Secret可以被ServerAccount关联(使用)
+- Secret可以存储register的鉴权信息，用在ImagePullSecret参数中，用于拉取私有仓库的镜像
+- Secret支持Base64加密
+- Configmap不区分类型，Secret分为Opaque，Service Account，kubernetes.io/dockerconfigjson三种类型
