@@ -24,7 +24,7 @@ metadata:
           { "matchExpressions": [
             { "key": "kubernetes.io/hostname",
               "operator": "In",
-              "values": ["my-node"]
+              "values": ["example-node"]
             }
           ]}
          ]}
@@ -75,3 +75,6 @@ spec:
       persistentVolumeClaim:
         claimName: example-local-claim
 ```
+
+
+
