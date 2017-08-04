@@ -11,7 +11,7 @@ kubeadm是Kubernetes主推的部署工具之一，正在快速迭代开发中。
 在初始化master时，只需要执行kubeadm init命令即可，比如
 
 ```sh
-kubeadm init kubeadm init --pod-network-cidr 10.244.0.0/16 --kubernetes-version latest
+kubeadm init --pod-network-cidr 10.244.0.0/16 --kubernetes-version stable
 ```
 
 这个命令会自动
@@ -42,7 +42,7 @@ cat >/etc/cni/net.d/10-mynet.conf <<-EOF
     "ipMasq": true,
     "ipam": {
         "type": "host-local",
-        "subnet": "10.244.0.0/16",
+        "subnet": "10.244.1.0/24",
         "routes": [
             { "dst": "0.0.0.0/0"  }
         ]
