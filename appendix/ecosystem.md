@@ -69,6 +69,8 @@
      - WSO2 Private PaaS delivers standard, on-premise, application, integration, data, identity, governance, and analytics Platform as a Service (PaaS) to your IT project teams.  
     - [Rancher](http://rancher.com/)
      - Simple, easy-to-use container management.It contains Cattle,Kubernetes,Messos and Docker Swarm orchestrations.
+    - [ElasticKube](https://github.com/ElasticBox/elastickube)
+     - ElasticKube is an open source management platform for Kubernetes with the goal of providing a self-service experience for containerized applications.
 * Serverless implementations
     - [Funktion](https://funktion.fabric8.io/)
      - open source event based lambda programming for kubernetes 
@@ -90,8 +92,14 @@
     - Pachyderm
     - Heron
 * Package managers
-    * Helm
+    * [Helm](https://github.com/kubernetes/helm)
+     - Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources.
+    * [kubeapps](https://kubeapps.com/)
+     - Discover & launch great Kubernetes-ready apps
     * [KPM](https://github.com/coreos/kpm)
+     - KPM is a tool to deploy and manage application stacks on Kubernetes. But kpm is no longer developed or maintained by CoreOS.
+    * [k8s-AppController](https://github.com/Mirantis/k8s-AppController)
+     - AppController is a pod that you can spawn in your Kubernetes cluster which will take care of your complex deployments for you.
 * Configuration
     - Kompose
     - Jsonnet
