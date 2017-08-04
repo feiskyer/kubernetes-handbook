@@ -236,3 +236,8 @@ resources:
 - Secret可以存储register的鉴权信息，用在ImagePullSecret参数中，用于拉取私有仓库的镜像
 - Secret支持Base64加密
 - Configmap不区分类型，Secret分为Opaque，Service Account，kubernetes.io/dockerconfigjson三种类型
+
+
+## 参考文档
+
+- [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
