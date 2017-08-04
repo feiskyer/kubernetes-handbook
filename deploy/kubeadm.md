@@ -1,6 +1,6 @@
 # kubeadm
 
-> 统一化安装脚本
+> 统一化安装脚本（使用docker运行时）
 
 ```sh
 # on master
@@ -73,6 +73,75 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule-
 ```
 
+如果需要修改kubernetes服务的配置选项，则需要创建一个MasterConfiguration配置文件，其格式为
+
+```yaml
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: <address|string>
+  bindPort: <int>
+etcd:
+  endpoints:
+  - <endpoint1|string>
+  - <endpoint2|string>
+  caFile: <path|string>
+  certFile: <path|string>
+  keyFile: <path|string>
+networking:
+  dnsDomain: <string>
+  serviceSubnet: <cidr>
+  podSubnet: <cidr>
+kubernetesVersion: <string>
+cloudProvider: <string>
+authorizationModes:
+- <authorizationMode1|string>
+- <authorizationMode2|string>
+token: <string>
+tokenTTL: <time duration>
+selfHosted: <bool>
+apiServerExtraArgs:
+  <argument>: <value|string>
+  <argument>: <value|string>
+controllerManagerExtraArgs:
+  <argument>: <value|string>
+  <argument>: <value|string>
+schedulerExtraArgs:
+  <argument>: <value|string>
+  <argument>: <value|string>
+apiServerCertSANs:
+- <name1|string>
+- <name2|string>
+certificatesDir: <string>
+```
+
+比如
+
+```yaml
+# cat kubeadm.yml
+kind: MasterConfiguration
+apiVersion: kubeadm.k8s.io/v1alpha1
+kubernetesVersion: "stable"
+apiServerCertSANs: []
+controllerManagerExtraArgs:
+  horizontal-pod-autoscaler-use-rest-clients: "true"
+  horizontal-pod-autoscaler-sync-period: "10s"
+  node-monitor-grace-period: "10s"
+  feature-gates: "AllAlpha=true"
+  enable-dynamic-provisioning: "true"
+apiServerExtraArgs:
+  runtime-config: "api/all=true"
+  feature-gates: "AllAlpha=true"
+networking:
+  podSubnet: "10.244.0.0/16"
+```
+
+然后，在初始化master的时候指定kubeadm.yml的路径：
+
+```sh
+kubeadm init --config ./kubeadm.yaml
+```
+
 ## 配置Network plugin
 
 ### CNI bridge
@@ -133,6 +202,26 @@ token=$(kubeadm token list | grep authentication,signing | awk '{print $1}')
 kubeadm join --token $token ${master_ip}
 ```
 
+跟Master一样，添加Node的时候也可以自定义Kubernetes服务的选项，格式为
+
+```yaml
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: NodeConfiguration
+caCertPath: <path|string>
+discoveryFile: <path|string>
+discoveryToken: <string>
+discoveryTokenAPIServers:
+- <address|string>
+- <address|string>
+tlsBootstrapToken: <string>
+```
+
+在把Node加入集群的时候，指定NodeConfiguration配置文件的路径
+
+```sh
+kubeadm join --config ./nodeconfig.yml --token $token ${master_ip}
+```
+
 ## 删除安装
 
 ```
@@ -157,3 +246,30 @@ kubeadm将在v1.8支持动态升级，目前升级还需要手动操作。
 
 1. 升级安装包 `apt-get upgrade && apt-get update`
 2. 重启kubelet `systemctl restart kubelet`
+
+## 安全选项
+
+默认情况下，kubeadm会开启Node客户端证书的自动批准，如果不需要的话可以选择关闭，关闭方法为
+
+```sh
+$ kubectl delete clusterrole kubeadm:node-autoapprove-bootstrap
+```
+
+关闭后，增加新的Node时，`kubeadm join`会阻塞等待管理员手动批准，匹配方法为
+
+```sh
+$ kubectl get csr
+NAME                                                   AGE       REQUESTOR                 CONDITION
+node-csr-c69HXe7aYcqkS1bKmH4faEnHAWxn6i2bHZ2mD04jZyQ   18s       system:bootstrap:878f07   Pending
+
+$ kubectl certificate approve node-csr-c69HXe7aYcqkS1bKmH4faEnHAWxn6i2bHZ2mD04jZyQ
+certificatesigningrequest "node-csr-c69HXe7aYcqkS1bKmH4faEnHAWxn6i2bHZ2mD04jZyQ" approved
+
+$ kubectl get csr
+NAME                                                   AGE       REQUESTOR                 CONDITION
+node-csr-c69HXe7aYcqkS1bKmH4faEnHAWxn6i2bHZ2mD04jZyQ   1m        system:bootstrap:878f07   Approved,Issued
+```
+
+## 参考文档
+
+- [kubeadm参考指南](https://kubernetes.io/docs/admin/kubeadm/)
