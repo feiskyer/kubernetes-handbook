@@ -5,10 +5,12 @@ Secret解决了密码、token、密钥等敏感数据的配置问题，而不需
 ## Secret类型
 
 Secret有三种类型：
-
-* Service Account：用来访问Kubernetes API，由Kubernetes自动创建，并且会自动挂载到Pod的`/run/secrets/kubernetes.io/serviceaccount`目录中；
-* Opaque：base64编码格式的Secret，用来存储密码、密钥等；
+* Opaque：base64编码格式的Secret，用来存储密码、密钥等；但数据也通过base64 --decode解码得到原始数据，所有加密性很弱。
 * `kubernetes.io/dockerconfigjson`：用来存储私有docker registry的认证信息。
+* `kubernetes.io/service-account-token`： 用于被serviceaccount引用。serviceaccout创建时Kubernetes会默认创建对应的secret。Pod如果使用了serviceaccount，对应的secret会自动挂载到Pod的`/run/secrets/kubernetes.io/serviceaccount`目录中。
+
+备注： 
+serviceaccount用来使得Pod能够访问Kubernetes API
 
 ## Opaque Secret
 
@@ -35,6 +37,13 @@ data:
 ```
 
 创建secret：`kubectl create -f secrets.yml`。
+```sh
+# kubectl get secret
+NAME                  TYPE                                  DATA      AGE
+default-token-cty7p   kubernetes.io/service-account-token   3         45d
+mysecret              Opaque                                2         7s
+```
+注意：其中default-token-cty7p为创建集群时默认创建的secret，被serviceacount/default引用。
 
 如果是从文件创建secret，则可以用更简单的kubectl命令，比如创建tls的secret：
 
@@ -44,7 +53,7 @@ $ kubectl create secret generic helloworld-tls \
   --from-file=cert.pem
 ```
 
-## Secret引用
+## Secret的使用
 
 创建好secret之后，有两种方式来使用它： 
 
@@ -78,7 +87,18 @@ spec:
       hostPort: 5432
 ```
 
+查看Pod中对应的信息：
+```sh
+# ls /etc/secrets
+password  username
+# cat  /etc/secrets/username
+admin
+# cat  /etc/secrets/password
+1f2d1e2e67df
+```
+
 ### 将Secret导出到环境变量中
+
 
 ```yml
 apiVersion: extensions/v1beta1
