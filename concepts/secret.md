@@ -235,6 +235,28 @@ lrwxrwxrwx 1 root root   12 Aug  6 00:15 token -> ..data/token
 $ kubectl create secret docker-registry myregistrykey --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
 secret "myregistrykey" created.
 ```
+查看secret的内容：
+```sh
+# kubectl get secret myregistrykey  -o yaml
+apiVersion: v1
+data:
+  .dockercfg: eyJjY3IuY2NzLnRlbmNlbnR5dW4uY29tL3RlbmNlbnR5dW4iOnsidXNlcm5hbWUiOiIzMzIxMzM3OTk0IiwicGFzc3dvcmQiOiIxMjM0NTYuY29tIiwiZW1haWwiOiIzMzIxMzM3OTk0QHFxLmNvbSIsImF1dGgiOiJNek15TVRNek56azVORG94TWpNME5UWXVZMjl0In19
+kind: Secret
+metadata:
+  creationTimestamp: 2017-08-04T02:06:05Z
+  name: myregistrykey
+  namespace: default
+  resourceVersion: "1374279324"
+  selfLink: /api/v1/namespaces/default/secrets/myregistrykey
+  uid: 78f6a423-78b9-11e7-a70a-525400bc11f0
+type: kubernetes.io/dockercfg
+```
+
+通过base64对secret中的内容解码：
+```sh
+# echo "eyJjY3IuY2NzLnRlbmNlbnR5dW4uY29tL3RlbmNlbnR5dW4iOnsidXNlcm5hbWUiOiIzMzIxMzM3OTk0IiwicGFzc3dvcmQiOiIxMjM0NTYuY29tIiwiZW1haWwiOiIzMzIxMzM3OTk0QHFxLmNvbSIsImF1dGgiOiJNek15TVRNek56azVORG94TWpNME5UWXVZMjl0XXXX" | base64 --decode
+{"ccr.ccs.tencentyun.com/XXXXXXX":{"username":"3321337XXX","password":"123456.com","email":"3321337XXX@qq.com","auth":"MzMyMTMzNzk5NDoxMjM0NTYuY29t"}}
+```
 
 也可以直接读取`~/.dockercfg`的内容来创建：
 
@@ -258,7 +280,7 @@ spec:
     - name: myregistrykey
 ```
 
-### Service Account
+### kubernetes.io/service-account-token
 
 Service Account用来访问Kubernetes API，由Kubernetes自动创建，并且会自动挂载到Pod的`/run/secrets/kubernetes.io/serviceaccount`目录中。
 
@@ -356,3 +378,4 @@ resources:
 ## 参考文档
 
 - [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
+- [Specifying ImagePullSecrets on a Pod](https://kubernetes.io/docs/concepts/configuration/secret/)
