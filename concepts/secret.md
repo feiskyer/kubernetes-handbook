@@ -53,7 +53,7 @@ $ kubectl create secret generic helloworld-tls \
   --from-file=cert.pem
 ```
 
-## Secret的使用
+## Opaque Secret的使用
 
 创建好secret之后，有两种方式来使用它： 
 
@@ -131,6 +131,60 @@ spec:
             secretKeyRef:
               name: mysecret
               key: password
+```
+
+注意：
+
+1、`kubernetes.io/dockerconfigjson`和`kubernetes.io/service-account-token`类型的secret也同样可以被挂载成文件(目录)。
+如果使用`kubernetes.io/dockerconfigjson`类型的secret会在目录下创建一个.dockercfg文件
+```sh
+root@db:/etc/secrets# ls -al
+total 4
+drwxrwxrwt  3 root root  100 Aug  5 16:06 .
+drwxr-xr-x 42 root root 4096 Aug  5 16:06 ..
+drwxr-xr-x  2 root root   60 Aug  5 16:06 ..8988_06_08_00_06_52.433429084
+lrwxrwxrwx  1 root root   31 Aug  5 16:06 ..data -> ..8988_06_08_00_06_52.433429084
+lrwxrwxrwx  1 root root   17 Aug  5 16:06 .dockercfg -> ..data/.dockercfg
+```
+如果使用`kubernetes.io/service-account-token`类型的secret则会创建ca.crt，namespace，token三个文件
+```sh
+root@db:/etc/secrets# ls
+ca.crt	namespace  token
+```
+2、secrets使用时被挂载到一个临时目录，Pod被删除后secrets挂载时生成的文件也会被删除。
+```sh
+root@db:/etc/secrets# df
+Filesystem     1K-blocks    Used Available Use% Mounted on
+none           123723748 4983104 112432804   5% /
+tmpfs            1957660       0   1957660   0% /dev
+tmpfs            1957660       0   1957660   0% /sys/fs/cgroup
+/dev/vda1       51474044 2444568  46408092   6% /etc/hosts
+tmpfs            1957660      12   1957648   1% /etc/secrets
+/dev/vdb       123723748 4983104 112432804   5% /etc/hostname
+shm                65536       0     65536   0% /dev/shm
+```
+但如果在Pod运行的时候，在Pod部署的节点上还是可以看到：
+```sh
+# 查看Pod中容器Secret的相关信息，其中4392b02d-79f9-11e7-a70a-525400bc11f0为Pod的UUID
+"Mounts": [
+  {
+    "Source": "/var/lib/kubelet/pods/4392b02d-79f9-11e7-a70a-525400bc11f0/volumes/kubernetes.io~secret/secrets",
+    "Destination": "/etc/secrets",
+    "Mode": "ro",
+    "RW": false,
+    "Propagation": "rprivate"
+  }
+]
+#在Pod部署的节点查看
+root@VM-0-178-ubuntu:/var/lib/kubelet/pods/4392b02d-79f9-11e7-a70a-525400bc11f0/volumes/kubernetes.io~secret/secrets# ls -al
+total 4
+drwxrwxrwt 3 root root  140 Aug  6 00:15 .
+drwxr-xr-x 3 root root 4096 Aug  6 00:15 ..
+drwxr-xr-x 2 root root  100 Aug  6 00:15 ..8988_06_08_00_15_14.253276142
+lrwxrwxrwx 1 root root   31 Aug  6 00:15 ..data -> ..8988_06_08_00_15_14.253276142
+lrwxrwxrwx 1 root root   13 Aug  6 00:15 ca.crt -> ..data/ca.crt
+lrwxrwxrwx 1 root root   16 Aug  6 00:15 namespace -> ..data/namespace
+lrwxrwxrwx 1 root root   12 Aug  6 00:15 token -> ..data/token
 ```
 
 ## kubernetes.io/dockerconfigjson
@@ -255,7 +309,8 @@ resources:
 - Secret可以被ServerAccount关联(使用)
 - Secret可以存储register的鉴权信息，用在ImagePullSecret参数中，用于拉取私有仓库的镜像
 - Secret支持Base64加密
-- Configmap不区分类型，Secret分为Opaque，Service Account，kubernetes.io/dockerconfigjson三种类型
+- Secret分为Opaque，kubernetes.io/Service Account，kubernetes.io/dockerconfigjson三种类型,Configmap不区分类型
+- Secret文件存储在tmpfs文件系统中，Pod删除后Secret文件也会对应的删除。
 
 
 ## 参考文档
