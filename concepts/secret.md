@@ -133,7 +133,47 @@ spec:
               key: password
 ```
 
-注意：
+### 将Secret挂载指定的key
+```yml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: db
+  name: db
+spec:
+  volumes:
+  - name: secrets
+    secret:
+      secretName: mysecret
+      items:
+      - key: password
+        mode: 511
+        path: tst/psd
+      - key: username
+        mode: 511
+        path: tst/usr
+  containers:
+  containers:
+  - image: nginx
+    name: db
+    volumeMounts:
+    - name: secrets
+      mountPath: "/etc/secrets"
+      readOnly: true
+    ports:
+    - name: cp
+      containerPort: 80
+      hostPort: 5432
+```
+创建Pod成功后，可以在对应的目录看到：
+```sh
+# kubectl exec db ls /etc/secrets/tst 
+psd
+usr
+```
+
+**注意**：
 
 1、`kubernetes.io/dockerconfigjson`和`kubernetes.io/service-account-token`类型的secret也同样可以被挂载成文件(目录)。
 如果使用`kubernetes.io/dockerconfigjson`类型的secret会在目录下创建一个.dockercfg文件
