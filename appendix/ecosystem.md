@@ -207,10 +207,17 @@
     - [Vitess](http://vitess.io/getting-started/)
     - [Minio](https://blog.minio.io/storage-in-paas-minio-and-deis-7f9f604dedf2#.7rr6awv0j)
 * Container runtimes
-    * containerd
-    * Rkt
-    * CRI-O (OCI)
-    * Hyper.sh/frakti
+    * [containerd/Docker](https://github.com/containerd/containerd)
+     - An open and reliable container runtime
+    * [Rkt](https://github.com/rkt/rkt)
+     - rkt is a pod-native container engine for Linux. It is composable, secure, and built on standards. 
+    * [CRI-O](https://github.com/kubernetes-incubator/cri-o)
+     - Open Container Initiative-based implementation of Kubernetes Container Runtime Interface. 
+    * [Hyper.sh/frakti](https://github.com/hyperhq/runv)
+     - Hypervisor-based Runtime for OCI.
+    * [OpenContainer(OCI)](https://github.com/opencontainers)
+     - The Open Container Initiative (OCI) is a lightweight, open governance structure (project), formed under the auspices of the Linux Foundation, for the express purpose of creating open industry standards around container formats and runtime. 
+     - The OCI currently contains two specifications: the Runtime Specification (runtime-spec) and the Image Specification (image-spec). 
 * Security
     * [Trireme](http://opensourceforu.com/2016/11/trireme-adds-production-scale-security-kubernetes)
     * [Aquasec](http://blog.aquasec.com/security-best-practices-for-kubernetes-deployment)
