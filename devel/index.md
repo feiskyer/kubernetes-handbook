@@ -90,7 +90,7 @@ git fetch upstream pull/365/merge:branch-fix-1
 git checkout branch-fix-1
 ```
 
-当然，也可以配置`.git/config`并运行`git fetch`拉取所有的pull requests（注意kubernetes的PR非常多，这个课程可能会很慢）:
+当然，也可以配置`.git/config`并运行`git fetch`拉取所有的pull requests（注意kubernetes的PR非常多，这个过程可能会很慢）:
 
 ```
     fetch = +refs/pull/*:refs/remotes/origin/pull/*
