@@ -82,6 +82,11 @@
      - Apache OpenWhisk is a serverless, open source cloud platform
     - [Iron.io](https://www.iron.io/)
      - Serverless Multi-cloud for Enteprise, Open Source.
+    - [Leveros](https://github.com/leveros/leveros)
+     - Lever OS is the open-source cloud platform that allows fast-moving teams to build and deploy microservice-oriented backends in the blink of an eye. 
+     - It abstracts away complicated infrastructure and leaves developers with very simple, but powerful building blocks that handle scale transparently. 
+    - [OpenLambda](https://github.com/open-lambda/open-lambda)
+     - OpenLambda is an Apache-licensed serverless computing project, written in Go and based on Linux containers. One of the goals of OpenLambda is to enable exploration of new approaches to serverless computing. 
 * Application frameworks
     * [Spring Cloud](http://www.nicolaferraro.stfi.re/2016/10/23/hot-reconfiguration-of-microservices-on-kubernetes/)
 * API Management
