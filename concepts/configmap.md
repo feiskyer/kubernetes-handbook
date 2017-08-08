@@ -1,4 +1,4 @@
-# ConfigMap
+﻿# ConfigMap
 
 ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。
 
@@ -199,4 +199,55 @@ spec:
 ```
 very
 ```
+
+ConfigMap支持同一个目录下挂载多个key和多个目录。例如下面将special.how和special.type通过挂载到/etc/config下。并且还将special.how同时挂载到/etc/config2下。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh","-c","sleep 36000" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/config
+      - name: config-volume2
+        mountPath: /etc/config2
+  volumes:
+    - name: config-volume
+      configMap:
+        name: special-config
+        items:
+        - key: special.how
+          path: keys/special.level
+        - key: special.type
+          path: keys/special.type
+    - name: config-volume2
+      configMap:
+        name: special-config
+        items:
+        - key: special.how
+          path: keys/special.level
+  restartPolicy: Never
+```
+
+```sh
+# ls  /etc/config/keys/
+special.level  special.type
+# ls  /etc/config2/keys/
+special.level
+# cat  /etc/config/keys/special.level
+very
+# cat  /etc/config/keys/special.type
+charm
+```
+
+参考文档：
+
+- [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+
 

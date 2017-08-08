@@ -282,7 +282,7 @@ spec:
 
 ### kubernetes.io/service-account-token
 
-Service Account用来访问Kubernetes API，由Kubernetes自动创建，并且会自动挂载到Pod的`/run/secrets/kubernetes.io/serviceaccount`目录中。
+`kubernetes.io/service-account-token`： 用于被serviceaccount引用。serviceaccout创建时Kubernetes会默认创建对应的secret。Pod如果使用了serviceaccount，对应的secret会自动挂载到Pod的`/run/secrets/kubernetes.io/serviceaccount`目录中。
 
 ```sh
 $ kubectl run nginx --image nginx
