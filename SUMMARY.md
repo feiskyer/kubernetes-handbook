@@ -64,6 +64,7 @@
   - [4.2 集群部署](deploy/cluster.md)
     - [kubeadm](deploy/kubeadm.md)
     - [Kubespray](deploy/kubespray.md)
+    - [Kubernetes on LinuxKit](deploy/k8s-linuxkit.md)
     - [Frakti+Hyper](deploy/frakti/index.md)
     - [CentOS手动部署](https://github.com/feiskyer/kubernetes-handbook/blob/master/deploy/centos/install-kbernetes1.6-on-centos.md)
   - [4.3 kubectl客户端](deploy/kubectl.md)
