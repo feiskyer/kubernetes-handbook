@@ -4,11 +4,11 @@ Network Policy提供了基于策略的网络控制，用于隔离应用并减少
 
 在使用Network Policy之前，需要注意
 
-- v1.6以及以前的版本需要在apiserver开启`extensions/v1beta1/networkpolicies`
+- v1.6以及以前的版本需要在kube-apiserver中开启`extensions/v1beta1/networkpolicies`
 - v1.7+版本Network Policy已经GA，API版本为`networking.k8s.io/v1`
-- 网络插件要支持Network Policy，如Calico、Romana、Weave Net和trireme等
+- 网络插件要支持Network Policy，如Calico、Romana、Weave Net和trireme等，参考[这里](../plugins/network-policy.md)
 
-## 策略
+## 网络策略
 
 ### Namespace隔离
 
@@ -78,9 +78,9 @@ spec:
       port: 6379
 ```
 
-## 示例
+## 简单示例
 
-以calico为例看一下Network Policy的具体用法（使用kubernetes v1.6版本）。
+以calico为例看一下Network Policy的具体用法（以kubernetes v1.6为例）。
 
 首先配置kubelet使用CNI网络插件
 
@@ -201,3 +201,155 @@ spec:
 
 $ kubectl create -f nginx-external-policy.yaml
 ```
+
+## 使用场景
+
+### 禁止访问指定服务
+
+```sh
+kubectl run web --image=nginx --labels app=web,env=prod --expose --port 80
+```
+
+![](images/15022447799137.jpg)
+
+网络策略
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: web-deny-all
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+      env: prod
+```
+
+### 只允许指定Pod访问服务
+
+```sh
+kubectl run apiserver --image=nginx --labels app=bookstore,role=api --expose --port 80
+```
+
+![](images/15022448622429.jpg)
+
+网络策略
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: api-allow
+spec:
+  podSelector:
+    matchLabels:
+      app: bookstore
+      role: api
+  ingress:
+  - from:
+      - podSelector:
+          matchLabels:
+            app: bookstore
+```
+
+### 禁止namespace中所有Pod之间的相互访问
+
+![](images/15022451724392.gif)
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: default
+spec:
+  podSelector:
+```
+
+### 禁止其他namespace访问服务
+
+```sh
+kubectl create namespace secondary
+kubectl run web --namespace secondary --image=nginx \
+    --labels=app=web --expose --port 80
+```
+
+![](images/15022452203435.gif)
+
+网络策略
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: secondary
+  name: web-deny-other-namespaces
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+  - from:
+    - podSelector: {}
+```
+
+### 只允许指定namespace访问服务
+
+```sh
+kubectl run web --image=nginx \
+    --labels=app=web --expose --port 80
+```
+
+![](images/15022453441751.gif)
+
+网络策略
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: web-allow-prod
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          purpose: production
+```
+
+### 允许外网访问服务
+
+```sh
+kubectl run web --image=nginx --labels=app=web --port 80
+kubectl expose deployment/web --type=LoadBalancer
+```
+
+![](images/15022454444461.gif)
+
+网络策略
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: web-allow-external
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - ports:
+    - port: 80
+    from: []
+```
+
+## 参考文档
+
+- [Kubernetes network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+- [Declare Network Policy](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/)
+- [Securing Kubernetes Cluster Networking](https://ahmet.im/blog/kubernetes-network-policy/)
+- [Kubernetes Network Policy Recipes](https://github.com/ahmetb/kubernetes-networkpolicy-tutorial)
+

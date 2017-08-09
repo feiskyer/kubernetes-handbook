@@ -1,6 +1,6 @@
 # Network Policy扩展
 
-[Network Policy](../concepts/network-policy.md)提供了基于策略的网络控制，用于隔离应用并减少攻击面。它使用标签选择器模拟传统的分段网络，并通过策略控制它们之间的流量以及来自外部的流量。Network Policy需要网络插件来监测这些策略和Pod的变更，并为Pod配置流量控制。
+[Network Policy](../concepts/network-policy.md) 提供了基于策略的网络控制，用于隔离应用并减少攻击面。它使用标签选择器模拟传统的分段网络，并通过策略控制它们之间的流量以及来自外部的流量。Network Policy需要网络插件来监测这些策略和Pod的变更，并为Pod配置流量控制。
 
 ## 如何开发Network Policy扩展
 
@@ -22,3 +22,5 @@
 ## Network Policy使用方法
 
 具体Network Policy的使用方法可以参考[这里](../concepts/network-policy.md)。
+
+
