@@ -1,6 +1,5 @@
 # keepalived-vip
 
-
 Kubernetes 使用[keepalived](http://www.keepalived.org)来产生虚拟IP address
 
 我们将探讨如何利用[IPVS - The Linux Virtual Server Project](http://www.linuxvirtualserver.org/software/ipvs.html)"来kubernetes配置VIP
@@ -41,7 +40,7 @@ DNS Round Robin (RR) 将对应到`example.com`的请求轮循给这3个节点,�
 
 这边IPVS可以帮助我们解决这件事,这个想法是虚拟IP(VIP)对应到每个service上,并将VIP暴露到kubernetes群集之外
 
-### 那 _keepalived_ 与 [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer)或[nginx](https://github.com/kubernetes/ingress/tree/master/controllers/nginx)差別在那边呢？
+### 与 [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer)或[nginx](https://github.com/kubernetes/ingress/tree/master/controllers/nginx) 的区别
 
 我们看到以下的图
 
@@ -75,7 +74,8 @@ Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.3 |
 
 只需要确认要运行keepalived-vip的kubernetes群集[DaemonSets](https://github.com/kubernetes/kubernetes/blob/master/docs/design/daemon.md)功能是正常的就行了
 
-### (注意)RBAC
+### RBAC
+
 由于kubernetes在1.6后引进了RBAC的概念,所以我们要先去设定rule,至於有关RBAC的详情请至[说明](https://feisky.gitbooks.io/kubernetes/plugins/auth.html)
 
 
@@ -368,7 +368,9 @@ Commercial support is available at
 10.87.2.50:80(我们假设的VIP,实际上其实没有node是用这IP)即可帮我们导向这个service
 
 
-以上的程式代码都在github上可以找到
+以上的程式代码都在[github](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)上可以找到。
 
-[ref1](https://github.com/kweisamx/kubernetes-keepalived-vip)
-[ref2](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)
+## 参考文档
+
+- [kweisamx/kubernetes-keepalived-vip](https://github.com/kweisamx/kubernetes-keepalived-vip)
+- [kubernetes/keepalived-vip](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)
