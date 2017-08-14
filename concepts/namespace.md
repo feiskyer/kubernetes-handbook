@@ -53,7 +53,13 @@ $ kubectl delete namespaces new-namespace
 2. `default`和`kube-system`命名空间不可删除。
 3. PersistentVolumes是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的。
 4. Events是否属于namespace取决于产生events的对象。
+5. v1.7版本增加了`kube-public`命名空间，该命名空间用来存放公共的信息，一般以ConfigMap的形式存放。
 
+```sh
+# kubectl get configmap  -n=kube-public
+NAME           DATA      AGE
+cluster-info   2         29d
+```
 
 ## 参考文档
 
