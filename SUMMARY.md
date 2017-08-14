@@ -121,6 +121,7 @@
   - [Kompose](apps/kompose.md)
   - [Istio](apps/istio.md)
   - [Linkerd](apps/linkerd.md)
+  - [Spark](apps/spark.md)
 - [7. 实践案例](practice/index.md)
   - [监控](monitor/index.md)
   - [日志](deploy/logging.md)
