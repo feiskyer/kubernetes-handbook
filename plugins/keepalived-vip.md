@@ -80,7 +80,7 @@ Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.3 |
 
 
 vip-rbac.yaml
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -118,7 +118,7 @@ subjects:
 clusterrolebinding.yaml
 
 
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1alpha1
 kind: ClusterRoleBinding
 metadata:
@@ -133,9 +133,9 @@ subjects:
     namespace: default
 ```
 
-```
-kubectl create -f vip-rbac.yaml
-kubectl create -f clusterrolebinding.yaml
+```sh
+$ kubectl create -f vip-rbac.yaml
+$ kubectl create -f clusterrolebinding.yaml
 ```
 
 ## 示例
@@ -146,7 +146,7 @@ kubectl create -f clusterrolebinding.yaml
 
 
 nginx-deployment.yaml
-```
+```yaml
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -185,13 +185,13 @@ spec:
 主要功能就是pod去监听听80 port,再开启service NodePort监听30320
 
 
-``` 
+```sh
 $ kubecrl create -f nginx-deployment.yaml
 ```
 接下来我们要做的是config map
 
 
-```
+```sh
 $ echo "apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -205,15 +205,16 @@ data:
 后面```nginx```为service的name,这边可以自行更换
 
 接着确认一下
-```
+```sh
 $kubectl get configmap 
 NAME            DATA      AGE
 vip-configmap   1         23h
+
 ```
 
 再来就是设置keepalived-vip
 
-```
+```yaml
 
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -266,7 +267,7 @@ spec:
 
 建立daemonset
 
-```
+```sh
 $ kubectl get daemonset kube-keepalived-vip 
 NAME                  DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE-SELECTOR   AGE
 kube-keepalived-vip   5         5         5         5            5           
@@ -274,7 +275,7 @@ kube-keepalived-vip   5         5         5         5            5
 
 检查一下配置状态
 
-```
+```sh
 kubectl get pod -o wide |grep keepalive
 kube-keepalived-vip-c4sxw         1/1       Running            0          23h       10.87.2.6    10.87.2.6
 kube-keepalived-vip-c9p7n         1/1       Running            0          23h       10.87.2.8    10.87.2.8
@@ -284,7 +285,7 @@ kube-keepalived-vip-zjts7         1/1       Running            3          23h   
 ```
 可以随机挑一个pod,去看里面的配置
 
-```
+```sh
  $ kubectl exec kube-keepalived-vip-c4sxw cat /etc/keepalived/keepalived.conf
  
  
@@ -335,7 +336,8 @@ virtual_server 10.87.2.50 80 { //此为service开的口
 ```
 
 最后我们去测试这功能
-```
+
+```sh
 $ curl  10.87.2.50
 <!DOCTYPE html>
 <html>
