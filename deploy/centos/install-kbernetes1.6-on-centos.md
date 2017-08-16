@@ -33,10 +33,10 @@
 ## 步骤介绍
 
 - [1 创建 TLS 证书和秘钥](create-tls-and-secret-key.md)
-- [2 创建kubeconfig 文件](create-kubeconfig.md)
-- [3 创建高可用etcd集群](etcd-cluster-installation.md)
+- [2 创建高可用etcd集群](etcd-cluster-installation.md)
+- [3 部署高可用master集群](master-installation.md)
 - [4 安装kubectl命令行工具](kubectl-installation.md)
-- [5 部署高可用master集群](master-installation.md)
+- [5 创建kubeconfig 文件](create-kubeconfig.md)
 - [6 部署node节点](node-installation.md)
 - [7 安装kubedns插件](kubedns-addon-installation.md)
 - [8 安装dashboard插件](dashboard-addon-installation.md)
