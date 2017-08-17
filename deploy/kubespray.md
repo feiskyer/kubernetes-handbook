@@ -69,7 +69,32 @@ EOF
 接着用 kubespray cli 来产生 inventory 文件：
 ```sh
 $ kubespray prepare --masters master1 --etcds master1 --nodes node1 node2 node3
-$ cat ~/.kubespray/inventory/inventory.cfg
+```
+
+在inventory.cfg，添加部分內容：
+```
+$ vim ~/.kubespray/inventory/inventory.cfg
+
+[all]
+master1  ansible_host=192.168.121.179   ansible_user=root ip=192.168.121.179
+node1    ansible_host=192.168.121.106 ansible_user=root ip=192.168.121.106
+node2    ansible_host=192.168.121.197 ansible_user=root ip=192.168.121.197
+node3    ansible_host=192.168.121.123 ansible_user=root ip=192.168.121.123
+
+[kube-master]
+node1
+
+[kube-node]
+node1
+node2
+node3
+
+[etcd]
+node1
+
+[k8s-cluster:children]
+kube-node
+kube-master
 ```
 > 也可以自己新建`inventory`来描述部署节点。
 
