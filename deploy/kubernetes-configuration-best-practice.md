@@ -28,9 +28,9 @@
 
 ## 使用Label
 
-- 定义 [labels](https://kubernetes.io/docs/user-guide/labels/) 来指定应用或Deployment的 **semantic attributes** 。 For example, instead of attaching a label to a set of pods to explicitly represent some service (e.g., `service: myservice`), or explicitly representing the replication controller managing the pods (e.g., `controller: mycontroller`), attach labels that identify semantic attributes, such as `{ app: myapp, tier: frontend, phase: test, deployment: v3 }`. This will let you select the object groups appropriate to the context— e.g., a service for all “tier: frontend” pods, or all “test” phase components of app “myapp”. See the [guestbook](https://github.com/kubernetes/kubernetes/tree/master/examples/guestbook/) app for an example of this approach.
+- 定义 [labels](https://kubernetes.io/docs/user-guide/labels/) 来指定应用或Deployment的语义属性（ **semantic attributes** ）。 例如，不是对于一组 pod 附上 label 来显式的代表某个 service （如：`service: myservice`），或者显式的代表管理这些 pod 的 replication controller（如：`controller: mycontroller`），而是附加识别语义属性的 label，比如 `{ app: myapp, tier: frontend, phase: test, deployment: v3 }`。这样可以让你能够选择合适于场景的对象组 - 举例来说，一个对应所有 “tier: frontend” 前端 pod 的 service ，或是 “myapp” 应用所有 “test” 测试阶段的组件。参考 [guestbook](https://github.com/kubernetes/kubernetes/tree/master/examples/guestbook/) 应用了解一个采取这种方式的例子。
 
-  A service can be made to span multiple deployments, such as is done across [rolling updates](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/), by simply omitting release-specific labels from its selector, rather than updating a service’s selector to match the replication controller’s selector fully.
+  一个 service 可以被配置成跨越多个 deployment，就像跨多个 [rolling updates](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 一样，只需要在它的 label selector 中简单的省略发布相关的 label，而不是更新 service 的 selector 以完全匹配 replication controller 的 selector。
 
 - 为了滚动升级的方便，在Replication Controller的名字中包含版本信息，例如作为名字的后缀。设置一个`version`标签页是很有用的。滚动更新创建一个新的controller而不是修改现有的controller。因此，version含混不清的controller名字就可能带来问题。查看[Rolling Update Replication Controller](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/)文档获取更多关于滚动升级命令的信息。
 
