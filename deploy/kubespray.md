@@ -82,7 +82,7 @@ node2    ansible_host=192.168.121.197 ansible_user=root ip=192.168.121.197
 node3    ansible_host=192.168.121.123 ansible_user=root ip=192.168.121.123
 
 [kube-master]
-node1
+master1
 
 [kube-node]
 node1
@@ -90,7 +90,7 @@ node2
 node3
 
 [etcd]
-node1
+master1
 
 [k8s-cluster:children]
 kube-node
