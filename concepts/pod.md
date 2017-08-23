@@ -79,7 +79,7 @@ spec:
     - name: regsecret
 ```
 
-## RestartPoliy
+## RestartPolicy
 
 支持三种RestartPolicy
 
