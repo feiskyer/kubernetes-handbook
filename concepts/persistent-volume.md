@@ -64,7 +64,7 @@ PV的回收策略（persistentVolumeReclaimPolicy，即PVC释放卷的时候PV�
 取消原来的默认StorageClass
 
 ```sh
-kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+kubectl patch storageclass <default-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 ```
 
 标记新的默认StorageClass
