@@ -109,7 +109,7 @@ status:
 
 ## 状态条件
 
-v1.7+可以在客户端中看到Kubernetes为HorizontalPodAutoscaler设置的状态条件`status.conditions`，用来判断HorizontalPodAutoscaler是否可以扩展（AbleToScale）、是否开启扩展（AbleToScale）以及是否受到限制（ScalingLimitted）。
+v1.7+可以在客户端中看到Kubernetes为HorizontalPodAutoscaler设置的状态条件`status.conditions`，用来判断HorizontalPodAutoscaler是否可以扩展（AbleToScale）、是否开启扩展（ScalingActive）以及是否受到限制（ScalingLimitted）。
 
 ```sh
 $ kubectl describe hpa cm-test
