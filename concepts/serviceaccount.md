@@ -7,7 +7,7 @@ Service account是为了方便Pod里面的进程调用Kubernetes API或其他外
 - 每个namespace都会自动创建一个default service account
 - Token controller检测service account的创建，并为它们创建[secret](secret.md)
 - 开启ServiceAccount Admission Controller后
-  - 每个Pod在创建后都会自动设置`spec.serviceAccount`为default（除非指定了其他ServiceAccout）
+  - 每个Pod在创建后都会自动设置`spec.serviceAccountName`为default（除非指定了其他ServiceAccout）
   - 验证Pod引用的service account已经存在，否则拒绝创建
   - 如果Pod没有指定ImagePullSecrets，则把service account的ImagePullSecrets加到Pod中
   - 每个container启动后都会挂载该service account的token和`ca.crt`到`/var/run/secrets/kubernetes.io/serviceaccount/`
