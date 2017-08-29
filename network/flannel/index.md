@@ -23,9 +23,9 @@
 
 除了UDP，Flannel还支持很多其他的Backend：
 
-- udp：使用udp封装，默认使用8285端口
+- udp：使用用户态udp封装，默认使用8285端口。由于是在用户态封装和解包，性能上有较大的损失
 - vxlan：vxlan封装，需要配置VNI，Port（默认8472）和[GBP](https://github.com/torvalds/linux/commit/3511494ce2f3d3b77544c79b87511a4ddb61dc89)
-- host-gw：直接路由的方式
+- host-gw：直接路由的方式，将容器网络的路由信息直接更新到主机的路由表中，仅适用于二层直接可达的网络
 - aws-vpc：使用 Amazon VPC route table 创建路由，适用于AWS上运行的容器
 - gce：使用Google Compute Engine Network创建路由，所有instance需要开启IP forwarding，适用于GCE上运行的容器
 - ali-vpc：使用阿里云VPC route table 创建路由，适用于阿里云上运行的容器
