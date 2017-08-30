@@ -39,7 +39,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 ### play-with-k8s
 
-[Play with Kubernetes](http://play-with-k8s.com)提供了一个免费的Kubernets体验环境，直接访问<http://play-with-k8s.com>就可以使用kubeadm来创建Kubernetes集群。注意，每个创建的集群最长可以使用4小时。
+[Play with Kubernetes](http://play-with-k8s.com)提供了一个免费的Kubernets体验环境，直接访问<http://play-with-k8s.com>就可以使用kubeadm来创建Kubernetes集群。注意，每次创建的集群最长可以使用4小时。
 
 Play with Kubernetes有个非常方便的功能：自动在页面上显示所有NodePort类型服务的端口，点解该端口即可访问对应的服务。
 

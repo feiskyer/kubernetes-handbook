@@ -8,7 +8,7 @@ Pod的特征
 
 - 包含多个共享IPC、Network和UTC namespace的容器，可直接通过localhost通信
 - 所有Pod内容器都可以访问共享的Volume，可以访问共享数据
-- Pod一旦调度后就跟Node绑定，即使Node挂掉也不会重新调度，推荐使用Deployments、Daemonsets等控制器来容错
+- 无容错性：直接创建的Pod一旦被调度后就跟Node绑定，即使Node挂掉也不会被重新调度（而是被自动删除），因此推荐使用Deployment、Daemonset等控制器来容错
 - 优雅终止：Pod删除的时候先给其内的进程发送SIGTERM，等待一段时间（grace period）后才强制停止依然还在运行的进程
 - 特权容器（通过SecurityContext配置）具有改变系统配置的权限（在网络插件中大量应用）
 
