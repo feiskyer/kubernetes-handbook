@@ -166,7 +166,7 @@ spec:
 
 (3) 集群中服务的信息
 
-容器的环境变量中还包括了容器运行前创建的所有服务的信息，比如默认的kubernetes服务对应了环境变量
+容器的环境变量中还可以引用容器运行前创建的所有服务的信息，比如默认的kubernetes服务对应以下环境变量：
 
 ```
 KUBERNETES_PORT_443_TCP_ADDR=10.0.0.1
@@ -185,9 +185,9 @@ KUBERNETES_PORT_443_TCP_PORT=443
 
 支持三种ImagePullPolicy
 
-- Always：不管镜像是否存在都会进行一次拉取。
+- Always：不管镜像是否存在都会进行一次拉取
 - Never：不管镜像是否存在都不会进行拉取
-- IfNotPresent：只有镜像不存在时，才会进行镜像拉取。
+- IfNotPresent：只有镜像不存在时，才会进行镜像拉取
 
 注意：  
 
@@ -199,20 +199,20 @@ KUBERNETES_PORT_443_TCP_PORT=443
 
 通过设置dnsPolicy参数，设置Pod中容器访问DNS的策略
 
-- ClusterFirst：优先基于cluster domain 后缀，通过kube-dns查询 (默认策略)
+- ClusterFirst：优先基于cluster domain后缀，通过kube-dns查询 (默认策略)
 - Default：优先从kubelet中配置的DNS查询
 
 ## 使用主机的IPC命名空间
 
-通过设置hostIPC参数True，使用主机的IPC命名空间，默认为False
+通过设置`spec.hostIPC`参数为true，使用主机的IPC命名空间，默认为false。
 
 ## 使用主机的网络命名空间
 
-通过设置hostNetwork参数True，使用主机的网络命名空间，默认为False
+通过设置`spec.hostNetwork`参数为true，使用主机的网络命名空间，默认为false。
 
 ## 使用主机的PID空间
 
-通过设置hostPID参数True，使用主机的PID命名空间，默认为False
+通过设置`spec.hostPID`参数为true，使用主机的PID命名空间，默认为false。
 
 ```yaml
 apiVersion: v1
@@ -233,15 +233,15 @@ spec:
     name: busybox
 ```
 
-## 设置Pod中的hostname
+## 设置Pod的hostname
 
-通过hostname参数实现，如果未设置默认使用PodName作为Pod的hostname
+通过`spec.hostname`参数实现，如果未设置默认使用`metadata.name`参数的值作为Pod的hostname。
 
 ## 设置Pod的子域名
 
-通过subdomain参数设置Pod的子域名，默认为空。
+通过`spec.subdomain`参数设置Pod的子域名，默认为空。
 
-比如，指定hostname为busybox-2和subdomain为default-subdomain，完整域名为`busybox-2.default-subdomain.default.svc.cluster.local`：
+比如，指定hostname为busybox-2和subdomain为default-subdomain，完整域名为`busybox-2.default-subdomain.default.svc.cluster.local`，也可以简写为`busybox-2.default-subdomain.default`：
 
 ```yaml
 apiVersion: v1
@@ -264,7 +264,7 @@ spec:
 注意：
 
 - 默认情况下，DNS为Pod生成的A记录格式为`pod-ip-address.my-namespace.pod.cluster.local`，如`1-2-3-4.default.pod.cluster.local`
-- 上面的示例还需要在default namespace中创建一个名为`default-subdomain`（即subdomain）的headless service
+- 上面的示例还需要在default namespace中创建一个名为`default-subdomain`（即subdomain）的headless service，否则其他Pod无法通过完整域名访问到该Pod（只能自己访问到自己）
 
 ```yaml
 kind: Service
@@ -275,7 +275,12 @@ spec:
   clusterIP: None
   selector:
     name: busybox
+  ports:
+  - name: foo # Actually, no port is needed.
+    port: 1234
+    targetPort: 1234
 ```
+注意，必须为headless service设置至少一个服务端口（`spec.ports`，即便它看起来并不需要），否则Pod与Pod之间依然无法通过完整域名来访问。
 
 ## 资源限制
 
@@ -312,10 +317,16 @@ spec:
 
 ## 健康检查
 
-为了确保容器在部署后确实处在正常运行状态，Kubernetes提供了3种探针（Probe，支持exec、tcpSocket和httpGet方式）来探测容器的状态：
+为了确保容器在部署后确实处在正常运行状态，Kubernetes提供了两种探针（Probe）来探测容器的状态：
 
-- LivenessProbe：探测应用是否处于健康状态，如果不健康则删除重建改容器
-- ReadinessProbe：探测应用是否启动完成并且处于正常服务状态，如果不正常则更新容器的状态
+- LivenessProbe：探测应用是否处于健康状态，如果不健康则删除并重新创建容器
+- ReadinessProbe：探测应用是否启动完成并且处于正常服务状态，如果不正常则不会接收来自Kubernetes Service的流量
+
+Kubernetes支持三种方式来执行探针：
+
+- exec：在容器中执行一个命令，如果[命令退出码](http://www.tldp.org/LDP/abs/html/exitcodes.html)返回`0`则表示探测成功，否则表示失败
+- tcpSocket：对指定的容器IP及端口执行一个TCP检查，如果端口是开放的则表示探测成功，否则表示失败
+- httpGet：对指定的容器IP、端口及路径执行一个HTTP Get请求，如果返回的[状态码](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)在`[200,400)`之间则表示探测成功，否则表示失败
 
 ```yaml
 apiVersion: v1
@@ -401,13 +412,13 @@ spec:
 
 容器生命周期钩子（Container Lifecycle Hooks）监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数。支持两种钩子：
 
-- postStart： 容器启动后执行，注意由于是异步执行，它无法保证一定在ENTRYPOINT之后运行。如果失败，容器会被杀死，并根据RestartPolicy决定是否重启
-- preStop：容器停止前执行，常用于资源清理。如果失败，容器同样也会被杀死
+- postStart： 容器创建后立即执行，注意由于是异步执行，它无法保证一定在ENTRYPOINT之前运行。如果失败，容器会被杀死，并根据RestartPolicy决定是否重启
+- preStop：容器终止前执行，常用于资源清理。如果失败，容器同样也会被杀死
 
 而钩子的回调函数支持两种方式：
 
-- exec：在容器内执行命令
-- httpGet：向指定URL发起GET请求
+- exec：在容器内执行命令，如果命令的退出状态码是`0`表示执行成功，否则表示失败
+- httpGet：向指定URL发起GET请求，如果返回的HTTP状态码在`[200, 400)`之间表示请求成功，否则表示失败
 
 postStart和preStop钩子示例：
 
@@ -422,8 +433,9 @@ spec:
     image: nginx
     lifecycle:
       postStart:
-        exec:
-          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+        httpGet:
+	  path: /
+	  port: 80
       preStop:
         exec:
           command: ["/usr/sbin/nginx","-s","quit"]
@@ -433,18 +445,18 @@ spec:
 
 默认情况下，容器都是以非特权容器的方式运行。比如，不能在容器中创建虚拟网卡、配置虚拟网络。
 
-Kubernetes提供了修改[Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)的机制，可以按需要给给容器增加或删除。比如下面的配置给容器增加了`CAP_NET_ADMIN`并删除了`CAP_KILL`。
+Kubernetes提供了修改[Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)的机制，可以按需要给容器增加或删除。比如下面的配置给容器增加了`CAP_NET_ADMIN`并删除了`CAP_KILL`。
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: hello-world
+  name: cap-pod
 spec:
   containers:
   - name: friendly-container
     image: "alpine:3.4"
-    command: ["/bin/echo", "hello", "world"]
+    command: ["/bin/sleep", "3600"]
     securityContext:
       capabilities:
         add:
@@ -587,6 +599,7 @@ fe00::2	ip6-allrouters
 
 - [What is Pod?](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes Pod Lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
+- [DNS Pods and Services](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
 - [Container capabilities](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container)
 - [Configure Liveness and Readiness Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)
 - [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
