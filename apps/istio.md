@@ -59,10 +59,11 @@ rolebinding "istio-sidecar-role-binding" created
 Error from server (Forbidden): error when creating "install/kubernetes/istio-rbac-beta.yaml": clusterroles.rbac.authorization.k8s.io "istio-pilot" is forbidden: attempt to grant extra privileges: [{[*] [istio.io] [istioconfigs] [] []} {[*] [istio.io] [istioconfigs.istio.io] [] []} {[*] [extensions] [thirdpartyresources] [] []} {[*] [extensions] [thirdpartyresources.extensions] [] []} {[*] [extensions] [ingresses] [] []} {[*] [] [configmaps] [] []} {[*] [] [endpoints] [] []} {[*] [] [pods] [] []} {[*] [] [services] [] []}] user=&{user@example.org [...]
 ```
 
-需要给用户授予admin权限
+需要给用户授予admin权限(注意替换`myname@example.org`为你自己的用户名)后重新创建RBAC角色：
 
 ```sh
-kubectl create clusterrolebinding myname-cluster-admin-binding --clusterrole=cluster-admin --user=myname@example.org
+$ kubectl create clusterrolebinding myname-cluster-admin-binding --clusterrole=cluster-admin --user=myname@example.org
+$ kubectl apply -f install/kubernetes/istio-rbac-beta.yaml
 ```
 
 ### 部署Istio核心服务
@@ -118,13 +119,13 @@ $ kubectl get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'
 kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
 ```
 
-比如Istio提供的BookInof示例：
+比如Istio提供的BookInfo示例：
 
 ```sh
 kubectl apply -f <(istioctl kube-inject -f samples/apps/bookinfo/bookinfo.yaml)
 ```
 
-原始应用如下图所示
+原始应用如下图所示
 
 ![](images/bookinfo.png)
 
