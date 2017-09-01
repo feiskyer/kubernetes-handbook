@@ -18,7 +18,7 @@ kubeadm init --pod-network-cidr 10.244.0.0/16 --kubernetes-version stable
 
 - 系统状态检查
 - 生成token
-- 生成自签名CA和可独断证书
+- 生成自签名CA和client端证书
 - 生成kubeconfig用于kubelet连接API server
 - 为Master组件生成Static Pod manifests，并放到`/etc/kubernetes/manifests`目录中
 - 配置RBAC并设置Master node只运行控制平面组件
