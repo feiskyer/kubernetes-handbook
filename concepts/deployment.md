@@ -540,7 +540,7 @@ nginx-2142116321   0         0         0         2m
 nginx-3926361531   3         3         3         28s
 ```
 
-**注意：** 在恢复Deployment之前你无法回退一个暂停了个Deployment。
+**注意：** 在恢复Deployment之前你无法回退一个暂停了的Deployment。
 
 ## Deployment状态
 
