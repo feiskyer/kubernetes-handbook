@@ -154,7 +154,6 @@ spec:
         mode: 511
         path: tst/usr
   containers:
-  containers:
   - image: nginx
     name: db
     volumeMounts:
