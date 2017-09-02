@@ -10,7 +10,7 @@
 brew install kubernetes-helm
 ```
 
-初始化Helm并安装`Tiller`服务（需要事先配置好kubeclt）
+初始化Helm并安装`Tiller`服务（需要事先配置好kubectl）
 
 ```sh
 helm init
