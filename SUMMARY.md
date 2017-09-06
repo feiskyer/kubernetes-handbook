@@ -1,4 +1,4 @@
-﻿# Summary
+# Summary
 
 - [前言](README.md)
 - [如何贡献](CONTRIBUTING.md)
