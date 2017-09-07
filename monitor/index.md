@@ -52,7 +52,7 @@ InfluxDB is running at https://kubernetes-master/api/v1/proxy/namespaces/kube-sy
 使用Prometheus监控Kubernetes需要配置好数据源，一个简单的示例是[prometheus.yml](prometheus.txt)：
 
 ```
-kubectl create -f http://feisky.xyz/kubernetes/monitor/prometheus.txt
+kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/master/monitor/prometheus.txt
 ```
 
 ![](images/14842125295113.jpg)
