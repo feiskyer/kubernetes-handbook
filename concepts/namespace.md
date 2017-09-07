@@ -1,6 +1,6 @@
 # Namespace
 
-Namespace是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或用户组。常见的pods, services, replication controllers和deployments等都是属于某一个namespace的（默认是default），而node, persistentVolumes等则不属于任何namespace。
+Namespace是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或用户组。常见的pod, service, replication controller和deployment等都是属于某一个namespace的（默认是default），而node, persistent volume，namespace等资源则不属于任何namespace。
 
 Namespace常用来隔离不同的用户，比如Kubernetes自带的服务一般运行在`kube-system` namespace中。
 
@@ -51,12 +51,12 @@ $ kubectl delete namespaces new-namespace
 
 1. 删除一个namespace会自动删除所有属于该namespace的资源。
 2. `default`和`kube-system`命名空间不可删除。
-3. PersistentVolumes是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的。
-4. Events是否属于namespace取决于产生events的对象。
+3. PersistentVolume是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的。
+4. Event是否属于namespace取决于产生event的对象。
 5. v1.7版本增加了`kube-public`命名空间，该命名空间用来存放公共的信息，一般以ConfigMap的形式存放。
 
 ```sh
-# kubectl get configmap  -n=kube-public
+$ kubectl get configmap  -n=kube-public
 NAME           DATA      AGE
 cluster-info   2         29d
 ```

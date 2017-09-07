@@ -1,24 +1,20 @@
 # Node
 
-Node是Pod真正运行的主机，可以物理机，也可以是虚拟机。为了管理Pod，每个Node节点上至少要运行container runtime（比如docker或者rkt）、`kubelet`和`kube-proxy`服务。
+Node是Pod真正运行的主机，可以是物理机，也可以是虚拟机。为了管理Pod，每个Node节点上至少要运行container runtime（比如`docker`或者`rkt`）、`kubelet`和`kube-proxy`服务。
 
 ![node](images/node.png)
 
 ## Node管理
 
-不像其他的资源（如Pod和Namespace），Node本质上不是Kubernetes来创建的，Kubernetes只是管理Node上的资源。虽然可以通过Manifest创建一个Node对象（如下json所示），但Kubernetes也只是去检查是否真的是有这么一个Node，如果检查失败，也不会往上调度Pod。
+不像其他的资源（如Pod和Namespace），Node本质上不是Kubernetes来创建的，Kubernetes只是管理Node上的资源。虽然可以通过Manifest创建一个Node对象（如下yaml所示），但Kubernetes也只是去检查是否真的是有这么一个Node，如果检查失败，也不会往上调度Pod。
 
-```json
-{
-  "kind": "Node",
-  "apiVersion": "v1",
-  "metadata": {
-    "name": "10.240.79.157",
-    "labels": {
-      "name": "my-first-k8s-node"
-    }
-  }
-}
+```yaml
+kind: Node
+apiVersion: v1
+metadata:
+  name: 10-240-79-157
+  labels:
+    name: my-first-k8s-node
 ```
 
 这个检查是由Node Controller来完成的。Node Controller负责
@@ -32,7 +28,7 @@ Node是Pod真正运行的主机，可以物理机，也可以是虚拟机。为�
 
 ## Node的状态
 
-每个Node都包括以下状态信息
+每个Node都包括以下状态信息：
 
 - 地址：包括hostname、外网IP和内网IP
 - 条件（Condition）：包括OutOfDisk、Ready、MemoryPressure和DiskPressure
