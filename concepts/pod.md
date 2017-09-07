@@ -434,8 +434,8 @@ spec:
     lifecycle:
       postStart:
         httpGet:
-	  path: /
-	  port: 80
+          path: /
+          port: 80
       preStop:
         exec:
           command: ["/usr/sbin/nginx","-s","quit"]
