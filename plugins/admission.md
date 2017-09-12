@@ -55,7 +55,24 @@ spec:
             - pods
 ```
 
-> 注意，如果不需要修改对象的话，建议使用性能更好的GenericAdmissionWebhook。
+Initializers可以用来
+
+- 修改资源的配置，比如自动给Pod添加一个sidecar容器或者存储卷
+- 如果不需要修改对象的话，建议使用性能更好的GenericAdmissionWebhook。
+
+如何开发Initializers
+
+- 参考[Kubernetes Initializer Tutorial](https://github.com/kelseyhightower/kubernetes-initializer-tutorial) 开发Initializer
+- Initializer必须有一个全局唯一的名字，比如`initializer.vaultproject.io`
+- 对于Initializer自身的部署，可以使用Deployment，但需要手动设置initializers列表为空，以避免无法启动的问题，如
+```
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  initializers:
+    pending: []
+```
+- Initializer有可能收到信息不全的资源（比如还未调度的Pod没有nodeName和status），在实现时需要考虑这种情况
 
 ## GenericAdmissionWebhook
 
@@ -102,3 +119,9 @@ externalAdmissionHooks:
 ```sh
 --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,ResourceQuota,DefaultTolerationSeconds
 ```
+
+## 参考文档
+
+- [Using Admission Controllers](https://kubernetes.io/docs/admin/admission-controllers/)
+- [How Kubernetes Initializers work](https://medium.com/google-cloud/how-kubernetes-initializers-work-22f6586e1589)
+
