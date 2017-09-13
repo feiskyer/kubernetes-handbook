@@ -66,6 +66,7 @@
     - [Kubespray](deploy/kubespray.md)
     - [Kubernetes on LinuxKit](deploy/k8s-linuxkit.md)
     - [Frakti+Hyper](deploy/frakti/index.md)
+    - [kops](deploy/kops.md)
     - [CentOS手动部署](https://github.com/feiskyer/kubernetes-handbook/blob/master/deploy/centos/install-kbernetes1.6-on-centos.md)
   - [4.3 kubectl客户端](deploy/kubectl.md)
   - [4.4 附加组件](addons/index.md)
