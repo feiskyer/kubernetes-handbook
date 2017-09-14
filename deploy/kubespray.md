@@ -9,9 +9,9 @@
 
 本篇将说明如何通过 Kubespray 部署 Kubernetes 至裸机节点，安装版本如下所示：
 
-* Kubernetes v1.6.1
-* Etcd v3.1.6
-* Flannel v0.7.1
+* Kubernetes v1.7.3
+* Etcd v3.2.4
+* Flannel v0.8.0
 * Docker v17.04.0-ce
 
 ## 节点资讯
@@ -56,10 +56,9 @@ $ sudo apt-get update && sudo apt-get install -y ansible git cowsay python-pip p
 $ sudo pip install -U kubespray
 ```
 
-安裝完成後，新增配置檔`/etc/kubespray/kubespray.yml`，並加入以下內容：
+安裝完成後，新增配置檔`~/.kubespray.yml`，並加入以下內容：
 ```sh
-$ mkdir /etc/kubespray
-$ cat <<EOF > /etc/kubespray/kubespray.yml
+$ cat <<EOF > ~/.kubespray.yml
 kubespray_git_repo: "https://github.com/kubernetes-incubator/kubespray.git"
 # Logging options
 loglevel: "info"
@@ -116,18 +115,18 @@ Kubernetes deployed successfuly
 当 Ansible 运行完成后，若没发生错误就可以开始进行操作 Kubernetes，如取得版本资讯：
 ```sh
 $ kubectl version
-Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.1+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.1+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.7.3+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.8.3", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.7.3+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.8.3", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 取得当前集群节点状态：
 ```sh
 $ kubectl get node
 NAME      STATUS                     AGE       VERSION
-master1   Ready,SchedulingDisabled   11m       v1.6.1+coreos.0
-node1     Ready                      11m       v1.6.1+coreos.0
-node2     Ready                      11m       v1.6.1+coreos.0
-node3     Ready                      11m       v1.6.1+coreos.
+master1   Ready,SchedulingDisabled   11m       v1.7.3+coreos.0
+node1     Ready                      11m       v1.7.3+coreos.0
+node2     Ready                      11m       v1.7.3+coreos.0
+node3     Ready                      11m       v1.7.3+coreos.
 ```
 
 查看当前集群 Pod 状态：
