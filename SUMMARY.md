@@ -107,6 +107,7 @@
   - [5.7 Cloud Provider](plugins/cloud-provider.md)
   - [5.8 Scheduler扩展](plugins/scheduler.md)
   - [5.9 Keepalived-VIP](plugins/keepalived-vip.md)
+  - [5.10 Ingress + Letsencrypt](plugins/ingress_letsencrypt.md)
 
 ## 实践案例
 
