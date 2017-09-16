@@ -1,19 +1,19 @@
 # kubernetes_ingress_letsencrypt
 
 ![](https://i.imgur.com/bbCz37T.png)
-## ¥Ó?Domain Name
-­º¥ı´N¬O¥Ó?¤@?§A­nªºÊI°ì, ??ÊI¸ô¤W?·½«Ü¦h³£¥i¥H¬d¤@¤U­ş?ÊI°ì°Ó©Î¬O¤@¨Ç¬Û?ªº«Ø?,??§Ú´N¥ı¤£¥h¦h°µ¤¶?¤F,¤å³¹¤¤?¥Hsam.nctu.me?§@­S¨Ò
+## ç”³è¯·Domain Name
+é¦–å…ˆå°±æ˜¯ç”³è¯·ä¸€ä¸ªä½ è¦çš„ç½‘åŸŸ, è¿™è¾¹ç½‘è·¯ä¸Šèµ„æºå¾ˆå¤šéƒ½å¯ä»¥æŸ¥ä¸€ä¸‹å“ªä¸ªç½‘åŸŸå•†æˆ–æ˜¯ä¸€äº›ç›¸å…³çš„å»ºè®®,è¿™è¾¹æˆ‘å°±å…ˆä¸å»å¤šåšä»‹ç»äº†,æ–‡ç« ä¸­ä¼šä»¥sam.nctu.meæ¥ä½œèŒƒä¾‹
 
 
 
-## ¥Î[Letsencrypt](https://letsencrypt.org/)?????
-??§Ú?¥Î¤â?ªº§â¥¦¥ı?¤U?,¤W[Letsencrypt](https://letsencrypt.org/)¥h¦w?certbot, ¤â??ªº¤è¦¡¤]¥i¥H?¦Ò§Úªº¤W¤@½g[?letsencrpyt??](https://www.nctusam.com/2017/08/30/ubuntumint-nginx-%E7%B0%BDletsencrpyt%E6%86%91%E8%AD%89/) ¤å³¹,?¤J¥H¤U«ü¥O????
+## ç”¨[Letsencrypt](https://letsencrypt.org/)æ¥ç­¾å‘å‡­è¯
+è¿™è¾¹æˆ‘ä»¬ç”¨æ‰‹åŠ¨çš„æŠŠå®ƒå…ˆç­¾ä¸‹æ¥,ä¸Š[Letsencrypt](https://letsencrypt.org/)å»å®‰è£…certbot, æ‰‹åŠ¨ç­¾çš„æ–¹å¼ä¹Ÿå¯ä»¥å‚è€ƒ[ç­¾letsencrpytå‡­è¯](https://www.nctusam.com/2017/08/30/ubuntumint-nginx-%E7%B0%BDletsencrpyt%E6%86%91%E8%AD%89/) æ–‡ç« ,è¾“å…¥ä»¥ä¸‹æŒ‡ä»¤æ¥ç­¾å‡­è¯
 
 
 ```shell
 $ sudo certbot certonly --standalone sam.nctu.me
 ```
-?ªG?¦p¤U¤è?¥Ü
+ç»“æœä¼šå¦‚ä¸‹æ–¹æ˜¾ç¤º
 ```
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
@@ -32,38 +32,38 @@ IMPORTANT NOTES:
 ```
 
 
-?¦n¦Z?¦Û?©ñ¦b
+ç­¾å¥½åä¼šè‡ªåŠ¨æ”¾åœ¨
 
 ```
 /etc/letsencrypt/live/sam.nctu.me/
 ```
-¥i¥H¬İ¨ì¸Ì­±ªº??,?­­¥²?¬Oroot¤~¯à¬İ¨ì???®Æ?ªº?®e
+å¯ä»¥çœ‹åˆ°è£¡é¢çš„å‡­è¯,æƒé™å¿…é¡»æ˜¯rootæ‰èƒ½çœ‹åˆ°è¿™ä¸ªèµ„æ–™å¤¹çš„å†…å®¹
 ```shell
 # ls
 cert.pem  chain.pem  fullchain.pem  privkey.pem  README
 ```
 
-????´N?§¹¤F
+è¿™æ ·å‡­è¯å°±ç­¾å®Œäº†
 
-## ?¸mKubernetes Secret
+## è®¾ç½®Kubernetes Secret
 
-?fullchain.pem(¦]?¨Ï¥Înginx controller) ÉO privkey.pem?«Ø¥ßsecret,?¤§¦Z?°t¸m?ingress¨Ï¥Î
+å°†fullchain.pem(å› ä¸ºä½¿ç”¨nginx controller) ä¸ privkey.pemæ¥å»ºç«‹secret,è¿™ä¹‹åä¼šé…ç½®ç»™ingressä½¿ç”¨
 
 ```shell
 $ kubectl create secret tls tls-certs --cert fullchain.pem --key privkey.pem 
 ```
-¬d¬İsecret
+æŸ¥çœ‹secret
 ```shell
 $ kubectl get secret
 NAME                              TYPE                                  DATA      AGE
 default-token-rtlbl               kubernetes.io/service-account-token   3         6d
 tls-certs                         kubernetes.io/tls                     2         55m
 ```
-¥H«Ø¥ß§¹¦¨
+ä»¥å»ºç«‹å®Œæˆ
 
 
-## «Ø¥ßIngress
-§Ú?¥ı¥h«Ø¥ß¤@?ingressªºyaml?,??§U§Ú?create ingress¦}¥[¤Jtlsªº?©w
+## å»ºç«‹Ingress
+æˆ‘ä»¬å…ˆå»å»ºç«‹ä¸€ä¸ªingressçš„yamlæ¡£,æ¥å¸®åŠ©æˆ‘ä»¬create ingresså¹¶åŠ å…¥tlsçš„è®¾å®š
 ingress.yaml
 ```yaml=
 apiVersion: extensions/v1beta1                                                                                
@@ -83,20 +83,20 @@ spec:
             serviceName: phpmyadmin
             servicePort: 80
 ```
-µM¦Z«Ø¥ß¦¹Ingress
+ç„¶åå»ºç«‹æ­¤Ingress
 
 ```shell
 $ kubectl create -f ingress.yaml
 ```
-¦}¬d¬İ
+å¹¶æŸ¥çœ‹
 ```shell
 $ kubectl get ingress 
 NAME            HOSTS            ADDRESS   PORTS     AGE
 nginx-ingress   sam.nctu.me             80, 443   1h
 ```
 
-## «Ø¥ßdefault-backend
-¥ı«Ø¥ß¤@?delfault,¦pªG??¥Îipª½±µrequest©Î¬O?¦³?©w?ªºdomain name,?¦^?404
+## å»ºç«‹default-backend
+å…ˆå»ºç«‹ä¸€ä¸ªdelfault,å¦‚æœè¯•ç€ç”¨ipç›´æ¥requestæˆ–æ˜¯æ²¡æœ‰è®¾å®šè¿‡çš„domain name,ä¼šå›ä¼ 404
 
 default-backend.yaml
 ```yaml=
@@ -156,8 +156,8 @@ spec:
 ```shell
 $ kubectl create -f default-backend.yaml
 ```
-## «Ø¥ßIngress-Nginx-Controller
-??¦³?¤p§|,¦b«Ø¥ß¤§«e­n¥ı?¸mRBAC¤~??§Q«Ø°_?,ªá¤F???¤~??,©Ò¥H§Ú?­n¥ı«Ø¥ß¬Û?ªºRBAC
+## å»ºç«‹Ingress-Nginx-Controller
+è¿™è¾¹æœ‰ä¸ªå°å‘,åœ¨å»ºç«‹ä¹‹å‰è¦å…ˆè®¾ç½®RBACæ‰ä¼šé¡ºåˆ©å»ºèµ·æ¥,èŠ±äº†ç‚¹æ—¶é—´æ‰å‘ç°,æ‰€ä»¥æˆ‘ä»¬è¦å…ˆå»ºç«‹ç›¸å…³çš„RBAC
 ingress-controller-rbac.yaml
 ```yaml=
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -270,7 +270,7 @@ metadata:
 $ kubectl create -f ingress-controller-rbac.yaml
 ```
 
-¤§¦Z´N¥i¥H«Ø¥ßIngress-controller
+ä¹‹åå°±å¯ä»¥å»ºç«‹Ingress-controller
 nginx-ingress-daemonset.yaml
 ```yaml=
 apiVersion: extensions/v1beta1
@@ -329,7 +329,7 @@ spec:
 ```shell
 $ kubectl create -f nginx-ingress-daemonset.yaml
 ```
-¬d¬İ¬O§_¦³«Ø¥ß§¹¦¨
+æŸ¥çœ‹æ˜¯å¦æœ‰å»ºç«‹å®Œæˆ
 ```shell
 $ kubectl get pod -n kube-system
 nginx-ingress-controller-3q2b0           1/1       Running   0          1h
@@ -337,4 +337,4 @@ nginx-ingress-controller-j28sz           1/1       Running   0          1h
 nginx-ingress-controller-lrn34           1/1       Running   0          1h
 
 ```
-µM¦Z¦A?? ª½±µ?¤J https://sam.nctu.tw ´N¦æ¤F, ?µM??¥u¬O??,?±o?¦¨§A?©wªºdomain name
+ç„¶åå†æµ‹è¯• ç›´æ¥è¾“å…¥ https://sam.nctu.tw å°±è¡Œäº†, å½“ç„¶è¿™è¾¹åªæ˜¯æµ‹è¯•,è®°å¾—æ¢æˆä½ è®¾å®šçš„domain name
