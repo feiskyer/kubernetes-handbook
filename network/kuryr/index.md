@@ -299,7 +299,7 @@ $ sudo mkdir -p /etc/cni/net.d/
 }
 ```
 
-完成后，更新 solo 与 vif python 库：
+完成后，更新 oslo 与 vif python 库：
 ```shell=
 $ sudo pip install 'oslo.privsep>=1.20.0' 'os-vif>=1.5.0'
 ```
