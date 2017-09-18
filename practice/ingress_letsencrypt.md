@@ -338,3 +338,5 @@ nginx-ingress-controller-lrn34           1/1       Running   0          1h
 
 ```
 然后再测试 直接输入 https://sam.nctu.tw 就行了, 当然这边只是测试,记得换成你设定的domain name
+
+以上相關代碼放在[github](https://github.com/kweisamx/kubernetes_ingress_letsencrypt)
