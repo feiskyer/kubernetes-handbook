@@ -92,6 +92,7 @@
       - [SR-IOV](network/sriov/index.md)
       - [Romana](network/romana/index.md)
       - [OpenContrail](network/opencontrail/index.md)
+      - [Kuryr](network/kuryr/index.md)
       - [CNI Plugin Chains](network/cni/cni-chain.md)
   - [5.3 Volume插件](plugins/volume.md)
     - [glusterfs](plugins/glusterfs.md)
