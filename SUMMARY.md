@@ -104,6 +104,7 @@
       - [网络测试](practice/service-discovery-lb/network-and-cluster-perfermance-test.md)
       - [边缘节点配置](practice/service-discovery-lb/edge-node-configuration.md)
     - [minikube Ingress](practice/minikube-ingress.md)
+    - [Ingress + Letsencrypt](practice/ingress_letsencrypt.md)
   - [5.7 Cloud Provider](plugins/cloud-provider.md)
   - [5.8 Scheduler扩展](plugins/scheduler.md)
   - [5.9 Keepalived-VIP](plugins/keepalived-vip.md)
