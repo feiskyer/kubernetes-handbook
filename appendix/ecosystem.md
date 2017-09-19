@@ -238,7 +238,6 @@
 * Managed Kubernetes
     * Platform9
     * Gravitational
-    * [KCluster](https://kcluster.io/)
 * VMs on Kubernetes
     * Openstack
     * Redhat
