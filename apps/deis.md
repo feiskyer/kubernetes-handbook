@@ -1,5 +1,9 @@
 # Deis workflow
 
+> **[danger] Deis Workflow不再维护**
+>
+> Deis Workflow v2.18将是[最后一个发行版本](https://deis.com/blog/2017/deis-workflow-final-release/)，后续不再维护和更新。 推荐使用 [Helm](helm.md) 来管理Kubernetes应用。
+
 Deis workflow是基于Kubernetes的PaaS管理平台，进一步简化了应用的打包、部署和服务发现。
 
 ![](https://deis.com/docs/workflow/diagrams/Git_Push_Flow.png)
