@@ -7,7 +7,9 @@
 
 ## Overlay模式
 
-![](images/Vp0TCil.png)
+![](images/ovn-kubernetes.png)
+
+(图片来自<https://imgur.com/i7sci9O>)
 
 ### 配置master
 
