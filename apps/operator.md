@@ -1,4 +1,4 @@
-﻿# Operator
+# Operator
 
 Operator是CoreOS推出的旨在简化复杂有状态应用管理的框架，它是一个感知应用状态的控制器，通过扩展Kubernetes API来自动创建、管理和配置应用实例。
 
