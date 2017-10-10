@@ -253,6 +253,8 @@ kubectl --context=federation get rs nginx-pci -o jsonpath='{.metadata.annotation
 - Federated ReplicaSets
 - Federated Secrets
 - Federated Events（仅存在federation控制平面）
+- Federated Jobs（v1.8+）
+- Federated Horizontal Pod Autoscaling (HPA，v1.8+)
 
 比如使用Federated Service的方法如下：
 

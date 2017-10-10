@@ -22,7 +22,7 @@ Kubenretes内置的Cloud Provider包括
 Kubernetes的Cloud Provider目前正在重构中
 
 - v1.6添加了独立的`cloud-controller-manager`服务，云提供商可以构建自己的`cloud-controller-manager`而无须修改Kubernetes核心代码
-- v1.7进一步重构`cloud-controller-manager`，解耦了Controller Manager与Cloud Controller的代码逻辑
+- v1.7和v1.8进一步重构`cloud-controller-manager`，解耦了Controller Manager与Cloud Controller的代码逻辑
 
 构建一个新的云提供商的Cloud Provider步骤为
 
@@ -33,4 +33,5 @@ Kubernetes的Cloud Provider目前正在重构中
 - 配置kube-controller-manager `--cloud-provider=external`
 - 启动`cloud-controller-manager`
 
-具体实现方法可以参考[rancher-cloud-controller-manager](https://github.com/rancher/rancher-cloud-controller-manager)。
+具体实现方法可以参考[rancher-cloud-controller-manager](https://github.com/rancher/rancher-cloud-controller-manager) 和 [cloud-controller-manager](https://github.com/kubernetes/kubernetes/blob/master/cmd/cloud-controller-manager/controller-manager.go)。
+

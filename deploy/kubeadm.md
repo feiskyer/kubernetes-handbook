@@ -6,14 +6,14 @@
 # on master
 git clone https://github.com/feiskyer/ops
 cd ops
-kubernetes/setup_kubernetes.sh
+kubernetes/install-kubernetes.sh
 
 # on node
 git clone https://github.com/feiskyer/ops
 cd ops
 export TOKEN=xxxxx
 export MASTER_IP=xx.xx.xx.xx
-kubernetes/add_docker_node.sh
+kubernetes/add-docker-node.sh
 ```
 
 以下是详细的安装步骤。
@@ -230,9 +230,31 @@ kubeadm reset
 
 ## 动态升级
 
-kubeadm将在v1.8支持动态升级，目前升级还需要手动操作。
+kubeadm v1.8开始支持动态升级，升级步骤为
 
-### 升级Master
+* 首先上传kubeadm配置，如`kubeadm config upload from-flags [flags]`（使用命令行参数）或 `kubeadm config upload from-file --config [config]`（使用配置文件）
+* 在master上检查新版本 `kubeadm upgrade plan`， 当有新版本（如v1.8.0）时，执行 `kubeadm upgrade apply v1.8.0` 升级控制平面
+* **手动**升级CNI插件（如果有新版本的话）
+* 添加自动证书回滚的RBAC策略 `kubectl create clusterrolebinding kubeadm:node-autoapprove-certificate-rotation --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient --group=system:nodes`
+* 最后升级kubelet
+
+```sh
+$ kubectl drain $HOST --ignore-daemonsets
+
+# 升级软件包
+$ apt-get update
+$ apt-get upgrade
+# CentOS上面执行yum升级
+# $ yum update
+
+$ kubectl uncordon $HOST
+```
+
+### 手动升级
+
+kubeadm v1.7以及以前的版本不支持动态升级，但可以手动升级。
+
+#### 升级Master
 
 假设你已经有一个使用kubeadm部署的Kubernetes v1.6集群，那么升级到v1.7的方法为：
 
@@ -242,7 +264,7 @@ kubeadm将在v1.8支持动态升级，目前升级还需要手动操作。
 4. kubeadm init --skip-preflight-checks --kubernetes-version v1.7.1
 5. 更新CNI插件
 
-### 升级Node
+#### 升级Node
 
 1. 升级安装包 `apt-get upgrade && apt-get update`
 2. 重启kubelet `systemctl restart kubelet`
@@ -273,3 +295,6 @@ node-csr-c69HXe7aYcqkS1bKmH4faEnHAWxn6i2bHZ2mD04jZyQ   1m        system:bootstra
 ## 参考文档
 
 - [kubeadm参考指南](https://kubernetes.io/docs/admin/kubeadm/)
+- [Upgrading kubeadm clusters from 1.7 to 1.8](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm-upgrade-1-8/)
+- [Upgrading kubeadm clusters from 1.6 to 1.7](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm-upgrade-1-7/)
+

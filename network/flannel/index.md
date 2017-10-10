@@ -73,8 +73,7 @@ CNI flannel插件会将flannel网络配置转换为bridge插件配置，并调�
 使用flannel前需要配置` kube-controller-manager --allocate-node-cidrs=true --cluster-cidr=10.244.0.0/16`。
 
 ```sh
-kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel-rbac.yml
-kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
 这会启动flanneld容器，并配置CNI网络插件：

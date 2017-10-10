@@ -41,6 +41,11 @@ spec:
            name: varlog
 ```
 
+注意
+
+- Kubernetes v1.7及以前API版本使用`extensions/v1beta1`
+- Kubernetes v1.8的API版本升级到`apps/v1beta2`
+
 ## 滚动更新
 
 v1.6+支持DaemonSet的滚动更新，可以通过`.spec.updateStrategy.type`设置更新策略。目前支持两种策略

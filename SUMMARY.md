@@ -73,6 +73,7 @@
     - [Dashboard](addons/dashboard.md)
     - [Heapster](addons/heapster.md)
     - [EFK](addons/efk.md)
+    - [Metrics](addons/metrics.md)
   - [4.5 推荐配置](deploy/kubernetes-configuration-best-practice.md)
 
 ## 插件指南

@@ -2,10 +2,11 @@
 
 随着微服务的流行，越来越多的云服务平台需要大量模块之间的网络调用。Kubernetes 在 1.3 引入了Network Policy，Network Policy提供了基于策略的网络控制，用于隔离应用并减少攻击面。它使用标签选择器模拟传统的分段网络，并通过策略控制它们之间的流量以及来自外部的流量。
 
-在使用Network Policy之前，需要注意
+在使用Network Policy时，需要注意
 
 - v1.6以及以前的版本需要在kube-apiserver中开启`extensions/v1beta1/networkpolicies`
-- v1.7+版本Network Policy已经GA，API版本为`networking.k8s.io/v1`
+- v1.7版本Network Policy已经GA，API版本为`networking.k8s.io/v1`
+- v1.8版本新增Egress和IPBlock的支持
 - 网络插件要支持Network Policy，如Calico、Romana、Weave Net和trireme等，参考[这里](../plugins/network-policy.md)
 
 ## 网络策略
@@ -14,7 +15,7 @@
 
 默认情况下，所有Pod之间是全通的。每个Namespace可以配置独立的网络策略，来隔离Pod之间的流量。
 
-v1.7+版本通过创建匹配所有Pod的Network Policy来作为默认的网络策略，比如默认拒绝所有Pod之间通信
+v1.7+版本通过创建匹配所有Pod的Network Policy来作为默认的网络策略，比如默认拒绝所有Pod之间Ingress通信
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -23,9 +24,38 @@ metadata:
   name: default-deny
 spec:
   podSelector:
+  policyTypes:
+  - Ingress
 ```
 
-而默认允许所有Pod通信的策略为
+默认拒绝所有Pod之间Egress通信的策略为
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector:
+  policyTypes:
+  - Egress
+```
+
+甚至是默认拒绝所有Pod之间Ingress和Egress通信的策略为
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector:
+  policyTypes:
+  - Ingress
+  - Egress
+```
+
+而默认允许所有Pod之间Ingress通信的策略为
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -38,13 +68,24 @@ spec:
   - {}
 ```
 
+默认允许所有Pod之间Egress通信的策略为
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all
+spec:
+  podSelector:
+  egress:
+  - {}
+```
+
 而v1.6版本则通过Annotation来隔离namespace的所有Pod之间的流量，包括从外部到该namespace中所有Pod的流量以及namespace内部Pod相互之间的流量：
 
 ```sh
 kubectl annotate ns <namespace> "net.beta.kubernetes.io/network-policy={\"ingress\": {\"isolation\": \"DefaultDeny\"}}"
 ```
-
-> 注：目前，Network Policy仅支持Ingress流量控制。
 
 ### Pod隔离
 
@@ -78,9 +119,54 @@ spec:
       port: 6379
 ```
 
+另外一个同时开启Ingress和Egress通信的策略为
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
+```
+
+它用来隔离default namespace中带有`role=db`标签的Pod：
+
+* 允许default namespace中`role=frontend`标签的Pod访问`role=db`标签Pod的TCP 6379端口
+* 允许default namespace中`project=myproject`标签的Pod访问 `role=db` 标签Pod的TCP 6379端口
+* 允许default namespace中`role=db`标签的Pod访问 `10.0.0.0/24` 网段的TCP 5987端口
+
 ## 简单示例
 
-以calico为例看一下Network Policy的具体用法（以kubernetes v1.6为例）。
+以calico为例看一下Network Policy的具体用法。
 
 首先配置kubelet使用CNI网络插件
 
@@ -107,6 +193,15 @@ service "nginx" exposed
 此时，通过其他Pod是可以访问nginx服务的
 
 ```sh
+$ kubectl get svc,pod
+NAME                        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+svc/kubernetes              10.100.0.1    <none>        443/TCP    46m
+svc/nginx                   10.100.0.16   <none>        80/TCP     33s
+
+NAME                        READY         STATUS        RESTARTS   AGE
+po/nginx-701339712-e0qfq    1/1           Running       0          35s
+po/nginx-701339712-o00ef    1/1           Running       0         
+
 $ kubectl run busybox --rm -ti --image=busybox /bin/sh
 Waiting for pod default/busybox-472357175-y0m47 to be running, status is Pending, pod ready: false
 
@@ -120,8 +215,17 @@ Connecting to nginx (10.100.0.16:80)
 开启default namespace的DefaultDeny Network Policy后，其他Pod（包括namespace外部）不能访问nginx了：
 
 ```sh
-# annotate仅适用于v1.6及以前版本，v1.7+需要创建默认拒绝策略
-$ kubectl annotate ns default "net.beta.kubernetes.io/network-policy={\"ingress\": {\"isolation\": \"DefaultDeny\"}}"
+$ cat default-deny.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector:
+  policyTypes:
+  - Ingress
+
+$ kubectl create -f default-deny.yaml
 
 $ kubectl run busybox --rm -ti --image=busybox /bin/sh
 Waiting for pod default/busybox-472357175-y0m47 to be running, status is Pending, pod ready: false
@@ -139,8 +243,7 @@ wget: download timed out
 ```sh
 $ cat nginx-policy.yaml
 kind: NetworkPolicy
-# v1.7中版本号为networking.k8s.io/v1
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: access-nginx
 spec:
@@ -155,7 +258,6 @@ spec:
 
 $ kubectl create -f nginx-policy.yaml
 networkpolicy "access-nginx" created
-
 
 # 不带access=true标签的Pod还是无法访问nginx服务
 $ kubectl run busybox --rm -ti --image=busybox /bin/sh
@@ -184,8 +286,7 @@ Connecting to nginx (10.100.0.16:80)
 
 ```sh
 $ cat nginx-external-policy.yaml
-# v1.7中版本号为networking.k8s.io/v1
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: front-end-access

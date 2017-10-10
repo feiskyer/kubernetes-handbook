@@ -163,6 +163,47 @@ tolerations:
 
 注意，DaemonSet创建的Pod会自动加上对`node.alpha.kubernetes.io/unreachable`和`node.alpha.kubernetes.io/notReady`的NoExecute Toleration，以避免它们因此被删除。
 
+## 优先级调度
+
+从v1.8开始，kube-scheduler支持定义Pod的优先级，从而保证高优先级的Pod优先调度。开启方法为
+
+- apiserver配置`--feature-gates=PodPriority=true` 和 `--runtime-config=scheduling.k8s.io/v1alpha1=true`
+- kube-scheduler配置`--feature-gates=PodPriority=true` 
+
+在指定Pod的优先级之前需要先定义一个PriorityClass（非namespace资源），如
+
+```yaml
+apiVersion: v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+globalDefault: false
+description: "This priority class should be used for XYZ service pods only."
+```
+
+其中
+
+- `value` 为32位整数的优先级，该值越大，优先级越高
+- `globalDefault` 用于未配置PriorityClassName的Pod，整个集群中应该只有一个PriorityClass将其设置为true
+
+然后，在PodSpec中通过PriorityClassName设置Pod的优先级：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  priorityClassName: high-priority
+```
+
 ## 多调度器
 
 如果默认的调度器不满足要求，还可以部署自定义的调度器。并且，在整个集群中还可以同时运行多个调度器实例，通过`podSpec.schedulerName`来选择使用哪一个调度器（默认使用内置的调度器）。
@@ -233,3 +274,11 @@ kube-scheduler还支持使用`--policy-config-file`指定一个调度策略文�
 ```sh
 kube-scheduler --address=127.0.0.1 --leader-elect=true --kubeconfig=/etc/kubernetes/scheduler.conf
 ```
+
+## 参考文档
+
+- [Pod Priority and Preemption](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/)
+- [Configure Multiple Schedulers](https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/)
+- [Taints and Tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
+- [Advanced Scheduling in Kubernetes](http://blog.kubernetes.io/2017/03/advanced-scheduling-in-kubernetes.html)
+

@@ -40,13 +40,13 @@ kubectl config view
 
 注意，`kubectl run`仅支持Pod、Replication Controller、Deployment、Job和CronJob等几种资源。具体的资源类型是由参数决定的，默认为Deployment：
 
-|创建的资源类型|参数|
-|------------|---|
-|Pod|`--restart=Never`|
-|Replication Controller|`--generator=run/v1`|
-|Deployment|`--restart=Always`|
-|Job|`--restart=OnFailure`|
-|CronJob|`--schedule=<cron>`|
+| 创建的资源类型                | 参数                    |
+| ---------------------- | --------------------- |
+| Pod                    | `--restart=Never`     |
+| Replication Controller | `--generator=run/v1`  |
+| Deployment             | `--restart=Always`    |
+| Job                    | `--restart=OnFailure` |
+| CronJob                | `--schedule=<cron>`   |
 
 ## 命令行自动补全
 
@@ -184,6 +184,33 @@ kubectl drain NODE [Options]
 有的时候不需要evict pod，只需要标记Node不可调用，可以用`kubectl cordon`命令。
 
 恢复的话只需要运行`kubectl uncordon NODE`将NODE重新改成可调度状态。
+
+## 权限检查
+
+`kubectl auth` 提供了两个子命令用于检查用户的鉴权情况：
+
+* `kubectl auth can-i` 检查用户是否有权限进行某个操作，比如
+
+```sh
+  # Check to see if I can create pods in any namespace
+  kubectl auth can-i create pods --all-namespaces
+
+  # Check to see if I can list deployments in my current namespace
+  kubectl auth can-i list deployments.extensions
+
+  # Check to see if I can do everything in my current namespace ("*" means all)
+  kubectl auth can-i '*' '*'
+
+  # Check to see if I can get the job named "bar" in namespace "foo"
+  kubectl auth can-i list jobs.batch/bar -n foo
+```
+
+- `kubectl auth reconcile` 自动修复有问题的RBAC策略，如
+
+```sh
+  # Reconcile rbac resources from a file
+  kubectl auth reconcile -f my-rbac-rules.yaml
+```
 
 ## kubectl插件
 

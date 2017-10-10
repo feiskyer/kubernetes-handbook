@@ -2,12 +2,10 @@
 
 ## 简述
 
-Deployment为Pod和ReplicaSet提供了一个声明式定义(declarative)方法，用来替代以前的ReplicationController来方便的管理应用。典型的应用场景包括：
+Deployment为Pod和ReplicaSet提供了一个声明式定义(declarative)方法，用来替代以前的ReplicationController来方便的管理应用。
 
-- 定义Deployment来创建Pod和ReplicaSet
-- 滚动升级和回滚应用
-- 扩容和缩容
-- 暂停和继续Deployment
+* Kubernetes v1.7及以前API版本使用`extensions/v1beta1`
+* Kubernetes v1.8的API版本升级到`apps/v1beta2`
 
 比如一个简单的nginx应用可以定义为
 
@@ -54,11 +52,14 @@ kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1
 kubectl rollout undo deployment/nginx-deployment
 ```
 
-## Deployment概念详细解析
+Deployment的**典型应用场景**包括：
 
-本文翻译自kubernetes官方文档：https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/controllers/deployment.md
+- 定义Deployment来创建Pod和ReplicaSet
+- 滚动升级和回滚应用
+- 扩容和缩容
+- 暂停和继续Deployment
 
-根据2017年5月10日的Commit 8481c02 翻译。
+## Deployment概念解析
 
 ## Deployment是什么？
 

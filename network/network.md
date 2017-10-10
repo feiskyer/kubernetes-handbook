@@ -87,7 +87,7 @@ EOF
 ```sh
 kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel-rbac.yml
 kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
-
+```
 
 ## [Weave Net](weave/index.md)
 

@@ -1,6 +1,9 @@
 # CronJob
 
-CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间周期运行指定的任务。在Kubernetes 1.5，使用CronJob需要开启`batch/v2alpha1` API，即`--runtime-config=batch/v2alpha1`。
+CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间周期运行指定的任务。
+
+* 在Kubernetes 1.5+，使用CronJob需要开启`batch/v2alpha1` API，即`--runtime-config=batch/v2alpha1`
+* 从v1.8开始，API升级到`batch/v1beta1`，并在apiserver中默认开启
 
 ## CronJob Spec
 
@@ -10,7 +13,7 @@ CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间�
 - `.spec.concurrencyPolicy`指定任务的并发策略，支持Allow、Forbid和Replace三个选项
 
 ```yaml
-apiVersion: batch/v2alpha1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: hello
@@ -58,6 +61,8 @@ $ kubectl delete cronjob hello
 cronjob "hello" deleted
 ```
 
+## 参考文档
 
+- [Cron Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 
 

@@ -7,10 +7,11 @@ kube-proxy可以直接运行在物理机上，也可以以static pod或者daemon
 kube-proxy当前支持一下几种实现
 
 - userspace：最早的负载均衡方案，它在用户空间监听一个端口，所有服务通过iptables转发到这个端口，然后在其内部负载均衡到实际的Pod。该方式最主要的问题是效率低，有明显的性能瓶颈。
-- iptables：目前推荐的方案，完全以iptables规则的方式来实现service负载均衡。该方式最主要的问题是在服务多的时候产生太多的iptables规则（社区有人提到过几万条），大规模下也有性能问题
+- iptables：目前推荐的方案，完全以iptables规则的方式来实现service负载均衡。该方式最主要的问题是在服务多的时候产生太多的iptables规则，非增量式更新会引入一定的时延，大规模情况下有明显的性能问题
+- ipvs：为解决iptables模式的性能问题，v1.8新增了ipvs模式，采用增量式更新，并可以保证service更新期间连接保持不断开
 - winuserspace：同userspace，但仅工作在windows上
 
-另外，基于ipvs的方案正在讨论中（见[#44063](https://github.com/kubernetes/kubernetes/issues/44063)和[slide](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit)），大规模情况下可以大幅提升性能，比如slide里面提供的示例将服务延迟从小时缩短到毫秒级。
+注意：使用ipvs模式时，需要预先在每台Node上加载内核模块`nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh`  等。
 
 ## Iptables示例
 
@@ -28,6 +29,18 @@ kube-proxy当前支持一下几种实现
 -A KUBE-SERVICES -d 10.101.85.234/32 -p tcp -m comment --comment "default/http: cluster IP" -m tcp --dport 80 -j KUBE-SVC-7IMAZDGB2ONQNK4Z
 -A KUBE-SVC-7IMAZDGB2ONQNK4Z -m comment --comment "default/http:" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-KJZJRL2KRWMXNR3J
 -A KUBE-SVC-7IMAZDGB2ONQNK4Z -m comment --comment "default/http:" -j KUBE-SEP-55QZ6T7MF3AHPOOB
+```
+
+## ipvs示例
+
+```sh
+$ ipvsadm -ln
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  10.111.21.136:80 rr persistent 10800
+  -> 192.168.23.130:80            Masq    1      0          0
+  -> 192.168.23.134:80            Masq    1      0          0
 ```
 
 ## 启动kube-proxy示例

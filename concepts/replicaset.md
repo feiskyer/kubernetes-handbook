@@ -6,6 +6,11 @@ ReplicationController（也简称为rc）用来确保容器应用的副本数始
 
 虽然也ReplicaSet可以独立使用，但建议使用 Deployment 来自动管理ReplicaSet，这样就无需担心跟其他机制的不兼容问题（比如ReplicaSet不支持rolling-update但Deployment支持），并且还支持版本记录、回滚、暂停升级等高级特性。Deployment的详细介绍和使用方法见[这里](deployment.md)。
 
+**注意**
+
+- Kubernetes v1.7及以前API版本使用`extensions/v1beta1`
+- Kubernetes v1.8的API版本升级到`apps/v1beta2`
+
 ## ReplicationController示例
 
 ```yaml

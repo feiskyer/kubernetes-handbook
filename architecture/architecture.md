@@ -61,7 +61,21 @@ Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，�
   * Kubernetes外部：日志、监控、配置管理、CI、CD、Workflow、FaaS、OTS应用、ChatOps等
   * Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
 
-> 关于分层架构，可以关注下Kubernetes社区正在推进的Kubernetes architectual roadmap (`https://docs.google.com/document/d/1XkjVm4bOeiVkj-Xt1LgoGiqWsBfNozJ51dyI-ljzt1o`，需要加入kubernetes-dev google groups才可以查看)。
+### 核心组件
+
+![](images/core-packages.png)
+
+### 核心API
+
+![](images/core-apis.png)
+
+### 生态系统
+
+![](images/core-ecosystem.png)
+
+
+
+关于分层架构，可以关注下Kubernetes社区正在推进的[Kubernetes architectual roadmap](https://github.com/kubernetes/community/tree/master/sig-architecture)。
 
 ## 参考文档
 
@@ -69,4 +83,4 @@ Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，�
 - <http://queue.acm.org/detail.cfm?id=2898444>
 - <http://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43438.pdf>
 - <http://thenewstack.io/kubernetes-an-overview>
-- Kbernetes architectual roadmap
+- [Kubernetes Architecture SIG](https://github.com/kubernetes/community/tree/master/sig-architecture)

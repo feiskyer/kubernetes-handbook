@@ -2,18 +2,47 @@
 
 ![](https://i.imgur.com/6zYTLL8.png)
 
-如何在kubernetes上部署spark
+**Kubernetes 从 v1.8 开始支持[原生的Apache Spark](https://apache-spark-on-k8s.github.io/userdocs/running-on-kubernetes.html)应用（需要Spark支持Kubernetes，比如v2.2.0-kubernetes-0.4.0）**，可以通过 `spark-submit` 命令直接提交Kubernetes任务。比如计算圆周率
 
-Kubernetes 示例[github](https://github.com/kubernetes/examples/tree/master/staging/spark)上提供了一个详细的spark部署方法，由于他的步骤设置有些复杂, 这边简化一些部份让大家安装的时候不用去多设定一些东西。
+```sh
+bin/spark-submit \
+  --deploy-mode cluster \
+  --class org.apache.spark.examples.SparkPi \
+  --master k8s://https://<k8s-apiserver-host>:<k8s-apiserver-port> \
+  --kubernetes-namespace default \
+  --conf spark.executor.instances=5 \
+  --conf spark.app.name=spark-pi \
+  --conf spark.kubernetes.driver.docker.image=kubespark/spark-driver:v2.2.0-kubernetes-0.4.0 \
+  --conf spark.kubernetes.executor.docker.image=kubespark/spark-executor:v2.2.0-kubernetes-0.4.0 \
+  local:///opt/spark/examples/jars/spark-examples_2.11-2.2.0-k8s-0.4.0.jar
+```
 
+或者使用Python版本
 
+```sh
+bin/spark-submit \
+  --deploy-mode cluster \
+  --master k8s://https://<k8s-apiserver-host>:<k8s-apiserver-port> \
+  --kubernetes-namespace <k8s-namespace> \
+  --conf spark.executor.instances=5 \
+  --conf spark.app.name=spark-pi \
+  --conf spark.kubernetes.driver.docker.image=kubespark/spark-driver-py:v2.2.0-kubernetes-0.4.0 \
+  --conf spark.kubernetes.executor.docker.image=kubespark/spark-executor-py:v2.2.0-kubernetes-0.4.0 \
+  --jars local:///opt/spark/examples/jars/spark-examples_2.11-2.2.0-k8s-0.4.0.jar \
+  --py-files local:///opt/spark/examples/src/main/python/sort.py \
+  local:///opt/spark/examples/src/main/python/pi.py 10
+```
 
-## 部署条件
+## Spark on Kubernetes部署
+
+Kubernetes 示例[github](https://github.com/kubernetes/examples/tree/master/staging/spark)上提供了一个详细的spark部署方法，由于步骤复杂，这里简化一些部分让大家安装的时候不用去多设定一些东西。
+
+### 部署条件
 
 * 一个kubernetes群集,可参考[集群部署](https://feisky.gitbooks.io/kubernetes/deploy/cluster.html)
 * kube-dns正常运作
 
-## 创建一个命名空间
+### 创建一个命名空间
 
 namespace-spark-cluster.yaml
 
@@ -33,7 +62,7 @@ $ kubectl create -f examples/staging/spark/namespace-spark-cluster.yaml
 这边原文提到需要将kubectl的执行环境转到spark-cluster,这边为了方便我们不这样做,而是将之后的佈署命名空间都加入spark-cluster
 
 
-## 部署Master Service
+### 部署Master Service
 
 建立一个replication controller,来运行Spark Master服务
 
@@ -202,7 +231,7 @@ $ kubectl proxy --port=8001
 10.201.2.34是群集的其中一台node,这边可换成你自己的
 
 
-## 部署 Spark workers
+### 部署 Spark workers
 
 要先确定Matser是再运行的状态
 
@@ -253,7 +282,7 @@ spark-ui-proxy-controller-d4br2   1/1       Running   4          6d
 基本上到这边Spark的群集已经建立完成了
 
 
-## 创建 Zeppelin UI
+### 创建 Zeppelin UI
 
 我们可以利用Zeppelin UI经由web notebook直接去执行我们的任务,
 详情可以看[Zeppelin UI](http://zeppelin.apache.org/)与[ Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
@@ -339,12 +368,14 @@ SparkContext available as sc, HiveContext available as sqlContext.
 
 接着就能使用Spark的服务了,如有错误欢迎更正。
 
-## zeppelin常见问题
+### zeppelin常见问题
 
 * zeppelin的镜像非常大,所以再pull时会花上一些时间,而size大小的问题现在也正在解决中,详情可参考 issue #17231 
 * 在GKE的平台上, `kubectl post-forward` 可能有些不稳定,如果你看现zeppelin 的状态为`Disconnected`,`port-forward`可能已经失败你需要去重新启动它,详情可参考 #12179
 
 ## 参考文档
 
+- [Apache Spark on Kubernetes](https://apache-spark-on-k8s.github.io/userdocs/index.html)
 - [https://github.com/kweisamx/spark-on-kubernetes](https://github.com/kweisamx/spark-on-kubernetes)
 - [Spark examples](https://github.com/kubernetes/examples/tree/master/staging/spark)
+
