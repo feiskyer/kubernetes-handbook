@@ -1,5 +1,7 @@
 # 单机部署
 
+## minikube
+
 创建Kubernetes cluster（单机版）最简单的方法是[minikube](https://github.com/kubernetes/minikube):
 
 首先下载kubectl
@@ -26,6 +28,32 @@ $ sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-mac
 # start minikube.
 # http proxy is required in China
 $ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port --docker-env HTTPS_PROXY=http://proxy-ip:port --vm-driver=xhyve
+```
+
+### 使用calico
+
+minikube支持配置使用CNI插件，这样可以方便的使用社区提供的各种网络插件，比如使用calico还可以支持Network Policy。
+
+首先使用下面的命令启动minikube：
+
+```sh
+minikube start --docker-env HTTP_PROXY=http://proxy-ip:port \
+    --docker-env HTTPS_PROXY=http://proxy-ip:port \
+    --network-plugin=cni \
+    --host-only-cidr 172.17.17.1/24 \
+    --extra-config=kubelet.ClusterCIDR=192.168.0.0/16 \
+    --extra-config=proxy.ClusterCIDR=192.168.0.0/16 \
+    --extra-config=controller-manager.ClusterCIDR=192.168.0.0/16
+```
+
+安装calico网络插件：
+
+```sh
+curl -O -L https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+sed -i -e '/nodeSelector/d' calico.yaml
+sed -i -e '/node-role.kubernetes.io\/master: ""/d' calico.yaml
+sed -i -e 's/10\.96\.232/10.0.0/' calico.yaml
+kubectl apply -f calico.yaml
 ```
 
 ## 开发版
