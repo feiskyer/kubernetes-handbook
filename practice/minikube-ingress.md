@@ -89,7 +89,7 @@ $ kubectl expose deployment nginx --type=NodePort
 然后创建Ingress，与前面不同的是host使用`nginx.$(minikube ip).xip.io`：
 
 ```sh
-cat <<EOF | kubectl create -f -
+$ cat <<EOF | kubectl create -f -
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
