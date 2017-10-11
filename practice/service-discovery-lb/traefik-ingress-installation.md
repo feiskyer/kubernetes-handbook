@@ -12,34 +12,118 @@ Ingress Controller 实质上可以理解为是个监视器，Ingress Controller 
 
 [Traefik](https://traefik.io/)是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API等等后端模型。
 
-以下配置文件可以在[kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook)GitHub仓库中的[manifests/traefik-ingress/](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/traefik-ingress)目录下找到。
+以下配置文件可以在Traefik GitHub仓库中的[examples/k8s/traefik-rbac.yaml](https://github.com/containous/traefik/tree/master/examples/k8s/traefik-rbac.yaml)找到。
 
 **创建ingress-rbac.yaml**
 
 将用于service account验证。
 
 ```Yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ingress
-  namespace: kube-system
-
 ---
-
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: traefik-ingress-controller
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: ingress
-subjects:
-  - kind: ServiceAccount
-    name: ingress
-    namespace: kube-system
+  name: traefik-ingress-controller
 roleRef:
-  kind: ClusterRole
-  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-ingress-controller
+subjects:
+- kind: ServiceAccount
+  name: traefik-ingress-controller
+  namespace: kube-system
 ```
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
+```
+
+**创建Depeloyment**
+
+```yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-ingress-controller
+  namespace: kube-system
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: traefik-ingress-controller
+  namespace: kube-system
+  labels:
+    k8s-app: traefik-ingress-lb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-lb
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-lb
+        name: traefik-ingress-lb
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: traefik
+        name: traefik-ingress-lb
+        args:
+        - --web
+        - --kubernetes
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-ingress-service
+spec:
+  selector:
+    k8s-app: traefik-ingress-lb
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
+    - protocol: TCP
+      port: 8080
+      name: admin
+  type: NodePort
+```
+
+```sh
+# 使用deployment部署
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-deployment.yaml
+# 也可以使用daemonset来部署
+# kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
+```
+
+注意我们这里用的是Deploy类型，没有限定该pod运行在哪个主机上。Traefik的端口是8580。
 
 **创建名为`traefik-ingress`的ingress**，文件名traefik.yaml
 
@@ -55,7 +139,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: my-nginx
+          serviceName: nginx
           servicePort: 80
   - host: traefik.frontend.io
     http:
@@ -70,54 +154,6 @@ spec:
 
 根据你自己环境中部署的service的名字和端口自行修改，有新service增加时，修改该文件后可以使用`kubectl replace -f traefik.yaml`来更新。
 
-我们现在集群中已经有两个service了，一个是nginx，另一个是官方的`guestbook`例子。
-
-**创建Depeloyment**
-
-```Yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: traefik-ingress-lb
-  namespace: kube-system
-  labels:
-    k8s-app: traefik-ingress-lb
-spec:
-  template:
-    metadata:
-      labels:
-        k8s-app: traefik-ingress-lb
-        name: traefik-ingress-lb
-    spec:
-      terminationGracePeriodSeconds: 60
-      hostNetwork: true
-      restartPolicy: Always
-      serviceAccountName: ingress
-      containers:
-      - image: traefik
-        name: traefik-ingress-lb
-        resources:
-          limits:
-            cpu: 200m
-            memory: 30Mi
-          requests:
-            cpu: 100m
-            memory: 20Mi
-        ports:
-        - name: http
-          containerPort: 80
-          hostPort: 80
-        - name: admin
-          containerPort: 8580
-          hostPort: 8580
-        args:
-        - --web
-        - --web.address=:8580
-        - --kubernetes
-```
-
-注意我们这里用的是Deploy类型，没有限定该pod运行在哪个主机上。Traefik的端口是8580。
-
 **Traefik UI**
 
 ```yaml
@@ -130,24 +166,24 @@ spec:
   selector:
     k8s-app: traefik-ingress-lb
   ports:
-  - name: web
-    port: 80
-    targetPort: 8580
+  - port: 80
+    targetPort: 8080
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: traefik-web-ui
   namespace: kube-system
+  annotations:
+    kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: traefik-ui.local
+  - host: traefik-ui.nginx.io
     http:
       paths:
-      - path: /
-        backend:
+      - backend:
           serviceName: traefik-web-ui
-          servicePort: web
+          servicePort: 80
 ```
 
 配置完成后就可以启动treafik ingress了。
