@@ -6,7 +6,7 @@
 
 - v1.6以及以前的版本需要在kube-apiserver中开启`extensions/v1beta1/networkpolicies`
 - v1.7版本Network Policy已经GA，API版本为`networking.k8s.io/v1`
-- v1.8版本新增Egress和IPBlock的支持
+- v1.8版本新增**Egress**和**IPBlock**的支持
 - 网络插件要支持Network Policy，如Calico、Romana、Weave Net和trireme等，参考[这里](../plugins/network-policy.md)
 
 ## 网络策略
@@ -23,7 +23,7 @@ kind: NetworkPolicy
 metadata:
   name: default-deny
 spec:
-  podSelector:
+  podSelector: {}
   policyTypes:
   - Ingress
 ```
@@ -36,7 +36,7 @@ kind: NetworkPolicy
 metadata:
   name: default-deny
 spec:
-  podSelector:
+  podSelector: {}
   policyTypes:
   - Egress
 ```
@@ -49,7 +49,7 @@ kind: NetworkPolicy
 metadata:
   name: default-deny
 spec:
-  podSelector:
+  podSelector: {}
   policyTypes:
   - Ingress
   - Egress
@@ -63,7 +63,7 @@ kind: NetworkPolicy
 metadata:
   name: allow-all
 spec:
-  podSelector:
+  podSelector: {}
   ingress:
   - {}
 ```
@@ -76,7 +76,7 @@ kind: NetworkPolicy
 metadata:
   name: allow-all
 spec:
-  podSelector:
+  podSelector: {}
   egress:
   - {}
 ```
@@ -221,7 +221,7 @@ kind: NetworkPolicy
 metadata:
   name: default-deny
 spec:
-  podSelector:
+  podSelector: {}
   policyTypes:
   - Ingress
 
@@ -365,7 +365,7 @@ metadata:
   name: default-deny
   namespace: default
 spec:
-  podSelector:
+  podSelector: {}
 ```
 
 ### 禁止其他namespace访问服务
