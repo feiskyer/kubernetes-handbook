@@ -11,82 +11,41 @@
     - [http://openshift.com](http://openshift.com/)
     - https://tectonic.com/
     - http://rancher.com/kubernetes/
-    - [https://www.infoq.com/news/
-        <wbr>2016/11/apprenda-kubernetes-
-        <wbr>ket](https://www.infoq.com/news/2016/11/apprenda-kubernetes-ket)
-    - [https://github.com/samsung-
-        <wbr>cnct/kraken](https://github.com/samsung-cnct/kraken)
-    - [https://www.mirantis.com/
-        <wbr>solutions/container-
-        <wbr>technologies/](https://www.mirantis.com/solutions/container-technologies/)
-    - [https://www.ubuntu.com/cloud/
-        <wbr>kubernetes](https://www.ubuntu.com/cloud/kubernetes)
-    - [https://platform9.com/
-        <wbr>products-2/kubernetes/](https://platform9.com/products-2/kubernetes/)
+    - [https://www.infoq.com/news/2016/11/apprenda-kubernetes-ket](https://www.infoq.com/news/2016/11/apprenda-kubernetes-ket)
+    - [https://github.com/samsung-cnct/kraken](https://github.com/samsung-cnct/kraken)
+    - [https://www.mirantis.com/solutions/container-technologies/](https://www.mirantis.com/solutions/container-technologies/)
+    - [https://www.ubuntu.com/cloud/kubernetes](https://www.ubuntu.com/cloud/kubernetes)
+    - [https://platform9.com/products-2/kubernetes/](https://platform9.com/products-2/kubernetes/)
     - https://kubermatic.io/en/
     - https://stackpoint.io/#/
-    - [http://gravitational.com/
-        <wbr>telekube/](http://gravitational.com/telekube/)
-    - [http://www.stratoscale.com/
-        <wbr>products/kubernetes-as-a-
-        <wbr>service/](http://www.stratoscale.com/products/kubernetes-as-a-service/)
+    - [http://gravitational.com/telekube/](http://gravitational.com/telekube/)
+    - [http://www.stratoscale.com/products/kubernetes-as-a-service/](http://www.stratoscale.com/products/kubernetes-as-a-service/)
     - https://giantswarm.io/product/
-    - [https://cloud.google.com/
-        <wbr>container-engine/](https://cloud.google.com/container-engine/)
-    - [https://www.digitalocean.com/
-        <wbr>community/tutorials/an-
-        <wbr>introduction-to-kubernetes](https://www.digitalocean.com/community/tutorials/an-introduction-to-kubernetes)
-    - [http://blog.kubernetes.io/
-        <wbr>2016/11/bringing-kubernetes-
-        <wbr>support-to-azure.html](http://blog.kubernetes.io/2016/11/bringing-kubernetes-support-to-azure.html)
-    - [http://thenewstack.io/huawei-
-        <wbr>launches-kubernetes-based-
-        <wbr>container-engine/](http://thenewstack.io/huawei-launches-kubernetes-based-container-engine/)
-    - [http://blogs.univa.com/2016/
-        <wbr>05/univa-announces-navops-
-        <wbr>command-for-managing-
-        <wbr>enterprise-container-workload-
-        <wbr>on-kubernetes-distributions/](http://blogs.univa.com/2016/05/univa-announces-navops-command-for-managing-enterprise-container-workload-on-kubernetes-distributions/)
+    - [https://cloud.google.com/container-engine/](https://cloud.google.com/container-engine/)
+    - [https://www.digitalocean.com/community/tutorials/an-introduction-to-kubernetes](https://www.digitalocean.com/community/tutorials/an-introduction-to-kubernetes)
+    - [http://blog.kubernetes.io/2016/11/bringing-kubernetes-support-to-azure.html](http://blog.kubernetes.io/2016/11/bringing-kubernetes-support-to-azure.html)
+    - [http://thenewstack.io/huawei-launches-kubernetes-based-container-engine/](http://thenewstack.io/huawei-launches-kubernetes-based-container-engine/)
+    - [http://blogs.univa.com/2016/05/univa-announces-navops-command-for-managing-enterprise-container-workload-on-kubernetes-distributions/](http://blogs.univa.com/2016/05/univa-announces-navops-command-for-managing-enterprise-container-workload-on-kubernetes-distributions/)
     - https://supergiant.io/
     - https://diamanti.com/products/
-    - [http://www.vmware.com/company/
-        <wbr>news/releases/vmw-newsfeed.
-        <wbr>VMware-Introduces-Kubernetes-
-        <wbr>as-a-Service-on-Photon-
-        <wbr>Platform.2104598.html](http://www.vmware.com/company/news/releases/vmw-newsfeed.VMware-Introduces-Kubernetes-as-a-Service-on-Photon-Platform.2104598.html)
-    - [https://github.com/hyperhq/
-        <wbr>hypernetes](https://github.com/hyperhq/hypernetes)
-    - [https://www.joyent.com/
-        <wbr>containerpilot](https://www.joyent.com/containerpilot)
+    - [http://www.vmware.com/company/news/releases/vmw-newsfeed.VMware-Introduces-Kubernetes-as-a-Service-on-Photon-Platform.2104598.html](http://www.vmware.com/company/news/releases/vmw-newsfeed.VMware-Introduces-Kubernetes-as-a-Service-on-Photon-Platform.2104598.html)
+    - [https://github.com/hyperhq/hypernetes](https://github.com/hyperhq/hypernetes)
+    - [https://www.joyent.com/containerpilot](https://www.joyent.com/containerpilot)
 * PaaS on Kubernetes
-    - [Openshift](http://openshift.com/)
-     - Red Hat® OpenShift is a container application platform that brings docker and Kubernetes to the enterprise.
-    - [Deis Workflow](https://deis.com/workflow/)
-     - The open source PaaS for Kubernetes.
-    - [Gondor/Kel](http://www.kelproject.com/)
-     - An open-source, Kubernetes-based PaaS built in Python and Go
-    - [WSO2](http://wso2.com/)
-     - WSO2 Private PaaS delivers standard, on-premise, application, integration, data, identity, governance, and analytics Platform as a Service (PaaS) to your IT project teams.  
-    - [Rancher](http://rancher.com/)
-     - Simple, easy-to-use container management.It contains Cattle,Kubernetes,Messos and Docker Swarm orchestrations.
-    - [ElasticKube](https://github.com/ElasticBox/elastickube)
-     - ElasticKube is an open source management platform for Kubernetes with the goal of providing a self-service experience for containerized applications.
+    - [Openshift](http://openshift.com/): Red Hat® OpenShift is a container application platform that brings docker and Kubernetes to the enterprise.
+    - [Deis Workflow](https://deis.com/workflow/): The open source PaaS for Kubernetes.
+    - [Gondor/Kel](http://www.kelproject.com/): An open-source, Kubernetes-based PaaS built in Python and Go
+    - [WSO2](http://wso2.com/): WSO2 Private PaaS delivers standard, on-premise, application, integration, data, identity, governance, and analytics Platform as a Service (PaaS) to your IT project teams.  
+    - [Rancher](http://rancher.com/): Simple, easy-to-use container management.It contains Cattle,Kubernetes,Messos and Docker Swarm orchestrations.
+    - [ElasticKube](https://github.com/ElasticBox/elastickube): ElasticKube is an open source management platform for Kubernetes with the goal of providing a self-service experience for containerized applications.
 * Serverless implementations
-    - [Funktion](https://funktion.fabric8.io/)
-     - open source event based lambda programming for kubernetes 
-    - [Fission](https://github.com/platform9/fission)
-     - Fission: Serverless Functions for Kubernetes
-    - [Kubeless](https://github.com/kubeless/kubeless)
-     - kubeless is a Kubernetes-native serverless framework. It is currently under active development lead by the Kubernetes group at Bitnami,
-    - [OpenWhisk](http://openwhisk.incubator.apache.org/)
-     - Apache OpenWhisk is a serverless, open source cloud platform
-    - [Iron.io](https://www.iron.io/)
-     - Serverless Multi-cloud for Enteprise, Open Source.
-    - [Leveros](https://github.com/leveros/leveros)
-     - Lever OS is the open-source cloud platform that allows fast-moving teams to build and deploy microservice-oriented backends in the blink of an eye. 
-     - It abstracts away complicated infrastructure and leaves developers with very simple, but powerful building blocks that handle scale transparently. 
-    - [OpenLambda](https://github.com/open-lambda/open-lambda)
-     - OpenLambda is an Apache-licensed serverless computing project, written in Go and based on Linux containers. One of the goals of OpenLambda is to enable exploration of new approaches to serverless computing. 
+    - [Funktion](https://funktion.fabric8.io/): open source event based lambda programming for kubernetes 
+    - [Fission](https://github.com/platform9/fission): Fission: Serverless Functions for Kubernetes
+    - [Kubeless](https://github.com/kubeless/kubeless): kubeless is a Kubernetes-native serverless framework. It is currently under active development lead by the Kubernetes group at Bitnami,
+    - [OpenWhisk](http://openwhisk.incubator.apache.org/): Apache OpenWhisk is a serverless, open source cloud platform
+    - [Iron.io](https://www.iron.io/): Serverless Multi-cloud for Enteprise, Open Source.
+    - [Leveros](https://github.com/leveros/leveros): Lever OS is the open-source cloud platform that allows fast-moving teams to build and deploy microservice-oriented backends in the blink of an eye. It abstracts away complicated infrastructure and leaves developers with very simple, but powerful building blocks that handle scale transparently. 
+    - [OpenLambda](https://github.com/open-lambda/open-lambda): OpenLambda is an Apache-licensed serverless computing project, written in Go and based on Linux containers. One of the goals of OpenLambda is to enable exploration of new approaches to serverless computing. 
 * Application frameworks
     * [Spring Cloud](http://www.nicolaferraro.stfi.re/2016/10/23/hot-reconfiguration-of-microservices-on-kubernetes/)
 * API Management
@@ -97,14 +56,10 @@
     - Pachyderm
     - Heron
 * Package managers
-    * [Helm](https://github.com/kubernetes/helm)
-     - Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources.
-    * [kubeapps](https://kubeapps.com/)
-     - Discover & launch great Kubernetes-ready apps
-    * [KPM](https://github.com/coreos/kpm)
-     - KPM is a tool to deploy and manage application stacks on Kubernetes. But kpm is no longer developed or maintained by CoreOS.
-    * [k8s-AppController](https://github.com/Mirantis/k8s-AppController)
-     - AppController is a pod that you can spawn in your Kubernetes cluster which will take care of your complex deployments for you.
+    * [Helm](https://github.com/kubernetes/helm): Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources.
+    * [kubeapps](https://kubeapps.com/): Discover & launch great Kubernetes-ready apps
+    * [KPM](https://github.com/coreos/kpm): KPM is a tool to deploy and manage application stacks on Kubernetes. But kpm is no longer developed or maintained by CoreOS.
+    * [k8s-AppController](https://github.com/Mirantis/k8s-AppController): AppController is a pod that you can spawn in your Kubernetes cluster which will take care of your complex deployments for you.
 * Configuration
     - Kompose
     - Jsonnet
@@ -207,17 +162,11 @@
     - [Vitess](http://vitess.io/getting-started/)
     - [Minio](https://blog.minio.io/storage-in-paas-minio-and-deis-7f9f604dedf2#.7rr6awv0j)
 * Container runtimes
-    * [containerd/Docker](https://github.com/containerd/containerd)
-     - An open and reliable container runtime
-    * [Rkt](https://github.com/rkt/rkt)
-     - rkt is a pod-native container engine for Linux. It is composable, secure, and built on standards. 
-    * [CRI-O](https://github.com/kubernetes-incubator/cri-o)
-     - Open Container Initiative-based implementation of Kubernetes Container Runtime Interface. 
-    * [Hyper.sh/frakti](https://github.com/hyperhq/runv)
-     - Hypervisor-based Runtime for OCI.
-    * [OpenContainer(OCI)](https://github.com/opencontainers)
-     - The Open Container Initiative (OCI) is a lightweight, open governance structure (project), formed under the auspices of the Linux Foundation, for the express purpose of creating open industry standards around container formats and runtime. 
-     - The OCI currently contains two specifications: the Runtime Specification (runtime-spec) and the Image Specification (image-spec). 
+    * [containerd/Docker](https://github.com/containerd/containerd): An open and reliable container runtime
+    * [Rkt](https://github.com/rkt/rkt): rkt is a pod-native container engine for Linux. It is composable, secure, and built on standards. 
+    * [CRI-O](https://github.com/kubernetes-incubator/cri-o): Open Container Initiative-based implementation of Kubernetes Container Runtime Interface. 
+    * [Hyper.sh/frakti](https://github.com/hyperhq/runv): Hypervisor-based Runtime for OCI.
+    * [OpenContainer(OCI)](https://github.com/opencontainers): The Open Container Initiative (OCI) is a lightweight, open governance structure (project), formed under the auspices of the Linux Foundation, for the express purpose of creating open industry standards around container formats and runtime. The OCI currently contains two specifications: the Runtime Specification (runtime-spec) and the Image Specification (image-spec). 
 * Security
     * [Trireme](http://opensourceforu.com/2016/11/trireme-adds-production-scale-security-kubernetes)
     * [Aquasec](http://blog.aquasec.com/security-best-practices-for-kubernetes-deployment)
