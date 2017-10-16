@@ -170,7 +170,7 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 
 ### [ipvs](ipvs/index.md)
 
-目前社区还在推进<https://github.com/kubernetes/kubernetes/issues/17470>，预计v1.7可以有alpha版进来。
+Kubernetes v1.8已经支持ipvs负载均衡模式（alpha版）。
 
 ### [Canal](https://github.com/tigera/canal)
 

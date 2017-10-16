@@ -1,12 +1,13 @@
 # kubeadm
 
-> 统一化安装脚本（使用docker运行时）
+> Kubernetes一键部署脚本（使用docker运行时）
 
 ```sh
 # on master
 git clone https://github.com/feiskyer/ops
 cd ops
 kubernetes/install-kubernetes.sh
+# 记住控制台输出的TOEKN和MASTER地址，在其他Node安装时会用到
 
 # on node
 git clone https://github.com/feiskyer/ops
@@ -31,13 +32,13 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
+
 apt-get update
+
 # Install docker if you don't have it already.
 apt-get install -y docker.io
 apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 systemctl enable docker && systemctl start docker
-
-systemctl enable kubelet && systemctl start kubelet
 ```
 
 ### centos
@@ -53,11 +54,22 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
        https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
+
 setenforce 0
 yum install -y docker kubelet kubeadm kubectl kubernetes-cni
 systemctl enable docker && systemctl start docker
+```
 
-systemctl enable kubelet && systemctl start kubelet
+国内用户也可以使用阿里云的镜像来安装
+
+```sh
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+EOF
 ```
 
 ## 安装master

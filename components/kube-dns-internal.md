@@ -12,13 +12,8 @@
 
 ![](images/kube-dns.png)
 
-## 源码分析
+## 源码简介
 
 kube-dns的代码已经从kubernetes里面分离出来，放到了<https://github.com/kubernetes/dns>。
-
-> **[info] 源码版本**
->
-> 本节内容基于Kubernetes DNS [1.14.2](https://github.com/kubernetes/dns/tree/ff416ee2481f2cfa811645d403f596060f8f69ab)版本。
->
 
 kube-dns、dnsmasq-nanny和sidecar的代码均是从`cmd/<cmd-name>/main.go`开始，并分别调用`pkg/dns`、`pkg/dnsmasq`和`pkg/sidecar`完成相应的功能。而最核心的DNS解析则是直接引用了`github.com/skynetservices/skydns/server`的代码，具体实现见[skynetservices/skydns](https://github.com/skynetservices/skydns/tree/master/server)。

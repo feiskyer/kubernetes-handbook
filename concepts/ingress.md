@@ -30,7 +30,7 @@
    [ Services ]
 ```
 
-Ingress可以给service提供集群外部访问的URL、负载均衡、SSL终止、HTTP路由等。为了配置这些Ingress规则，集群管理员需要部署一个[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)，它监听Ingress和service的变化，并根据规则配置负载均衡并提供访问入口。
+Ingress可以给service提供集群外部访问的URL、负载均衡、SSL终止、HTTP路由等。为了配置这些Ingress规则，集群管理员需要部署一个[Ingress controller](../plugins/ingress.md)，它监听Ingress和service的变化，并根据规则配置负载均衡并提供访问入口。
 
 ## Ingress格式
 
@@ -70,7 +70,7 @@ spec:
 
 > 注：单个服务还可以通过设置`Service.Type=NodePort`或者`Service.Type=LoadBalancer`来对外暴露。
 
-### 路由到多服务的Ingress
+### 多服务的Ingress
 
 路由到多服务的Ingress即根据请求路径的不同转发到不同的后端服务上，比如
 

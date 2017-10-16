@@ -193,6 +193,12 @@ nginx.default.svc.cluster.local. 30 IN	A	172.26.2.5
 - NodePort Service：源IP会做SNAT，server pod看到的源IP是Node IP。为了避免这种情况，可以给service加上annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`，让service只代理本地endpoint的请求（如果没有本地endpoint则直接丢包），从而保留源IP。
 - LoadBalancer Service：源IP会做SNAT，server pod看到的源IP是Node IP。在GKE/GCE中，添加annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`后可以自动从负载均衡器中删除没有本地endpoint的Node。
 
+### 工作原理
+
+kube-proxy负责将service负载均衡到后端Pod中，如下图所示
+
+![](images/service-flow.png)
+
 ## Ingress Controller
 
 Service虽然解决了服务发现和负载均衡的问题，但它在使用上还是有一些限制，比如

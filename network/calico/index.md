@@ -16,6 +16,7 @@ Calico主要由Felix、etcd、BGP client以及BGP Route Reflector组成
 2.  etcd，分布式键值存储，主要负责网络元数据一致性，确保Calico网络状态的准确性；
 3.  BGP Client（BIRD）, 主要负责把Felix写入Kernel的路由信息分发到当前Calico网络，确保Workload间的通信的有效性；
 4.  BGP Route Reflector（BIRD），大规模部署时使用，摒弃所有节点互联的 mesh 模式，通过一个或者多个BGP Route Reflector来完成集中式的路由分发。
+5.  calico/calico-ipam，主要用作Kubernetes的CNI插件
 
 ![](calico2.png)
 

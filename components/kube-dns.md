@@ -31,6 +31,8 @@ spec:
     name: busybox
 ```
 
+![](images/dns-demo.png)
+
 ## 支持配置私有DNS服务器和上游DNS服务器
 
 从Kubernetes 1.6开始，可以通过为kube-dns提供ConfigMap来实现对存根域以及上游名称服务器的自定义指定。例如，下面的配置插入了一个单独的私有根DNS服务器和两个上游DNS服务器。

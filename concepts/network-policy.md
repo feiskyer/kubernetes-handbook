@@ -6,8 +6,8 @@
 
 - v1.6以及以前的版本需要在kube-apiserver中开启`extensions/v1beta1/networkpolicies`
 - v1.7版本Network Policy已经GA，API版本为`networking.k8s.io/v1`
-- v1.8版本新增**Egress**和**IPBlock**的支持
-- 网络插件要支持Network Policy，如Calico、Romana、Weave Net和trireme等，参考[这里](../plugins/network-policy.md)
+- v1.8版本新增 **Egress** 和 **IPBlock** 的支持
+- 网络插件要支持 Network Policy，如 Calico、Romana、Weave Net和trireme 等，参考[这里](../plugins/network-policy.md)
 
 ## 网络策略
 

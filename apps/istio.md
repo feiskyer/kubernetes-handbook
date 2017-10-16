@@ -1,8 +1,6 @@
-# Istio
+# Istio和Service Mesh
 
-Istio是Google、IBM和Lyft联合开源的微服务[Service Mesh](linkerd.md#Service-Mesh)框架，旨在解决大量微服务的发现、连接、管理、监控以及安全等问题。Istio对应用是透明的，不需要改动任何服务代码就可以实现透明的服务治理。
-
-> Service Mesh（服务网格）的概念请参考[这里](linkerd.md#Service-Mesh)。
+Istio是Google、IBM和Lyft联合开源的微服务 Service Mesh 框架，旨在解决大量微服务的发现、连接、管理、监控以及安全等问题。Istio对应用是透明的，不需要改动任何服务代码就可以实现透明的服务治理。
 
 Istio的主要特性包括：
 
@@ -12,7 +10,30 @@ Istio的主要特性包括：
 - 全范围（Fleet-wide）策略执行
 - 深度遥测和报告
 
-## 原理
+## Service Mesh
+
+Service Mesh（服务网格）是一个用于保证服务间安全、快速、可靠通信的网络代理组件，是随着微服务和云原生应用兴起而诞生的基础设施层。它通常以轻量级网络代理的方式同应用部署在一起（比如sidecar方式，如下图所示）。Serivce Mesh可以看作是一个位于TCP/IP之上的网络模型，抽象了服务间可靠通信的机制。但与TCP不同，它是面向应用的，为应用提供了统一的可视化和控制。
+
+![](images/pattern-service-mesh.png)
+
+为了保证服务间通信的可靠性，Service Mesh需要支持熔断机制、延迟感知的负载均衡、服务发现、重试等一些列的特性。比如Linkerd处理一个请求的流程包括
+
+- 查找动态路由确定请求的服务
+- 查找该服务的实例
+- Linkerd跟响应延迟等因素选择最优的实例
+- 将请求转发给最优实例，记录延迟和响应情况
+- 如果请求失败或实例实效，则转发给其他实例重试（需要是幂等请求）
+- 如果请求超时，则直接失败，避免给后端增加更多的负载
+- 记录请求的度量和分布式跟踪情况
+
+为什么Service Mesh是必要的
+
+- 将服务治理与实际服务解耦，避免微服务化过程中对应用的侵入
+- 加速传统应用转型微服务或云原生应用
+
+Service Mesh并非一个全新的功能，而是将已存在于众多应用之中的相关功能分离出来，放到统一的组件来管理。特别是在微服务应用中，服务数量庞大，并且可能是基于不同的框架和语言构建，分离出来的Service Mesh组件更容易管理和协调它们。
+
+## Istio原理
 
 Istio从逻辑上可以分为数据平面和控制平面：
 
@@ -168,3 +189,6 @@ Events:	<none>
 - [Istio - A modern service mesh](https://istio.io/talks/istio_talk_gluecon_2017.pdf)
 - <https://lyft.github.io/envoy/>
 - <https://github.com/nginmesh/nginmesh>
+- [WHAT’S A SERVICE MESH? AND WHY DO I NEED ONE?](https://buoyant.io/2017/04/25/whats-a-service-mesh-and-why-do-i-need-one/)
+- [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
+- [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)

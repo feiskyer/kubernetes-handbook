@@ -1,8 +1,12 @@
 # kube-proxy via ipvs
 
-目前社区还在推进<https://github.com/kubernetes/kubernetes/issues/17470>，预计v1.7可以有alpha版进来。
+Kubernetes v1.8已经支持ipvs负载均衡模式（alpha版），只需要配置kube-proxy `--proxy-mode=ipvs`即可启用。
 
-## NAT mode
+![](ipvs.png)
+
+## ipvs示例
+
+### NAT mode
 
 ```sh
 # prepare local kubernetes cluster
@@ -53,7 +57,7 @@ $ curl 10.0.0.185:80
 // truncated
 ```
 
-## DR mode
+### DR mode
 
 ```sh
 # continue above setup;

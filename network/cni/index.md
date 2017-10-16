@@ -27,11 +27,19 @@ $ echo '{"cniVersion": "0.3.1","name": "mynet","type": "macvlan","bridge": "cni0
 $ echo '{"cniVersion": "0.3.1","type":"IGNORED", "name": "a","ipam": {"type": "host-local", "subnet":"10.1.2.3/24"}}' | sudo CNI_COMMAND=ADD CNI_NETNS=/var/run/netns/a CNI_PATH=./bin CNI_IFNAME=a CNI_CONTAINERID=a CNI_VERSION=0.3.1 ./bin/host-local
 ```
 
+常见的CNI网络插件有
+
+![](cni-plugins.png)
+
 ## Bridge
 
 Bridge是最简单的CNI网络插件，它首先在Host创建一个网桥，然后再通过veth pair连接该网桥到container netns。
 
-注意，Bridge模式下，多主机网络通信需要额外配置主机路由。可以借助[Flannel](../flannel/index.html)或者Quagga动态路由等来自动配置。
+![](cni-bridge.png)
+
+注意：**Bridge模式下，多主机网络通信需要额外配置主机路由，或使用overlay网络**。可以借助[Flannel](../flannel/index.html)或者Quagga动态路由等来自动配置。比如overlay情况下的网络结构为
+
+![](cni-overlay.png)
 
 配置示例
 

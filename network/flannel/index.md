@@ -110,7 +110,7 @@ $ ip -d link show flannel.1
     vxlan id 1 local 10.146.0.2 dev ens4 srcport 0 0 dstport 8472 nolearning ageing 300 udpcsum addrgenmode eui64
 ```
 
-![](flannel-flow.png)
+![](flannel-network.png)
 
 ## 优点
 

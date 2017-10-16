@@ -15,6 +15,8 @@ kube-proxy当前支持一下几种实现
 
 ## Iptables示例
 
+![](images/iptables-mode.png)
+
 ```sh
 -A KUBE-MARK-DROP -j MARK --set-xmark 0x8000/0x8000
 -A KUBE-MARK-MASQ -j MARK --set-xmark 0x4000/0x4000
@@ -32,6 +34,8 @@ kube-proxy当前支持一下几种实现
 ```
 
 ## ipvs示例
+
+![](images/ipvs-mode.png)
 
 ```sh
 $ ipvsadm -ln
