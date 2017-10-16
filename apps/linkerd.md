@@ -15,7 +15,9 @@ Linkerd的主要特性包括
 
 ## Service Mesh
 
-Service Mesh是一个用于保证服务间安全、快速、可靠通信的基础组件，特别适用于云原生应用中。它通常以轻量级网络代理的方式同应用部署在一起。Serivce Mesh可以看作是一个位于TCP/IP之上的网络模型，抽象了服务间可靠通信的机制。但与TCP不同，它是面向应用的，为应用提供了统一的可视化和控制。
+Service Mesh（服务网格）是一个用于保证服务间安全、快速、可靠通信的网络代理组件，是随着微服务和云原生应用兴起而诞生的基础设施层。它通常以轻量级网络代理的方式同应用部署在一起（比如sidecar方式，如下图所示）。Serivce Mesh可以看作是一个位于TCP/IP之上的网络模型，抽象了服务间可靠通信的机制。但与TCP不同，它是面向应用的，为应用提供了统一的可视化和控制。
+
+![](images/pattern-service-mesh.png)
 
 为了保证服务间通信的可靠性，Service Mesh需要支持熔断机制、延迟感知的负载均衡、服务发现、重试等一些列的特性。比如Linkerd处理一个请求的流程包括
 
@@ -26,6 +28,11 @@ Service Mesh是一个用于保证服务间安全、快速、可靠通信的基�
 - 如果请求失败或实例实效，则转发给其他实例重试（需要是幂等请求）
 - 如果请求超时，则直接失败，避免给后端增加更多的负载
 - 记录请求的度量和分布式跟踪情况
+
+为什么Service Mesh是必要的
+
+- 将服务治理与实际服务解耦，避免微服务化过程中对应用的侵入
+- 加速传统应用转型微服务或云原生应用
 
 Service Mesh并非一个全新的功能，而是将已存在于众多应用之中的相关功能分离出来，放到统一的组件来管理。特别是在微服务应用中，服务数量庞大，并且可能是基于不同的框架和语言构建，分离出来的Service Mesh组件更容易管理和协调它们。
 
@@ -175,4 +182,4 @@ curl -H "Host: world.v2" $L5D_SVC_IP
 - [Linkerd官方文档](https://linkerd.io/documentation/)
 - [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
 - [Linkerd examples](https://github.com/linkerd/linkerd-examples)
-
+- [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)

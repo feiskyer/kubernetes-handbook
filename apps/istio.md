@@ -1,6 +1,8 @@
 # Istio
 
-Istio是Google、IBM和Lyft联合开源的微服务Service Mesh框架，旨在解决大量微服务的发现、连接、管理、监控以及安全等问题。
+Istio是Google、IBM和Lyft联合开源的微服务[Service Mesh](linkerd.md#Service-Mesh)框架，旨在解决大量微服务的发现、连接、管理、监控以及安全等问题。Istio对应用是透明的，不需要改动任何服务代码就可以实现透明的服务治理。
+
+> Service Mesh（服务网格）的概念请参考[这里](linkerd.md#Service-Mesh)。
 
 Istio的主要特性包括：
 
@@ -24,9 +26,15 @@ Istio架构可以如下图所示
 主要由以下组件构成
 
 - [Envoy](https://lyft.github.io/envoy/)：Lyft开源的高性能代理总线，支持动态服务发现、负载均衡、TLS终止、HTTP/2和gPRC代理、健康检查、性能测量等功能。Envoy以sidecar的方式部署在相关的服务的Pod中。
-- Mixer：负责访问控制、执行策略并从Envoy代理中收集遥测数据。Mixer支持灵活的插件模型，方便扩展
-- Pilot：用户和Istio的接口，验证用户提供的配置和路由策略并发送给Istio组件，管理Envoy示例的生命周期
+- Mixer：负责访问控制、执行策略并从Envoy代理中收集遥测数据。Mixer支持灵活的插件模型，方便扩展（支持GCP、AWS、Prometheus、Heapster等多种后端）
 - Istio-Auth：提供服务间和终端用户的认证机制
+- Pilot：动态管理Envoy示例的生命周期，提供服务发现、流量管理、智能路由以及超时、熔断等弹性控制的功能。其与Envoy的关系如下图所示
+
+![](images/istio-service.png)
+
+在数据平面上，除了[Envoy](https://lyft.github.io/envoy/)，还可以选择使用 [nginxmesh](https://github.com/nginmesh/nginmesh) 和 [linkerd](https://linkerd.io/getting-started/istio/) 作为网络代理。比如，使用nginxmesh时，Istio的控制平面（Pilot、Mixer、Auth）保持不变，但用Nginx Sidecar取代Envoy：
+
+![](images/nginx_sidecar.png)
 
 ## 安装
 
@@ -159,3 +167,4 @@ Events:	<none>
 - <https://istio.io/>
 - [Istio - A modern service mesh](https://istio.io/talks/istio_talk_gluecon_2017.pdf)
 - <https://lyft.github.io/envoy/>
+- <https://github.com/nginmesh/nginmesh>
