@@ -55,9 +55,14 @@ PV的回收策略（persistentVolumeReclaimPolicy，即PVC释放卷的时候PV�
 
 上面通过手动的方式创建了一个NFS Volume，这在管理很多Volume的时候不太方便。Kubernetes还提供了[StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses)来动态创建PV，不仅节省了管理员的时间，还可以封装不同类型的存储供PVC选用。
 
-在使用PVC时，可以通过`DefaultStorageClass`准入控制设置默认StorageClass, 即给未设置storageClassName的PVC自动添加默认的StorageClass。
+StorageClass包括四个部分
 
-默认的StorageClass带有annotation `storageclass.kubernetes.io/is-default-class=true`。
+- provisioner：指定Volume插件的类型，包括内置插件（如`kubernetes.io/glusterfs`）和外部插件（如[external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/ceph/cephfs)提供的`ceph.com/cephfs`）。
+- mountOptions：指定挂载选项，当PV不支持指定的选项时会直接失败。比如NFS支持`hard`和`nfsvers=4.1`等选项。
+- parameters：指定provisioner的选项，比如`kubernetes.io/aws-ebs`支持`type`、`zone`、`iopsPerGB`等参数。
+- reclaimPolicy：指定回收策略，同PV的回收策略。
+
+在使用PVC时，可以通过`DefaultStorageClass`准入控制设置默认StorageClass, 即给未设置storageClassName的PVC自动添加默认的StorageClass。而默认的StorageClass带有annotation `storageclass.kubernetes.io/is-default-class=true`。
 
 #### 修改默认StorageClass
 
