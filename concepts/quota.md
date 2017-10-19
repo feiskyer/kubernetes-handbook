@@ -8,9 +8,10 @@
 - 开启计算资源配额后，创建容器时必须配置计算资源请求或限制（也可以用[LimitRange](https://kubernetes.io/docs/tasks/administer-cluster/cpu-memory-limit/)设置默认值）
 - 用户超额后禁止创建新的资源
 
-## 资源配额的启用
+## 开启资源配额功能
 
-首先，在API Server启动时配置ResourceQuota adminssion control；然后在namespace中创建`ResourceQuota`对象即可。
+- 首先，在API Server启动时配置ResourceQuota adminssion control
+- 然后，在namespace中创建一个`ResourceQuota`对象
 
 ## 资源配额的类型
 
@@ -22,6 +23,7 @@
   - persistentvolumeclaims：pvc的个数
   - <storage-class-name>.storageclass.storage.k8s.io/requests.storage
   - <storage-class-name>.storageclass.storage.k8s.io/persistentvolumeclaims
+  - requests.ephemeral-storage 和 limits.ephemeral-storage （需要v1.8+）
 - 对象数，即可创建的对象的个数
   - pods, replicationcontrollers, configmaps, secrets
   - resourcequotas, persistentvolumeclaims
