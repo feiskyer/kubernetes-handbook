@@ -103,9 +103,10 @@
     - [Traefik Ingress](practice/service-discovery-lb/service-discovery-and-load-balancing.md)
     - [minikube Ingress](practice/minikube-ingress.md)
     - [Ingress + Letsencrypt](practice/ingress_letsencrypt.md)
+    - [Keepalived-VIP](plugins/keepalived-vip.md)
   - [5.7 Cloud Provider](plugins/cloud-provider.md)
   - [5.8 Scheduler扩展](plugins/scheduler.md)
-  - [5.9 Keepalived-VIP](plugins/keepalived-vip.md)
+  - [5.9 Device插件](plugins/device.md)
 
 ## 实践案例
 
