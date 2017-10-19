@@ -1,6 +1,6 @@
 # Persistent Volume
 
-PersistentVolume (PV)和PersistentVolumeClaim (PVC)提供了方便的持久化卷：PV提供网络存储资源，而PVC请求存储资源。这样，设置持久化的工作流包括配置底层文件系统或者云数据卷、创建持久性数据卷、最后创建claim来将pod跟数据卷关联起来。PV和PVC可以将pod和数据卷解耦，pod不需要知道确切的文件系统或者支持它的持久化引擎。
+PersistentVolume (PV) 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷：PV 提供网络存储资源，而 PVC 请求存储资源。这样，设置持久化的工作流包括配置底层文件系统或者云数据卷、创建持久性数据卷、最后创建 PVC 来将 Pod 跟数据卷关联起来。PV 和 PVC 可以将 pod 和数据卷解耦，pod 不需要知道确切的文件系统或者支持它的持久化引擎。
 
 ## Volume生命周期
 
@@ -51,7 +51,7 @@ PV的回收策略（persistentVolumeReclaimPolicy，即PVC释放卷的时候PV�
 - Recycle，删除数据，即`rm -rf /thevolume/*`（只有NFS和HostPath支持）
 - Delete，删除存储资源，比如删除AWS EBS卷（只有AWS EBS, GCE PD, Azure Disk和Cinder支持）
 
-### StorageClass
+## StorageClass
 
 上面通过手动的方式创建了一个NFS Volume，这在管理很多Volume的时候不太方便。Kubernetes还提供了[StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses)来动态创建PV，不仅节省了管理员的时间，还可以封装不同类型的存储供PVC选用。
 
@@ -77,7 +77,7 @@ kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"s
 
 ```yaml
 kind: StorageClass
-apiVersion: storage.k8s.io/v1beta1
+apiVersion: storage.k8s.io/v1
 metadata:
   name: slow
 provisioner: kubernetes.io/gce-pd
@@ -137,9 +137,9 @@ apiVersion: storage.k8s.io/v1
     userSecretName: ceph-secret-user
 ```
 
-### PVC
+## PVC
 
-PV是存储资源，而PersistentVolumeClaim (PVC) 是对PV的请求。PVC跟Pod类似：Pod消费Node的源，而PVC消费PV资源；Pod能够请求CPU和内存资源，而PVC请求特定大小和访问模式的数据卷。
+PV 是存储资源，而 PersistentVolumeClaim (PVC) 是对 PV 的请求。PVC 跟 Pod 类似：Pod 消费 Node 的源，而 PVC 消费 PV 资源；Pod 能够请求 CPU 和内存资源，而 PVC 请求特定大小和访问模式的数据卷。
 
 ```yaml
 kind: PersistentVolumeClaim
@@ -160,7 +160,7 @@ spec:
       - {key: environment, operator: In, values: [dev]}
 ```
 
-PVC可以直接挂载到Pod中：
+PVC 可以直接挂载到 Pod 中：
 
 ```yaml
 kind: Pod
@@ -179,3 +179,28 @@ spec:
       persistentVolumeClaim:
         claimName: myclaim
 ```
+
+## 扩展PV空间
+
+v1.8开始支持扩展PV空间，支持在不丢失数据和重启容器的情况下扩展PV的大小。注意，**当前的实现仅支持不需要调整文件系统大小的PV，并且只支持glusterfs**。
+
+开启扩展PV空间的功能需要配置
+
+- 开启ExpandPersistentVolumes功能，即配置`--feature-gates=ExpandPersistentVolumes=true`
+- 开启准入控制插件PersistentVolumeClaimResize，它只允许扩展明确配置`allowVolumeExpansion=true`的StorageClass，比如
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: gluster-vol-default
+provisioner: kubernetes.io/glusterfs
+parameters:
+  resturl: "http://192.168.10.100:8080"
+  restuser: ""
+  secretNamespace: ""
+  secretName: ""
+allowVolumeExpansion: true
+```
+
+这样，用户就可以修改PVC中请求存储的大小（如通过`kubectl edit`命令）请求更大的存储空间。
