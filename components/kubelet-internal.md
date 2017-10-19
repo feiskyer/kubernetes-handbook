@@ -10,3 +10,7 @@
 - 网络插件，目前支持CNI和kubenet
 
 ![](images/kubelet.png)
+
+## Pod启动流程
+
+![](images/Pod启动过程.png)
