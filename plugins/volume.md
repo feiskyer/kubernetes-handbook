@@ -38,3 +38,5 @@ spec:
         size: "1000m"
         volumegroup: "kube_vg"
 ```
+
+注意：在v1.7版本，部署新的FlevVolume插件后需要重启Kubelet和 ControllerManager；而从v1.8开始不需要重启它们了。
