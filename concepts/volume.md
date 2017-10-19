@@ -268,6 +268,24 @@ spec:
       sizeLimit: 64Mi
 ```
 
+## Mount传递
+
+在Kubernetes中，Volume Mount默认是[私有的](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)，但从v1.8开始，Kubernetes支持配置Mount传递（mountPropagation）。它支持两种选项
+
+- HostToContainer：这是开启`MountPropagation=true`时的默认模式，等效于`rslave`模式，即容器可以看到Host上面在该volume内的任何新Mount操作
+- Bidirectional：等效于`rshared`模式，即Host和容器都可以看到对方在该Volume内的任何新Mount操作。该模式要求容器必须运行在特权模式（即`securityContext.privileged=true`）
+
+注意：
+
+- 使用Mount传递需要开启`--feature-gates=MountPropagation=true`
+- `rslave`和`rshared`的说明可以参考[内核文档](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)
+
+## Volume快照
+
+v1.8新增了pre-alpha版本的Volume快照，但还只是一个雏形，并且其实现不在Kubernetes核心代码中，而是存放在[kubernetes-incubator/external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/snapshot)中。
+
+> TODO:  补充Volume快照的设计原理和示例。
+
 ## 其他的Volume参考示例
 
 - [iSCSI Volume示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/iscsi)
