@@ -7,7 +7,7 @@ kube-apiserver是Kubernetes最重要的核心组件之一，主要提供以下�
 
 ## REST API
 
-kube-apiserver支持同时提供https（默认监听在6443端口）和http API（默认监听在127.0.0.1的8080端口），其中http API是非安全接口，不做任何认证授权机制，不建议生产环境启用。两个接口提供的REST API格式相同，参考[Kubernetes API Reference](https://kubernetes.io/docs/api-reference/v1.6)查看所有API的调用格式。
+kube-apiserver支持同时提供https（默认监听在6443端口）和http API（默认监听在127.0.0.1的8080端口），其中http API是非安全接口，不做任何认证授权机制，不建议生产环境启用。两个接口提供的REST API格式相同，参考[Kubernetes API Reference](https://kubernetes.io/docs/api-reference/v1.8/)查看所有API的调用格式。
 
 在实际使用中，通常通过[kubectl](https://kubernetes.io/docs/user-guide/kubectl-overview/)来访问apiserver，也可以通过Kubernetes各个语言的client库来访问apiserver。在使用kubectl时，打开调试日志也可以看到每个API调用的格式，比如
 
