@@ -1,10 +1,10 @@
 # CustomResourceDefinition
 
-CustomResourceDefinition（CRD）是v1.7+新增的无需改变代码就可以扩展Kubernetes API的机制，用来管理自定义对象。它实际上是[ThirdPartyResources（TPR）](thirdpartyresources.md)的升级版本，TPR将在v1.8中删除。
+CustomResourceDefinition（CRD）是v1.7+新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
 
 ## CRD示例
 
-下面的例子会创建一个`/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/...`的API
+下面的例子会创建一个`/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/…`的自定义 API：
 
 ```sh
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -77,3 +77,69 @@ metadata:
 ```
 
 Finalizer指定后，客户端删除对象的操作只会设置`metadata.deletionTimestamp`而不是直接删除。这会触发正在监听CRD的控制器，控制器执行一些删除前的清理操作，从列表中删除自己的finalizer，然后再重新发起一个删除操作。此时，被删除的对象才会真正删除。
+
+## Validation
+
+v1.8 开始新增了实验性的基于 [OpenAPI v3 schema](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#schemaObject) 的验证（Validation）机制，可以用来提前验证用户提交的资源是否符合规范。使用该功能需要配置kube-apiserver的`--feature-gates=CustomResourceValidation=true`。
+
+比如下面的CRD要求
+
+- `spec.cronSpec`必须是匹配正则表达式的字符串
+- `spec.replicas`必须是从1到10的整数
+
+```yaml
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: crontabs.stable.example.com
+spec:
+  group: stable.example.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: crontabs
+    singular: crontab
+    kind: CronTab
+    shortNames:
+    - ct
+  validation:
+   # openAPIV3Schema is the schema for validating custom objects.
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            cronSpec:
+              type: string
+              pattern: '^(\d+|\*)(/\d+)?(\s+(\d+|\*)(/\d+)?){4}$'
+            replicas:
+              type: integer
+              minimum: 1
+              maximum: 10
+```
+
+这样，在创建下面的CronTab时
+
+```yaml
+apiVersion: "stable.example.com/v1"
+kind: CronTab
+metadata:
+  name: my-new-cron-object
+spec:
+  cronSpec: "* * * *"
+  image: my-awesome-cron-image
+  replicas: 15
+```
+
+会报验证失败的错误：
+
+```sh
+The CronTab "my-new-cron-object" is invalid: []: Invalid value: map[string]interface {}{"apiVersion":"stable.example.com/v1", "kind":"CronTab", "metadata":map[string]interface {}{"name":"my-new-cron-object", "namespace":"default", "deletionTimestamp":interface {}(nil), "deletionGracePeriodSeconds":(*int64)(nil), "creationTimestamp":"2017-09-05T05:20:07Z", "uid":"e14d79e7-91f9-11e7-a598-f0761cb232d1", "selfLink":"", "clusterName":""}, "spec":map[string]interface {}{"cronSpec":"* * * *", "image":"my-awesome-cron-image", "replicas":15}}:
+validation failure list:
+spec.cronSpec in body should match '^(\d+|\*)(/\d+)?(\s+(\d+|\*)(/\d+)?){4}$'
+spec.replicas in body should be less than or equal to 10
+```
+
+## 参考文档
+
+- [Extend the Kubernetes API with CustomResourceDefinitions](https://kubernetes.io/docs/tasks/access-kubernetes-api/extend-api-custom-resource-definitions/#validation)
+- [CustomResourceDefinition API](https://kubernetes.io/docs/api-reference/v1.8/#customresourcedefinition-v1beta1-apiextensions)
