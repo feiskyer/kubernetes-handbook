@@ -4,7 +4,7 @@
 
 - Metrics API只可以查询当前的度量数据，并不保存历史数据
 - Metrics API URI为 `/apis/metrics.k8s.io/`，在 [k8s.io/metrics](https://github.com/kubernetes/metrics) 维护
-- 必须部署metrics-server才能使用该API，metrics-server通过调用Kubelet Summary API获取数据
+- 必须部署 `metrics-server` 才能使用该API，metrics-server通过调用Kubelet Summary API获取数据
 
 ## 部署metrics-server
 
@@ -18,3 +18,4 @@ $ kubectl create -f deploy/
 
 - [Core metrics pipeline](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
 - [metrics-server](https://github.com/kubernetes-incubator/metrics-server)
+
