@@ -595,6 +595,46 @@ fe00::2	ip6-allrouters
 10.1.2.3	bar.remote
 ```
 
+## HugePages
+
+v1.8+支持给容器分配HugePages，资源格式为`hugepages-<size>`（如`hugepages-2Mi`）。使用前要配置
+
+- 开启`--feature-gates="HugePages=true"`
+- 在所有 Node 上面预分配好 HugePage ，以便 Kubelet 统计所在 Node 的 HugePage 容量
+
+使用示例
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  generateName: hugepages-volume-
+spec:
+  containers:
+  - image: fedora:latest
+    command:
+    - sleep
+    - inf
+    name: example
+    volumeMounts:
+    - mountPath: /hugepages
+      name: hugepage
+    resources:
+      limits:
+        hugepages-2Mi: 100Mi
+  volumes:
+  - name: hugepage
+    emptyDir:
+      medium: HugePages
+```
+
+注意事项
+
+- HugePage 资源的请求和限制必须相同
+- HugePage 以 Pod 级别隔离，未来可能会支持容器级的隔离
+- 基于 HugePage 的 EmptyDir 存储卷最多只能使用请求的 HugePage 内存
+- 使用`shmget()`的`SHM_HUGETLB`选项时，应用必须运行在匹配`proc/sys/vm/hugetlb_shm_group`的用户组（supplemental group）中
+
 ## 参考文档
 
 - [What is Pod?](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
@@ -603,4 +643,5 @@ fe00::2	ip6-allrouters
 - [Container capabilities](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container)
 - [Configure Liveness and Readiness Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)
 - [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [Manage HugePages](https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/)
 
