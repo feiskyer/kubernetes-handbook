@@ -74,6 +74,7 @@
     - [Heapster](addons/heapster.md)
     - [EFK](addons/efk.md)
     - [Metrics](addons/metrics.md)
+    - [Cluster AutoScaler](addons/cluster-autoscaler.md)
   - [4.5 推荐配置](deploy/kubernetes-configuration-best-practice.md)
 
 ## 插件指南
@@ -148,3 +149,5 @@
   - [Play-With-Kubernetes](appendix/play-with-k8s.md)
   - [FAQ](appendix/FAQ.md)
   - [参考文档](appendix/reference.md)
+
+
