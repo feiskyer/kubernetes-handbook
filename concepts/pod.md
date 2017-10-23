@@ -12,6 +12,8 @@ Pod的特征
 - 优雅终止：Pod删除的时候先给其内的进程发送SIGTERM，等待一段时间（grace period）后才强制停止依然还在运行的进程
 - 特权容器（通过SecurityContext配置）具有改变系统配置的权限（在网络插件中大量应用）
 
+> Kubernetes v1.8 还支持容器间共享PID namespace，需要 docker >= 1.13.1，并配置 kubelet `--docker-disable-shared-pid=false`。
+
 ## Pod定义
 
 通过yaml或json描述Pod和其内Container的运行环境以及期望状态，比如一个最简单的nginx pod可以定义为
