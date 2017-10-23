@@ -284,12 +284,12 @@ spec:
 
 ## 资源限制
 
-Kubernetes通过cgroups限制容器的CPU和内存等计算资源，包括requests（请求，调度器保证调度到资源充足的Node上）和limits（上限）等：
+Kubernetes通过cgroups限制容器的CPU和内存等计算资源，包括requests（请求，**调度器保证调度到资源充足的Node上，如果无法满足会调度失败**）和limits（上限）等：
 
 - `spec.containers[].resources.limits.cpu`：CPU上限，可以短暂超过，容器也不会被停止
-- `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被停止或调度到其他资源充足的机器上
-- `spec.containers[].resources.requests.cpu`：CPU请求，可以超过
-- `spec.containers[].resources.requests.memory`：内存请求，可以超过；但如果超过，容器可能会在Node内存不足时清理
+- `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被终止或调度到其他资源充足的机器上
+- `spec.containers[].resources.requests.cpu`：CPU请求，也是调度CPU资源的依据，可以超过
+- `spec.containers[].resources.requests.memory`：内存请求，也是调度内存资源的依据，可以超过；但如果超过，容器可能会在Node内存不足时清理
 
 比如nginx容器请求30%的CPU和56MB的内存，但限制最多只用50%的CPU和128MB的内存：
 
@@ -309,11 +309,18 @@ spec:
           cpu: "300m"
           memory: "56Mi"
         limits:
-          cpu: "500m"
+          cpu: "1"
           memory: "128Mi"
 ```
 
-注意，CPU的单位是milicpu，500mcpu=0.5cpu；而内存的单位则包括E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki等。
+注意
+
+- CPU 的单位是 CPU 个数，可以用 `millicpu (m)` 表示少于1个CPU的情况，如 `500m = 500millicpu = 0.5cpu`，而一个CPU相当于
+  - AWS 上的一个 vCPU
+  - GCP 上的一个 Core
+  - Azure 上的一个 vCore
+  - 物理机上开启超线程时的一个超线程
+- 内存的单位则包括 `E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki` 等。
 
 ## 健康检查
 
