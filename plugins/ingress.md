@@ -4,7 +4,7 @@
 
 ## 如何开发Ingress Controller扩展
 
-https://github.com/kubernetes/ingress-nginx和https://github.com/kubernetes/ingress-gce提供了两个Ingress Controller的完整示例，可以在此基础上方便的开发新的Ingress Controller。
+[NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx)和[GLBC](https://github.com/kubernetes/ingress-gce)提供了两个Ingress Controller的完整示例，可以在此基础上方便的开发新的Ingress Controller。
 
 ## 常见Ingress Controller
 
