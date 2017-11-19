@@ -160,9 +160,9 @@ spec:
 
 它用来隔离default namespace中带有`role=db`标签的Pod：
 
-* 允许default namespace中`role=frontend`标签的Pod访问`role=db`标签Pod的TCP 6379端口
-* 允许default namespace中`project=myproject`标签的Pod访问 `role=db` 标签Pod的TCP 6379端口
-* 允许default namespace中`role=db`标签的Pod访问 `10.0.0.0/24` 网段的TCP 5987端口
+- 允许default namespace中带有`role=frontend`标签的Pod访问default namespace中带有`role=db`标签Pod的6379端口
+- 允许带有`project=myprojects`标签的namespace中所有Pod访问default namespace中带有`role=db`标签Pod的6379端口
+- 允许default namespace中带有`role=db`标签的Pod访问 `10.0.0.0/24` 网段的TCP 5987端口
 
 ## 简单示例
 
