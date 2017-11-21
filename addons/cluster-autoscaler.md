@@ -18,9 +18,29 @@ Cluster AutoScaler 定期（默认间隔10s）检测是否有充足的资源来�
 
 ![](images/15084813044270.png)
 
+为了自动创建和初始化 Node，Cluster Autoscaler 要求 Node 必须属于某个 Node Group，比如
+
+- GCE/GKE 中的 Managed instance groups（MIG）
+- AWS 中的 Autoscaling Groups
+- Azure 中的 Scale Sets 和 Availability Sets
+
+当集群中有多个 Node Group 时，可以通过 `--expander=<option>` 选项配置选择 Node Group 的策咯，支持如下四种方式
+
+- random：随机选择
+- most-pods：选择容量最大（可以创建最多Pod）的 Node Group
+- least-waste：以最小浪费原则选择，即选择有最少可用资源的 Node Group
+- price：选择最便宜的Node Group（仅支持GCE和GKE）
+
+目前，Cluster Autoscaler 可以保证
+
+- 小集群（小于100个Node）可以在不超过30秒内完成扩展（平均5秒）
+- 大集群（100-1000个Node）可以在不超过60秒内完成扩展（平均15秒）
+
 Cluster AutoScaler 也会定期（默认间隔10s）自动监测 Node 的资源使用情况，当一个 Node 长时间资源利用率都很低时（低于50%）自动将其删除。此时，原来的 Pod 会自动调度到其他 Node 上面（通过Deployment、StatefulSet等控制器）。
 
 ![](images/15084813160226.png)
+
+注意，Cluster Autoscaler 仅根据 Pod 的调度情况和 Node 的整体资源使用清空来增删 Node，跟 Pod 或 Node 的资源度量（metrics）没有直接关系。
 
 用户在启动 Cluster AutoScaler 时可以配置 Node 数量的范围（包括最大Node数和最小Node数）。
 
