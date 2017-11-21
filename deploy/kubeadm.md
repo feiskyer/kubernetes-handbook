@@ -39,6 +39,7 @@ apt-get update
 apt-get install -y docker.io
 apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 systemctl enable docker && systemctl start docker
+systemctl enable kubelet
 ```
 
 ### centos
@@ -58,6 +59,7 @@ EOF
 setenforce 0
 yum install -y docker kubelet kubeadm kubectl kubernetes-cni
 systemctl enable docker && systemctl start docker
+systemctl enable kubelet
 ```
 
 国内用户也可以使用阿里云的镜像来安装
