@@ -64,6 +64,60 @@ kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/
 helm install --name my-release stable/prometheus --set rbac.create=true
 ```
 
+### Kubelet Metrics
+
+从v1.7开始，Kubelet metrics API 不再包含 cadvisor metrics，而是提供了一个独立的 API 接口：
+
+- Kubelet metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics`
+- Cadvisor metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics/cadvisor`
+
+然而 cadvisor metrics 通常是监控系统必需的数据。给 Prometheus 增加新的 target 可以解决这个问题，比如通过 helm 部署的 Prometheus 将配置保存在 configmap 中
+
+```
+# 查询configmap
+kubectl get configmap -l app=prometheus -l component=server
+```
+
+修改这个 configmap，`kubectl edit configmap my-release-prometheus-server`，增加如下内容
+
+```yaml
+      # Scrape config for Kubelet cAdvisor.
+      #
+      # This is required for Kubernetes 1.7 and later, where cAdvisor metrics
+      # (those whose names begin with 'container_') have been removed from the
+      # Kubelet metrics endpoint.  This job scrapes the cAdvisor endpoint to
+      # retrieve those metrics.
+      #
+      # In Kubernetes v1.7+, these metrics are only exposed on the cAdvisor
+      # HTTP endpoint; use "replacement: /api/v1/nodes/${1}:4194/proxy/metrics"
+      # in that case (and ensure cAdvisor's HTTP server hasn't been disabled with
+      # the --cadvisor-port=0 Kubelet flag).
+      #
+      # This job is not necessary and should be removed in Kubernetes 1.6 and
+      # earlier versions, or it will cause the metrics to be scraped twice.
+      - job_name: 'kubernetes-cadvisor'
+
+        # Default to scraping over https. If required, just disable this or change to
+        # `http`.
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        kubernetes_sd_configs:
+        - role: node
+
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+```
+
 ## 其他容器监控系统
 
 * [Sysdig](http://blog.kubernetes.io/2015/11/monitoring-Kubernetes-with-Sysdig.html)
