@@ -59,6 +59,11 @@ kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/
 
 推荐使用[Prometheus Operator](https://github.com/coreos/prometheus-operator)或[Prometheus Chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus)来部署和管理Prometheus。
 
+```sh
+# 注意：未开启RBAC时，需要去掉 --set rbac.create=true 选项
+helm install --name my-release stable/prometheus --set rbac.create=true
+```
+
 ## 其他容器监控系统
 
 * [Sysdig](http://blog.kubernetes.io/2015/11/monitoring-Kubernetes-with-Sysdig.html)
