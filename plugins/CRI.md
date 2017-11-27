@@ -38,6 +38,16 @@ kubelet --container-runtime=remote --container-runtime-endpoint=/var/run/frakti.
 - Mirantis: <https://github.com/Mirantis/virtlet>，直接管理libvirt虚拟机，镜像须是qcow2格式
 - Infranetes: <https://github.com/apporbit/infranetes>，直接管理IaaS平台虚拟机，如GCE、AWS等
 
+### cri-containerd
+
+以containerd为例，它将 dockershim 和 docker daemon 替换为 cri-containerd 服务。
+
+![](images/cri-containerd.png)
+
+而 cri-containerd 则实现了 Kubelet CRI 接口，对 Kubelet 暴露 Image Service 和 Runtime Service。在内部，它通过 containerd 的 gRPC 接口管理容器和镜像，并通过CNI插件给Pod配置网络。
+
+![](images/containerd.png)
+
 ## CRI Tools
 
 为了方便开发、调试和验证新的 Container Runtime，社区还维护了一个 [cri-tools](https://github.com/kubernetes-incubator/cri-tools) 工具，它提供两个组件

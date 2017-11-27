@@ -64,63 +64,50 @@ Istio架构可以如下图所示
 ### 下载Istio
 
 ```sh
-curl -L https://git.io/getIstio | sh -
-cd istio-0.1.6/
-cp bin/istioctl /usr/local/bin/
+curl -L https://git.io/getLatestIstio | sh -
+cd istio-0.2.12/
+cp bin/istioctl /usr/local/bin
 ```
 
-### 创建RBAC角色和绑定
-
-```sh
-$ kubectl apply -f install/kubernetes/istio-rbac-beta.yaml
-clusterrole "istio-pilot" created
-clusterrole "istio-ca" created
-clusterrole "istio-sidecar" created
-rolebinding "istio-pilot-admin-role-binding" created
-rolebinding "istio-ca-role-binding" created
-rolebinding "istio-ingress-admin-role-binding" created
-rolebinding "istio-sidecar-role-binding" created
-```
-
-如果碰到下面的错误
-
-```
-Error from server (Forbidden): error when creating "install/kubernetes/istio-rbac-beta.yaml": clusterroles.rbac.authorization.k8s.io "istio-pilot" is forbidden: attempt to grant extra privileges: [{[*] [istio.io] [istioconfigs] [] []} {[*] [istio.io] [istioconfigs.istio.io] [] []} {[*] [extensions] [thirdpartyresources] [] []} {[*] [extensions] [thirdpartyresources.extensions] [] []} {[*] [extensions] [ingresses] [] []} {[*] [] [configmaps] [] []} {[*] [] [endpoints] [] []} {[*] [] [pods] [] []} {[*] [] [services] [] []}] user=&{user@example.org [...]
-```
-
-需要给用户授予admin权限(注意替换`myname@example.org`为你自己的用户名)后重新创建RBAC角色：
-
-```sh
-$ kubectl create clusterrolebinding myname-cluster-admin-binding --clusterrole=cluster-admin --user=myname@example.org
-$ kubectl apply -f install/kubernetes/istio-rbac-beta.yaml
-```
-
-### 部署Istio核心服务
+### 部署Istio服务
 
 两种方式（选择其一执行）
 
 - 禁止Auth：`kubectl apply -f install/kubernetes/istio.yaml`
 - 启用Auth：`kubectl apply -f install/kubernetes/istio-auth.yaml`
 
+部署完成后，可以检查 isotio-system namespace 中的服务是否正常运行：
+
+```sh
+$ kubectl -n istio-system get pod
+NAME                             READY     STATUS    RESTARTS   AGE
+istio-ca-5cd46b967c-q5th6        1/1       Running   0          3m
+istio-egress-56c4d999bc-82js4    1/1       Running   0          3m
+istio-ingress-5747bb855f-tv98x   1/1       Running   0          3m
+istio-mixer-77487797f6-cwtqt     2/2       Running   0          3m
+istio-pilot-86ddcb7ff5-t2zpk     1/1       Running   0          3m
+```
+
 ### 部署Prometheus、Grafana和Zipkin插件
 
 ```sh
-kubectl apply -f install/kubernetes/addons/prometheus.yaml
 kubectl apply -f install/kubernetes/addons/grafana.yaml
 kubectl apply -f install/kubernetes/addons/servicegraph.yaml
 kubectl apply -f install/kubernetes/addons/zipkin.yaml
+kubectl apply -f install/kubernetes/addons/prometheus.yaml
+# kubectl apply -f install/kubernetes/addons/zipkin-to-stackdriver.yaml
 ```
 
 等一会所有Pod启动后，可以通过NodePort或负载均衡服务的外网IP来访问这些服务。比如通过NodePort方式，先查询服务的NodePort
 
 ```sh
-$ kubectl get svc grafana -o jsonpath='{.spec.ports[0].nodePort}'
+$ kubectl -n istio-system get svc grafana -o jsonpath='{.spec.ports[0].nodePort}'
 32070
-$ kubectl get svc servicegraph -o jsonpath='{.spec.ports[0].nodePort}'
+$ kubectl -n istio-system get svc servicegraph -o jsonpath='{.spec.ports[0].nodePort}'
 31072
-$ kubectl get svc zipkin -o jsonpath='{.spec.ports[0].nodePort}'
+$ kubectl -n istio-system get svc zipkin -o jsonpath='{.spec.ports[0].nodePort}'
 30032
-$ kubectl get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'
+$ kubectl -n istio-system get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'
 30890
 ```
 
@@ -145,13 +132,35 @@ $ kubectl get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'
 在部署应用时，需要通过`istioctl kube-inject`给Pod自动插入Envoy容器，即
 
 ```sh
-kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
-```
+wget https://raw.githubusercontent.com/istio/istio/master/blog/bookinfo-v1.yaml
+# inject with istioctl
+kubectl apply -f <(istioctl kube-inject -f bookinfo-v1.yaml)
 
-比如Istio提供的BookInfo示例：
-
-```sh
-kubectl apply -f <(istioctl kube-inject -f samples/apps/bookinfo/bookinfo.yaml)
+# create ingress
+cat <<EOF | kubectl create -f -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: bookinfo
+ annotations:
+   kubernetes.io/ingress.class: "istio"
+spec:
+ rules:
+ - http:
+     paths:
+     - path: /productpage
+       backend:
+         serviceName: productpage
+         servicePort: 9080
+     - path: /login
+       backend:
+         serviceName: productpage
+         servicePort: 9080
+     - path: /logout
+       backend:
+         serviceName: productpage
+         servicePort: 9080
+EOF
 ```
 
 原始应用如下图所示
@@ -183,6 +192,153 @@ Events:	<none>
 
 ![](images/productpage.png)
 
+## 金丝雀部署
+
+首先部署v2版本的应用，并配置默认路由到v1版本：
+
+```sh
+wget https://raw.githubusercontent.com/istio/istio/master/blog/bookinfo-ratings.yaml
+kubectl apply -f <(istioctl kube-inject -f bookinfo-ratings.yaml)
+
+wget https://raw.githubusercontent.com/istio/istio/master/blog/bookinfo-reviews-v2.yaml
+kubectl apply -f <(istioctl kube-inject -f bookinfo-reviews-v2.yaml)
+
+# create default route
+cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: reviews-default
+spec:
+  destination:
+    name: reviews
+  route:
+  - labels:
+      version: v1
+    weight: 100
+EOF
+```
+
+示例一：将 10% 请求发送到 v2 版本而其余 90% 发送到 v1 版本
+
+```sh
+cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: reviews-default
+spec:
+  destination:
+    name: reviews
+  route:
+  - labels:
+      version: v2
+    weight: 10
+  - labels:
+      version: v1
+    weight: 90
+EOF
+```
+
+示例二：将特定用户的请求全部发到 v2 版本
+
+```sh
+
+cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+ name: reviews-test-v2
+spec:
+ destination:
+   name: reviews
+ precedence: 2
+ match:
+   request:
+     headers:
+       cookie:
+         regex: "^(.*?;)?(user=jason)(;.*)?$"
+ route:
+ - labels:
+     version: v2
+   weight: 100
+EOF
+```
+
+示例三：全部切换到 v2 版本
+
+```sh
+cat <<EOF | istioctl replace -f -
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: reviews-default
+spec:
+  destination:
+    name: reviews
+  route:
+  - labels:
+      version: v2
+    weight: 100
+EOF
+```
+
+示例四：限制并发访问
+
+```sh
+# configure a memquota handler with rate limits
+cat <<EOF | istioctl create -f -
+apiVersion: "config.istio.io/v1alpha2"
+kind: memquota
+metadata:
+ name: handler
+ namespace: default
+spec:
+ quotas:
+ - name: requestcount.quota.default
+   maxAmount: 5000
+   validDuration: 1s
+   overrides:
+   - dimensions:
+       destination: ratings
+     maxAmount: 1
+     validDuration: 1s
+EOF
+
+# create quota instance that maps incoming attributes to quota dimensions, and createrule that uses it with the memquota handler
+cat <<EOF | istioctl create -f -
+apiVersion: "config.istio.io/v1alpha2"
+kind: quota
+metadata:
+ name: requestcount
+ namespace: default
+spec:
+ dimensions:
+   source: source.labels["app"] | source.service | "unknown"
+   sourceVersion: source.labels["version"] | "unknown"
+   destination: destination.labels["app"] | destination.service | "unknown"
+   destinationVersion: destination.labels["version"] | "unknown"
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: rule
+metadata:
+ name: quota
+ namespace: default
+spec:
+ actions:
+ - handler: handler.memquota
+   instances:
+   - requestcount.quota
+EOF
+```
+
+为了查看访问次数限制的效果，可以使用 [wrk](https://github.com/wg/wrk) 给应用加一些压力：
+
+```sh
+export BOOKINFO_URL=$(kubectl get po -n istio-system -l istio=ingress -o jsonpath={.items[0].status.hostIP}):$(kubectl get svc -n istio-system istio-ingress -o jsonpath={.spec.ports[0].nodePort})
+wrk -t1 -c1 -d20s http://$BOOKINFO_URL/productpage
+```
+
 ## 参考文档
 
 - <https://istio.io/>
@@ -192,3 +348,4 @@ Events:	<none>
 - [WHAT’S A SERVICE MESH? AND WHY DO I NEED ONE?](https://buoyant.io/2017/04/25/whats-a-service-mesh-and-why-do-i-need-one/)
 - [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
 - [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)
+- [Request Routing and Policy Management with the Istio Service Mesh](http://blog.kubernetes.io/2017/10/request-routing-and-policy-management.html)
