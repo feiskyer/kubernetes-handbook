@@ -33,7 +33,7 @@ Events:            <none>
 
 ### 导入证书登录
 
-在v1.7之前的版本中，Dashboard并不提供登陆的功能。而通常情况下，Dashboard服务都是以https的方式运行，所以可以下访问它之前将证书导入系统中:
+在v1.7之前的版本中，Dashboard并不提供登陆的功能。而通常情况下，Dashboard服务都是以https的方式运行，所以可以在访问它之前将证书导入系统中:
 
 ```sh
 openssl pkcs12 -export -in apiserver-kubelet-client.crt -inkey apiserver-kubelet-client.key -out kube.p12
@@ -52,7 +52,7 @@ curl -sSL -E ./kube.p12:password -k https://nodeIP:6443/api/v1/proxy/namespaces/
 
 从 v1.7.0 版本开始，Dashboard 支持以 Token 的方式登录。注意从 Kubernetes 中取得的 Token 需要以 Base64 解码后才可以用来登录。
 
-下面是一个在开启 RBAC 时创建一个尽可以访问 demo namespace 的 service account token 示例：
+下面是一个在开启 RBAC 时创建一个只可以访问 demo namespace 的 service account token 示例：
 
 ```sh
 # 创建 demo namespace
