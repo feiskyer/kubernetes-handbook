@@ -140,7 +140,7 @@ spec:
 very charm
 ```
 
-### 使用volume将ConfigMap作为文件或目录直接挂载，
+### 使用volume将ConfigMap作为文件或目录直接挂载
 
 将创建的ConfigMap直接挂载至Pod的/etc/config目录下，其中每一个key-value键值对都会生成一个文件，key为文件名，value为内容
 
