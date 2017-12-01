@@ -1,6 +1,6 @@
 # Pod
 
-Pod是一组紧密关联的容器集合，它们共享IPC、Network和UTC namespace，是Kubernetes调度的基本单位。Pod的设计理念是支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。
+Pod是一组紧密关联的容器集合，它们共享IPC、Network和UTS namespace，是Kubernetes调度的基本单位。Pod的设计理念是支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。
 
 ![pod](images/pod.png)
 
@@ -191,7 +191,7 @@ KUBERNETES_PORT_443_TCP_PORT=443
 - Never：不管镜像是否存在都不会进行拉取
 - IfNotPresent：只有镜像不存在时，才会进行镜像拉取
 
-注意：  
+注意：
 
 - 默认为`IfNotPresent`，但`:latest`标签的镜像默认为`Always`。
 - 拉取镜像时docker会进行校验，如果镜像中的MD5码没有变，则不会拉取镜像数据。

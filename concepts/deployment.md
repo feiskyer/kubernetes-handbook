@@ -243,7 +243,7 @@ Events:
 
 **注意：** 只要Deployment的rollout被触发就会创建一个revision。也就是说当且仅当Deployment的Pod template（如`.spec.template`）被更改，例如更新template中的label和容器镜像时，就会创建出一个新的revision。
 
-其他的更新，比如扩容Deployment不会创建revision——因此我们可以很方便的手动或者自动扩容。这意味着当你回退到历史revision是，只有Deployment中的Pod template部分才会回退。
+其他的更新，比如扩容Deployment不会创建revision——因此我们可以很方便的手动或者自动扩容。这意味着当你回退到历史revision时，只有Deployment中的Pod template部分才会回退。
 
 假设我们在更新Deployment的时候犯了一个拼写错误，将镜像的名字写成了`nginx:1.91`，而正确的名字应该是`nginx:1.9.1`：
 
@@ -448,7 +448,7 @@ nginx-deployment-1989198191   5         5         0         9s
 nginx-deployment-618515232    8         8         8         1m
 ```
 
-然后发起了一个新的Deployment扩容请求。autoscaler将Deployment的repllica数目增加到了15个。Deployment controller需要判断在哪里增加这5个新的replica。如果我们没有使用比例扩容，所有的5个replica都会加到一个新的ReplicaSet中。如果使用比例扩容，新添加的replica将传播到所有的ReplicaSet中。大的部分加入replica数最多的ReplicaSet中，小的部分加入到replica数少的ReplciaSet中。0个replica的ReplicaSet不会被扩容。
+然后发起了一个新的Deployment扩容请求。autoscaler将Deployment的replica数目增加到了15个。Deployment controller需要判断在哪里增加这5个新的replica。如果我们没有使用比例扩容，所有的5个replica都会加到一个新的ReplicaSet中。如果使用比例扩容，新添加的replica将传播到所有的ReplicaSet中。大的部分加入replica数最多的ReplicaSet中，小的部分加入到replica数少的ReplciaSet中。0个replica的ReplicaSet不会被扩容。
 
 在我们上面的例子中，3个replica将添加到旧的ReplicaSet中，2个replica将添加到新的ReplicaSet中。rollout进程最终会将所有的replica移动到新的ReplicaSet中，假设新的replica成为健康状态。
 
@@ -702,7 +702,7 @@ $ echo $?
 
 ### Canary Deployment
 
-如果你想要使用Deployment对部分用户或服务器发布relaese，你可以创建多个Deployment，每个对一个release，参照[managing resources](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/cluster-administration/manage-deployment.md#canary-deployments) 中对canary模式的描述。
+如果你想要使用Deployment对部分用户或服务器发布release，你可以创建多个Deployment，每个对一个release，参照[managing resources](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/cluster-administration/manage-deployment.md#canary-deployments) 中对canary模式的描述。
 
 ## 编写Deployment Spec
 
@@ -788,7 +788,7 @@ Deployment revision history存储在它控制的ReplicaSets中。
 
 ### Paused
 
-`.spec.paused`是可以可选配置项，boolean值。用来指定暂停和恢复Deployment。Paused和非paused的Deployment之间的唯一区别就是，所有对paused deployment中的PodTemplateSpec的修改都不会触发新的rollout。Deployment被创建之后默认是非paused。
+`.spec.paused`是可选配置项，boolean值。用来指定暂停和恢复Deployment。Paused和非paused的Deployment之间的唯一区别就是，所有对paused deployment中的PodTemplateSpec的修改都不会触发新的rollout。Deployment被创建之后默认是非paused。
 
 ## Alternative to Deployments
 

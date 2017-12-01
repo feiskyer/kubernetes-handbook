@@ -129,7 +129,7 @@ $ kubectl get thirdpartyresource cron-tab.stable.example.com -o yaml --export > 
 $ kubectl delete thirdpartyresource cron-tab.stable.example.com
 ```
 
-6. 验证CRD数据是否以前成功，如果有失败发生，可以从备份的TPR数据恢复
+6. 验证CRD数据是否迁移成功，如果有失败发生，可以从备份的TPR数据恢复
 
 ```sh
 $ kubectl create -f tpr.yaml

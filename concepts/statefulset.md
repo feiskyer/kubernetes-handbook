@@ -18,8 +18,8 @@ StatefulSet中每个Pod的DNS格式为`statefulSetName-{0..N-1}.serviceName.name
 - `serviceName`为Headless Service的名字
 - `0..N-1`为Pod所在的序号，从0开始到N-1
 - `statefulSetName`为StatefulSet的名字
-- `namespace`为服务所在的namespace，Headless Servic和StatefulSet必须在相同的namespace
-- `.cluster.local`为Cluster Domain，
+- `namespace`为服务所在的namespace，Headless Service和StatefulSet必须在相同的namespace
+- `.cluster.local`为Cluster Domain
 
 **注意**
 
@@ -174,7 +174,7 @@ NAME      READY     STATUS              RESTARTS   AGE
 web-0     1/1       Running             0          4m
 web-1     1/1       Running             0          4m
 web-2     0/1       ContainerCreating   0          11s
-web-2     1/1       Running   0         18s
+web-2     1/1       Running             0          18s
 ```
 
 ## Pod管理策略
@@ -237,20 +237,20 @@ spec:
 可以看到，所有Pod是并行创建的
 
 ```sh
-$ kubectl create -f webp.yaml 
+$ kubectl create -f webp.yaml
 service "nginx" created
 statefulset "web" created
 
 $ kubectl get po -lapp=nginx -w
-NAME      READY     STATUS    RESTARTS   AGE
-web-0     0/1       Pending   0          0s
-web-0     0/1       Pending   0         0s
-web-1     0/1       Pending   0         0s
-web-1     0/1       Pending   0         0s
+NAME      READY     STATUS              RESTARTS  AGE
+web-0     0/1       Pending             0         0s
+web-0     0/1       Pending             0         0s
+web-1     0/1       Pending             0         0s
+web-1     0/1       Pending             0         0s
 web-0     0/1       ContainerCreating   0         0s
 web-1     0/1       ContainerCreating   0         0s
-web-0     1/1       Running   0         10s
-web-1     1/1       Running   0         10s
+web-0     1/1       Running             0         10s
+web-1     1/1       Running             0         10s
 ```
 
 ## zookeeper
