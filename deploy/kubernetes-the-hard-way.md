@@ -1,10 +1,11 @@
-
 # Kubernetes The Hard Way
 
 ---
 此文件翻译来源:[kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
 
 如有翻译不好的地方或文字上的错误, 都欢迎提出 issue 或是 PR
+
+繁中版: [Kubernetes-The-Hard-Way-ZH-tw](https://github.com/kweisamx/Kubernetes-The-Hard-Way-ZH-tw)
 
 ---
 
