@@ -44,4 +44,4 @@ Kubernetes The Hard Way 将引导你建立高可用的Kubernetes的丛集, 包�
 * [提供Pod网路路由](docs/11-pod-network-routes.md)
 * [部属DNS群集插件](docs/12-dns-addon.md)
 * [烟雾测试](docs/13-smoke-test.md)
-* [移除](docs/14-cleanup.md)
+* [删除集群](docs/14-cleanup.md)
