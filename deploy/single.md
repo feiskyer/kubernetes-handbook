@@ -4,6 +4,8 @@
 
 创建Kubernetes cluster（单机版）最简单的方法是[minikube](https://github.com/kubernetes/minikube):
 
+国内网络环境下使用[kubeasz](https://github.com/gjmzj/kubeasz)的 AllInOne 部署更方便
+
 首先下载kubectl
 
 ```sh
