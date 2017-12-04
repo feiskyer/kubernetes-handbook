@@ -77,6 +77,20 @@
     - [Cluster AutoScaler](addons/cluster-autoscaler.md)
   - [4.5 推荐配置](deploy/kubernetes-configuration-best-practice.md)
   - [4.6 Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way.md)
+    - [事先准备](docs/01-prerequisites.md)
+    - [安装 Client 工具](docs/02-client-tools.md)
+    - [准备计算资源](docs/03-compute-resources.md)
+    - [提供 CA 和产生 TLS 凭证](docs/04-certificate-authority.md)
+    - [配置和生成 Kubernetes 配置文件](docs/05-kubernetes-configuration-files.md)
+    - [配置和生成密钥](docs/06-data-encryption-keys.md)
+    - [启动 etcd 群集](docs/07-bootstrapping-etcd.md)
+    - [启动 Kubernetes 控制节点](docs/08-bootstrapping-kubernetes-controllers.md)
+    - [启动 Kubernetes Node 节点](docs/09-bootstrapping-kubernetes-workers.md)
+    - [配置 Kubectl](docs/10-configuring-kubectl.md)
+    - [配置 Pod 网络路由](docs/11-pod-network-routes.md)
+    - [部署 DNS 扩展](docs/12-dns-addon.md)
+    - [烟雾测试](docs/13-smoke-test.md)
+    - [删除集群](docs/14-cleanup.md)
 
 ## 插件指南
 
