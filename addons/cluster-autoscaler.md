@@ -1,12 +1,12 @@
 # Cluster AutoScaler
 
-Cluster AutoScaler 是一个自动扩展和收缩 Kubernetes 集群 Node 的扩展。当集群容量不足时，它会自动去 Cloud Provider （支持 GCE、GKE和AWS）创建新的 Node，而在 Node 长时间资源利用率都很低时自动将其删除以节省开支。
+Cluster AutoScaler 是一个自动扩展和收缩 Kubernetes 集群 Node 的扩展。当集群容量不足时，它会自动去 Cloud Provider （支持 GCE、GKE和AWS）创建新的 Node，而在 Node 长时间资源利用率很低时自动将其删除以节省开支。
 
 Cluster AutoScaler 独立于 Kubernetes 主代码库，维护在 <https://github.com/kubernetes/autoscaler>。
 
 ## 部署
 
-Cluster AutoScaler v1.0.0 可以基于Docker镜像 `gcr.io/google_containers/cluster-autoscaler:v1.0.0` 来部署，详细的部署步骤可以参考
+Cluster AutoScaler v1.0+ 可以基于Docker镜像 `gcr.io/google_containers/cluster-autoscaler:v1.0.0` 来部署，详细的部署步骤可以参考
 
 - GCE: <https://kubernetes.io/docs/concepts/cluster-administration/cluster-management/>
 - GKE: <https://cloud.google.com/container-engine/docs/cluster-autoscaler>
