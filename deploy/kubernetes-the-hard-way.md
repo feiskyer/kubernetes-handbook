@@ -1,6 +1,6 @@
 # Kubernetes The Hard Way
 
-本部分翻译自 [kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way)，译者 [@kweisamx](https://github.com/kweisamx)。
+本部分翻译自 [kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way)，译者 [@kweisamx](https://github.com/kweisamx)。该教程指引用户在 [Google Cloud Platform](https://cloud.google.com) 上面一步步搭建一个高可用的 Kubernetes 集群。
 
 如有翻译不好的地方或文字上的错误, 都欢迎提出 issue 或是 PR。
 
@@ -17,11 +17,11 @@ Kubernetes The Hard Way 是个学习的最佳方式, 会花上许多时间确保
 
 ## 谁适合看这份文件？
 
-这份文件的目标是给那些计画要使用kubernetes 当作production环境的人, 并想了解每个有关kubernetes的环节以及他们如何运作的
+这份文件的目标是给那些计划要使用 kubernetes 当作 production 环境的人, 并想了解每个有关 kubernetes 的环节以及他们如何运作的。
 
 ## 有关丛集的详细资讯
 
-Kubernetes The Hard Way 将引导你建立高可用的Kubernetes的丛集, 包括每个组件之间的加密以及RBAC认证
+Kubernetes The Hard Way 将引导你建立高可用的 Kubernetes 集群, 包括每个组件之间的加密以及RBAC认证
 
 * [Kubernetes](https://github.com/kubernetes/kubernetes) 1.8.0
 * [cri-containerd Container Runtime](https://github.com/kubernetes-incubator/cri-containerd) 1.0.0-alpha.0
