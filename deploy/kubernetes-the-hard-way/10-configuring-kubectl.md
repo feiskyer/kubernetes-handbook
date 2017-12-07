@@ -1,5 +1,5 @@
 
-# 远端请求Kubectl相关设定
+# 配置 Kubectl
 
 在本次实验中你将会建立基於`admin` user 凭证的kubeconfig档给`kubectl`指令使用
 

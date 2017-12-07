@@ -1,5 +1,5 @@
 
-# 提供 CA 和产生 TLS 凭证
+# 配置 CA 和产生 TLS 凭证
 
 ---
 
@@ -304,7 +304,7 @@ done
 
 > `kube-proxy` 和 `kubelet` client 凭证将会被用来产生client 的授权设定档, 我们将在下一个实验中说明
 
-Next: [建立认证用Kubernetes 设定档](05-kubernetes-configuration-files.md)
+Next: [配置和生成 Kubernetes 配置文件](05-kubernetes-configuration-files.md)
 
 
 

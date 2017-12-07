@@ -171,4 +171,4 @@ worker-1      us-west1-c  n1-standard-1               10.240.0.21  XX.XXX.XX.XXX
 worker-2      us-west1-c  n1-standard-1               10.240.0.22  XXX.XXX.XX.XX   RUNNING
 ```
 
-Next: [提供CA 和 产生 TLS 凭证](04-certificate-authority.md)
+Next: [配置CA 和 产生 TLS 凭证](04-certificate-authority.md)
