@@ -1,10 +1,10 @@
 
-# 部属DNS群集插件
+# 部署 DNS 扩展
 
 在本次实验中将会部属[DNS 插件](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)用来提供DNS, 为集群内的应用程式提供服务发现。
 
 
-## DNS 群集插件
+##  DNS 扩展
 
 部属 `kube-dns` 群集插件:
 

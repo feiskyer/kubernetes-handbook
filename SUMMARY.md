@@ -82,7 +82,7 @@
     - [事先准备](deploy/kubernetes-the-hard-way/01-prerequisites.md)
     - [安装 Client 工具](deploy/kubernetes-the-hard-way/02-client-tools.md)
     - [准备计算资源](deploy/kubernetes-the-hard-way/03-compute-resources.md)
-    - [提供 CA 和产生 TLS 凭证](deploy/kubernetes-the-hard-way/04-certificate-authority.md)
+    - [配置 CA 和产生 TLS 凭证](deploy/kubernetes-the-hard-way/04-certificate-authority.md)
     - [配置和生成 Kubernetes 配置文件](deploy/kubernetes-the-hard-way/05-kubernetes-configuration-files.md)
     - [配置和生成密钥](deploy/kubernetes-the-hard-way/06-data-encryption-keys.md)
     - [启动 etcd 群集](deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md)

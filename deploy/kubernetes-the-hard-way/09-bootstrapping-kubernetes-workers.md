@@ -250,4 +250,4 @@ worker-2   Ready     <none>    1m        v1.8.0
 ```
 
 
-Next: [远端请求Kubectl相关设定](10-configuring-kubectl.md)
+Next: [配置 Kubectl](10-configuring-kubectl.md)

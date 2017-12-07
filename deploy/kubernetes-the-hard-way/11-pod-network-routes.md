@@ -1,5 +1,5 @@
 
-# 提供Pod 网路路由
+# 配置 Pod 网络路由
 
 Pods 排程到节点上会从节点的Pod CIDR 范围里挑出一个IP address。由于missing network [routes](https://cloud.google.com/compute/docs/vpc/routes)导致这些pods并不能与属于其他节点的pods沟通。
 
@@ -62,4 +62,4 @@ kubernetes-route-10-200-2-0-24  kubernetes-the-hard-way  10.200.2.0/24  10.240.0
 
 
 
-Next: [部属DNS群集插件](12-dns-addon.md)
+Next: [部署 DNS 扩展](12-dns-addon.md)
