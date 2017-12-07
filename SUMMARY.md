@@ -64,6 +64,7 @@
   - [4.2 集群部署](deploy/cluster.md)
     - [kubeadm](deploy/kubeadm.md)
     - [Kubespray](deploy/kubespray.md)
+    - [Kubernetes on Azure](deploy/azure.md)
     - [Kubernetes on LinuxKit](deploy/k8s-linuxkit.md)
     - [Frakti+Hyper](deploy/frakti/index.md)
     - [kops](deploy/kops.md)
