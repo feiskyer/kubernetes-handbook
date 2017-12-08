@@ -7,16 +7,53 @@ Kuryr-Kubernetes 有以两个主要部分组成：
 1. **Kuryr Controller**: Controller 主要目的是监控 Kubernetes API 的来获取 Kubernetes 资源的变化，然后依据 Kubernetes 资源的需求来运行子资源的分配和资源管理。
 2. **Kuryr CNI**：主要是依据 Kuryr Controller 分配的资源来绑定网络至 Pods 上。
 
+## devstack部署
+
+最简单的方式是使用 devstack 部署一个单机环境：
+
+```sh
+$ git clone https://git.openstack.org/openstack-dev/devstack
+$ ./devstack/tools/create-stack-user.sh
+$ sudo su stack
+
+$ git clone https://git.openstack.org/openstack-dev/devstack
+$ git clone https://git.openstack.org/openstack/kuryr-kubernetes
+$ cp kuryr-kubernetes/devstack/local.conf.sample devstack/local.conf
+
+# start install
+$ ./devstack/stack.sh
+```
+
+部署完成后，验证安装成功
+
+```sh
+$ source /devstack/openrc admin admin
+$ openstack service list
++----------------------------------+------------------+------------------+
+| ID                               | Name             | Type             |
++----------------------------------+------------------+------------------+
+| 091e3e2813cc4904b74b60c41e8a98b3 | kuryr-kubernetes | kuryr-kubernetes |
+| 2b6076dd5fc04bf180e935f78c12d431 | neutron          | network          |
+| b598216086944714aed2c233123fc22d | keystone         | identity         |
++----------------------------------+------------------+------------------+
+
+$ kubectl get nodes
+NAME        STATUS    AGE       VERSION
+localhost   Ready     2m        v1.6.2
+```
+
+## 多机部署
+
 本篇我們將說明如何利用`DevStack`與`Kubespray`建立一個簡單的測試環境。
 
-## 环境资源与事前准备
+### 环境资源与事前准备
 准备两台实体机器，这边测试的作业系统为`CentOS 7.x`，该环境将在平面的网络下进行。
 
-| IP Address 1    |  Role      |
-| --------        | --------   |
-| 172.24.0.34     | controller, k8s-master |
-| 172.24.0.80     | compute1, k8s-node1 |
-| 172.24.0.81     | compute2, k8s-node2 |
+| IP Address 1 | Role                   |
+| ------------ | ---------------------- |
+| 172.24.0.34  | controller, k8s-master |
+| 172.24.0.80  | compute1, k8s-node1    |
+| 172.24.0.81  | compute2, k8s-node2    |
 
 更新每台节点的 CentOS 7.x 包:
 ```shell=
@@ -29,7 +66,7 @@ $ sudo setenforce 0
 $ sudo systemctl disable firewalld && sudo systemctl stop firewalld
 ```
 
-## OpenStack Controller 安裝
+### OpenStack Controller 安裝
 首先进入`172.24.0.34（controller）`，并且运行以下命令。
 
 然后运行以下命令来建立 DevStack 专用用户：
@@ -69,7 +106,7 @@ MULTI_HOST=1
 $ ./stack.sh
 ```
 
-## Openstack Compute 安装
+### Openstack Compute 安装
 进入到`172.24.0.80（compute）`與`172.24.0.81（node2）`，并且运行以下命令。
 
 然后运行以下命令来建立 DevStack 专用用户：
@@ -120,7 +157,7 @@ VNCSERVER_PROXYCLIENT_ADDRESS=$VNCSERVER_LISTEN
 $ ./stack.sh
 ```
 
-## 创建 Kubernetes 集群环境
+### 创建 Kubernetes 集群环境
 首先确认所有节点之间不需要 SSH 密码即可登入，接着进入到`172.24.0.34（k8s-master）`并且运行以下命令。
 
 接着安装所需要的软件包：
@@ -188,7 +225,7 @@ node2     Ready          2m        v1.7.4
 ```
 > 将 insecure 绑定到 0.0.0.0 之上，以及开启 8080 Port。
 
-## 安装 Openstack Kuryr Controller
+### 安装 Openstack Kuryr Controller
 进入到`172.24.0.34（controller）`，并且运行以下命令。
 
 首先在节点安装所需要的软件包：
@@ -212,8 +249,8 @@ $ sudo cp etc/kuryr.conf.sample /etc/kuryr/kuryr.conf
 
 使用 OpenStack Dashboard 建立项目，在浏览器输入[Dashboard](http://172.24.0.34)，并运行以下步骤。
 
-1. 创建 K8s project。
-2. 修改 K8s project member 加入到 service project。
+1. 创建 k8s project。
+2. 创建 kuryr-kubernetes service，并修改 k8s project member 加入到 service project。
 3. 在该 Project 中新增 Security Groups，参考 [kuryr-kubernetes manually](https://docs.openstack.org/kuryr-kubernetes/latest/installation/manual.html)。
 4. 在该 Project 中新增 pod_subnet 子网络。
 5. 在该 Project 中新增 service_subnet 子网络。
@@ -247,10 +284,10 @@ service_subnet = {id_of_subnet_for_k8s_services}
 
 完成后运行 kuryr-k8s-controller：
 ```shell=
-$ kuryr-k8s-controller --config-file /etc/kuryr/kuryr.conf
+$ kuryr-k8s-controller --config-file /etc/kuryr/kuryr.conf&
 ```
 
-## 安装 Kuryr-CNI
+### 安装 Kuryr-CNI
 进入到`172.24.0.80（node1）`與`172.24.0.81（node2）`并运行以下命令。
 
 首先在节点安装所需要的软件包
@@ -310,7 +347,13 @@ $ sudo systemctl daemon-reload && systemctl restart kubelet.service
 ```
 
 ## 测试结果
+
 创建一个 Pod 与 OpenStack VM 来进行通信：
 ![](https://i.imgur.com/UYXdKud.png)
 
 ![](https://i.imgur.com/dwoEytW.png)
+
+## 参考文档
+
+- [Kuryr kubernetes documentation](https://docs.openstack.org/kuryr-kubernetes/latest/index.html)
+
