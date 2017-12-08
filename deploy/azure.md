@@ -64,6 +64,10 @@ az aks get-versions --name myK8sCluster --resource-group group1 --output table
 az aks upgrade --name myK8sCluster --resource-group group1 --kubernetes-version 1.8.1
 ```
 
+下图动态展示了一个部署 v1.7.7 版本集群并升级到 v1.8.1 的过程：
+
+![](https://feisky.xyz/images/aks-examples.gif)
+
 ### 使用Helm
 
 当然也可以使用其他 Kubernetes 社区提供的工具和服务，比如使用 Helm 部署 Nginx Ingress 控制器
@@ -81,10 +85,6 @@ helm install stable/nginx-ingress
 az group delete --name group1 --yes --no-wait
 ```
 
-下图动态展示了一个部署 v1.7.7 版本集群并升级到 v1.8.1 的过程：
-
-![](https://feisky.xyz/images/aks-examples.gif)
-
 ## acs-engine
 
 虽然未来 AKS 是 Azure 容器服务的下一代主打产品，但用户可能还是希望可以自己管理容器集群以保证足够的灵活性（比如自定义master服务等）。这时用户可以使用开源的 [acs-engine](https://github.com/Azure/acs-engine) 来创建和管理自己的集群。acs-engine 其实就是 ACS 的核心部分，提供了一个部署和管理 Kubernetes、Swarm和DC/OS 集群的命令行工具。它通过将容器集群描述文件转化为一组ARM（Azure Resource Manager）模板来建立容器集群。 
@@ -96,7 +96,12 @@ az group delete --name group1 --yes --no-wait
   "apiVersion": "vlabs",
   "properties": {
     "orchestratorProfile": {
-      "orchestratorType": "Kubernetes"
+      "orchestratorType": "Kubernetes",
+      "orchestratorRelease": "1.8",
+      "kubernetesConfig": {
+        "networkPolicy": "",
+        "enableRbac": true
+      }
     },
     "masterProfile": {
       "count": 1,
@@ -142,7 +147,7 @@ orchestratorType 指定了部署集群的类型，目前支持三种
 az group create --name myResourceGroup  --location "centralus"
 
 # start deploy the kubernetes
-acs-engine deploy --resource-group myResourceGroup --subscription-id <subscription-id> --auto-suffix --api-model kubernetes.json
+acs-engine deploy --resource-group myResourceGroup --subscription-id <subscription-id> --auto-suffix --api-model kubernetes.json --location centralus --dns-prefix <dns-prefix>
 
 # setup kubectl
 export KUBECONFIG="$(pwd)/_output/<name-with-suffix>/kubeconfig/kubeconfig.centralus.json"
@@ -161,12 +166,30 @@ RBAC默认是不可以开启的，可以通过设置enableRbac开启
 
 ### 自定义Kubernetes版本
 
-acs-engine基于 hyperkube 来部署Kubernetes服务，所以只需要使用自定义的 hyperkube 镜像即可。
+acs-engine 基于 hyperkube 来部署 Kubernetes 服务，所以只需要使用自定义的 hyperkube 镜像即可。
 
 ```json
-"kubernetesConfig": {
-    "customHyperkubeImage": "docker.io/dockerhubid/hyperkube-amd64:sometag"
+{
+	"kubernetesConfig": {
+		"customHyperkubeImage": "docker.io/feisky/hyperkube-amd64:v1.9.0-dev"
+	}
 }
+```
+
+hyperkube 镜像可以从 Kubernetes 源码编译，编译步骤为
+
+```sh
+# Build Kubernetes
+bash build/run.sh make KUBE_FASTBUILD=true ARCH=amd64
+
+# Build docker image for hyperkube
+cd cluster/images/hyperkube
+make VERSION=v1.9.0-dev
+cd ../../..
+
+# push docker image
+docker tag gcr.io/google-containers/hyperkube-amd64:v1.9.0-dev feisky/hyperkube-amd64:v1.9.0-dev
+docker push feisky/hyperkube-amd64:v1.9.0-dev
 ```
 
 ### 添加Windows节点
