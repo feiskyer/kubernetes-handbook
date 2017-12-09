@@ -11,6 +11,103 @@ Cluster AutoScaler v1.0+ 可以基于Docker镜像 `gcr.io/google_containers/clus
 - GCE: <https://kubernetes.io/docs/concepts/cluster-administration/cluster-management/>
 - GKE: <https://cloud.google.com/container-engine/docs/cluster-autoscaler>
 - AWS: <https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md>
+- Azure: <https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/azure>
+
+比如 Azure 中的部署方式为
+
+```yaml
+apiVersion: v1
+data:
+  ClientID: <client-id>
+  ClientSecret: <client-secret>
+  ResourceGroup: <resource-group>
+  SubscriptionID: <subscription-id>
+  TenantID: <tenand-id>
+  ScaleSetName: <scale-set-name>
+kind: ConfigMap
+metadata:
+  name: cluster-autoscaler-azure
+  namespace: kube-system
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cluster-autoscaler
+  namespace: kube-system
+  labels:
+    app: cluster-autoscaler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-autoscaler
+  template:
+    metadata:
+      labels:
+        app: cluster-autoscaler
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+      nodeSelector:
+        kubernetes.io/role: master
+      containers:
+      - image: gcr.io/google_containers/cluster-autoscaler:{{ ca_version }}
+        name: cluster-autoscaler
+        resources:
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 300Mi
+        env:
+        - name: ARM_SUBSCRIPTION_ID
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-autoscaler-azure
+              key: SubscriptionID
+        - name: ARM_RESOURCE_GROUP
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-autoscaler-azure
+              key: ResourceGroup
+        - name: ARM_TENANT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-autoscaler-azure
+              key: TenantID
+        - name: ARM_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-autoscaler-azure
+              key: ClientID
+        - name: ARM_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-autoscaler-azure
+              key: ClientSecret
+        - name: ARM_SCALE_SET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-autoscaler-azure
+              key: ScaleSetName
+        command:
+          - ./cluster-autoscaler
+          - --v=4
+          - --cloud-provider=azure
+          - --skip-nodes-with-local-storage=false
+          - --nodes="1:10:$(ARM_SCALE_SET_NAME)"
+        volumeMounts:
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs/ca-certificates.crt
+            readOnly: true
+        imagePullPolicy: "Always"
+      volumes:
+      - name: ssl-certs
+        hostPath:
+          path: "/etc/ssl/certs/ca-certificates.crt"
+```
 
 ## 工作原理
 
@@ -36,7 +133,7 @@ Cluster AutoScaler 定期（默认间隔10s）检测是否有充足的资源来�
 - 小集群（小于100个Node）可以在不超过30秒内完成扩展（平均5秒）
 - 大集群（100-1000个Node）可以在不超过60秒内完成扩展（平均15秒）
 
-Cluster AutoScaler 也会定期（默认间隔10s）自动监测 Node 的资源使用情况，当一个 Node 长时间资源利用率都很低时（低于50%）自动将其删除。此时，原来的 Pod 会自动调度到其他 Node 上面（通过Deployment、StatefulSet等控制器）。
+Cluster AutoScaler 也会定期（默认间隔10s）自动监测 Node 的资源使用情况，当一个 Node 长时间（超过10分钟其期间没有执行任何扩展操作）资源利用率都很低时（低于50%）自动将其所在虚拟机从云服务商中删除（注意删除时会有1分钟的 graceful termination 时间）。此时，原来的 Pod 会自动调度到其他 Node 上面（通过 Deployment、StatefulSet 等控制器）。
 
 ![](images/15084813160226.png)
 
@@ -61,7 +158,7 @@ Cluster AutoScaler 也会定期（默认间隔10s）自动监测 Node 的资源�
 - 运行 Pod 时指定资源请求
 - 必要时使用 PodDisruptionBudgets 阻止 Pod 被误删除
 - 确保云服务商的配额充足
-- Cluster AutoScaler 与云服务商提供的 Node 自动扩展功能以及基于CPU利用率的Node自动扩展机制冲突，不要同时启用
+- Cluster AutoScaler **与云服务商提供的 Node 自动扩展功能以及基于CPU利用率的Node自动扩展机制冲突，不要同时启用**
 
 ## 参考文档
 
