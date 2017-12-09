@@ -1,14 +1,14 @@
 # Horizontal Pod Autoscaling
 
-Horizontal Pod Autoscaling (HPA) 可以根据CPU使用率或应用自定义metrics自动扩展 Pod 数量（支持 replication controller、deployment 和 replica set ）。
+Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 metrics 自动扩展 Pod 数量（支持 replication controller、deployment 和 replica set ）。
 
-- 控制管理器每隔30s（可以通过`--horizontal-pod-autoscaler-sync-period`修改）查询metrics的资源使用情况
-- 支持三种metrics类型
-  - 预定义metrics（比如Pod的CPU）以利用率的方式计算
-  - 自定义的Pod metrics，以原始值（raw value）的方式计算
-  - 自定义的object metrics
-- 支持两种metrics查询方式：Heapster和自定义的REST API
-- 支持多metrics
+- 控制管理器每隔30s（可以通过`--horizontal-pod-autoscaler-sync-period`修改）查询 metrics 的资源使用情况
+- 支持三种 metrics 类型
+  - 预定义 metrics（比如 Pod 的 CPU）以利用率的方式计算
+  - 自定义的 Pod metrics，以原始值（raw value）的方式计算
+  - 自定义的 object metrics
+- 支持两种 metrics 查询方式：Heapster 和自定义的 REST API
+- 支持多 metrics
 
 ## 示例
 
@@ -132,4 +132,12 @@ Conditions:
   ScalingLimited        False   DesiredWithinRange      the desired replica count is within the acceptible range
 Events:
 ```
+
+## HPA 最佳实践
+
+- 为容器配置 CPU Requests
+- HPA目标设置恰当，如设置 70% 给容器和应用预留 30% 的余量
+- 保持 Pods 和 Nodes 健康（避免 Pod 频繁重建）
+- 保证用户请求的负载均衡
+- 使用 `kubectl top node` 和 `kubectl top pod` 查看资源使用情况
 
