@@ -17,6 +17,39 @@ Kubenretes内置的Cloud Provider包括
 - Rackspace
 - Vsphere
 
+### 当前Cloud Provider 工作原理
+
+- apiserver，kubelet，controller-manager都配置 cloud provider 选项
+- Kubelet
+  - 通过 Cloud Provider 接口查询 nodename
+  - 向 API Server 注册 Node 时查询 InstanceID、ProviderID、ExternalID 和 Zone 等信息
+  - 定期查询 Node 是否新增了 IP 地址
+  - 设置无法调度的条件（condition），直到云服务商的路由配置完成
+- kube-apiserver
+  - 向所有 Node 分发 SSH 密钥以便建立 SSH 隧道
+  - PersistentVolumeLabel 负责 PV 标签
+  - PersistentVolumeClainResize 动态扩展 PV 的大小
+- kube-controller-manager
+  - Node 控制器检查 Node 所在 VM 的状态。当 VM 删除后自动从 API Server中删除该 Node。
+  - Volume 控制器向云提供商创建和删除持久化存储卷，并按需要挂载或卸载到指定的 VM 上。
+  - Route 控制器给所有已注册的 Nodes 配置云路由。
+  - Service 控制器给 LoadBalancer 类型的服务创建负载均衡器并更新服务的外网 IP。
+
+### 独立Cloud Provider工作[原理](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/)以及[跟踪进度](https://github.com/kubernetes/features/issues/88)
+
+- Kubelet必须配置 ``--cloud-provider=external`，并且 `kube-apiserver` 和 `kube-controller-manager` 必须不配置 cloud provider。``
+- `kube-apiserver`的准入控制选项不能包含 PersistentVolumeLabel。
+- `cloud-controller-manager` 独立运行，并开启 `InitializerConifguration`。
+- Kubelet 可以通过 `provider-id` 选项配置 `ExternalID`，启动后会自动给Node添加 taint `node.cloudprovider.kubernetes.io/uninitialized=NoSchedule`。
+- `cloud-controller-manager` 在收到Node注册的事件后再次初始化 Node 配置，添加 zone、类型等信息，并删除上一步 Kubelet 自动创建的 taint。
+- 主要逻辑（也就是合并了kube-apiserver和kube-controller-manager 跟云相关的逻辑）
+  - Node 控制器检查 Node 所在 VM 的状态。当 VM 删除后自动从 API Server中删除该 Node。
+  - Volume 控制器向云提供商创建和删除持久化存储卷，并按需要挂载或卸载到指定的 VM 上。
+  - Route 控制器给所有已注册的 Nodes 配置云路由。
+  - Service 控制器给 LoadBalancer 类型的服务创建负载均衡器并更新服务的外网 IP。
+  - PersistentVolumeLable 准入控制负责 PV 标签
+  - PersistentVolumeClainResize 准入控制动态扩展 PV 大小
+
 ## 如何开发Cloud Provider扩展
 
 Kubernetes的Cloud Provider目前正在重构中
