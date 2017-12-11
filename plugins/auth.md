@@ -47,7 +47,7 @@ openssl req -new -key jbeda.pem -out jbeda-csr.pem -subj "/CN=jbeda/O=app1/O=app
 token,user,uid,"group1,group2,group3"
 ```
 
-客户端在使用token认证时，需要在请求头中加入Bearer Authrization头，比如
+客户端在使用token认证时，需要在请求头中加入Bearer Authorization头，比如
 
 ```
 Authorization: Bearer 31ada4fd-adec-460c-809a-9e56ceb75269
@@ -69,15 +69,15 @@ Authorization: Bearer 31ada4fd-adec-460c-809a-9e56ceb75269
 password,user,uid,"group1,group2,group3"
 ```
 
-客户端在使用密码认证时，需要在请求头重加入Basic Autorization头，如
+客户端在使用密码认证时，需要在请求头重加入Basic Authorization头，如
 
 ```
-Basic BASE64ENCODED(USER:PASSWORD)
+Authorization: Basic BASE64ENCODED(USER:PASSWORD)
 ```
 
 ### Service Account
 
-ServiceAccount是Kubernetes自动生成的，并会自动挂载到容器的`/run/secrets/kubernetes.io/serviceaccount`目录中。
+ServiceAccount是Kubernetes自动生成的，并会自动挂载到容器的`/var/run/secrets/kubernetes.io/serviceaccount`目录中。
 
 在认证时，ServiceAccount的用户名格式为`system:serviceaccount:(NAMESPACE):(SERVICEACCOUNT)`，并从属于两个group：`system:serviceaccounts`和`system:serviceaccounts:(NAMESPACE)`。
 

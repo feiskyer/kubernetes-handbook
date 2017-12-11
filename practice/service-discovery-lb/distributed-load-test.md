@@ -17,12 +17,12 @@
 ```bash
 $ cd kubernetes-config
 $ kubectl create -f sample-webapp-controller.yaml
-$ kubectl create -f kubectl create -f sample-webapp-service.yaml
+$ kubectl create -f sample-webapp-service.yaml
 ```
 
 ## 部署Locust的Controller和Service
 
-`locust-master`和`locust-work`使用同样的docker镜像，修改cotnroller中`spec.template.spec.containers.env`字段中的value为你`sample-webapp` service的名字。
+`locust-master`和`locust-work`使用同样的docker镜像，修改controller中`spec.template.spec.containers.env`字段中的value为你`sample-webapp` service的名字。
 
     - name: TARGET_HOST
       value: http://sample-webapp:8000
@@ -55,7 +55,7 @@ $ kubectl create -f locust-worker-controller.yaml
 ```
 你可以很轻易的给work扩容，通过命令行方式：
 
-```ba sh
+```bash
 $ kubectl scale --replicas=20 replicationcontrollers locust-worker
 ```
 当然你也可以通过WebUI：Dashboard - Workloads - Replication Controllers - **ServiceName** - Scale来扩容。

@@ -19,7 +19,7 @@ chmod +x kubectl
 # install minikube
 $ brew cask install minikube
 $ brew install docker-machine-driver-xhyve
-# docker-machine-driver-xhyve need root owner and uid
+# docker-machine-driver-xhyve need root owner and suid
 $ sudo chown root:wheel $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
 $ sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
 ```
