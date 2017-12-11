@@ -6,7 +6,7 @@
 
 ### etcd集群
 
-从`https://discovery.etcd.io/new?size=3`获取token后，把<https://kubernetes.io/docs/admin/high-availability/etcd.yaml>放到每台机器的`/etc/kubernetes/manifests/etcd.yaml`，并替换掉`${DISCOVERY_TOKEN}`, `${NODE_NAME}`和`${NODE_IP}`，既可以由kubelet来启动一个etcd集群。
+从`https://discovery.etcd.io/new?size=3`获取token后，把<https://kubernetes.io/docs/admin/high-availability/etcd.yaml>放到每台机器的`/etc/kubernetes/manifests/etcd.yaml`，并替换掉`${DISCOVERY_TOKEN}`, `${NODE_NAME}`和`${NODE_IP}`，即可以由kubelet来启动一个etcd集群。
 
 对于运行在kubelet外部的etcd，可以参考[etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md)来手动配置集群模式。
 

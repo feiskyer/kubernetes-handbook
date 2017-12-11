@@ -70,9 +70,9 @@ State: Peer in Cluster (Connected)
 
 ## 配置 volume
 
-GlusterFS中的volume的模式有很多中，包括以下几种：
+GlusterFS中的volume的模式有很多种，包括以下几种：
 
-- **分布卷（默认模式）**：即DHT, 也叫 分布卷: 将文件已hash算法随机分布到 一台服务器节点中存储。
+- **分布卷（默认模式）**：即DHT, 也叫 分布卷: 将文件以hash算法随机分布到 一台服务器节点中存储。
 - **复制模式**：即AFR, 创建volume 时带 replica x 数量: 将文件复制到 replica x 个节点中。
 - **条带模式**：即Striped, 创建volume 时带 stripe x 数量： 将文件切割成数据块，分别存储到 stripe x 个节点中 ( 类似raid 0 )。
 - **分布式条带模式**：最少需要4台服务器才能创建。 创建volume 时 stripe 2 server = 4 个节点： 是DHT 与 Striped 的组合型。
@@ -222,7 +222,7 @@ $ kubectl describe pods/glusterfs
 
 # 登陆 node 物理机，使用 df 可查看挂载目录
 $ df -h
-172.20.0.113:k8s-volume 1073741824        0 1073741824   0% 172.20.0.113:k8s-volume  1.0T     0  1.0T   0% /var/lib/kubelet/pods/3de9fc69-30b7-11e7-bfbd-8af1e3a7c5bd/volumes/kubernetes.io~glusterfs/glusterfsvol
+172.20.0.113:k8s-volume  1.0T     0  1.0T   0% /var/lib/kubelet/pods/3de9fc69-30b7-11e7-bfbd-8af1e3a7c5bd/volumes/kubernetes.io~glusterfs/glusterfsvol
 ```
 
 ## 配置PersistentVolume
@@ -231,7 +231,7 @@ PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是kubernetes提供的
 
 PVC和PV的关系跟pod和node关系类似，前者消耗后者的资源。PVC可以向PV申请指定大小的存储资源并设置访问模式。
 
-**PV属性 **
+**PV属性**
 
 - storage容量 
 - 读写属性：分别为ReadWriteOnce：单个节点读写； ReadOnlyMany：多节点只读 ； ReadWriteMany：多节点读写

@@ -13,7 +13,7 @@ Service account是为了方便Pod里面的进程调用Kubernetes API或其他外
   - 每个container启动后都会挂载该service account的token和`ca.crt`到`/var/run/secrets/kubernetes.io/serviceaccount/`
 
 ```sh
-$ kubectl exec nginx-3137573019-md1u2 ls /run/secrets/kubernetes.io/serviceaccount
+$ kubectl exec nginx-3137573019-md1u2 ls /var/run/secrets/kubernetes.io/serviceaccount
 ca.crt
 namespace
 token
