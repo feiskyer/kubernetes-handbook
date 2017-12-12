@@ -29,7 +29,7 @@ Initializers可以用来给资源执行策略或者配置默认选项，包括In
 
 Initializers的开启方法为
 
-- kube-apiserver配置`--admission-control=...,Initializer`
+- kube-apiserver配置`--admission-control=...,Initializers`
 - kube-apiserver开启`admissionregistration.k8s.io/v1alpha1` API，即配置`--runtime-config=admissionregistration.k8s.io/v1alpha1`
 - 部署Initializers控制器
 
