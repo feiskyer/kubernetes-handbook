@@ -1,6 +1,6 @@
 # Traefik ingress
 
-[Traefik](https://traefik.io/)是一个开源的反向代理和负载均衡工具，它监听后端的变化并自动更新服务配置。
+[Traefik](https://traefik.io/) 是一款开源的反向代理与负载均衡工具，它监听后端的变化并自动更新服务配置。Traefik 最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持 Docker、Swarm,、Mesos/Marathon、Mesos、Kubernetes、Consul、Etcd、Zookeeper、BoltDB 和 Rest API 等后端模型。
 
 ![](https://docs.traefik.io/img/architecture.png)
 
@@ -12,24 +12,19 @@
 - 内置Web UI、Metrics和Let’s Encrypt支持，管理方便
 - 自动动态配置
 - 集群模式高可用
+- 支持 [Proxy Protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)
 
 ## Ingress简介
 
-简单的说，ingress就是从kubernetes集群外访问集群的入口，将用户的URL请求转发到不同的service上。Ingress相当于nginx、apache等负载均衡反向代理服务器，其中还包括规则定义，即URL的路由信息，路由信息的刷新由[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)来提供。
+简单的说，ingress就是从kubernetes集群外访问集群的入口，将用户的URL请求转发到不同的service上。Ingress相当于nginx、apache等负载均衡反向代理服务器，其中还包括规则定义，即URL的路由信息，路由信息的刷新由 [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers) 来提供。
 
 Ingress Controller 实质上可以理解为是个监视器，Ingress Controller 通过不断地跟 kubernetes API 打交道，实时的感知后端 service、pod 等变化，比如新增和减少 pod，service 增加与减少等；当得到这些变化信息后，Ingress Controller 再结合下文的 Ingress 生成配置，然后更新反向代理负载均衡器，并刷新其配置，达到服务发现的作用。
 
 ## 部署Traefik
 
-**介绍traefik**
-
-[Traefik](https://traefik.io/)是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API等等后端模型。
-
 以下配置文件可以在Traefik GitHub仓库中的[examples/k8s/traefik-rbac.yaml](https://github.com/containous/traefik/tree/master/examples/k8s/traefik-rbac.yaml)找到。
 
-**创建ingress-rbac.yaml**
-
-将用于service account验证。
+**创建 ingress-rbac.yaml** 用于 service account 认证：
 
 ```yaml
 ---
@@ -71,11 +66,13 @@ subjects:
   namespace: kube-system
 ```
 
+执行下面的命令创建 Traefik 角色绑定
+
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
 ```
 
-**创建Depeloyment**
+**创建 Traefik Depeloyment**
 
 ```yaml
 ---
@@ -116,6 +113,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: traefik-ingress-service
+  namespace: kube-system
 spec:
   selector:
     k8s-app: traefik-ingress-lb
@@ -129,16 +127,102 @@ spec:
   type: NodePort
 ```
 
+执行下面的命令创建 Traefik Deployment：
+
 ```sh
-# 使用deployment部署
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-deployment.yaml
-# 也可以使用daemonset来部署
-# kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
 ```
 
-注意我们这里用的是Deploy类型，没有限定该pod运行在哪个主机上。Traefik的端口是8580。
+Traefik 也支持以 DaemonSet 的方式部署（注意如果已经创建了 Traefik Deployment，则不需要再创建 DaemonSet）
 
-**创建名为`traefik-ingress`的ingress**，文件名traefik.yaml
+```sh
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
+```
+
+稍等一会，`traefik-ingress-controller` Pod 就会运行起来：
+
+```sh
+$ kubectl -n kube-system get pod -l k8s-app=traefik-ingress-lb
+NAME                                          READY     STATUS    RESTARTS   AGE
+traefik-ingress-controller-7fbcc689f5-4bxgg   1/1       Running   0          3m
+
+$ kubectl -n kube-system get svc traefik-ingress-service
+NAME                      TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)                       AGE
+traefik-ingress-service   NodePort   10.0.73.148   <none>        80:32563/TCP,8080:30206/TCP   3m
+```
+
+可以看到 Traefik Ingress 服务监听在 32563 （Ingress 入口） 和 30206 （UI）两个 NodePort上面，可以通过 `<master-ip>:<nodePort>` 来访问它们。
+
+## Helm 部署
+
+除了直接创建 Deployment 方法，还可以使用 Helm 便捷部署 Traefik：
+
+```sh
+$ helm install stable/traefik --name my-release --namespace kube-system
+
+# Watch the service status
+$ kubectl get svc my-release-traefik --namespace kube-system -w
+
+# Once EXTERNAL-IP is no longer <pending>, get external IP
+$ kubectl describe service my-release-traefik -n kube-system | grep Ingress | awk '{print $3}'
+```
+
+## UI Ingress
+
+最简单的 Ingress 就是创建一个 Traefik UI 的访问入口：
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+spec:
+  selector:
+    k8s-app: traefik-ingress-lb
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: traefik-ui.minikube
+    http:
+      paths:
+      - backend:
+          serviceName: traefik-web-ui
+          servicePort: 80
+```
+
+配置完成后就可以创建 UI ingress：
+
+```
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/ui.yaml
+```
+
+前面看到 Ingress Controller 服务监听在 32563 端口，可以通过下面的方式访问
+
+```sh
+$ curl -H Host:traefik-ui.minikube <master-ip>:32563
+<a href="/dashboard/">Found</a>.
+```
+
+通过配置 DNS 解析（CNAME 记录域名到 Ingress Controller 服务的外网IP）、修改 `/etc/hosts` 添加域名映射（见下述测试部分）或者使用 `xip.io` （参考 [minikube ingress 使用方法](../minikube-ingress.md)）等方法，就可以通过配置的域名直接访问所需服务了。比如上述的 UI 服务可以通过域名 `traefik-ui.minikube` 来访问（当然也可以通过 NodePort访问  `<master-ip:>30206`）：
+
+![kubernetes-dashboard](images/traefik-dashboard.jpg)
+
+上图中，左侧黄色部分部分列出的是所有的rule，右侧绿色部分是所有的backend。
+
+## Ingree 示例
+
+下面来看一个更复杂的示例。**创建名为`traefik-ingress`的 ingress**，文件名traefik.yaml
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -163,55 +247,13 @@ spec:
           servicePort: 80
 ```
 
-这其中的`backend`中要配置default namespace中启动的service名字。`path`就是URL地址后的路径，如traefik.frontend.io/path，service将会接受path这个路径，host最好使用service-name.filed1.filed2.domain-name这种类似主机名称的命名方式，方便区分服务。
+其中，
 
-根据你自己环境中部署的service的名字和端口自行修改，有新service增加时，修改该文件后可以使用`kubectl replace -f traefik.yaml`来更新。
+- `backend`中要配置 default namespace 中启动的 service 名字
+- `path`就是URL地址后的路径，如`traefik.frontend.io/path`
+- host 最好使用 `service-name.filed1.filed2.domain-name` 这种类似主机名称的命名方式，方便区分服务
 
-**Traefik UI**
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik-web-ui
-  namespace: kube-system
-spec:
-  selector:
-    k8s-app: traefik-ingress-lb
-  ports:
-  - port: 80
-    targetPort: 8080
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: traefik-web-ui
-  namespace: kube-system
-  annotations:
-    kubernetes.io/ingress.class: traefik
-spec:
-  rules:
-  - host: traefik-ui.nginx.io
-    http:
-      paths:
-      - backend:
-          serviceName: traefik-web-ui
-          servicePort: 80
-```
-
-配置完成后就可以启动treafik ingress了。
-
-```
-kubectl create -f .
-```
-
-我查看到traefik的pod在`172.20.0.115`这台节点上启动了。
-
-访问该地址`http://172.20.0.115:8580/`将可以看到dashboard。
-
-![kubernetes-dashboard](images/traefik-dashboard.jpg)
-
-左侧黄色部分部分列出的是所有的rule，右侧绿色部分是所有的backend。
+根据你自己环境中部署的 service 名称和端口自行修改，有新 service 增加时，修改该文件后可以使用`kubectl replace -f traefik.yaml`来更新。
 
 ## 测试
 
