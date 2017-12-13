@@ -11,24 +11,37 @@
 
 ## 官方插件
 
-* kubenet：这是一个基于CNI bridge的网络插件（在bridge插件的基础上扩展了port mapping和traffic shaping），是目前推荐的默认插件
-* CNI：CNI网络插件，需要用户将网络配置放到`/etc/cni/net.d`目录中，并将CNI插件的二进制文件放入`/opt/cni/bin`
+目前，Kubernetes支持以下两种插件：
+
+* kubenet：这是一个基于 CNI bridge 的网络插件（在 bridge 插件的基础上扩展了 port mapping 和 traffic shaping ），是目前推荐的默认插件
+* CNI：CNI 网络插件，需要用户将网络配置放到`/etc/cni/net.d`目录中，并将 CNI 插件的二进制文件放入`/opt/cni/bin`
 * ~~exec：通过第三方的可执行文件来为容器配置网络，已在v1.6中移除，见[kubernetes#39254](https://github.com/kubernetes/kubernetes/pull/39254)~~
 
-## Host network
+## kubenet
 
-最简单的网络模型就是让容器共享Host的network namespace，使用宿主机的网络协议栈。这样，不需要额外的配置，容器就可以共享宿主的各种网络资源。
+kubenet 是一个基于 CNI bridge 的网络插件，它为每个容器建立一对 veth pair 并连接到 cbr0 网桥上。kubenet在 bridge 插件的基础上拓展了很多功能，包括
 
-优点
+- 使用 host-local IPAM 插件为容器分配 IP 地址， 并定期释放已分配但未使用的 IP 地址
 
-- 简单，不需要任何额外配置
-- 高效，没有NAT等额外的开销
+- 设置 sysctl `net.bridge.bridge-nf-call-iptables = 1`
 
-缺点
+- 为 Pod IP 创建 SNAT 规则
 
-- 没有任何的网络隔离
-- 容器和Host的端口号容易冲突
-- 容器内任何网络配置都会影响整个宿主机
+  - `-A POSTROUTING ! -d 10.0.0.0/8 -m comment --comment "kubenet: SNAT for outbound traffic from cluster" -m addrtype ! --dst-type LOCAL -j MASQUERADE`
+
+- 开启网桥的 hairpin 和 promisc 模式，允许 Pod 访问它自己所在的 Service IP（即通过 NAT后再访问 Pod 自己）
+
+  ```sh
+  -A OUTPUT -j KUBE-DEDUP
+  -A KUBE-DEDUP -p IPv4 -s a:58:a:f4:2:1 -o veth+ --ip-src 10.244.2.1 -j ACCEPT
+  -A KUBE-DEDUP -p IPv4 -s a:58:a:f4:2:1 -o veth+ --ip-src 10.244.2.0/24 -j DROP
+  ```
+
+- HostPort管理以及设置端口映射
+
+- Traffic shaping，支持通过 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 等 Annotation 设置 Pod 网络带宽限制
+
+未来 kubenet 插件会迁移到标准的 CNI 插件（如ptp），具体计划见[这里](https://docs.google.com/document/d/1glJLMHrE2eqwRrAN4fdsz4Vg3R1Iqt6bm5GJQ4GdjlQ/edit#)。
 
 ## CNI plugin
 
@@ -165,6 +178,23 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 
 - 从组件来看，Midonet以Zookeeper+Cassandra构建分布式数据库存储VPC资源的状态——Network State DB Cluster，并将controller分布在转发设备（包括vswitch和L3 Gateway）本地——Midolman（L3 Gateway上还有quagga bgpd），设备的转发则保留了ovs kernel作为fast datapath。可以看到，Midonet和DragonFlow、OVN一样，在架构的设计上都是沿着OVS-Neutron-Agent的思路，将controller分布到设备本地，并在neutron plugin和设备agent间嵌入自己的资源数据库作为super controller。
 - 从接口来看，NSDB与Neutron间是REST API，Midolman与NSDB间是RPC，这俩没什么好说的。Controller的南向方面，Midolman并没有用OpenFlow和OVSDB，它干掉了user space中的vswitchd和ovsdb-server，直接通过linux netlink机制操作kernel space中的ovs datapath。
+
+## Host network
+
+最简单的网络模型就是让容器共享 Host 的 network namespace，使用宿主机的网络协议栈。这样，不需要额外的配置，容器就可以共享宿主的各种网络资源。
+
+优点
+
+- 简单，不需要任何额外配置
+- 高效，没有NAT等额外的开销
+
+缺点
+
+- 没有任何的网络隔离
+- 容器和Host的端口号容易冲突
+- 容器内任何网络配置都会影响整个宿主机
+
+> 注意：HostNetwork 是在 Pod 配置文件中设置的，kubelet 在启动时还是需要配置使用 CNI 或者 kubenet 插件（默认kubenet）。
 
 ## 其他
 
