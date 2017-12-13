@@ -268,6 +268,61 @@ docker push <acrLoginServer>/azure-vote-front:redis-v1
 az acr repository list --name <acrName> --output table
 ```
 
+## Virtual Kubelet
+
+Azure 容器实例（ACI）提供了在 Azure 中运行容器的最简捷方式，它不需要用户配置任何虚拟机或其它高级服务。ACI 适用于快速突发式增长和资源调整的业务，但其本身的功能相对比较简单。 [Virtual Kubelet](https://github.com/virtual-kubelet/virtual-kubelet) 可以将 ACI 作为 Kubernetes 集群的一个无限 Node 使用，这样就无需考虑 Node 数量的问题，ACI 会根据运行容器自动管理集群资源。
+
+![](images/virtual-kubelet.png)
+
+可以使用 Helm 来部署 Virtual Kubelet：
+
+```sh
+RELEASE_NAME=virtual-kubelet
+CHART_URL=https://github.com/virtual-kubelet/virtual-kubelet/raw/master/charts/virtual-kubelet-0.1.0.tgz
+
+helm install "$CHART_URL" --name "$RELEASE_NAME" --namespace kube-system --set env.azureClientId=<YOUR-AZURECLIENTID-HERE>,env.azureClientKey=<YOUR-AZURECLIENTKEY-HERE>,env.azureTenantId=<YOUR-AZURETENANTID-HERE>,env.azureSubscriptionId=<YOUR-AZURESUBSCRIPTIONID-HERE>,env.aciResourceGroup=<YOUR-ACIRESOURCEGROUP-HERE>,env.nodeName=aci, env.nodeOsType=<Linux|Windows>,env.nodeTaint=azure.com/aci
+```
+
+在开启 RBAC 的集群中，还需要给 virtual-kubelet 开启对应的权限。最简单的方法是给 service account `kube-system:default ` 设置 admin权限（不推荐生产环境这么设置，应该设置具体的权限），比如
+
+```sh
+kubectl create clusterrolebinding virtual-kubelet-cluster-admin-binding --clusterrole=cluster-admin --serviceaccount=kube-system:default
+```
+
+部署成功后，会发现集群中会出现一个新的名为 `aci` 的 Node：
+
+```sh
+$ kubectl get nodes aci
+NAME      STATUS    ROLES     AGE       VERSION
+aci       Ready     agent     34s       v1.8.3
+```
+
+此时，就可以通过**指定 nodeName 或者容忍 taint `azure.com/aci=NoSchedule` 调度**到 ACI 上面。比如
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: nginx
+    resources:
+      requests:
+        memory: 100M
+        cpu: 1
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP
+    - containerPort: 443
+      name: https
+  dnsPolicy: ClusterFirst
+  nodeName: aci
+```
+
 ## 参考文档
 
 - [AKS – Managed Kubernetes on Azure](https://www.reddit.com/r/AZURE/comments/7d7diz/ama_aks_managed_kubernetes_on_azure/) 
