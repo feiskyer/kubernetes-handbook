@@ -53,7 +53,7 @@ Play with Kubernetes有个非常方便的功能：自动在页面上显示所有
 
 ```sh
 # 在master node上面运行
-kubectl create -f https://git.io/kube-dashboard
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$'&
 ```
 
