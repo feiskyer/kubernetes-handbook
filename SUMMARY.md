@@ -70,15 +70,7 @@
     - [kops](deploy/kops.md)
     - [kubeasz](https://github.com/gjmzj/kubeasz)
     - [CentOS手动部署](https://github.com/feiskyer/kubernetes-handbook/blob/master/deploy/centos/install-kbernetes1.6-on-centos.md)
-  - [4.3 kubectl客户端](deploy/kubectl.md)
-  - [4.4 附加组件](addons/index.md)
-    - [Dashboard](addons/dashboard.md)
-    - [Heapster](addons/heapster.md)
-    - [EFK](addons/efk.md)
-    - [Metrics](addons/metrics.md)
-    - [Cluster AutoScaler](addons/cluster-autoscaler.md)
-  - [4.5 推荐配置](deploy/kubernetes-configuration-best-practice.md)
-  - [4.6 Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way.md)
+  - [4.3 Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way.md)
     - [事先准备](deploy/kubernetes-the-hard-way/01-prerequisites.md)
     - [安装 Client 工具](deploy/kubernetes-the-hard-way/02-client-tools.md)
     - [准备计算资源](deploy/kubernetes-the-hard-way/03-compute-resources.md)
@@ -93,6 +85,14 @@
     - [部署 DNS 扩展](deploy/kubernetes-the-hard-way/12-dns-addon.md)
     - [烟雾测试](deploy/kubernetes-the-hard-way/13-smoke-test.md)
     - [删除集群](deploy/kubernetes-the-hard-way/14-cleanup.md)
+  - [4.4 kubectl客户端](deploy/kubectl.md)
+  - [4.5 附加组件](addons/index.md)
+    - [Dashboard](addons/dashboard.md)
+    - [Heapster](addons/heapster.md)
+    - [EFK](addons/efk.md)
+    - [Metrics](addons/metrics.md)
+    - [Cluster AutoScaler](addons/cluster-autoscaler.md)
+  - [4.6 推荐配置](deploy/kubernetes-configuration-best-practice.md)
 
 ## 插件指南
 
@@ -126,21 +126,24 @@
   - [5.8 Scheduler 扩展](plugins/scheduler.md)
   - [5.9 Device 插件](plugins/device.md)
 
-## 实践案例
+## 服务治理
 
-- [6. 应用管理](apps/index.md)
+- [6. 服务治理](apps/index.md)
   - [一般准则](apps/patterns.md)
   - [滚动升级](apps/service-rolling-update.md)
   - [Helm](apps/helm-app.md)
     - [Helm 参考](apps/helm.md)
     - [Helm 原理](apps/helm-basic.md)
-  - [Istio 和 Service Mesh](apps/istio.md)
-  - [Linkerd](apps/linkerd.md)
+  - [Service Mesh](apps/service-mesh.md)
+    - [Istio](apps/istio.md)
+    - [Linkerd](apps/linkerd.md)
   - [Draft](apps/draft.md)
   - [Operator](apps/operator.md)
   - [Kompose](apps/kompose.md)
-  - [Spark](apps/spark.md)
   - [Deis workflow](apps/deis.md)
+
+## 实践案例
+
 - [7. 实践案例](practice/index.md)
   - [监控](monitor/index.md)
   - [日志](deploy/logging.md)
@@ -149,19 +152,22 @@
   - [端口映射](practice/portmap.md)
   - [端口转发](practice/portforward.md)
   - [GPU](practice/gpu.md)
-  - [容器安全](practice/security.md)
+  - [安全](practice/security.md)
   - [审计](practice/audit.md)
+- [8. 大数据与机器学习](machine-learning/index.md)
+  - [Spark](machine-learning/spark.md)
+  - [Tensorflow](machine-learning/tensorflow.md)
 
 ## 开发与社区贡献
 
-- [8. 开发指南](devel/index.md)
+- [9. 开发指南](devel/index.md)
   - [开发环境搭建](devel/index.md)
   - [单元测试和集成测试](devel/testing.md)
   - [社区贡献](devel/contribute.md)
 
 ## 附录
 
-- [9. 附录](appendix/index.md)
+- [10. 附录](appendix/index.md)
   - [生态圈](appendix/ecosystem.md)
   - [Play-With-Kubernetes](appendix/play-with-k8s.md)
   - [FAQ](appendix/FAQ.md)
