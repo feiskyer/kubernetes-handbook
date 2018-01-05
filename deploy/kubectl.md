@@ -1,10 +1,10 @@
-# kubectl客户端
+# kubectl 客户端
 
-kubectl的安装方法
+本章介绍 kubectl 的安装方法。
 
 ## OSX
 
-可以使用Homebrew或者curl下载kubectl
+可以使用 Homebrew 或者 `curl` 下载 kubectl：
 
 ```sh
 brew install kubectl
@@ -28,6 +28,6 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/windows/amd64/kubectl.exe
 ```
 
-## kubectl使用方法
+## kubectl 使用方法
 
-kubectl的详细使用方法请参考[kubectl指南](../components/kubectl.md)。
+kubectl 的详细使用方法请参考 [kubectl 指南](../components/kubectl.md)。
