@@ -18,9 +18,9 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 
 ### 版本更新记录
 
-* 2017.12.09 更新至 Kubernetes v1.8 版本
-* 2017.09.11 更新至 Kubernetes v1.7 版本
-* 2017.06.29 更新至 Kubernetes v1.6 版本
+* 2017.12.15 更新至 Kubernetes v1.9 版本
+* 2017.09.11 更新至 Kubernetes v1.8 版本
+* 2017.06.29 更新至 Kubernetes v1.7 版本
 
 ## 在线阅读
 
