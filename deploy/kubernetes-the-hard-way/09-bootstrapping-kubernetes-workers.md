@@ -1,47 +1,45 @@
+# 部署 Kubernetes Workers 节点
 
-#  启动 Kubernetes Worker 节点
-在本次实验中,你将会新建并启动三个Kubernetes work 节点。
+本部分将会部署三个 Kubernetes Worker 节点。每个节点上将会安装以下服务：
 
-以下组件将会被安装到各个节点: [runc](https://github.com/opencontainers/runc), [container networking plugins](https://github.com/containernetworking/cni), [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd), [kubelet](https://kubernetes.io/docs/admin/kubelet), and [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)
-
+* [runc](https://github.com/opencontainers/runc)
+* [container networking plugins](https://github.com/containernetworking/cni)
+* [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)
+* [kubelet](https://kubernetes.io/docs/admin/kubelet)
+* [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)
 
 ## 事前準备
 
-这次的指令必须在每个 worker 节点上使用: `worker-0`, `worker-1`, and `worker-2`。使用 `gcloud` 的指令登入每个 worker 节点。
+以下命令需要在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。可以使用 `gcloud` 命令登录到 worker 节点上，比如
 
-例如:
-
-```
+```sh
 gcloud compute ssh worker-0
 ```
 
-## 建立 Kubernetes Worker 节点
+## 部署 Kubernetes Worker 节点
 
-安装 OS 的相关套件:
+安装 OS 依赖组件：
 
-
-```
+```sh
 sudo apt-get -y install socat
 ```
 
-> socat 执行档可支援 `kubectl port-forward` 指令
+> socat 命令用于支持 `kubectl port-forward` 命令。
 
-### 下载并安装 worker 执行档
+### 下载并安装 worker 二进制文件
 
-
-```
+```sh
 wget -q --show-progress --https-only --timestamping \
   https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz \
-  https://github.com/kubernetes-incubator/cri-containerd/releases/download/v1.0.0-alpha.0/cri-containerd-1.0.0-alpha.0.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.8.0/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.8.0/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.8.0/bin/linux/amd64/kubelet
+  https://github.com/kubernetes-incubator/cri-containerd/releases/download/v1.0.0-beta.0/cri-containerd-1.0.0-beta.0.linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubelet
 ```
 
-建立 安装目录:
+创建安装目录：
 
-
-```
+```sh
 sudo mkdir -p \
   /etc/cni/net.d \
   /opt/cni/bin \
@@ -51,38 +49,27 @@ sudo mkdir -p \
   /var/run/kubernetes
 ```
 
-安装 worker 执行档:
+安装 worker 二进制文件
 
-```
+```sh
 sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
-```
-
-```
-sudo tar -xvf cri-containerd-1.0.0-alpha.0.tar.gz -C /
-```
-
-```
+sudo tar -xvf cri-containerd-1.0.0-beta.0.linux-amd64.tar.gz -C /
 chmod +x kubectl kube-proxy kubelet
-```
-
-```
 sudo mv kubectl kube-proxy kubelet /usr/local/bin/
 ```
 
+### 配置 CNI 网路
 
-### 设定 CNI 网路
+查询当前计算节点的 Pod CIDR 范围：
 
-取得目前Pod CDIR 范围给当前的计算节点:
-
-```
+```sh
 POD_CIDR=$(curl -s -H "Metadata-Flavor: Google" \
   http://metadata.google.internal/computeMetadata/v1/instance/attributes/pod-cidr)
 ```
 
-建立 `bridge` network 设定档:
+生成 `bridge` 网络插件配置文件
 
-
-```
+```sh
 cat > 10-bridge.conf <<EOF
 {
     "cniVersion": "0.3.1",
@@ -102,11 +89,9 @@ cat > 10-bridge.conf <<EOF
 EOF
 ```
 
-建立 `loopback` network 设定档:
+生成 `loopback` 网络插件配置文件
 
-
-
-```
+```sh
 cat > 99-loopback.conf <<EOF
 {
     "cniVersion": "0.3.1",
@@ -114,34 +99,28 @@ cat > 99-loopback.conf <<EOF
 }
 EOF
 ```
-移动网路相关部份的设定挡到CNI的设定资料夹目录下:
-```
+
+将网络插件配置文件移动到 CNI 配置目录中：
+
+```sh
 sudo mv 10-bridge.conf 99-loopback.conf /etc/cni/net.d/
 ```
 
-### 设定 Kubelet
+### 配置 Kubelet
 
-
-
-```
+```sh
 sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-```
-
-```
 sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-```
-
-```
 sudo mv ca.pem /var/lib/kubernetes/
 ```
 
-建立 `kubelet.service` systemd unit file:
+生成 `kubelet.service` systemd 配置文件：
 
-```
+```sh
 cat > kubelet.service <<EOF
 [Unit]
 Description=Kubernetes Kubelet
-Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Documentation=https://github.com/kubernetes/kubernetes
 After=cri-containerd.service
 Requires=cri-containerd.service
 
@@ -151,6 +130,7 @@ ExecStart=/usr/local/bin/kubelet \\
   --anonymous-auth=false \\
   --authorization-mode=Webhook \\
   --client-ca-file=/var/lib/kubernetes/ca.pem \\
+  --cloud-provider= \\
   --cluster-dns=10.32.0.10 \\
   --cluster-domain=cluster.local \\
   --container-runtime=remote \\
@@ -160,7 +140,6 @@ ExecStart=/usr/local/bin/kubelet \\
   --network-plugin=cni \\
   --pod-cidr=${POD_CIDR} \\
   --register-node=true \\
-  --require-kubeconfig \\
   --runtime-request-timeout=15m \\
   --tls-cert-file=/var/lib/kubelet/${HOSTNAME}.pem \\
   --tls-private-key-file=/var/lib/kubelet/${HOSTNAME}-key.pem \\
@@ -173,19 +152,20 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### 设定 Kube-Proxy 
+### 配置 Kube-Proxy 
 
-```
+```sh
 sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
-```
-
-建立 `kube-proxy.service` systemd unit file:
 
 ```
+
+生成 `kube-proxy.service` systemd 配置文件：
+
+```sh
 cat > kube-proxy.service <<EOF
 [Unit]
 Description=Kubernetes Kube Proxy
-Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kube-proxy \\
@@ -201,53 +181,38 @@ WantedBy=multi-user.target
 EOF
 ```
 
-
-
 ### 启动 worker 服务
 
-
-```
+```sh
 sudo mv kubelet.service kube-proxy.service /etc/systemd/system/
-```
-
-```
 sudo systemctl daemon-reload
-```
-
-```
 sudo systemctl enable containerd cri-containerd kubelet kube-proxy
-```
-
-```
 sudo systemctl start containerd cri-containerd kubelet kube-proxy
 ```
-> 记得上述的指令都要执行每个 worker 节点上: `worker-0`, `worker-1`, 和 `worker-2`
 
+> 记得在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。
 
 ## 验证
 
-登入 其中一个控制节点:
+登入任意一台控制节点：
 
-```
+```sh
 gcloud compute ssh controller-0
 ```
 
-列出目前以注册的Kubernetes 节点:
+列出目前已注册的 Kubernetes 节点:
 
-
-```
+```sh
 kubectl get nodes
 ```
 
-> 输出为
+输出为
 
-
-```
+```sh
 NAME       STATUS    ROLES     AGE       VERSION
-worker-0   Ready     <none>    1m        v1.8.0
-worker-1   Ready     <none>    1m        v1.8.0
-worker-2   Ready     <none>    1m        v1.8.0
+worker-0   Ready     <none>    18s       v1.9.0
+worker-1   Ready     <none>    18s       v1.9.0
+worker-2   Ready     <none>    18s       v1.9.0
 ```
 
-
-Next: [配置 Kubectl](10-configuring-kubectl.md)
+下一步：[配置 Kubectl](10-configuring-kubectl.md)。

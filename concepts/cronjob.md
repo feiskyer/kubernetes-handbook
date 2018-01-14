@@ -64,5 +64,3 @@ cronjob "hello" deleted
 ## 参考文档
 
 - [Cron Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
-
-

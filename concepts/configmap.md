@@ -1,4 +1,5 @@
 ﻿# ConfigMap
+
 在执行应用程式或是生产环境等等, 会有许多的情况需要做变更, 而我们不希望因应每一种需求就要准备一个镜像档, 这时就可以透过ConfigMap来帮我们做一个配置档或是命令参数的映射, 更加弹性化使用我们的服务或是应用程式。
 
 ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。
@@ -8,6 +9,7 @@ ConfigMap用于保存配置数据的键值对，可以用来保存单个属性�
 可以使用`kubectl create configmap`从文件、目录或者key-value字符串创建等创建ConfigMap。也可以通过`kubectl create -f file`创建。
 
 ### 从key-value字符串创建
+
 ```sh
 $ kubectl create configmap special-config --from-literal=special.how=very
 configmap "special-config" created
@@ -16,6 +18,7 @@ map[special.how:very]
 ```
 
 ### 从env文件创建
+
 ```sh
 $ echo -e "a=b\nc=d" | tee config.env
 a=b
@@ -25,7 +28,9 @@ configmap "special-config" created
 $ kubectl get configmap special-config -o go-template='{{.data}}'
 map[a:b c:d]
 ```
+
 ### 从目录创建
+
 ```sh
 $ mkdir config
 $ echo a>config/a
@@ -37,7 +42,9 @@ map[a:a
  b:b
 ]
 ```
+
 ### 从文件Yaml/Json文件创建
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -48,6 +55,7 @@ data:
   special.how: very
   special.type: charm
 ```
+
 ```sh
 $ kubectl create  -f  config.yaml
 configmap "special-config" created
@@ -249,6 +257,4 @@ charm
 
 参考文档：
 
-- [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
-
-
+* [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)

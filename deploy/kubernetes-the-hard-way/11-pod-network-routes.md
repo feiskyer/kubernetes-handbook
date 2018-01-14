@@ -1,29 +1,27 @@
-
 # 配置 Pod 网络路由
 
-Pods 排程到节点上会从节点的Pod CIDR 范围里挑出一个IP address。由于missing network [routes](https://cloud.google.com/compute/docs/vpc/routes)导致这些pods并不能与属于其他节点的pods沟通。
+每个 Pod 都会从所在 Node 的 Pod CIDR 中分配一个 IP 地址。由于网络[路由](https://cloud.google.com/compute/docs/vpc/routes)还没有配置，跨节点的 Pod 之间还无法通信。
 
-这次实验我们将会建立一个路由给每个worker 节点, 帮助对应节点上 Pod CDIR 范围 到此节点的 内部IP address。
+本部分将为每个 worker 节点创建一条路由，将匹配 Pod CIDR 的网络请求路由到 Node 的内网IP地址上。
 
-> [其他方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this)来实做Kubernetes 网路模型
+> 也可以选择[其他方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this)来实现Kubernetes 网络模型。
 
 ## 路由表
 
-在这个部份你将会收集必要的资讯用以建立`kubernetes-the-hard-way` VPC 网路的路由
+本节将为创建 `kubernetes-the-hard-way` VPC 路由收集必要的信息。
 
-列出每个worker 节点的内部IP address 和 Pod CIDR 范围:
+列出每个worker 节点的内部IP 地址和Pod CIDR 范围:
 
-
-
-```
+```sh
 for instance in worker-0 worker-1 worker-2; do
   gcloud compute instances describe ${instance} \
     --format 'value[separator=" "](networkInterfaces[0].networkIP,metadata.items[0].value)'
 done
 ```
-> 输出为
 
-```
+输出为
+
+```sh
 10.240.0.20 10.200.0.0/24
 10.240.0.21 10.200.1.0/24
 10.240.0.22 10.200.2.0/24
@@ -31,9 +29,9 @@ done
 
 ## 路由
 
-为每个worker节点建立网路路由:
+为每个 worker 节点创建网络路由:
 
-```
+```sh
 for i in 0 1 2; do
   gcloud compute routes create kubernetes-route-10-200-${i}-0-24 \
     --network kubernetes-the-hard-way \
@@ -42,24 +40,21 @@ for i in 0 1 2; do
 done
 ```
 
-列出`kubernetes-the-hard-way` VPC 网路的路由表:
+列出 `kubernetes-the-hard-way` VPC 网络的路由表:
 
-```
+```sh
 gcloud compute routes list --filter "network: kubernetes-the-hard-way"
 ```
 
-> 输出为
+输出为
 
-
-```
-NAME                            NETWORK                  DEST_RANGE     NEXT_HOP                  PRIORITY
-default-route-77bcc6bee33b5535  kubernetes-the-hard-way  10.240.0.0/24                            1000
-default-route-b11fc914b626974d  kubernetes-the-hard-way  0.0.0.0/0      default-internet-gateway  1000
+```sh
+AME                            NETWORK                  DEST_RANGE     NEXT_HOP                  PRIORITY
+default-route-236a40a8bc992b5b  kubernetes-the-hard-way  0.0.0.0/0      default-internet-gateway  1000
+default-route-df77b1e818a56b30  kubernetes-the-hard-way  10.240.0.0/24                            1000
 kubernetes-route-10-200-0-0-24  kubernetes-the-hard-way  10.200.0.0/24  10.240.0.20               1000
 kubernetes-route-10-200-1-0-24  kubernetes-the-hard-way  10.200.1.0/24  10.240.0.21               1000
 kubernetes-route-10-200-2-0-24  kubernetes-the-hard-way  10.200.2.0/24  10.240.0.22               1000
 ```
 
-
-
-Next: [部署 DNS 扩展](12-dns-addon.md)
+下一步：[部署 DNS 扩展](12-dns-addon.md)。

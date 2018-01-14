@@ -1,70 +1,59 @@
+# 部署 etcd 群集
 
-# 启动 etcd 群集
+Kubernetes 组件都是无状态的，所有的群集状态都储存在 [etcd](https://github.com/coreos/etcd) 集群中。
 
-Kubernetes 组件是属于无状态并且将群集状态储存到[etcd](https://github.com/coreos/etcd)
+本部分内容将部署一套三节点的 etcd 群集，并配置高可用以及远程加密访问。
 
-在这次实验中你将会启动三个节点的etcd群集, 并且做一些相关设定让群集高可用与建立远端安全连线
+## 事前准备
 
-## 事前準备
+本部分的命令需要在每个控制节点上都运行以便，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登录每个控制节点，比如
 
-这次的指令必须在每个控制节点上使用:`controller-0`, `controller-1`, 与 `controller-2`。使用 `gcloud` 的指令登入每个控制节点。
-
-例如:
-
-```
+```sh
 gcloud compute ssh controller-0
 ```
 
-## 启动一个etcd群集的成员
+## 部署 etcd 集群成员
 
-### 下载并安装 etcd 的执行档
+### 下载并安装 etcd 二进制文件
 
-从[coreos/etcd](https://github.com/coreos/etcd) GitHub专案下载etcd开放的执行档:
+从 [coreos/etcd](https://github.com/coreos/etcd) GitHub 中下载 etcd 发布文件：
 
-
-```
+```sh
 wget -q --show-progress --https-only --timestamping \
-  "https://github.com/coreos/etcd/releases/download/v3.2.8/etcd-v3.2.8-linux-amd64.tar.gz"
+  "https://github.com/coreos/etcd/releases/download/v3.2.11/etcd-v3.2.11-linux-amd64.tar.gz"
 ```
 
-解压缩并安装`etcd` server 与 `etcdctl`指令工具 :
+解压缩并安装 `etcd` 服务与 `etcdctl` 命令行工具：
 
-```
-tar -xvf etcd-v3.2.8-linux-amd64.tar.gz
+```sh
+tar -xvf etcd-v3.2.11-linux-amd64.tar.gz
+sudo mv etcd-v3.2.11-linux-amd64/etcd* /usr/local/bin/
 ```
 
-```
-sudo mv etcd-v3.2.8-linux-amd64/etcd* /usr/local/bin/
-```
-### 设定etcd Server
+### 配置 etcd Server
 
-```
+```sh
 sudo mkdir -p /etc/etcd /var/lib/etcd
-```
 
-```
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
 ```
 
-节点的内部IP address 将被用来接收 client 的请求并且联系整个etcd群集。 取得目前计算节点的内部IP address:
+使用虚拟机的内网 IP 地址来作为 etcd 集群的服务地址。查询当前节点的内网 IP 地址：
 
-
-```
+```sh
 INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
   http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
 ```
 
-每个 etcd 成员必须有一个特別的名字在整个 etcd 的群集里。 设定 etcd 名字去对应到目前计算节点的 hostname :
+每个 etcd 成员必须有一个整集群中唯一的名字，使用 hostname 作为 etcd name：
 
-```
+```sh
 ETCD_NAME=$(hostname -s)
 ```
 
-建立  `etcd.service`  的systemd unit file:
+生成 `etcd.service` 的 systemd 配置文件
 
-
-
-```
+```sh
 cat > etcd.service <<EOF
 [Unit]
 Description=etcd
@@ -99,41 +88,29 @@ EOF
 
 ### 启动 etcd Server
 
-
-```
+```sh
 sudo mv etcd.service /etc/systemd/system/
-```
-
-```
 sudo systemctl daemon-reload
-```
-
-```
 sudo systemctl enable etcd
-```
-
-```
 sudo systemctl start etcd
 ```
 
-> 记得上述的指令都要执行每个控制节点上: `controller-0`, `controller-1`, and `controller-2`
-
+> 不要忘记在所有控制节点上都运行上述命令，包括 `controller-0`、`controller-1` 和 `controller-2` 等。
 
 ## 验证
 
 列出etcd的群集成员:
 
-
-```
+```sh
 ETCDCTL_API=3 etcdctl member list
 ```
 
 > 输出
 
-```
+```sh
 3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379
 f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.240.0.10:2379
 ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379
 ```
-Next: [启动 Kubernetes 控制平台](08-bootstrapping-kubernetes-controllers.md)
 
+下一步：[部署 Kubernetes 控制节点](08-bootstrapping-kubernetes-controllers.md)。
