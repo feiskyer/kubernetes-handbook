@@ -41,6 +41,8 @@ az aks install-cli
 az aks get-credentials --resource-group=group1 --name=myK8sCluster
 ```
 
+> 注意使用 azure-cli 2.0.24 版本时，`az aks get-credentials` 命令可能会失败，解决方法是升级到更新版本，或回退到 2.0.23 版本。
+
 ### 访问 Dashboard
 
 ```sh
