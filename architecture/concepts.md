@@ -39,7 +39,7 @@
 - [Self-hosting](http://issue.k8s.io/246) 是目标
 - 减少依赖，特别是稳态运行的依赖
 - 通过分层的原则管理依赖
--  循环依赖问题的原则
+- 循环依赖问题的原则
   - 同时还接受其他方式的数据输入（比如本地文件等），这样在其他服务不可用时还可以手动配置引导服务
   - 状态应该是可恢复或可重新发现的
   - 支持简单的启动临时实例来创建稳态运行所需要的状态；使用分布式锁或文件锁等来协调不同状态的切换（通常称为`pivoting`技术）
@@ -133,5 +133,5 @@ K8s在1.3版本中发布了alpha版的基于角色的访问控制（Role-based A
 
 ## 参考文档
 
-* [Kubernetes Design Principles](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/principles.md)
+* [Kubernetes Design Principles](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/architecture/principles.md)
 * [Kubernetes与云原生应用](http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01)
