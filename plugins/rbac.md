@@ -171,6 +171,18 @@ $ curl -ik \
 
 目前RBAC已经进入稳定版，ABAC可能会被弃用。在可见的未来ABAC依然会保留在kubernetes中，不过开发的重心已经转移到了RBAC。 
 
+## Permissive RBAC
+
+所谓 Permissive RBAC 是指授权给所有的 Service Accounts 管理员权限。注意，这是一个不推荐的配置。
+
+```sh
+kubectl create clusterrolebinding permissive-binding \
+  --clusterrole=cluster-admin \
+  --user=admin \
+  --user=kubelet \
+  --group=system:serviceaccounts
+```
+
 ## 参考文档
 
 - [RBAC documentation](https://kubernetes.io/docs/admin/authorization/rbac/)

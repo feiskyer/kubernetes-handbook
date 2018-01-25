@@ -164,5 +164,3 @@ Cluster AutoScaler 也会定期（默认间隔10s）自动监测 Node 的资源�
 
 - [Kubernetes Autoscaler](https://github.com/kubernetes/autoscaler)
 - [Kubernetes Cluster AutoScaler Support](http://blog.spotinst.com/2017/06/14/k8-autoscaler-support/)
-
-

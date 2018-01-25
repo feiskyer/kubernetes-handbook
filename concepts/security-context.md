@@ -1,4 +1,4 @@
-# Security Context
+# Security Context 和 Pod Security Policy
 
 Security Context的目的是限制不可信容器的行为，保护系统和其他容器不受其影响。
 

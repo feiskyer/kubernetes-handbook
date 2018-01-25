@@ -1,4 +1,4 @@
-# Horizontal Pod Autoscaling
+# Horizontal Pod Autoscaling (HPA)
 
 Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 metrics 自动扩展 Pod 数量（支持 replication controller、deployment 和 replica set ）。
 

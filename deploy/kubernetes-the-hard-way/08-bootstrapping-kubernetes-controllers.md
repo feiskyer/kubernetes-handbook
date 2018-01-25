@@ -1,4 +1,4 @@
-# 部署 Kubernetes 控制平面
+# 部署 Kubernetes 控制节点
 
 本部分将会在三台控制节点上部署 Kubernetes 控制服务，并配置高可用的集群架构。并且还会创建一个用于外部访问的负载均衡器。每个控制节点上需要部署的服务包括：Kubernetes API Server、Scheduler 以及 Controller Manager 等。
 

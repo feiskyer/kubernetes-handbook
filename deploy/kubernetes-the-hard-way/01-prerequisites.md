@@ -1,4 +1,4 @@
-# 事前准备
+# 准备环境
 
 ## Google Cloud Platform
 
