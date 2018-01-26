@@ -63,11 +63,11 @@
   - [4.1 单机部署](deploy/single.md)
   - [4.2 集群部署](deploy/cluster.md)
     - [kubeadm](deploy/kubeadm.md)
-    - [Kubespray](deploy/kubespray.md)
-    - [Kubernetes on Azure](deploy/azure.md)
-    - [Kubernetes on LinuxKit](deploy/k8s-linuxkit.md)
-    - [Frakti](deploy/frakti/index.md)
     - [kops](deploy/kops.md)
+    - [Kubespray](deploy/kubespray.md)
+    - [Azure](deploy/azure.md)
+    - [LinuxKit](deploy/k8s-linuxkit.md)
+    - [Frakti](deploy/frakti/index.md)
     - [kubeasz](https://github.com/gjmzj/kubeasz)
   - [4.3 Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way.md)
     - [准备部署环境](deploy/kubernetes-the-hard-way/01-prerequisites.md)
@@ -99,7 +99,7 @@
   - [5.1 访问控制](plugins/auth.md)
     - [RBAC授权](plugins/rbac.md)
     - [准入控制](plugins/admission.md)
-  - [5.2 网络](network/index.md)
+  - [5.2 网络插件](network/index.md)
     - [网络模型](network/network.md)
     - [CNI](network/cni/index.md)
       - [CNI介绍](network/cni/index.md)
@@ -162,6 +162,8 @@
   - [网络排错](troubleshooting/network.md)
   - [PV 排错](troubleshooting/pv.md)
   - [Windows 排错](troubleshooting/windows.md)
+  - [云平台排错](troubleshooting/cloud.md)
+  - [排错工具](troubleshooting/tools.md)
 
 ## 开发与社区贡献
 
