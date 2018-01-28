@@ -255,6 +255,40 @@ very
 charm
 ```
 
+### 使用subpath将ConfigMap作为单独的文件挂载到目录
+在一般情况下configmap挂载文件时，会先覆盖掉挂载目录，然后再将congfigmap中的内容作为文件挂载进行。如果想不对原来的文件夹下的文件造成覆盖，只是将configmap中的每个key，按照文件的方式挂载到目录下，可以使用subpath参数。
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: nginx
+      command: [ "/bin/sh","-c","sleep 36000" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/nginx/special.how
+        subPath: special.how
+  volumes:
+    - name: config-volume
+      configMap:
+        name: special-config
+        items:
+        - key: special.how
+          path: special.how
+  restartPolicy: Never
+```
+
+```sh
+root@dapi-test-pod:/# ls /etc/nginx/
+conf.d	fastcgi_params	koi-utf  koi-win  mime.types  modules  nginx.conf  scgi_params	special.how  uwsgi_params  win-utf
+root@dapi-test-pod:/# cat /etc/nginx/special.how 
+very
+root@dapi-test-pod:/# 
+```
+
 参考文档：
 
 * [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
