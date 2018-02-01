@@ -66,6 +66,7 @@
     - [kops](deploy/kops.md)
     - [Kubespray](deploy/kubespray.md)
     - [Azure](deploy/azure.md)
+    - [Windows](deploy/windows.md)
     - [LinuxKit](deploy/k8s-linuxkit.md)
     - [Frakti](deploy/frakti/index.md)
     - [kubeasz](https://github.com/gjmzj/kubeasz)

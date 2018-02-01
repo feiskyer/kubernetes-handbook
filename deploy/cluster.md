@@ -63,9 +63,13 @@ dns_memory_requests: 70Mi
 - 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如aws ebs或者gce persistent disk
 - 对于物理机部署的集群，可以考虑使用iSCSI、NFS、Gluster或者Ceph等网络存储，也可以使用RAID
 
-## GCE/Azure
+## Azure
 
-在GCE或者Azure上面可以利用cluster脚本方便的部署集群：
+在 Azure 上可以使用 AKS 或者 acs-engine 来部署 Kubernetes 集群，具体部署方法参考[这里](azure.md)。
+
+## GCE
+
+在GCE 上可以利用cluster脚本方便的部署集群：
 
 ```
 # gce,aws,gke,azure-legacy,vsphere,openstack-heat,rackspace,libvirt-coreos
@@ -81,5 +85,5 @@ cluster/kube-up.sh
 
 ## 物理机或虚拟机
 
-在Linux物理机或虚拟机中，建议使用[kubeadm](https://kubernetes.io/docs/getting-started-guides/kubeadm/)来部署Kubernetes集群。
+在Linux物理机或虚拟机中，建议使用[kubeadm](https://kubernetes.io/docs/getting-started-guides/kubeadm/) 或 [kubespray](kubespray.md) 来部署Kubernetes集群。
 
