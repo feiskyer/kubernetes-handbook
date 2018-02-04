@@ -1,4 +1,4 @@
-# Pod
+﻿# Pod
 
 Pod是一组紧密关联的容器集合，它们共享IPC、Network和UTS namespace，是Kubernetes调度的基本单位。Pod的设计理念是支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。
 
@@ -383,7 +383,11 @@ spec:
 
 ## Init Container
 
-Init Container在所有容器运行之前执行（run-to-completion），常用来初始化配置。
+Pod 能够具有多个容器，应用运行在容器里面，但是它也可能有一个或多个先于应用容器启动的 Init 容器。Init 容器在所有容器运行之前执行（run-to-completion），常用来初始化配置。
+
+如果为一个 Pod 指定了多个 Init 容器，那些容器会按顺序一次运行一个。 每个 Init 容器必须运行成功，下一个才能够运行。 当所有的 Init 容器运行完成时，Kubernetes 初始化 Pod 并像平常一样运行应用容器。
+
+下面是一个Init容器的示例：
 
 ```yaml
 apiVersion: v1
@@ -416,6 +420,24 @@ spec:
   - name: workdir
     emptyDir: {}
 ```
+
+因为 Init 容器具有与应用容器分离的单独镜像，使用init容器启动相关代码具有如下优势：
+
+- 它们可以包含并运行实用工具，处于安全考虑，是不建议在应用容器镜像中包含这些实用工具的。
+- 它们可以包含使用工具和定制化代码来安装，但是不能出现在应用镜像中。例如，创建镜像没必要 FROM 另一个镜像，只需要在安装过程中使用类似 sed、 awk、 python 或 dig 这样的工具。
+- 应用镜像可以分离出创建和部署的角色，而没有必要联合它们构建一个单独的镜像。
+- 它们使用 Linux Namespace，所以对应用容器具有不同的文件系统视图。因此，它们能够具有访问 Secret 的权限，而应用容器不能够访问。
+- 它们在应用容器启动之前运行完成，然而应用容器并行运行，所以 Init 容器提供了一种简单的方式来阻塞或延迟应用容器的启动，直到满足了一组先决条件。
+
+Init容器的资源计算，选择一下两者的较大值：
+
+- 所有Init容器中的资源使用的最大值
+- Pod中所有容器资源使用的总和
+
+Init容器的重启策略：
+
+- 如果Init容器执行失败，Pod设置的restartPolicy为Never，则pod将处于fail状态。否则Pod将一直重新执行每一个Init 容器直到所有的Init容器都成功。
+- 如果Pod异常退出，重新拉取Pod后，Init容器也会被重新执行。所以在Init容器中执行的任务，需要保证是幂等的。
 
 ## 容器生命周期钩子
 
@@ -651,6 +673,8 @@ spec:
 - [DNS Pods and Services](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
 - [Container capabilities](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container)
 - [Configure Liveness and Readiness Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)
+- [Init Containers ](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
 - [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
 - [Manage HugePages](https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/)
+
 
