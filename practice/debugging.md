@@ -2,11 +2,11 @@
 
 对于普通的服务器进程，我们可以很方便的使用宿主机上的各种工具来调试；但容器经常是仅包含必要的应用程序，一般不包含常用的调试工具，那如何在线调试容器中的进程呢？最简单的方法是再起一个新的包含了调试工具的容器。
 
-来看一个最简单的web容器如何调试。
+来看一个最简单的 web 容器如何调试。
 
-### webserver容器
+### webserver 容器
 
-用Go编写一个最简单的webserver：
+用 Go 编写一个最简单的 webserver：
 
 ```go
 // go-examples/basic/webserver
@@ -30,13 +30,13 @@ func main() {
 }
 ```
 
-以linux平台方式编译
+以 linux 平台方式编译
 
 ```sh
 GOOS=linux go build -o webserver
 ```
 
-然后用下面的Docker build一个docker镜像：
+然后用下面的 Docker build 一个 docker 镜像：
 
 ```
 FROM scratch
@@ -60,22 +60,22 @@ Removing intermediate container fe9fa4841e70
 Successfully built dca5ec00b3e7
 ```
 
-最后启动webserver容器
+最后启动 webserver 容器
 
 ```sh
 docker run -itd --name webserver -p 80:80 feisky/hello-world
 ```
 
-访问映射后的80端口，webserver容器正常返回"Hello World"
+访问映射后的 80 端口，webserver 容器正常返回 "Hello World"
 
 ```sh
 # curl http://$(hostname):80
 Hello World
 ```
 
-### 新建一个容器调试webserver
+### 新建一个容器调试 webserver
 
-用一个包含调试工具或者方便安装调试工具的镜像（如alpine）创建一个新的container，为了便于获取webserver进程的状态，新的容器共享webserver容器的pid namespace和net namespace，并增加必要的capability：
+用一个包含调试工具或者方便安装调试工具的镜像（如 alpine）创建一个新的 container，为了便于获取 webserver 进程的状态，新的容器共享 webserver 容器的 pid namespace 和 net namespace，并增加必要的 capability：
 
 ```sh
 docker run -it --rm --pid=container:webserver --net=container:webserver --cap-add sys_admin --cap-add sys_ptrace alpine sh
@@ -86,10 +86,10 @@ PID   USER     TIME   COMMAND
    18 root       0:00 ps -ef
 ```
 
-这样，新的容器可以直接attach到webserver进程上来在线调试，比如strace到webserver进程
+这样，新的容器可以直接 attach 到 webserver 进程上来在线调试，比如 strace 到 webserver 进程
 
 ```sh
-# 继续在刚创建的新容器sh中执行
+# 继续在刚创建的新容器 sh 中执行
 / # apk update && apk add strace
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.5/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.5/community/x86_64/APKINDEX.tar.gz
@@ -106,10 +106,10 @@ epoll_wait(4,
  <detached ...>
 ```
 
-也可以获取webserver容器的网络状态
+也可以获取 webserver 容器的网络状态
 
 ```sh
-# 继续在刚创建的新容器sh中执行
+# 继续在刚创建的新容器 sh 中执行
 / # apk add lsof
 (1/1) Installing lsof (4.89-r0)
 Executing busybox-1.25.1-r0.trigger
@@ -119,7 +119,7 @@ COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 webserver   1 root    3u  IPv6  14233      0t0  TCP *:http (LISTEN)
 ```
 
-当然，也可以访问webserver容器的文件系统
+当然，也可以访问 webserver 容器的文件系统
 
 ```sh
 / # ls -l /proc/1/root/
@@ -131,4 +131,4 @@ dr-xr-xr-x   13 root     root             0 Feb 14 13:16 sys
 -rwxr-xr-x    1 root     root       5651357 Feb 14 13:15 webserver
 ```
 
-Kubernetes社区也在提议增加一个`kubectl debug`命令，用类似的方式在Pod中启动一个新容器来调试运行中的进程，可以参见<https://github.com/kubernetes/community/pull/649>。
+Kubernetes 社区也在提议增加一个 `kubectl debug` 命令，用类似的方式在 Pod 中启动一个新容器来调试运行中的进程，可以参见 <https://github.com/kubernetes/community/pull/649>。

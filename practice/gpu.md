@@ -1,16 +1,54 @@
 # GPU
 
-Kubernetes支持容器请求GPU资源（目前仅支持NVIDIA GPU），在深度学习等场景中有大量应用。
-
-在Kubernetes中使用GPU需要预先配置
-
-- 在所有的Node上安装Nvidia驱动，包括NVIDIA Cuda Toolkit和cuDNN等
-- 在apiserver和kubelet上开启`--feature-gates="Accelerators=true"`
-- Kubelet配置使用docker容器引擎（默认就是docker），其他容器引擎暂不支持该特性
+Kubernetes 支持容器请求 GPU 资源（目前仅支持 NVIDIA GPU），在深度学习等场景中有大量应用。
 
 ## 使用方法
 
-使用资源名`alpha.kubernetes.io/nvidia-gpu`指定请求GPU的个数，如
+### Kubernetes v1.8 及更新版本
+
+从 Kubernetes v1.8 开始，GPU 开始以 DevicePlugin 的形式实现。在使用之前需要配置
+
+- `--feature-gates="DevicePlugins=true"`
+- 在所有的 Node 上安装 Nvidia 驱动，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
+- Kubelet 配置使用 docker 容器引擎（默认就是 docker），其他容器引擎暂不支持该特性
+
+部署 NVDIA 设备插件
+
+```sh
+# For Kubernetes v1.8
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.8/nvidia-device-plugin.yml
+
+# For Kubernetes v1.9
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.9/nvidia-device-plugin.yml
+```
+
+然后请求 `nvidia.com/gpu` 资源：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cuda-vector-add
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - name: cuda-vector-add
+      # https://github.com/kubernetes/kubernetes/blob/v1.7.11/test/images/nvidia-cuda/Dockerfile
+      image: "k8s.gcr.io/cuda-vector-add:v0.1"
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # requesting 1 GPU
+```
+
+### Kubernetes v1.6 和 v1.7
+
+在 Kubernetes v1.6 和 v1.7 中使用 GPU 需要预先配置
+
+- 在所有的 Node 上安装 Nvidia 驱动，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
+- 在 apiserver 和 kubelet 上开启 `--feature-gates="Accelerators=true"`
+- Kubelet 配置使用 docker 容器引擎（默认就是 docker），其他容器引擎暂不支持该特性
+
+使用资源名 `alpha.kubernetes.io/nvidia-gpu` 指定请求 GPU 的个数，如
 
 ```yaml
 apiVersion: v1
@@ -30,8 +68,8 @@ spec:
     - -u
     - -c
     - from tensorflow.python.client import device_lib; print device_lib.list_local_devices()
-    resources: 
-      limits: 
+    resources:
+      limits:
         alpha.kubernetes.io/nvidia-gpu: 1 # requests one GPU
     volumeMounts:
     - mountPath: /usr/local/nvidia/bin
@@ -87,63 +125,46 @@ physical_device_desc: "device: 0, name: Tesla K80, pci bus id: 0000:00:04.0"
 
 注意
 
-- GPU资源必须在`resources.limits`中请求，`resources.requests`中无效
-- 容器可以请求1个或多个GPU，不能只请求一部分
-- 多个容器之间不能共享GPU
-- 默认假设所有Node安装了相同型号的GPU
+- GPU 资源必须在 `resources.limits` 中请求，`resources.requests` 中无效
+- 容器可以请求 1 个或多个 GPU，不能只请求一部分
+- 多个容器之间不能共享 GPU
+- 默认假设所有 Node 安装了相同型号的 GPU
 
-## 多种型号的GPU
+## 多种型号的 GPU
 
-如果集群Node中安装了多种型号的GPU，则可以使用Node Affinity来调度Pod到指定GPU型号的Node上。
+如果集群 Node 中安装了多种型号的 GPU，则可以使用 Node Affinity 来调度 Pod 到指定 GPU 型号的 Node 上。
 
-首先，在集群初始化时，需要给Node打上GPU型号的标签
+首先，在集群初始化时，需要给 Node 打上 GPU 型号的标签
 
 ```sh
-NVIDIA_GPU_NAME=$(nvidia-smi --query-gpu=gpu_name --format=csv,noheader --id=0)
-source /etc/default/kubelet
-KUBELET_OPTS="$KUBELET_OPTS --node-labels='alpha.kubernetes.io/nvidia-gpu-name=$NVIDIA_GPU_NAME'"
-echo "KUBELET_OPTS=$KUBELET_OPTS" > /etc/default/kubelet
+# Label your nodes with the accelerator type they have.
+kubectl label nodes <node-with-k80> accelerator=nvidia-tesla-k80
+kubectl label nodes <node-with-p100> accelerator=nvidia-tesla-p100
 ```
 
-然后，在创建Pod时设置Node Affinity
+然后，在创建 Pod 时设置 Node Affinity：
 
 ```yaml
-kind: pod
 apiVersion: v1
+kind: Pod
 metadata:
-  annotations:
-    scheduler.alpha.kubernetes.io/affinity: >
-      {
-        "nodeAffinity": {
-          "requiredDuringSchedulingIgnoredDuringExecution": {
-            "nodeSelectorTerms": [
-              {
-                "matchExpressions": [
-                  {
-                    "key": "alpha.kubernetes.io/nvidia-gpu-name",
-                    "operator": "In",
-                    "values": ["Tesla K80", "Tesla P100"]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      }
+  name: cuda-vector-add
 spec:
+  restartPolicy: OnFailure
   containers:
-    - image: gcr.io/tensorflow/tensorflow:latest-gpu
-      name: gpu-container-1
-      command: ["python"]
-      args: ["-u", "-c", "import tensorflow"]
+    - name: cuda-vector-add
+      # https://github.com/kubernetes/kubernetes/blob/v1.7.11/test/images/nvidia-cuda/Dockerfile
+      image: "k8s.gcr.io/cuda-vector-add:v0.1"
       resources:
         limits:
-          alpha.kubernetes.io/nvidia-gpu: 2
+          nvidia.com/gpu: 1
+  nodeSelector:
+    accelerator: nvidia-tesla-p100 # or nvidia-tesla-k80 etc.
 ```
 
-## 使用CUDA库
+## 使用 CUDA 库
 
-NVIDIA Cuda Toolkit和cuDNN等需要预先安装在所有Node上。为了访问`/usr/lib/nvidia-375`，需要将CUDA库以hostPath volume的形式传给容器：
+NVIDIA Cuda Toolkit 和 cuDNN 等需要预先安装在所有 Node 上。为了访问 `/usr/lib/nvidia-375`，需要将 CUDA 库以 hostPath volume 的形式传给容器：
 
 ```yaml
 apiVersion: batch/v1
@@ -161,7 +182,7 @@ spec:
       containers:
       - name: nvidia-smi
         image: nvidia/cuda
-        command: [ "nvidia-smi" ]
+        command: ["nvidia-smi"]
         imagePullPolicy: IfNotPresent
         resources:
           limits:
@@ -213,9 +234,9 @@ Fri Jun 16 19:49:53 2017
 +-----------------------------------------------------------------------------+
 ```
 
-## 附录：CUDA安装方法
+## 附录：CUDA 安装方法
 
-安装CUDA：
+安装 CUDA：
 
 ```sh
 # Check for CUDA and try to install.
@@ -228,9 +249,9 @@ if ! dpkg-query -W cuda; then
 fi
 ```
 
-安装cuDNN：
+安装 cuDNN：
 
-首先到网站<https://developer.nvidia.com/cudnn>注册，并下载cuDNN v5.1，然后运行命令安装
+首先到网站 <https://developer.nvidia.com/cudnn> 注册，并下载 cuDNN v5.1，然后运行命令安装
 
 ```sh
 tar zxvf cudnn-8.0-linux-x64-v5.1.tgz
@@ -240,7 +261,7 @@ sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda/lib64
 sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*
 ```
 
-安装完成后，可以运行nvidia-smi查看GPU设备的状态
+安装完成后，可以运行 nvidia-smi 查看 GPU 设备的状态
 
 ```sh
 $ nvidia-smi

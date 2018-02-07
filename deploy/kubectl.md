@@ -28,6 +28,12 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/windows/amd64/kubectl.exe
 ```
 
+或者使用 Chocolatey 来安装：
+
+```sh
+choco install kubernetes-cli
+```
+
 ## kubectl 使用方法
 
 kubectl 的详细使用方法请参考 [kubectl 指南](../components/kubectl.md)。

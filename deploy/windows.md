@@ -247,24 +247,49 @@ Windows 容器暂时只支持 local、emptyDir、hostPath、AzureDisk、AzureFil
 apiVersion: v1
 kind: Pod
 metadata:
-  name: my-hostpath-volume-pod
+  name: hostpath-pod
 spec:
   containers:
-  - name: my-hostpath-volume-pod
-    image: microsoft/windowsservercore:1709
+  - name: hostpath-nano
+    image: microsoft/nanoserver:1709
+    stdin: true
+    tty: true
     volumeMounts:
-    - name: foo
+    - name: blah
       mountPath: "C:\\etc\\foo"
       readOnly: true
   nodeSelector:
     beta.kubernetes.io/os: windows
   volumes:
-  - name: foo
+  - name: blah
     hostPath:
-      path: "C:\\etc\\foo"
+      path: "C:\\AzureData"
 ```
 
-
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty-dir-pod
+spec:
+  containers:
+  - image: microsoft/nanoserver:1709
+    name: empty-dir-nano
+    stdin: true
+    tty: true
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+    - mountPath: C:/scratch
+      name: scratch-volume
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
+  - name: scratch-volume
+    emptyDir: {}
+  nodeSelector:
+    beta.kubernetes.io/os: windows
+```
 
 ### 镜像版本匹配问题
 
@@ -275,6 +300,8 @@ microsoft/aspnet:4.7.1-windowsservercore-1709
 microsoft/windowsservercore:1709
 microsoft/iis:windowsservercore-1709
 ```
+
+而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
 
 ### 其他已知问题
 

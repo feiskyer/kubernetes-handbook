@@ -2,26 +2,27 @@
 
 PersistentVolume (PV) 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷：PV 提供网络存储资源，而 PVC 请求存储资源。这样，设置持久化的工作流包括配置底层文件系统或者云数据卷、创建持久性数据卷、最后创建 PVC 来将 Pod 跟数据卷关联起来。PV 和 PVC 可以将 pod 和数据卷解耦，pod 不需要知道确切的文件系统或者支持它的持久化引擎。
 
-## Volume生命周期
+## Volume 生命周期
 
-Volume的生命周期包括5个阶段
+Volume 的生命周期包括 5 个阶段
 
-1. Provisioning，即PV的创建，可以直接创建PV（静态方式），也可以使用StorageClass动态创建
-2. Binding，将PV分配给PVC
-3. Using，Pod通过PVC使用该Volume
-4. Releasing，Pod释放Volume并删除PVC
-5. Reclaiming，回收PV，可以保留PV以便下次使用，也可以直接从云存储中删除
+1. Provisioning，即 PV 的创建，可以直接创建 PV（静态方式），也可以使用 StorageClass 动态创建
+2. Binding，将 PV 分配给 PVC
+3. Using，Pod 通过 PVC 使用该 Volume，并可以通过准入控制 PVCProtection 阻止删除正在使用的 PVC
+4. Releasing，Pod 释放 Volume 并删除 PVC
+5. Reclaiming，回收 PV，可以保留 PV 以便下次使用，也可以直接从云存储中删除
+6. Deleting，删除 PV 并从云存储中删除后段存储
 
-根据这5个阶段，Volume的状态有以下4种
+根据这 5 个阶段，Volume 的状态有以下 4 种
 
 - Available：可用
-- Bound：已经分配给PVC
-- Released：PVC解绑但还未执行回收策略
+- Bound：已经分配给 PVC
+- Released：PVC 解绑但还未执行回收策略
 - Failed：发生错误
 
 ## PV
 
-PersistentVolume（PV）是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PV 跟 Volume (卷) 类似，不过会有独立于 Pod 的生命周期。比如一个NFS的PV可以定义为
+PersistentVolume（PV）是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PV 跟 Volume (卷) 类似，不过会有独立于 Pod 的生命周期。比如一个 NFS 的 PV 可以定义为
 
 ```yaml
 apiVersion: v1
@@ -39,46 +40,69 @@ spec:
     server: 172.17.0.2
 ```
 
-PV的访问模式（accessModes）有三种：
+PV 的访问模式（accessModes）有三种：
 
-* ReadWriteOnce（RWO）：是最基本的方式，可读可写，但只支持被单个Pod挂载。
-* ReadOnlyMany（ROX）：可以以只读的方式被多个Pod挂载。
-* ReadWriteMany（RWX）：这种存储可以以读写的方式被多个Pod共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是NFS。在PVC绑定PV时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
+* ReadWriteOnce（RWO）：是最基本的方式，可读可写，但只支持被单个 Pod 挂载。
+* ReadOnlyMany（ROX）：可以以只读的方式被多个 Pod 挂载。
+* ReadWriteMany（RWX）：这种存储可以以读写的方式被多个 Pod 共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
 
-PV的回收策略（persistentVolumeReclaimPolicy，即PVC释放卷的时候PV该如何操作）也有三种
+PV 的回收策略（persistentVolumeReclaimPolicy，即 PVC 释放卷的时候 PV 该如何操作）也有三种
 
-- Retain，不清理, 保留Volume（需要手动清理）
-- Recycle，删除数据，即`rm -rf /thevolume/*`（只有NFS和HostPath支持）
-- Delete，删除存储资源，比如删除AWS EBS卷（只有AWS EBS, GCE PD, Azure Disk和Cinder支持）
+- Retain，不清理, 保留 Volume（需要手动清理）
+- Recycle，删除数据，即 `rm -rf /thevolume/*`（只有 NFS 和 HostPath 支持）
+- Delete，删除存储资源，比如删除 AWS EBS 卷（只有 AWS EBS, GCE PD, Azure Disk 和 Cinder 支持）
 
 ## StorageClass
 
-上面通过手动的方式创建了一个NFS Volume，这在管理很多Volume的时候不太方便。Kubernetes还提供了[StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses)来动态创建PV，不仅节省了管理员的时间，还可以封装不同类型的存储供PVC选用。
+上面通过手动的方式创建了一个 NFS Volume，这在管理很多 Volume 的时候不太方便。Kubernetes 还提供了 [StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses) 来动态创建 PV，不仅节省了管理员的时间，还可以封装不同类型的存储供 PVC 选用。
 
-StorageClass包括四个部分
+StorageClass 包括四个部分
 
-- provisioner：指定Volume插件的类型，包括内置插件（如`kubernetes.io/glusterfs`）和外部插件（如[external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/ceph/cephfs)提供的`ceph.com/cephfs`）。
-- mountOptions：指定挂载选项，当PV不支持指定的选项时会直接失败。比如NFS支持`hard`和`nfsvers=4.1`等选项。
-- parameters：指定provisioner的选项，比如`kubernetes.io/aws-ebs`支持`type`、`zone`、`iopsPerGB`等参数。
-- reclaimPolicy：指定回收策略，同PV的回收策略。
+- provisioner：指定 Volume 插件的类型，包括内置插件（如 `kubernetes.io/glusterfs`）和外部插件（如 [external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/ceph/cephfs) 提供的 `ceph.com/cephfs`）。
+- mountOptions：指定挂载选项，当 PV 不支持指定的选项时会直接失败。比如 NFS 支持 `hard` 和 `nfsvers=4.1` 等选项。
+- parameters：指定 provisioner 的选项，比如 `kubernetes.io/aws-ebs` 支持 `type`、`zone`、`iopsPerGB` 等参数。
+- reclaimPolicy：指定回收策略，同 PV 的回收策略。
 
-在使用PVC时，可以通过`DefaultStorageClass`准入控制设置默认StorageClass, 即给未设置storageClassName的PVC自动添加默认的StorageClass。而默认的StorageClass带有annotation `storageclass.kubernetes.io/is-default-class=true`。
+在使用 PVC 时，可以通过 `DefaultStorageClass` 准入控制设置默认 StorageClass, 即给未设置 storageClassName 的 PVC 自动添加默认的 StorageClass。而默认的 StorageClass 带有 annotation `storageclass.kubernetes.io/is-default-class=true`。
 
-#### 修改默认StorageClass
+| Volume Plugin        | Internal Provisioner | Config Example                           |
+| -------------------- | -------------------- | ---------------------------------------- |
+| AWSElasticBlockStore | ✓                    | [AWS](https://kubernetes.io/docs/concepts/storage/storage-classes/#aws) |
+| AzureFile            | ✓                    | [Azure File](https://kubernetes.io/docs/concepts/storage/storage-classes/#azure-file) |
+| AzureDisk            | ✓                    | [Azure Disk](https://kubernetes.io/docs/concepts/storage/storage-classes/#azure-disk) |
+| CephFS               | -                    | -                                        |
+| Cinder               | ✓                    | [OpenStack Cinder](https://kubernetes.io/docs/concepts/storage/storage-classes/#openstack-cinder) |
+| FC                   | -                    | -                                        |
+| FlexVolume           | -                    | -                                        |
+| Flocker              | ✓                    | -                                        |
+| GCEPersistentDisk    | ✓                    | [GCE](https://kubernetes.io/docs/concepts/storage/storage-classes/#gce) |
+| Glusterfs            | ✓                    | [Glusterfs](https://kubernetes.io/docs/concepts/storage/storage-classes/#glusterfs) |
+| iSCSI                | -                    | -                                        |
+| PhotonPersistentDisk | ✓                    | -                                        |
+| Quobyte              | ✓                    | [Quobyte](https://kubernetes.io/docs/concepts/storage/storage-classes/#quobyte) |
+| NFS                  | -                    | -                                        |
+| RBD                  | ✓                    | [Ceph RBD](https://kubernetes.io/docs/concepts/storage/storage-classes/#ceph-rbd) |
+| VsphereVolume        | ✓                    | [vSphere](https://kubernetes.io/docs/concepts/storage/storage-classes/#vsphere) |
+| PortworxVolume       | ✓                    | [Portworx Volume](https://kubernetes.io/docs/concepts/storage/storage-classes/#portworx-volume) |
+| ScaleIO              | ✓                    | [ScaleIO](https://kubernetes.io/docs/concepts/storage/storage-classes/#scaleio) |
+| StorageOS            | ✓                    | [StorageOS](https://kubernetes.io/docs/concepts/storage/storage-classes/#storageos) |
+| Local                | -                    | [Local](https://kubernetes.io/docs/concepts/storage/storage-classes/#local) |
 
-取消原来的默认StorageClass
+#### 修改默认 StorageClass
+
+取消原来的默认 StorageClass
 
 ```sh
 kubectl patch storageclass <default-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 ```
 
-标记新的默认StorageClass
+标记新的默认 StorageClass
 
 ```sh
 kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
-#### GCE示例
+#### GCE 示例
 
 ```yaml
 kind: StorageClass
@@ -91,7 +115,7 @@ parameters:
   zone: us-central1-a
 ```
 
-#### Glusterfs示例
+#### Glusterfs 示例
 
 ```yaml
 apiVersion: storage.k8s.io/v1
@@ -111,7 +135,7 @@ parameters:
   volumetype: "replicate:3"
 ```
 
-#### OpenStack Cinder示例
+#### OpenStack Cinder 示例
 
 ```yaml
 kind: StorageClass
@@ -124,7 +148,7 @@ parameters:
   availability: nova
 ```
 
-#### Ceph RBD示例
+#### Ceph RBD 示例
 
 ```yaml
 apiVersion: storage.k8s.io/v1
@@ -141,6 +165,21 @@ apiVersion: storage.k8s.io/v1
     userId: kube
     userSecretName: ceph-secret-user
 ```
+
+#### Local Volume 示例
+
+Local Volume 需要开启 `VolumeScheduling` 特性（`--feature-gates=VolumeScheduling`）：
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-fast
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+```
+
+注意：Local Volume 在首次被容器引用时才会创建。
 
 ## PVC
 
@@ -185,14 +224,20 @@ spec:
         claimName: myclaim
 ```
 
-## 扩展PV空间
+## 扩展 PV 空间
 
-v1.8开始支持扩展PV空间，支持在不丢失数据和重启容器的情况下扩展PV的大小。注意，**当前的实现仅支持不需要调整文件系统大小的PV，并且只支持glusterfs**。
+v1.8 开始支持扩展 PV 空间，支持在不丢失数据和重启容器的情况下扩展 PV 的大小。注意，** 当前的实现仅支持不需要调整文件系统大小（XFS、Ext3、Ext4）的 PV，并且只支持以下几种存储插件 **：
 
-开启扩展PV空间的功能需要配置
+- gcePersistentDisk
+- awsElasticBlockStore
+- Cinder
+- glusterfs
+- rbd
 
-- 开启ExpandPersistentVolumes功能，即配置`--feature-gates=ExpandPersistentVolumes=true`
-- 开启准入控制插件PersistentVolumeClaimResize，它只允许扩展明确配置`allowVolumeExpansion=true`的StorageClass，比如
+开启扩展 PV 空间的功能需要配置
+
+- 开启 `ExpandPersistentVolumes` 功能，即配置 `--feature-gates=ExpandPersistentVolumes=true`
+- 开启准入控制插件 `PersistentVolumeClaimResize`，它只允许扩展明确配置 `allowVolumeExpansion=true` 的 StorageClass，比如
 
 ```yaml
 kind: StorageClass
@@ -208,4 +253,44 @@ parameters:
 allowVolumeExpansion: true
 ```
 
-这样，用户就可以修改PVC中请求存储的大小（如通过`kubectl edit`命令）请求更大的存储空间。
+这样，用户就可以修改 PVC 中请求存储的大小（如通过 `kubectl edit` 命令）请求更大的存储空间。
+
+## Raw Block Volume
+
+Kubernetes v1.9 还新增了 Alpha 版的 Raw Block Volume。目前仅 Fibre Channel 支持以 Block Volume 的形式挂载。
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: block-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Block
+  persistentVolumeReclaimPolicy: Retain
+  fc:
+    targetWWNs: ["50060e801049cfd1"]
+    lun: 0
+    readOnly: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: block-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Block
+  resources:
+    requests:
+      storage: 10Gi
+```
+
+## 参考文档
+
+- [Kubernetes Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+- [Kubernetes Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+- [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)

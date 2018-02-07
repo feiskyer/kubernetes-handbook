@@ -1,10 +1,10 @@
-# 使用glusterfs做持久化存储
+# 使用 glusterfs 做持久化存储
 
-我们复用kubernetes的三台主机做glusterfs存储。
+我们复用 kubernetes 的三台主机做 glusterfs 存储。
 
-## 安装glusterfs
+## 安装 glusterfs
 
-我们直接在物理机上使用yum安装，如果你选择在kubernetes上安装，请参考：https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md
+我们直接在物理机上使用 yum 安装，如果你选择在 kubernetes 上安装，请参考：https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md
 
 ```bash
 # 先安装 gluster 源
@@ -35,9 +35,9 @@ $ systemctl status glusterd.service
 # 配置 hosts
 
 $ vi /etc/hosts
-172.20.0.113   sz-pg-oam-docker-test-001.tendcloud.com 
-172.20.0.114   sz-pg-oam-docker-test-002.tendcloud.com 
-172.20.0.115   sz-pg-oam-docker-test-003.tendcloud.com 
+172.20.0.113   sz-pg-oam-docker-test-001.tendcloud.com
+172.20.0.114   sz-pg-oam-docker-test-002.tendcloud.com
+172.20.0.115   sz-pg-oam-docker-test-003.tendcloud.com
 ```
 
 ```bash
@@ -50,7 +50,7 @@ $ mkdir /opt/gfs_data
 
 ```bash
 # 添加节点到 集群
-# 执行操作的本机不需要probe 本机
+# 执行操作的本机不需要 probe 本机
 [root@sz-pg-oam-docker-test-001 ~]#
 gluster peer probe sz-pg-oam-docker-test-002.tendcloud.com
 gluster peer probe sz-pg-oam-docker-test-003.tendcloud.com
@@ -70,25 +70,25 @@ State: Peer in Cluster (Connected)
 
 ## 配置 volume
 
-GlusterFS中的volume的模式有很多种，包括以下几种：
+GlusterFS 中的 volume 的模式有很多种，包括以下几种：
 
-- **分布卷（默认模式）**：即DHT, 也叫 分布卷: 将文件以hash算法随机分布到 一台服务器节点中存储。
-- **复制模式**：即AFR, 创建volume 时带 replica x 数量: 将文件复制到 replica x 个节点中。
-- **条带模式**：即Striped, 创建volume 时带 stripe x 数量： 将文件切割成数据块，分别存储到 stripe x 个节点中 ( 类似raid 0 )。
-- **分布式条带模式**：最少需要4台服务器才能创建。 创建volume 时 stripe 2 server = 4 个节点： 是DHT 与 Striped 的组合型。
-- **分布式复制模式**：最少需要4台服务器才能创建。 创建volume 时 replica 2 server = 4 个节点：是DHT 与 AFR 的组合型。
-- **条带复制卷模式**：最少需要4台服务器才能创建。 创建volume 时 stripe 2 replica 2 server = 4 个节点： 是 Striped 与 AFR 的组合型。
-- **三种模式混合**： 至少需要8台 服务器才能创建。 stripe 2 replica 2 , 每4个节点 组成一个 组。
+- ** 分布卷（默认模式）**：即 DHT, 也叫 分布卷: 将文件以 hash 算法随机分布到 一台服务器节点中存储。
+- ** 复制模式 **：即 AFR, 创建 volume 时带 replica x 数量: 将文件复制到 replica x 个节点中。
+- ** 条带模式 **：即 Striped, 创建 volume 时带 stripe x 数量： 将文件切割成数据块，分别存储到 stripe x 个节点中 (类似 raid 0)。
+- ** 分布式条带模式 **：最少需要 4 台服务器才能创建。 创建 volume 时 stripe 2 server = 4 个节点： 是 DHT 与 Striped 的组合型。
+- ** 分布式复制模式 **：最少需要 4 台服务器才能创建。 创建 volume 时 replica 2 server = 4 个节点：是 DHT 与 AFR 的组合型。
+- ** 条带复制卷模式 **：最少需要 4 台服务器才能创建。 创建 volume 时 stripe 2 replica 2 server = 4 个节点： 是 Striped 与 AFR 的组合型。
+- ** 三种模式混合 **： 至少需要 8 台 服务器才能创建。 stripe 2 replica 2 , 每 4 个节点 组成一个 组。
 
-这几种模式的示例图参考：[CentOS7安装GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)。
+这几种模式的示例图参考：[CentOS7 安装 GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)。
 
-因为我们只有三台主机，在此我们使用默认的**分布卷模式**。**请勿在生产环境上使用该模式，容易导致数据丢失。**
+因为我们只有三台主机，在此我们使用默认的 ** 分布卷模式 **。** 请勿在生产环境上使用该模式，容易导致数据丢失。**
 
 ```bash
 # 创建分布卷
 $ gluster volume create k8s-volume transport tcp sz-pg-oam-docker-test-001.tendcloud.com:/opt/gfs_data sz-pg-oam-docker-test-002.tendcloud.com:/opt/gfs_data sz-pg-oam-docker-test-003.tendcloud.com:/opt/gfs_data force
 
-# 查看volume状态
+# 查看 volume 状态
 $ gluster volume info
 Volume Name: k8s-volume
 Type: Distribute
@@ -109,7 +109,7 @@ nfs.disable: on
 $ gluster volume start k8s-volume
 ```
 
-## Glusterfs调优
+## Glusterfs 调优
 
 ```bash
 # 开启 指定 volume 的配额
@@ -118,27 +118,27 @@ $ gluster volume quota k8s-volume enable
 # 限制 指定 volume 的配额
 $ gluster volume quota k8s-volume limit-usage / 1TB
 
-# 设置 cache 大小, 默认32MB
+# 设置 cache 大小, 默认 32MB
 $ gluster volume set k8s-volume performance.cache-size 4GB
 
 # 设置 io 线程, 太大会导致进程崩溃
 $ gluster volume set k8s-volume performance.io-thread-count 16
 
-# 设置 网络检测时间, 默认42s
+# 设置 网络检测时间, 默认 42s
 $ gluster volume set k8s-volume network.ping-timeout 10
 
-# 设置 写缓冲区的大小, 默认1M
+# 设置 写缓冲区的大小, 默认 1M
 $ gluster volume set k8s-volume performance.write-behind-window-size 1024MB
 ```
 
-## Kubernetes中配置glusterfs
+## Kubernetes 中配置 glusterfs
 
 官方的文档见：https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs
 
-以下用到的所有yaml和json配置文件可以在[glusterfs](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/glusterfs)中找到。注意替换其中私有镜像地址为你自己的镜像地址。
+以下用到的所有 yaml 和 json 配置文件可以在 [glusterfs](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/glusterfs) 中找到。注意替换其中私有镜像地址为你自己的镜像地址。
 
 
-## kubernetes安装客户端
+## kubernetes 安装客户端
 
 ```bash
 # 在所有 k8s node 中安装 glusterfs 客户端
@@ -154,14 +154,14 @@ $ vi /etc/hosts
 172.20.0.115   sz-pg-oam-docker-test-003.tendcloud.com
 ```
 
-因为我们glusterfs跟kubernetes集群复用主机，因为此这一步可以省去。
+因为我们 glusterfs 跟 kubernetes 集群复用主机，因为此这一步可以省去。
 
 ## 配置 endpoints
 
 ```bash
 $ curl -O https://raw.githubusercontent.com/kubernetes/kubernetes/master/examples/volumes/glusterfs/glusterfs-endpoints.json
 
-# 修改 endpoints.json ，配置 glusters 集群节点ip
+# 修改 endpoints.json ，配置 glusters 集群节点 ip
 # 每一个 addresses 为一个 ip 组
 
     {
@@ -190,7 +190,7 @@ $ kubectl get ep
 ```bash
 $ curl -O https://raw.githubusercontent.com/kubernetes/kubernetes/master/examples/volumes/glusterfs/glusterfs-service.json
 
-# service.json 里面查找的是 enpointes 的名称与端口，端口默认配置为 1，我改成了1990
+# service.json 里面查找的是 enpointes 的名称与端口，端口默认配置为 1，我改成了 1990
 
 # 导入 glusterfs-service.json
 $ kubectl apply -f glusterfs-service.json
@@ -213,7 +213,7 @@ $ curl -O https://raw.githubusercontent.com/kubernetes/kubernetes/master/example
 $ kubectl apply -f glusterfs-pod.json
 
 # 查看 pods 状态
-$ kubectl get pods               
+$ kubectl get pods
 NAME                             READY     STATUS    RESTARTS   AGE
 glusterfs                        1/1       Running   0          1m
 
@@ -225,16 +225,16 @@ $ df -h
 172.20.0.113:k8s-volume  1.0T     0  1.0T   0% /var/lib/kubelet/pods/3de9fc69-30b7-11e7-bfbd-8af1e3a7c5bd/volumes/kubernetes.io~glusterfs/glusterfsvol
 ```
 
-## 配置PersistentVolume
+## 配置 PersistentVolume
 
-PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是kubernetes提供的两种API资源，用于抽象存储细节。管理员关注于如何通过pv提供存储功能而无需关注用户如何使用，同样的用户只需要挂载PVC到容器中而不需要关注存储卷采用何种技术实现。
+PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是 kubernetes 提供的两种 API 资源，用于抽象存储细节。管理员关注于如何通过 pv 提供存储功能而无需关注用户如何使用，同样的用户只需要挂载 PVC 到容器中而不需要关注存储卷采用何种技术实现。
 
-PVC和PV的关系跟pod和node关系类似，前者消耗后者的资源。PVC可以向PV申请指定大小的存储资源并设置访问模式。
+PVC 和 PV 的关系跟 pod 和 node 关系类似，前者消耗后者的资源。PVC 可以向 PV 申请指定大小的存储资源并设置访问模式。
 
-**PV属性**
+**PV 属性 **
 
-- storage容量 
-- 读写属性：分别为ReadWriteOnce：单个节点读写； ReadOnlyMany：多节点只读 ； ReadWriteMany：多节点读写
+- storage 容量
+- 读写属性：分别为 ReadWriteOnce：单个节点读写； ReadOnlyMany：多节点只读 ； ReadWriteMany：多节点读写
 
 ```bash
 $ cat glusterfs-pv.yaml
@@ -252,7 +252,7 @@ spec:
     path: "k8s-volume"
     readOnly: false
 
-# 导入PV
+# 导入 PV
 $ kubectl apply -f glusterfs-pv.yaml
 
 # 查看 pv
@@ -261,12 +261,12 @@ NAME                 CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM 
 gluster-dev-volume   8Gi        RWX           Retain          Available                                      3s
 ```
 
-PVC属性
+PVC 属性
 
-- 访问属性与PV相同
-- 容量：向PV申请的容量 <= PV总容量
+- 访问属性与 PV 相同
+- 容量：向 PV 申请的容量 <= PV 总容量
 
-## 配置PVC
+## 配置 PVC
 
 ```Bash
 $ cat glusterfs-pvc.yaml
@@ -295,22 +295,22 @@ glusterfs-nginx   Bound     gluster-dev-volume   8Gi        RWX                 
 
 ```Bash
 $ vi nginx-deployment.yaml
-apiVersion: extensions/v1beta1 
-kind: Deployment 
-metadata: 
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
   name: nginx-dm
-spec: 
+spec:
   replicas: 2
-  template: 
-    metadata: 
-      labels: 
-        name: nginx 
-    spec: 
-      containers: 
-        - name: nginx 
-          image: nginx:alpine 
+  template:
+    metadata:
+      labels:
+        name: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
           imagePullPolicy: IfNotPresent
-          ports: 
+          ports:
             - containerPort: 80
           volumeMounts:
             - name: gluster-dev-volume
@@ -321,7 +321,7 @@ spec:
           claimName: glusterfs-nginx
 
 # 导入 deployment
-$ kubectl apply -f nginx-deployment.yaml 
+$ kubectl apply -f nginx-deployment.yaml
 
 # 查看 deployment
 $ kubectl get pods |grep nginx-dm
@@ -350,4 +350,3 @@ index.html
 
 - [CentOS 7 安装 GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)
 - [GlusterFS with kubernetes](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs)
-

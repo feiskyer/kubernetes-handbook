@@ -1,13 +1,13 @@
 # kubernetes_ingress_letsencrypt
 
 ![](https://i.imgur.com/bbCz37T.png)
-## 申请Domain Name
-首先就是申请一个你要的网域, 这边网路上资源很多都可以查一下哪个网域商或是一些相关的建议,这边我就先不去多做介绍了,文章中会以sam.nctu.me来作范例
+## 申请 Domain Name
+首先就是申请一个你要的网域, 这边网路上资源很多都可以查一下哪个网域商或是一些相关的建议, 这边我就先不去多做介绍了, 文章中会以 sam.nctu.me 来作范例
 
 
 
-## 用[Letsencrypt](https://letsencrypt.org/)来签发凭证
-这边我们用手动的把它先签下来,上[Letsencrypt](https://letsencrypt.org/)去安装certbot, 手动签的方式也可以参考[签letsencrpyt凭证](https://www.nctusam.com/2017/08/30/ubuntumint-nginx-%E7%B0%BDletsencrpyt%E6%86%91%E8%AD%89/) 文章,输入以下指令来签凭证
+## 用 [Letsencrypt](https://letsencrypt.org/) 来签发凭证
+这边我们用手动的把它先签下来, 上 [Letsencrypt](https://letsencrypt.org/) 去安装 certbot, 手动签的方式也可以参考[签 letsencrpyt 凭证](https://www.nctusam.com/2017/08/30/ubuntumint-nginx-%E7%B0%BDletsencrpyt%E6%86%91%E8%AD%89/) 文章, 输入以下指令来签凭证
 
 
 ```shell
@@ -37,7 +37,7 @@ IMPORTANT NOTES:
 ```
 /etc/letsencrypt/live/sam.nctu.me/
 ```
-可以看到裡面的凭证,权限必须是root才能看到这个资料夹的内容
+可以看到裡面的凭证, 权限必须是 root 才能看到这个资料夹的内容
 ```shell
 # ls
 cert.pem  chain.pem  fullchain.pem  privkey.pem  README
@@ -45,14 +45,14 @@ cert.pem  chain.pem  fullchain.pem  privkey.pem  README
 
 这样凭证就签完了
 
-## 设置Kubernetes Secret
+## 设置 Kubernetes Secret
 
-将fullchain.pem(因为使用nginx controller) 与 privkey.pem来建立secret,这之后会配置给ingress使用
+将 fullchain.pem(因为使用 nginx controller) 与 privkey.pem 来建立 secret, 这之后会配置给 ingress 使用
 
 ```shell
-$ kubectl create secret tls tls-certs --cert fullchain.pem --key privkey.pem 
+$ kubectl create secret tls tls-certs --cert fullchain.pem --key privkey.pem
 ```
-查看secret
+查看 secret
 ```shell
 $ kubectl get secret
 NAME                              TYPE                                  DATA      AGE
@@ -62,11 +62,11 @@ tls-certs                         kubernetes.io/tls                     2       
 以建立完成
 
 
-## 建立Ingress
-我们先去建立一个ingress的yaml档,来帮助我们create ingress并加入tls的设定
+## 建立 Ingress
+我们先去建立一个 ingress 的 yaml 档, 来帮助我们 create ingress 并加入 tls 的设定
 ingress.yaml
 ```yaml=
-apiVersion: extensions/v1beta1                                                                                
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: nginx-ingress
@@ -83,20 +83,20 @@ spec:
             serviceName: phpmyadmin
             servicePort: 80
 ```
-然后建立此Ingress
+然后建立此 Ingress
 
 ```shell
 $ kubectl create -f ingress.yaml
 ```
 并查看
 ```shell
-$ kubectl get ingress 
+$ kubectl get ingress
 NAME            HOSTS            ADDRESS   PORTS     AGE
 nginx-ingress   sam.nctu.me             80, 443   1h
 ```
 
-## 建立default-backend
-先建立一个delfault,如果试着用ip直接request或是没有设定过的domain name,会回传404
+## 建立 default-backend
+先建立一个 delfault, 如果试着用 ip 直接 request 或是没有设定过的 domain name, 会回传 404
 
 default-backend.yaml
 ```yaml=
@@ -156,8 +156,8 @@ spec:
 ```shell
 $ kubectl create -f default-backend.yaml
 ```
-## 建立Ingress-Nginx-Controller
-这边有个小坑,在建立之前要先设置RBAC才会顺利建起来,花了点时间才发现,所以我们要先建立相关的RBAC
+## 建立 Ingress-Nginx-Controller
+这边有个小坑, 在建立之前要先设置 RBAC 才会顺利建起来, 花了点时间才发现, 所以我们要先建立相关的 RBAC
 ingress-controller-rbac.yaml
 ```yaml=
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -270,7 +270,7 @@ metadata:
 $ kubectl create -f ingress-controller-rbac.yaml
 ```
 
-之后就可以建立Ingress-controller
+之后就可以建立 Ingress-controller
 nginx-ingress-daemonset.yaml
 ```yaml=
 apiVersion: extensions/v1beta1
@@ -337,6 +337,6 @@ nginx-ingress-controller-j28sz           1/1       Running   0          1h
 nginx-ingress-controller-lrn34           1/1       Running   0          1h
 
 ```
-然后再测试 直接输入 https://sam.nctu.tw 就行了, 当然这边只是测试,记得换成你设定的domain name
+然后再测试 直接输入 https://sam.nctu.tw 就行了, 当然这边只是测试, 记得换成你设定的 domain name
 
-以上相關代碼放在[github](https://github.com/kweisamx/kubernetes_ingress_letsencrypt)
+以上相關代碼放在 [github](https://github.com/kweisamx/kubernetes_ingress_letsencrypt)

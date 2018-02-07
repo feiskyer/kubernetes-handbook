@@ -1,18 +1,18 @@
 # ThirdPartyResources
 
-ThirdPartyResources（TPR）是一种无需改变代码就可以扩展Kubernetes API的机制，可以用来管理自定义对象。每个ThirdPartyResource都包含以下属性
+ThirdPartyResources（TPR）是一种无需改变代码就可以扩展 Kubernetes API 的机制，可以用来管理自定义对象。每个 ThirdPartyResource 都包含以下属性
 
-- metadata：跟kubernetes metadata一样
-- kind：自定义的资源类型，采用`<kind mame>.<domain>`的格式
+- metadata：跟 kubernetes metadata 一样
+- kind：自定义的资源类型，采用 `<kind mame>.<domain>` 的格式
 - description：资源描述
 - versions：版本列表
 - 其他：还可以保护任何其他自定义的属性
 
-> **[warning] ThirdPartyResources在v1.8删除**
+> **[warning] ThirdPartyResources 已在 v1.8 删除 **
 >
-> ThirdPartyResources已在v1.8版本中删除。建议从v1.7开始，迁移到[CustomResourceDefinition（CRD）](customresourcedefinition.md)。
+> ThirdPartyResources 已在 v1.8 版本中删除。建议从 v1.7 开始，迁移到 [CustomResourceDefinition（CRD）](customresourcedefinition.md)。
 
-下面的例子会创建一个`/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/...`的API
+下面的例子会创建一个 `/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/...` 的 API
 
 ```sh
 $ cat resource.yaml
@@ -28,7 +28,7 @@ $ kubectl create -f resource.yaml
 thirdpartyresource "cron-tab.stable.example.com" created
 ```
 
-API创建好后，就可以创建具体的CronTab对象了
+API 创建好后，就可以创建具体的 CronTab 对象了
 
 ```sh
 $ cat my-cronjob.yaml
@@ -47,9 +47,9 @@ NAME                 KIND
 my-new-cron-object   CronTab.v1.stable.example.com
 ```
 
-## ThirdPartyResources与RBAC
+## ThirdPartyResources 与 RBAC
 
-注意ThirdPartyResources不是namespace-scoped的资源，在普通用户使用之前需要绑定ClusterRole权限。
+注意 ThirdPartyResources 不是 namespace-scoped 的资源，在普通用户使用之前需要绑定 ClusterRole 权限。
 
 ```sh
 $ cat cron-rbac.yaml
@@ -75,9 +75,9 @@ $ kubectl create -f cron-rbac.yaml
 $ kubectl create clusterrolebinding user1 --clusterrole=cron-cluster-role --user=user1 --user=user2 --group=group1
 ```
 
-## 迁移到CustomResourceDefinition
+## 迁移到 CustomResourceDefinition
 
-1. 首先将TPR资源重定义为CRD资源，比如下面这个ThirdPartyResource资源
+1. 首先将 TPR 资源重定义为 CRD 资源，比如下面这个 ThirdPartyResource 资源
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -106,7 +106,7 @@ spec:
     singular: crontab
 ```
 
-2. 创建CustomResourceDefinition定义后，等待CRD的Established条件：
+2. 创建 CustomResourceDefinition 定义后，等待 CRD 的 Established 条件：
 
 ```sh
 $ kubectl get crd -o 'custom-columns=NAME:{.metadata.name},ESTABLISHED:{.status.conditions[?(@.type=="Established")].status}'
@@ -114,7 +114,7 @@ NAME                          ESTABLISHED
 crontabs.stable.example.com   True
 ```
 
-3. 然后，停止使用TPR的客户端和TPR Controller，启动新的CRD Controller。
+3. 然后，停止使用 TPR 的客户端和 TPR Controller，启动新的 CRD Controller。
 
 4. 备份数据
 
@@ -123,16 +123,16 @@ $ kubectl get crontabs --all-namespaces -o yaml > crontabs.yaml
 $ kubectl get thirdpartyresource cron-tab.stable.example.com -o yaml --export > tpr.yaml
 ```
 
-5. 删除TPR定义，TPR资源会自动复制为CRD资源
+5. 删除 TPR 定义，TPR 资源会自动复制为 CRD 资源
 
 ```sh
 $ kubectl delete thirdpartyresource cron-tab.stable.example.com
 ```
 
-6. 验证CRD数据是否迁移成功，如果有失败发生，可以从备份的TPR数据恢复
+6. 验证 CRD 数据是否迁移成功，如果有失败发生，可以从备份的 TPR 数据恢复
 
 ```sh
 $ kubectl create -f tpr.yaml
 ```
 
-7. 重启客户端和相关的控制器或监听程序，它们的数据源会自动切换到CRD（即访问TPR的API会自动转换为对CRD的访问）
+7. 重启客户端和相关的控制器或监听程序，它们的数据源会自动切换到 CRD（即访问 TPR 的 API 会自动转换为对 CRD 的访问）

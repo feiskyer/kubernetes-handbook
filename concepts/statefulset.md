@@ -1,37 +1,39 @@
 # StatefulSet
 
-StatefulSet是为了解决有状态服务的问题（对应Deployments和ReplicaSets是为无状态服务而设计），其应用场景包括
+StatefulSet 是为了解决有状态服务的问题（对应 Deployments 和 ReplicaSets 是为无状态服务而设计），其应用场景包括
 
-- 稳定的持久化存储，即Pod重新调度后还是能访问到相同的持久化数据，基于PVC来实现
-- 稳定的网络标志，即Pod重新调度后其PodName和HostName不变，基于Headless Service（即没有Cluster IP的Service）来实现
-- 有序部署，有序扩展，即Pod是有顺序的，在部署或者扩展的时候要依据定义的顺序依次依序进行（即从0到N-1，在下一个Pod运行之前所有之前的Pod必须都是Running和Ready状态），基于init containers来实现
-- 有序收缩，有序删除（即从N-1到0）
+- 稳定的持久化存储，即 Pod 重新调度后还是能访问到相同的持久化数据，基于 PVC 来实现
+- 稳定的网络标志，即 Pod 重新调度后其 PodName 和 HostName 不变，基于 Headless Service（即没有 Cluster IP 的 Service）来实现
+- 有序部署，有序扩展，即 Pod 是有顺序的，在部署或者扩展的时候要依据定义的顺序依次依序进行（即从 0 到 N-1，在下一个 Pod 运行之前所有之前的 Pod 必须都是 Running 和 Ready 状态），基于 init containers 来实现
+- 有序收缩，有序删除（即从 N-1 到 0）
 
-从上面的应用场景可以发现，StatefulSet由以下几个部分组成：
+从上面的应用场景可以发现，StatefulSet 由以下几个部分组成：
 
-- 用于定义网络标志（DNS domain）的Headless Service
-- 用于创建PersistentVolumes的volumeClaimTemplates
-- 定义具体应用的StatefulSet
+- 用于定义网络标志（DNS domain）的 Headless Service
+- 用于创建 PersistentVolumes 的 volumeClaimTemplates
+- 定义具体应用的 StatefulSet
 
-StatefulSet中每个Pod的DNS格式为`statefulSetName-{0..N-1}.serviceName.namespace.svc.cluster.local`，其中
+StatefulSet 中每个 Pod 的 DNS 格式为 `statefulSetName-{0..N-1}.serviceName.namespace.svc.cluster.local`，其中
 
-- `serviceName`为Headless Service的名字
-- `0..N-1`为Pod所在的序号，从0开始到N-1
-- `statefulSetName`为StatefulSet的名字
-- `namespace`为服务所在的namespace，Headless Service和StatefulSet必须在相同的namespace
-- `.cluster.local`为Cluster Domain
+- `serviceName` 为 Headless Service 的名字
+- `0..N-1` 为 Pod 所在的序号，从 0 开始到 N-1
+- `statefulSetName` 为 StatefulSet 的名字
+- `namespace` 为服务所在的 namespace，Headless Service 和 StatefulSet 必须在相同的 namespace
+- `.cluster.local` 为 Cluster Domain
 
-**注意**
+版本更新历史
 
-- Kubernetes v1.7及以前API版本使用`extensions/v1beta1`
-- Kubernetes v1.8的API版本升级到`apps/v1beta2`
+| Kubernetes 版本 |   Deployment 版本   |
+| ------------- | ------------------ |
+|     v1.7      | extensions/v1beta1 |
+|     v1.8      |   apps/v1beta2     |
+|     v1.9      |      apps/v1       |
 
 ## 简单示例
 
-以一个简单的nginx服务[web.yaml](web.txt)为例：
+以一个简单的 nginx 服务 [web.yaml](web.txt) 为例：
 
 ```yaml
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -46,13 +48,16 @@ spec:
   selector:
     app: nginx
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: web
 spec:
   serviceName: "nginx"
   replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
   template:
     metadata:
       labels:
@@ -60,7 +65,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: gcr.io/google_containers/nginx-slim:0.8
+        image: k8s.gcr.io/nginx-slim:0.8
         ports:
         - containerPort: 80
           name: web
@@ -70,10 +75,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: www
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: anything
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes: ["ReadWriteOnce"]
       resources:
         requests:
           storage: 1Gi
@@ -84,7 +87,7 @@ $ kubectl create -f web.yaml
 service "nginx" created
 statefulset "web" created
 
-# 查看创建的headless service和statefulset
+# 查看创建的 headless service 和 statefulset
 $ kubectl get service nginx
 NAME      CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 nginx     None         <none>        80/TCP    1m
@@ -92,19 +95,19 @@ $ kubectl get statefulset web
 NAME      DESIRED   CURRENT   AGE
 web       2         2         2m
 
-# 根据volumeClaimTemplates自动创建PVC（在GCE中会自动创建kubernetes.io/gce-pd类型的volume）
+# 根据 volumeClaimTemplates 自动创建 PVC（在 GCE 中会自动创建 kubernetes.io/gce-pd 类型的 volume）
 $ kubectl get pvc
 NAME        STATUS    VOLUME                                     CAPACITY   ACCESSMODES   AGE
 www-web-0   Bound     pvc-d064a004-d8d4-11e6-b521-42010a800002   1Gi        RWO           16s
 www-web-1   Bound     pvc-d06a3946-d8d4-11e6-b521-42010a800002   1Gi        RWO           16s
 
-# 查看创建的Pod，他们都是有序的
+# 查看创建的 Pod，他们都是有序的
 $ kubectl get pods -l app=nginx
 NAME      READY     STATUS    RESTARTS   AGE
 web-0     1/1       Running   0          5m
 web-1     1/1       Running   0          4m
 
-# 使用nslookup查看这些Pod的DNS
+# 使用 nslookup 查看这些 Pod 的 DNS
 $ kubectl run -i --tty --image busybox dns-test --restart=Never --rm /bin/sh
 / # nslookup web-0.nginx
 Server:    10.0.0.10
@@ -135,35 +138,35 @@ $ kubectl scale statefulset web --replicas=5
 # 缩容
 $ kubectl patch statefulset web -p '{"spec":{"replicas":3}}'
 
-# 镜像更新（目前还不支持直接更新image，需要patch来间接实现）
-$ kubectl patch statefulset web --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"gcr.io/google_containers/nginx-slim:0.7"}]'
+# 镜像更新（目前还不支持直接更新 image，需要 patch 来间接实现）
+$ kubectl patch statefulset web --type='json' -p='[{"op":"replace","path":"/spec/template/spec/containers/0/image","value":"gcr.io/google_containers/nginx-slim:0.7"}]'
 
-# 删除StatefulSet和Headless Service
+# 删除 StatefulSet 和 Headless Service
 $ kubectl delete statefulset web
 $ kubectl delete service nginx
 
-# StatefulSet删除后PVC还会保留着，数据不再使用的话也需要删除
+# StatefulSet 删除后 PVC 还会保留着，数据不再使用的话也需要删除
 $ kubectl delete pvc www-web-0 www-web-1
 ```
 
-## 更新StatefulSet
+## 更新 StatefulSet
 
-v1.7+支持StatefulSet的自动更新，通过`spec.updateStrategy`设置更新策略。目前支持两种策略
+v1.7 + 支持 StatefulSet 的自动更新，通过 `spec.updateStrategy` 设置更新策略。目前支持两种策略
 
-- OnDelete：当`.spec.template`更新时，并不立即删除旧的Pod，而是等待用户手动删除这些旧Pod后自动创建新Pod。这是默认的更新策略，兼容v1.6版本的行为
-- RollingUpdate：当`.spec.template`更新时，自动删除旧的Pod并创建新Pod替换。在更新时，这些Pod是按逆序的方式进行，依次删除、创建并等待Pod变成Ready状态才进行下一个Pod的更新。
+- OnDelete：当 `.spec.template` 更新时，并不立即删除旧的 Pod，而是等待用户手动删除这些旧 Pod 后自动创建新 Pod。这是默认的更新策略，兼容 v1.6 版本的行为
+- RollingUpdate：当 `.spec.template` 更新时，自动删除旧的 Pod 并创建新 Pod 替换。在更新时，这些 Pod 是按逆序的方式进行，依次删除、创建并等待 Pod 变成 Ready 状态才进行下一个 Pod 的更新。
 
 ### Partitions
 
-RollingUpdate还支持Partitions，通过`.spec.updateStrategy.rollingUpdate.partition`来设置。当partition设置后，只有序号大于或等于partition的Pod会在`.spec.template`更新的时候滚动更新，而其余的Pod则保持不变（即便是删除后也是用以前的版本重新创建）。
+RollingUpdate 还支持 Partitions，通过 `.spec.updateStrategy.rollingUpdate.partition` 来设置。当 partition 设置后，只有序号大于或等于 partition 的 Pod 会在 `.spec.template` 更新的时候滚动更新，而其余的 Pod 则保持不变（即便是删除后也是用以前的版本重新创建）。
 
 ```sh
-# 设置partition为3
+# 设置 partition 为 3
 $ kubectl patch statefulset web -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":3}}}}'
 statefulset "web" patched
 
-# 更新StatefulSet
-$ kubectl patch statefulset web --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"gcr.io/google_containers/nginx-slim:0.7"}]'
+# 更新 StatefulSet
+$ kubectl patch statefulset web --type='json' -p='[{"op":"replace","path":"/spec/template/spec/containers/0/image","value":"gcr.io/google_containers/nginx-slim:0.7"}]'
 statefulset "web" patched
 
 # 验证更新
@@ -177,14 +180,14 @@ web-2     0/1       ContainerCreating   0          11s
 web-2     1/1       Running             0          18s
 ```
 
-## Pod管理策略
+## Pod 管理策略
 
-v1.7+可以通过`.spec.podManagementPolicy`设置Pod管理策略，支持两种方式
+v1.7 + 可以通过 `.spec.podManagementPolicy` 设置 Pod 管理策略，支持两种方式
 
-- OrderedReady：默认的策略，按照Pod的次序依次创建每个Pod并等待Ready之后才创建后面的Pod
-- Parallel：并行创建或删除Pod（不等待前面的Pod Ready就开始创建所有的Pod）
+- OrderedReady：默认的策略，按照 Pod 的次序依次创建每个 Pod 并等待 Ready 之后才创建后面的 Pod
+- Parallel：并行创建或删除 Pod（不等待前面的 Pod Ready 就开始创建所有的 Pod）
 
-### Parallel示例
+### Parallel 示例
 
 ```yaml
 ---
@@ -228,13 +231,13 @@ spec:
   - metadata:
       name: www
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes: ["ReadWriteOnce"]
       resources:
         requests:
           storage: 1Gi
 ```
 
-可以看到，所有Pod是并行创建的
+可以看到，所有 Pod 是并行创建的
 
 ```sh
 $ kubectl create -f webp.yaml
@@ -255,7 +258,7 @@ web-1     1/1       Running             0         10s
 
 ## zookeeper
 
-另外一个更能说明StatefulSet强大功能的示例为[zookeeper.yaml](zookeeper.txt)。
+另外一个更能说明 StatefulSet 强大功能的示例为 [zookeeper.yaml](zookeeper.txt)。
 
 ```yaml
 ---
@@ -418,7 +421,7 @@ spec:
       annotations:
         volume.alpha.kubernetes.io/storage-class: anything
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes: ["ReadWriteOnce"]
       resources:
         requests:
           storage: 20Gi
@@ -428,11 +431,11 @@ spec:
 kubectl create -f zookeeper.yaml
 ```
 
-详细的使用说明见[zookeeper stateful application](https://kubernetes.io/docs/tutorials/stateful-application/zookeeper/)。
+详细的使用说明见 [zookeeper stateful application](https://kubernetes.io/docs/tutorials/stateful-application/zookeeper/)。
 
-## StatefulSet注意事项
+## StatefulSet 注意事项
 
-1. 还在beta状态，需要kubernetes v1.5版本以上才支持
-2. 所有Pod的Volume必须使用PersistentVolume或者是管理员事先创建好
-3. 为了保证数据安全，删除StatefulSet时不会删除Volume
-4. StatefulSet需要一个Headless Service来定义DNS domain，需要在StatefulSet之前创建好
+1. 推荐在 Kubernetes v1.9 或以后的版本中使用
+2. 所有 Pod 的 Volume 必须使用 PersistentVolume 或者是管理员事先创建好
+3. 为了保证数据安全，删除 StatefulSet 时不会删除 Volume
+4. StatefulSet 需要一个 Headless Service 来定义 DNS domain，需要在 StatefulSet 之前创建好

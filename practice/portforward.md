@@ -1,6 +1,6 @@
 # 端口转发
 
-端口转发是kubectl的一个子功能，通过`kubectl port-forward`可以将本地端口转发到指定的Pod。
+端口转发是 kubectl 的一个子功能，通过 `kubectl port-forward` 可以将本地端口转发到指定的 Pod。
 
 使用方法
 

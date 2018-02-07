@@ -10,15 +10,17 @@ Kubernetes从1.5开始，通过`kops`或者`kube-up.sh`部署的集群会自动�
 
 ![](images/ha.png)
 
+注意：以下步骤假设每台机器上 Kubelet 和 Docker 已配置并处于正常运行状态。
+
 ## etcd集群
 
-从`https://discovery.etcd.io/new?size=3`获取token后，把<https://kubernetes.io/docs/admin/high-availability/etcd.yaml>放到每台机器的`/etc/kubernetes/manifests/etcd.yaml`，并替换掉`${DISCOVERY_TOKEN}`, `${NODE_NAME}`和`${NODE_IP}`，既可以由kubelet来启动一个etcd集群。
+从`https://discovery.etcd.io/new?size=3`获取token后，把 [etcd.yaml](https://kubernetes.io/docs/admin/high-availability/etcd.yaml) 放到每台机器的`/etc/kubernetes/manifests/etcd.yaml`，并替换掉`${DISCOVERY_TOKEN}`, `${NODE_NAME}`和`${NODE_IP}`，既可以由kubelet来启动一个etcd集群。
 
 对于运行在kubelet外部的etcd，可以参考[etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md)来手动配置集群模式。
 
 ## apiserver
 
-把<https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml>放到每台Master节点的`/etc/kubernetes/manifests/`，并把相关的配置放到`/srv/kubernetes/`，即可由kubelet自动创建并启动apiserver:
+把 [kube-apiserver.yaml](https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml) 放到每台Master节点的`/etc/kubernetes/manifests/`，并把相关的配置放到`/srv/kubernetes/`，即可由kubelet自动创建并启动apiserver:
 
 - basic_auth.csv - basic auth user and password
 - ca.crt - Certificate Authority cert
@@ -39,7 +41,7 @@ kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把[kube-scheduler.yaml](https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml)和[kube-controller-manager.yaml](https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml)(非GCE平台需要适当修改) 放到每台master节点的`/etc/kubernetes/manifests/`即可。
+把  [kube-scheduler.yaml](https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml) 和 [kube-controller-manager.yaml](https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml)  放到每台master节点的`/etc/kubernetes/manifests/`即可。
 
 ## kube-dns
 
@@ -57,7 +59,7 @@ dns_memory_requests: 70Mi
 
 ## kube-proxy
 
-默认kube-proxy使用iptables来为Service作负载均衡，这在大规模时会产生很大的Latency，可以考虑使用[IPVS](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3)的替代方式（注意Kubernetes v1.6还不支持IPVS模式）。
+默认kube-proxy使用iptables来为Service作负载均衡，这在大规模时会产生很大的Latency，可以考虑使用[IPVS](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3)的替代方式（注意 IPVS 在 v1.9 中还是 beta 状态）。
 
 ## 数据持久化
 

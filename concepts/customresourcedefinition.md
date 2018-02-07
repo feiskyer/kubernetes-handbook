@@ -1,10 +1,10 @@
 # CustomResourceDefinition
 
-CustomResourceDefinition（CRD）是v1.7+新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
+CustomResourceDefinition（CRD）是 v1.7 + 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
 
-## CRD示例
+## CRD 示例
 
-下面的例子会创建一个`/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/…`的自定义 API：
+下面的例子会创建一个 `/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/…` 的自定义 API：
 
 ```sh
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -31,7 +31,7 @@ spec:
     - ct
 ```
 
-API创建好后，就可以创建具体的CronTab对象了
+API 创建好后，就可以创建具体的 CronTab 对象了
 
 ```sh
 $ cat my-cronjob.yaml
@@ -66,7 +66,7 @@ spec:
 
 ## Finalizer
 
-Finalizer用于实现控制器的异步预删除钩子，可以通过`metadata.finalizers`来指定Finalizer。
+Finalizer 用于实现控制器的异步预删除钩子，可以通过 `metadata.finalizers` 来指定 Finalizer。
 
 ```yaml
 apiVersion: "stable.example.com/v1"
@@ -76,16 +76,16 @@ metadata:
   - finalizer.stable.example.com
 ```
 
-Finalizer指定后，客户端删除对象的操作只会设置`metadata.deletionTimestamp`而不是直接删除。这会触发正在监听CRD的控制器，控制器执行一些删除前的清理操作，从列表中删除自己的finalizer，然后再重新发起一个删除操作。此时，被删除的对象才会真正删除。
+Finalizer 指定后，客户端删除对象的操作只会设置 `metadata.deletionTimestamp` 而不是直接删除。这会触发正在监听 CRD 的控制器，控制器执行一些删除前的清理操作，从列表中删除自己的 finalizer，然后再重新发起一个删除操作。此时，被删除的对象才会真正删除。
 
 ## Validation
 
-v1.8 开始新增了实验性的基于 [OpenAPI v3 schema](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#schemaObject) 的验证（Validation）机制，可以用来提前验证用户提交的资源是否符合规范。使用该功能需要配置kube-apiserver的`--feature-gates=CustomResourceValidation=true`。
+v1.8 开始新增了实验性的基于 [OpenAPI v3 schema](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#schemaObject) 的验证（Validation）机制，可以用来提前验证用户提交的资源是否符合规范。使用该功能需要配置 kube-apiserver 的 `--feature-gates=CustomResourceValidation=true`。
 
-比如下面的CRD要求
+比如下面的 CRD 要求
 
-- `spec.cronSpec`必须是匹配正则表达式的字符串
-- `spec.replicas`必须是从1到10的整数
+- `spec.cronSpec` 必须是匹配正则表达式的字符串
+- `spec.replicas` 必须是从 1 到 10 的整数
 
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -117,7 +117,7 @@ spec:
               maximum: 10
 ```
 
-这样，在创建下面的CronTab时
+这样，在创建下面的 CronTab 时
 
 ```yaml
 apiVersion: "stable.example.com/v1"
@@ -133,11 +133,21 @@ spec:
 会报验证失败的错误：
 
 ```sh
-The CronTab "my-new-cron-object" is invalid: []: Invalid value: map[string]interface {}{"apiVersion":"stable.example.com/v1", "kind":"CronTab", "metadata":map[string]interface {}{"name":"my-new-cron-object", "namespace":"default", "deletionTimestamp":interface {}(nil), "deletionGracePeriodSeconds":(*int64)(nil), "creationTimestamp":"2017-09-05T05:20:07Z", "uid":"e14d79e7-91f9-11e7-a598-f0761cb232d1", "selfLink":"", "clusterName":""}, "spec":map[string]interface {}{"cronSpec":"* * * *", "image":"my-awesome-cron-image", "replicas":15}}:
+The CronTab "my-new-cron-object" is invalid: []: Invalid value: map[string]interface {}{"apiVersion":"stable.example.com/v1", "kind":"CronTab", "metadata":map[string]interface {}{"name":"my-new-cron-object", "namespace":"default", "deletionTimestamp":interface {}(nil), "deletionGracePeriodSeconds":(*int64)(nil), "creationTimestamp":"2017-09-05T05:20:07Z", "uid":"e14d79e7-91f9-11e7-a598-f0761cb232d1", "selfLink":"","clusterName":""}, "spec":map[string]interface {}{"cronSpec":"* * * *", "image":"my-awesome-cron-image", "replicas":15}}:
 validation failure list:
 spec.cronSpec in body should match '^(\d+|\*)(/\d+)?(\s+(\d+|\*)(/\d+)?){4}$'
 spec.replicas in body should be less than or equal to 10
 ```
+
+## CRD 控制器
+
+在使用 CRD 扩展 Kubernetes API 时，通常还需要实现一个新建资源的控制器，监听改资源的变化情况，并作进一步的处理。
+
+<https://github.com/kubernetes/sample-controller> 提供了一个 CRD 控制器的示例，包括
+
+- 如何注册资源 `Foo`
+- 如何创建、删除和查询 `Foo` 对象
+- 如何监听 `Foo` 资源对象的变化情况
 
 ## 参考文档
 

@@ -20,6 +20,12 @@ Kubernetes目前提供了以下几种准入控制插件
 - DefaultTolerationSeconds：设置Pod的默认forgiveness toleration为5分钟
 - PodSecurityPolicy：使用Pod Security Policies时必须开启
 - NodeRestriction：限制kubelet仅可访问node、endpoint、pod、service以及secret、configmap、PV和PVC等相关的资源（仅适用于v1.7+）
+- EventRateLimit：限制事件请求数量（仅适用于v1.9）
+- ExtendedResourceToleration：为使用扩展资源（如 GPU 和 FPGA 等）的 Pod 自动添加 tolerations
+- PVCProtection：自动给新创建的 PVC 增加 `kubernetes.io/pvc-protection` finalizer
+- PersistentVolumeClaimResize：仅允许设置 `allowVolumeExpansion=true` 的 StorageClass 调整 PVC 大小
+- ValidatingAdmissionWebhook
+- MutatingAdmissionWebhook
 
 Kubernetes v1.7+还支持Initializers和GenericAdmissionWebhook，可以用来方便地扩展准入控制。
 
@@ -40,19 +46,18 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: InitializerConfiguration
 metadata:
   name: example-config
-spec:
-  initializers:
-    # the name needs to be fully qualified, i.e., containing at least two "."
-    - name: podimage.example.com
-      rules:
-        # apiGroups, apiVersion, resources all support wildcard "*".
-        # "*" cannot be mixed with non-wildcard.
-        - apiGroups:
-            - ""
-          apiVersions:
-            - v1
-          resources:
-            - pods
+initializers:
+  # the name needs to be fully qualified, i.e., containing at least two "."
+  - name: podimage.example.com
+    rules:
+      # apiGroups, apiVersion, resources all support wildcard "*".
+      # "*" cannot be mixed with non-wildcard.
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        resources:
+          - pods
 ```
 
 Initializers可以用来
@@ -64,15 +69,16 @@ Initializers可以用来
 
 - 参考[Kubernetes Initializer Tutorial](https://github.com/kelseyhightower/kubernetes-initializer-tutorial) 开发Initializer
 - Initializer必须有一个全局唯一的名字，比如`initializer.vaultproject.io`
+- Initializer有可能收到信息不全的资源（比如还未调度的Pod没有nodeName和status），在实现时需要考虑这种情况
 - 对于Initializer自身的部署，可以使用Deployment，但需要手动设置initializers列表为空，以避免无法启动的问题，如
-```
+
+```yaml
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   initializers:
     pending: []
 ```
-- Initializer有可能收到信息不全的资源（比如还未调度的Pod没有nodeName和status），在实现时需要考虑这种情况
 
 ## GenericAdmissionWebhook
 
@@ -114,14 +120,25 @@ externalAdmissionHooks:
 
 ## 推荐配置
 
+对于 Kubernetes >= 1.9.0，推荐配置以下插件
+
+```sh
+--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota
+```
+
 对于Kubernetes >= 1.6.0，推荐kube-apiserver开启以下插件
 
 ```sh
 --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,ResourceQuota,DefaultTolerationSeconds
 ```
 
+对于 Kubernetes >= 14.0，推荐配置以下插件
+
+```sh
+--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
+```
+
 ## 参考文档
 
 - [Using Admission Controllers](https://kubernetes.io/docs/admin/admission-controllers/)
 - [How Kubernetes Initializers work](https://medium.com/google-cloud/how-kubernetes-initializers-work-22f6586e1589)
-

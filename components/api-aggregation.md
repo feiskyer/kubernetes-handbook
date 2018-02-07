@@ -6,7 +6,7 @@ API Aggregation允许在不修改Kubernetes核心代码的同时扩展Kubernetes
 
 kube-apiserver增加以下配置
 
-```
+```sh
 --requestheader-client-ca-file=<path to aggregator CA cert>
 --requestheader-allowed-names=aggregator
 --requestheader-extra-headers-prefix=X-Remote-Extra-
@@ -18,7 +18,7 @@ kube-apiserver增加以下配置
 
 如果`kube-proxy`没有在Master上面运行，还需要配置
 
-```
+```sh
 --enable-aggregator-routing=true
 ```
 
@@ -53,7 +53,7 @@ $ apiserver-boot build docs
 $ apiserver-boot run local
 
 # 集群运行
-$ apiserver-boot run in-cluster --name nameofservicetorun --namespace default --image gcr.io/myrepo/myimage:mytag 
+$ apiserver-boot run in-cluster --name nameofservicetorun --namespace default --image gcr.io/myrepo/myimage:mytag
 $ kubectl create -f sample/<type>.yaml
 ```
 

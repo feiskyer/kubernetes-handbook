@@ -1,21 +1,21 @@
 # kubectl
 
-kubectl是Kubernetes的命令行工具（CLI），是Kubernetes用户和管理员必备的管理工具。
+kubectl 是 Kubernetes 的命令行工具（CLI），是 Kubernetes 用户和管理员必备的管理工具。
 
-kubectl提供了大量的子命令，方便管理Kubernetes集群中的各种功能。这里不再罗列各种子命令的格式，而是介绍下如何查询命令的帮助
+kubectl 提供了大量的子命令，方便管理 Kubernetes 集群中的各种功能。这里不再罗列各种子命令的格式，而是介绍下如何查询命令的帮助
 
-- `kubectl -h`查看子命令列表
-- `kubectl options`查看全局选项
-- `kubectl <command> --help`查看子命令的帮助
-- `kubectl [command] [PARAMS] -o=<format>`设置输出格式（如json、yaml、jsonpath等）
+- `kubectl -h` 查看子命令列表
+- `kubectl options` 查看全局选项
+- `kubectl <command> --help` 查看子命令的帮助
+- `kubectl [command] [PARAMS] -o=<format>` 设置输出格式（如 json、yaml、jsonpath 等）
 
 ## 配置
 
-使用kubectl的第一步是配置Kubernetes集群以及认证方式，包括
+使用 kubectl 的第一步是配置 Kubernetes 集群以及认证方式，包括
 
-- cluster信息：Kubernetes server地址
+- cluster 信息：Kubernetes server 地址
 - 用户信息：用户名、密码或密钥
-- Context：cluster、用户信息以及Namespace的组合
+- Context：cluster、用户信息以及 Namespace 的组合
 
 示例
 
@@ -29,16 +29,16 @@ kubectl config view
 
 ## 常用命令格式
 
-- 创建：`kubectl run <name> --image=<image>`或者`kubectl create -f manifest.yaml`
+- 创建：`kubectl run <name> --image=<image>` 或者 `kubectl create -f manifest.yaml`
 - 查询：`kubectl get <resource>`
 - 更新
-- 删除：`kubectl delete <resource> <name>`或者`kubectl delete -f manifest.yaml`
-- 查询Pod IP：`kubectl get pod <pod-name> -o jsonpath='{.status.podIP}'`
+- 删除：`kubectl delete <resource> <name>` 或者 `kubectl delete -f manifest.yaml`
+- 查询 Pod IP：`kubectl get pod <pod-name> -o jsonpath='{.status.podIP}'`
 - 容器内执行命令：`kubectl exec -ti <pod-name> sh`
 - 容器日志：`kubectl logs [-f] <pod-name>`
 - 导出服务：`kubectl expose deploy <name> --port=80`
 
-注意，`kubectl run`仅支持Pod、Replication Controller、Deployment、Job和CronJob等几种资源。具体的资源类型是由参数决定的，默认为Deployment：
+注意，`kubectl run` 仅支持 Pod、Replication Controller、Deployment、Job 和 CronJob 等几种资源。具体的资源类型是由参数决定的，默认为 Deployment：
 
 | 创建的资源类型                | 参数                    |
 | ---------------------- | --------------------- |
@@ -50,7 +50,7 @@ kubectl config view
 
 ## 命令行自动补全
 
-Linux系统Bash：
+Linux 系统 Bash：
 
 ```sh
 source /usr/share/bash-completion/bash_completion
@@ -65,29 +65,29 @@ source <(kubectl completion zsh)
 
 ## 日志查看
 
-`kubectl logs`用于显示pod运行中，容器内程序输出到标准输出的内容。跟docker的logs命令类似。
+`kubectl logs` 用于显示 pod 运行中，容器内程序输出到标准输出的内容。跟 docker 的 logs 命令类似。
 
 ```sh
   # Return snapshot logs from pod nginx with only one container
   kubectl logs nginx
-  
+
   # Return snapshot of previous terminated ruby container logs from pod web-1
   kubectl logs -p -c ruby web-1
-  
+
   # Begin streaming the logs of the ruby container in pod web-1
   kubectl logs -f -c ruby web-1
 ```
 
 ## 连接到一个正在运行的容器
 
-`kubectl attach`用于连接到一个正在运行的容器。跟docker的attach命令类似。
+`kubectl attach` 用于连接到一个正在运行的容器。跟 docker 的 attach 命令类似。
 ```sh
   # Get output from running pod 123456-7890, using the first container by default
   kubectl attach 123456-7890
-  
+
   # Get output from ruby-container from pod 123456-7890
   kubectl attach 123456-7890 -c ruby-container
-  
+
   # Switch to raw terminal mode, sends stdin to 'bash' in ruby-container from pod 123456-7890
   # and sends stdout/stderr from 'bash' back to the client
   kubectl attach 123456-7890 -c ruby-container -i -t
@@ -100,14 +100,14 @@ Options:
 
 ## 在容器内部执行命令
 
-`kubectl exec`用于在一个正在运行的容器执行命令。跟docker的exec命令类似。
+`kubectl exec` 用于在一个正在运行的容器执行命令。跟 docker 的 exec 命令类似。
 ```sh
   # Get output from running 'date' from pod 123456-7890, using the first container by default
   kubectl exec 123456-7890 date
-  
+
   # Get output from running 'date' in ruby-container from pod 123456-7890
   kubectl exec 123456-7890 -c ruby-container date
-  
+
   # Switch to raw terminal mode, sends stdin to 'bash' in ruby-container from pod 123456-7890
   # and sends stdout/stderr from 'bash' back to the client
   kubectl exec 123456-7890 -c ruby-container -i -t -- bash -il
@@ -121,7 +121,7 @@ Options:
 
 ## 端口转发
 
-`kubectl port-forward`用于将本地端口转发到指定的Pod。
+`kubectl port-forward` 用于将本地端口转发到指定的 Pod。
 ```sh
 # Listen on port 8888 locally, forwarding to 5000 in the pod
 kubectl port-forward mypod 8888:5000
@@ -129,20 +129,20 @@ kubectl port-forward mypod 8888:5000
 
 ## API Server 代理
 
-`kubectl proxy`命令提供了一个Kubernetes API服务的HTTP代理。
+`kubectl proxy` 命令提供了一个 Kubernetes API 服务的 HTTP 代理。
 
 ```sh
 $ kubectl proxy --port=8080
 Starting to serve on 127.0.0.1:8080
 ```
 
-可以通过代理地址`http://localhost:8080/api/`来直接访问Kubernetes API，比如查询Pod列表
+可以通过代理地址 `http://localhost:8080/api/` 来直接访问 Kubernetes API，比如查询 Pod 列表
 
 ```sh
 curl http://localhost:8080/api/v1/namespaces/default/pods
 ```
 
-注意，如果通过`--address`指定了非localhost的地址，则访问8080端口时会报未授权的错误，可以设置`--accept-hosts`来避免这个问题（**不推荐生产环境这么设置**）：
+注意，如果通过 `--address` 指定了非 localhost 的地址，则访问 8080 端口时会报未授权的错误，可以设置 `--accept-hosts` 来避免这个问题（** 不推荐生产环境这么设置 **）：
 
 ```sh
 kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$'
@@ -150,25 +150,25 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$'
 
 ## 文件拷贝
 
-`kubectl cp`支持从容器中拷贝，或者拷贝文件到容器中
+`kubectl cp` 支持从容器中拷贝，或者拷贝文件到容器中
 
 ```sh
   # Copy /tmp/foo_dir local directory to /tmp/bar_dir in a remote pod in the default namespace
   kubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
-  
+
   # Copy /tmp/foo local file to /tmp/bar in a remote pod in a specific container
   kubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
-  
+
   # Copy /tmp/foo local file to /tmp/bar in a remote pod in namespace <some-namespace>
   kubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
-  
+
   # Copy /tmp/foo from a remote pod to /tmp/bar locally
   kubectl cp <some-namespace>/<some-pod>:/tmp/foo /tmp/bar
 
 Options:
   -c, --container='': Container name. If omitted, the first container in the pod will be chosen
 ```
-注意：文件拷贝依赖于tar命令，所以容器中需要能够执行tar命令
+注意：文件拷贝依赖于 tar 命令，所以容器中需要能够执行 tar 命令
 
 ## kubectl drain
 
@@ -176,14 +176,14 @@ Options:
 kubectl drain NODE [Options]
 ```
 
-- 它会删除该NODE上由ReplicationController, ReplicaSet, DaemonSet, StatefulSet or Job创建的Pod
-- 不删除mirror pods（因为不可通过API删除mirror pods）
-- 如果还有其它类型的Pod（比如不通过RC而直接通过kubectl create的Pod）并且没有--force选项，该命令会直接失败
-- 如果命令中增加了--force选项，则会强制删除这些不是通过ReplicationController, Job或者DaemonSet创建的Pod
+- 它会删除该 NODE 上由 ReplicationController, ReplicaSet, DaemonSet, StatefulSet or Job 创建的 Pod
+- 不删除 mirror pods（因为不可通过 API 删除 mirror pods）
+- 如果还有其它类型的 Pod（比如不通过 RC 而直接通过 kubectl create 的 Pod）并且没有 --force 选项，该命令会直接失败
+- 如果命令中增加了 --force 选项，则会强制删除这些不是通过 ReplicationController, Job 或者 DaemonSet 创建的 Pod
 
-有的时候不需要evict pod，只需要标记Node不可调用，可以用`kubectl cordon`命令。
+有的时候不需要 evict pod，只需要标记 Node 不可调用，可以用 `kubectl cordon` 命令。
 
-恢复的话只需要运行`kubectl uncordon NODE`将NODE重新改成可调度状态。
+恢复的话只需要运行 `kubectl uncordon NODE` 将 NODE 重新改成可调度状态。
 
 ## 权限检查
 
@@ -205,19 +205,19 @@ kubectl drain NODE [Options]
   kubectl auth can-i list jobs.batch/bar -n foo
 ```
 
-- `kubectl auth reconcile` 自动修复有问题的RBAC策略，如
+- `kubectl auth reconcile` 自动修复有问题的 RBAC 策略，如
 
 ```sh
   # Reconcile rbac resources from a file
   kubectl auth reconcile -f my-rbac-rules.yaml
 ```
 
-## kubectl插件
+## kubectl 插件
 
-kubectl插件提供了一种扩展kubectl的机制，比如添加新的子命令。插件可以以任何语言编写，只需要满足以下条件即可
+kubectl 插件提供了一种扩展 kubectl 的机制，比如添加新的子命令。插件可以以任何语言编写，只需要满足以下条件即可
 
-- 插件放在`~/.kube/plugins`或环境变量`KUBECTL_PLUGINS_PATH`指定的目录中
-- 插件的格式为`子目录/可执行文件或脚本`且子目录中要包括`plugin.yaml`配置文件
+- 插件放在 `~/.kube/plugins` 或环境变量 `KUBECTL_PLUGINS_PATH` 指定的目录中
+- 插件的格式为 ` 子目录 / 可执行文件或脚本 ` 且子目录中要包括 `plugin.yaml` 配置文件
 
 比如
 
@@ -240,7 +240,7 @@ Hello plugins!
 
 ## 附录
 
-kubectl的安装方法
+kubectl 的安装方法
 
 ```sh
 # OS X

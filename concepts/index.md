@@ -1,16 +1,16 @@
 # 主要概念
 
-Kubernetes主要概念和对象介绍。
+Kubernetes 主要概念和对象介绍。
 
-- Pod, Service, Namespace和Node
+- Pod, Service, Namespace 和 Node
 - Service
-- Volume和Persistent Volume
+- Volume 和 Persistent Volume
 - Deployment
 - Secret
 - StatefulSet
 - DaemonSet
 - ServiceAccount
-- ReplicationController和ReplicaSet
+- ReplicationController 和 ReplicaSet
 - Job
 - CronJob
 - SecurityContext

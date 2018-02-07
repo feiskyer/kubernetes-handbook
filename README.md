@@ -16,17 +16,18 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 
 如无特殊说明，本指南所有文档仅适用于 Kubernetes v1.6 及以上版本。
 
-### 版本更新记录
+### 本书版本更新记录
 
-* 2017.12.09 更新至 Kubernetes v1.8 版本
-* 2017.09.11 更新至 Kubernetes v1.7 版本
-* 2017.06.29 更新至 Kubernetes v1.6 版本
+- 2018.02.07 更新至 [Kubernetes v1.9](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.9.md) 版本
+- 2017.12.09 更新至 [Kubernetes v1.8](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.8.md) 版本
+- 2017.09.11 更新至 [Kubernetes v1.7](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.7.md) 版本
+- 2017.06.29 更新至 [Kubernetes v1.6](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.6.md) 版本
 
 ## 在线阅读
 
 可以通过 [GitBook](https://kubernetes.feisky.xyz/) 或者 [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md) 来在线阅读。
 
-也可以点击[这里](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)下载 InfoQ 帮助制作和发布的 ePub、PDF 和 MOBI 电子书。
+也可以点击 [这里](http://www.infoq.com/cn/minibooks/Kubernetes-handbook) 下载 InfoQ 帮助制作和发布的 ePub、PDF 和 MOBI 电子书。
 
 ## 项目源码
 
