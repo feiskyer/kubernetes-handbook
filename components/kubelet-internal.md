@@ -15,7 +15,7 @@
 
 ![](images/Pod启动过程.png)
 
-## 访问 Node Summary API
+## 查询 Node 汇总指标
 
 通过 Kubelet 的 10255 端口可以查询 Node 的汇总指标。有两种访问方式
 
