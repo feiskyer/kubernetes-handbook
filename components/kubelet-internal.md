@@ -14,3 +14,15 @@
 ## Pod启动流程
 
 ![](images/Pod启动过程.png)
+
+## 访问 Node Summary API
+
+通过 Kubelet 的 10255 端口可以查询 Node 的汇总指标。有两种访问方式
+
+- 在集群内部可以直接访问 kubelet 的 10255 端口，比如 `http://<node-name>:10255/stats/summary`
+- 在集群外部可以借助 `kubectl proxy` 来访问，比如
+
+```sh
+kubectl proxy&
+curl http://localhost:8001/api/v1/proxy/nodes/<node-name>:10255/stats/summary
+```
