@@ -41,8 +41,8 @@ Windows Server 中支持以下几种网络插件（注意 Windows 节点上的�
 2. [Host Gateway](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/configuring-host-gateway-mode) 网络插件，跟上面类似但将 IP 路由配置到每台主机上面
 3. [Azure VNET CNI Plugin](https://github.com/Azure/azure-container-networking/blob/master/docs/cni.md)
 4. [Open vSwitch (OVS) & Open Virtual Network (OVN) with Overlay](https://github.com/openvswitch/ovn-kubernetes/)
-5. Flannel
-6. Calico
+5. Flannel v0.10.0+
+6. Calico v3.0.1+
 7. 未来还会支持 [win-l2bridge (host-gateway) 和 win-overlay (vxlan)](https://github.com/containernetworking/plugins/pull/85)
 
 ### L3 路由拓扑
@@ -150,8 +150,6 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
    ./start-kubeproxy.ps1
    ```
 
-   ​
-
 6. 如果使用 Host-Gateway 网络插件，还需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加静态路由
 
 详细的操作步骤可以参考 [这里](https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/live/virtualization/windowscontainers/kubernetes/getting-started-kubernetes-windows.md)。
@@ -201,6 +199,28 @@ spec:
   type: NodePort
 ```
 
+运行 DaemonSet
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: my-DaemonSet
+  labels:
+    app: foo
+spec:
+  template:
+    metadata:
+      labels:
+        app: foo
+    spec:
+      containers:
+      - name: foo
+        image: microsoft/windowsservercore:1709
+      nodeSelector:
+        beta.kubernetes.io/os: windows
+```
+
 ## 已知问题
 
 ### Secrets 和 ConfigMaps 只能以环境变量的方式使用
@@ -213,9 +233,7 @@ metadata:
 data:
   example.property.1: hello
   example.property.2: world
-
 ---
-
 apiVersion: v1
 kind: Pod
 metadata:
@@ -303,10 +321,20 @@ microsoft/iis:windowsservercore-1709
 
 而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
 
-### 其他已知问题
+### v1.9 版本已知问题
 
-- Shared network namespace (compartment) with multiple Windows Server containers (shared kernel) per pod is only supported on Windows Server 1709 or later
-- Using Secrets and ConfigMaps as volume mounts is not supported
-- The StatefulSet functionality for stateful applications is not supported
-- Horizontal Pod Autoscaling for Windows Server Container pods has not been verified to work end-to-end
-- Hyper-V Containers are not supported
+- 仅  Windows Server 1709 或更新的版本才支持在 Pod 内运行多个容器（仅支持 Process 隔离）
+- 暂不支持以 Volume 挂载的方式使用 Secrets 和 ConfigMaps
+- 暂不支持 StatefulSet
+- 暂不支持 Windows Server Container Pods 的自动扩展（Horizontal Pod Autoscaling）
+- 暂不支持 Hyper-V 隔离方式
+- Windows 容器的 OS 版本需要与 Host OS 版本匹配，否则容器无法启动
+- 使用 L3 或者 Host GW 网络时，无法从 Windows Node 中直接访问 Kubernetes Services（使用 OVS/OVN 时没有这个问题）
+- 在 VMWare Fusion 的 Window Server 中 kubelet.exe 可能会无法启动（已在 [#57124](https://github.com/kubernetes/kubernetes/pull/57124) 中修复）
+- 暂不支持 Weave 网络插件
+- Calico 网络插件仅支持 Policy-Only 模式
+
+## 参考文档
+
+- [Using Windows Server Containers in Kubernetes](https://kubernetes.io/docs/getting-started-guides/windows/)
+
