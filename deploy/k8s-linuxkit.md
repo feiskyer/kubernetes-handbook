@@ -4,7 +4,7 @@ LinuxKit 是以 Container 来建立最小、不可变的 Linux 系统框架，�
 ![](images/moby+kubernetes.png)
 
 
-本着教学会在`Mac OS X`系统上进行，部署的环境资讯如下：
+本着教学会在 `Mac OS X` 系统上进行，部署的环境资讯如下：
 * Kubernetes v1.7.2
 * Etcd v3
 * Weave
@@ -12,8 +12,8 @@ LinuxKit 是以 Container 来建立最小、不可变的 Linux 系统框架，�
 
 ## 预先准备资讯
 
-* 主机已安装与启动`Docker`工具。
-* 主机已安装`Git`工具。
+* 主机已安装与启动 `Docker` 工具。
+* 主机已安装 `Git` 工具。
 * 主机以下载 LinuxKit 项目，并建构了 Moby 与 LinuxKit 工具。
 
 建构 Moby 与 LinuxKit 方法如以下操作：
@@ -67,7 +67,7 @@ kubeadm join --token 4236d3.29f61af661c49dbf 192.168.65.3:6443
 ```sh
 console1>$ ./boot.sh 1 --token 4236d3.29f61af661c49dbf 192.168.65.3:6443
 ```
-> P.S. 开启节点格式为`./boot.sh <n> [<join_args> ...]`。
+> P.S. 开启节点格式为 `./boot.sh <n> [<join_args> ...]`。
 
 接着分别在开两个 Console 来加入集群：
 ```sh
@@ -103,7 +103,7 @@ kubernetes   10.96.0.1       <none>        443/TCP        19m
 nginx        10.108.41.230   <nodes>       80:31773/TCP   5s
 ```
 
-由于不是使用物理机器部署，因此网络使用 Docker namespace 网络，故需透过`ubuntu-desktop-lxde-vnc`来浏览 Nginx 应用：
+由于不是使用物理机器部署，因此网络使用 Docker namespace 网络，故需透过 `ubuntu-desktop-lxde-vnc` 来浏览 Nginx 应用：
 ```sh
 $ docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
 ```
@@ -114,5 +114,5 @@ $ docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
 最后关闭节点只需要执行以下即可：
 ```sh
 $ halt
-[ 1503.034689] reboot: Power down
+[1503.034689] reboot: Power down
 ```

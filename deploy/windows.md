@@ -12,7 +12,7 @@ Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开�
 
 ## 下载
 
-可以从 <<https://github.com/kubernetes/kubernetes/releases>下载已发布的用于 Windows 服务器的二进制文件，如
+可以从 <<https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
 
 ```sh
 $ wget https://dl.k8s.io/v1.9.2/kubernetes-node-windows-amd64.tar.gz
@@ -120,7 +120,7 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
 
 ### 手动部署
 
-1. 在 Windows Server 中[安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
+1. 在 Windows Server 中 [安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
 
    ```
    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
@@ -142,7 +142,7 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
    rm -recurse -force master,master.zip
    ```
 
-5. 使用[start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1)启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
+5. 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
 
    ```sh
    [Environment]::SetEnvironmentVariable("KUBECONFIG", "C:\k\config", [EnvironmentVariableTarget]::User)
@@ -154,7 +154,7 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
 
 6. 如果使用 Host-Gateway 网络插件，还需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加静态路由
 
-详细的操作步骤可以参考[这里](https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/live/virtualization/windowscontainers/kubernetes/getting-started-kubernetes-windows.md)。
+详细的操作步骤可以参考 [这里](https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/live/virtualization/windowscontainers/kubernetes/getting-started-kubernetes-windows.md)。
 
 ## 运行 Windows 容器
 

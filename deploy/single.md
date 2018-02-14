@@ -2,7 +2,7 @@
 
 ## minikube
 
-创建 Kubernetes cluster（单机版）最简单的方法是 [minikube](https://github.com/kubernetes/minikube)。国内网络环境下也可以考虑使用[kubeasz](https://github.com/gjmzj/kubeasz) 的 AllInOne 部署。
+创建 Kubernetes cluster（单机版）最简单的方法是 [minikube](https://github.com/kubernetes/minikube)。国内网络环境下也可以考虑使用 [kubeasz](https://github.com/gjmzj/kubeasz) 的 AllInOne 部署。
 
 首先下载 kubectl
 
@@ -49,7 +49,7 @@ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port \
 安装 calico 网络插件：
 
 ```sh
-curl -O -L https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+curl -O -L https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 sed -i -e '/nodeSelector/d' calico.yaml
 sed -i -e '/node-role.kubernetes.io\/master:""/d' calico.yaml
 sed -i -e 's/10\.96\.232/10.0.0/' calico.yaml

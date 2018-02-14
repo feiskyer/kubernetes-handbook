@@ -1,15 +1,15 @@
-# kops集群部署
+# kops 集群部署
 
-[kops](https://github.com/kubernetes/kops) 是一个生产级Kubernetes集群部署工具，可以在AWS、GCE、VMWare vSphere等平台上自动部署高可用的Kubernetes集群。主要功能包括
+[kops](https://github.com/kubernetes/kops) 是一个生产级 Kubernetes 集群部署工具，可以在 AWS、GCE、VMWare vSphere 等平台上自动部署高可用的 Kubernetes 集群。主要功能包括
 
-- 自动部署高可用的kubernetes集群
-- 支持从[kube-up](https://github.com/kubernetes/kops/blob/master/docs/upgrade_from_kubeup.md)创建的集群升级到kops版本
-- dry-run和自动幂等升级等基于状态同步模型
-- 支持自动生成AWS CloudFormation和Terraform配置
-- 支持自定义扩展add-ons
+- 自动部署高可用的 kubernetes 集群
+- 支持从 [kube-up](https://github.com/kubernetes/kops/blob/master/docs/upgrade_from_kubeup.md) 创建的集群升级到 kops 版本
+- dry-run 和自动幂等升级等基于状态同步模型
+- 支持自动生成 AWS CloudFormation 和 Terraform 配置
+- 支持自定义扩展 add-ons
 - 命令行自动补全
 
-## 安装kops和kubectl
+## 安装 kops 和 kubectl
 
 ```sh
 # on macOS
@@ -21,9 +21,9 @@ chmod +x kops-linux-amd64
 mv kops-linux-amd64 /usr/local/bin/kops
 ```
 
-## 在AWS上面部署
+## 在 AWS 上面部署
 
-首先需要安装AWS CLI并配置IAM：
+首先需要安装 AWS CLI 并配置 IAM：
 
 ```sh
 # install AWS CLI
@@ -49,20 +49,20 @@ export AWS_ACCESS_KEY_ID=<access key>
 export AWS_SECRET_ACCESS_KEY=<secret key>
 ```
 
-创建route53域名
+创建 route53 域名
 
 ```sh
 aws route53 create-hosted-zone --name dev.example.com --caller-reference 1
 ```
 
-创建s3存储bucket
+创建 s3 存储 bucket
 
 ```sh
 aws s3api create-bucket --bucket clusters.dev.example.com --region us-east-1
 aws s3api put-bucket-versioning --bucket clusters.dev.example.com  --versioning-configuration Status=Enabled
 ```
 
-部署Kubernetes集群
+部署 Kubernetes 集群
 
 ```sh
 export KOPS_STATE_STORE=s3://clusters.dev.example.com
@@ -90,7 +90,7 @@ kops create cluster \
 kops delete cluster --name ${NAME} --yes
 ```
 
-## 在GCE上面部署
+## 在 GCE 上面部署
 
 ```sh
 # Create cluster in GCE.

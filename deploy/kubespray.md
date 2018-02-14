@@ -2,9 +2,9 @@
 
 [Kubespray](https://github.com/kubernetes-incubator/kubespray) 是 Kubernetes incubator 中的项目，目标是提供 Production Ready Kubernetes 部署方案，该项目基础是通过 Ansible Playbook 来定义系统与 Kubernetes 集群部署的任务，具有以下几个特点：
 
-* 可以部署在 AWS, GCE, Azure, OpenStack以及裸机上.
+* 可以部署在 AWS, GCE, Azure, OpenStack 以及裸机上.
 * 部署 High Available Kubernetes 集群.
-* 可组合性(Composable)，可自行选择 Network Plugin (flannel, calico, canal, weave) 来部署.
+* 可组合性 (Composable)，可自行选择 Network Plugin (flannel, calico, canal, weave) 来部署.
 * 支持多种 Linux distributions(CoreOS, Debian Jessie, Ubuntu 16.04, CentOS/RHEL7).
 
 本篇将说明如何通过 Kubespray 部署 Kubernetes 至裸机节点，安装版本如下所示：
@@ -15,7 +15,8 @@
 * Docker v17.04.0-ce
 
 ## 节点资讯
-本次安装测试环境的作业系统采用`Ubuntu 16.04 Server`，其他细节内容如下：
+
+本次安装测试环境的作业系统采用 `Ubuntu 16.04 Server`，其他细节内容如下：
 
 | IP Address      | Role             | CPU  | Memory |
 | --------------- | ---------------- | ---- | ------ |
@@ -29,18 +30,18 @@
 ## 预先准备资讯
 
 * 所有节点的网路之间可以互相通信。
-* `部署节点(这边为 master1)`对其他节点不需要 SSH 密码即可登入。
+* ` 部署节点 (这边为 master1)` 对其他节点不需要 SSH 密码即可登入。
 * 所有节点都拥有 Sudoer 权限，并且不需要输入密码。
 * 所有节点需要安装 `Python`。
-* 所有节点需要设定`/etc/hosts`解析到所有主机。
+* 所有节点需要设定 `/etc/hosts` 解析到所有主机。
 
-* 修改所有节点的`/etc/resolv.conf`
+* 修改所有节点的 `/etc/resolv.conf`
 
 ```sh
 $ echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
 ```
 
-* `部署节点(这边为 master1)`安装 Ansible >= 2.3.0。
+* ` 部署节点 (这边为 master1)` 安装 Ansible >= 2.3.0。
 
 Ubuntu 16.04 安装 Ansible:
 ```sh
@@ -50,15 +51,15 @@ $ sudo apt-add-repository -y ppa:ansible/ansible
 $ sudo apt-get update && sudo apt-get install -y ansible git cowsay python-pip python-netaddr libssl-dev
 ```
 
-##安装 Kubespray 与准备部署资讯
+## 安装 Kubespray 与准备部署资讯
 首先通过 pypi 安装 kubespray-cli，虽然官方说已经改成 Go 语言版本的工具，但是根本没在更新，所以目前暂时用 pypi 版本：
 ```sh
 $ sudo pip install -U kubespray
 ```
 
-安裝完成後，新增配置檔`~/.kubespray.yml`，並加入以下內容：
+安裝完成後，新增配置檔 `~/.kubespray.yml`，並加入以下內容：
 ```sh
-$ cat <<EOF > ~/.kubespray.yml
+$ cat <<EOF> ~/.kubespray.yml
 kubespray_git_repo: "https://github.com/kubernetes-incubator/kubespray.git"
 # Logging options
 loglevel: "info"
@@ -70,7 +71,7 @@ EOF
 $ kubespray prepare --masters master1 --etcds master1 --nodes node1 node2 node3
 ```
 
-在inventory.cfg，添加部分內容：
+在 inventory.cfg，添加部分內容：
 ```
 $ vim ~/.kubespray/inventory/inventory.cfg
 
@@ -95,7 +96,7 @@ master1
 kube-node
 kube-master
 ```
-> 也可以自己新建`inventory`来描述部署节点。
+> 也可以自己新建 `inventory` 来描述部署节点。
 
 完成后通过以下指令进行部署 Kubernetes 集群：
 ```sh
@@ -109,7 +110,7 @@ node3                      : ok=276  changed=62   unreachable=0    failed=0
 
 Kubernetes deployed successfuly
 ```
-> 其中`-n`为部署的网络插件类型，目前支持 calico、flannel、weave 与 canal。
+> 其中 `-n` 为部署的网络插件类型，目前支持 calico、flannel、weave 与 canal。
 
 ## 验证集群
 当 Ansible 运行完成后，若没发生错误就可以开始进行操作 Kubernetes，如取得版本资讯：
