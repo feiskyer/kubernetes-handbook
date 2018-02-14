@@ -1,8 +1,8 @@
 # 准备计算资源
 
-Kubernetes 需要一些机器去搭建管理 Kubernetes 的控制平台, 也需要一些工作节点（work node）来运行容器。在这个实验中你将会创建一些虚拟机，并利用 GCE [Compute Zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) 来运行安全且高可用的 Kubernetes 集群。 
+Kubernetes 需要一些机器去搭建管理 Kubernetes 的控制平台, 也需要一些工作节点（work node）来运行容器。在这个实验中你将会创建一些虚拟机，并利用 GCE [Compute Zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) 来运行安全且高可用的 Kubernetes 集群。
 
-> 请确定默认 Compute Zone 和 Gegion 已按照 [事前准备](01-prerequisites.md#set-a-default-compute-region-and-zone)的设定步骤完成。
+> 请确定默认 Compute Zone 和 Gegion 已按照 [事前准备](01-prerequisites.md#set-a-default-compute-region-and-zone) 的设定步骤完成。
 
 ## 网络
 
@@ -26,7 +26,7 @@ gcloud compute networks subnets create kubernetes \
   --range 10.240.0.0/24
 ```
 
-> `10.240.0.0/24` IP address范围, 可以分配 254 计算节点
+> `10.240.0.0/24` IP address 范围, 可以分配 254 计算节点
 
 ### 防火墙规则
 
@@ -89,7 +89,7 @@ kubernetes-the-hard-way  us-west1  XX.XXX.XXX.XX  RESERVED
 
 ## 计算节点
 
-本节将会创建基于[Ubuntu Server 16.04](https://www.ubuntu.com/server) 的计算节点，原因是它对 [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd) 容器运行时有很好的支持。每个虚拟机将会分配一个私有 IP 地址用以简化 Kubernetes 的设置。
+本节将会创建基于 [Ubuntu Server 16.04](https://www.ubuntu.com/server) 的计算节点，原因是它对 [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd) 容器运行时有很好的支持。每个虚拟机将会分配一个私有 IP 地址用以简化 Kubernetes 的设置。
 
 ### Kubernetes Controllers
 
@@ -156,4 +156,4 @@ worker-1      us-west1-c  n1-standard-1               10.240.0.21  XX.XXX.XX.XXX
 worker-2      us-west1-c  n1-standard-1               10.240.0.22  XXX.XXX.XX.XX   RUNNING
 ```
 
-下一步：[配置CA 和创建 TLS 证书](04-certificate-authority.md)
+下一步：[配置 CA 和创建 TLS 证书](04-certificate-authority.md)

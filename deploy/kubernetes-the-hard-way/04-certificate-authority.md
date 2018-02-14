@@ -111,7 +111,7 @@ admin.pem
 
 ### Kubelet 客户端凭证
 
-Kubernetes 使用[special-purpose authorization mode](https://kubernetes.io/docs/admin/authorization/node/)（被称作Node Authorizer）授权来自 [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet)
+Kubernetes 使用 [special-purpose authorization mode](https://kubernetes.io/docs/admin/authorization/node/)（被称作 Node Authorizer）授权来自 [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet)
 的 API 请求。为了通过 Node Authorizer 的授权, Kubelet 必须使用一个署名为 `system:node:<nodeName>` 的凭证来证明它属于 `system:nodes` 用户组。本节将会给每台 worker 节点创建符合 Node Authorizer 要求的凭证。
 
 给每台 worker 节点创建凭证和私钥：
@@ -277,6 +277,3 @@ done
 > `kube-proxy` 和 `kubelet` client 凭证将会在下一节中用来创建客户端簽发请求文件。
 
 下一步：[配置和生成 Kubernetes 配置文件](05-kubernetes-configuration-files.md)。
-
-
-

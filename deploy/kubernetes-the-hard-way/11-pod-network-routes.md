@@ -1,16 +1,16 @@
 # 配置 Pod 网络路由
 
-每个 Pod 都会从所在 Node 的 Pod CIDR 中分配一个 IP 地址。由于网络[路由](https://cloud.google.com/compute/docs/vpc/routes)还没有配置，跨节点的 Pod 之间还无法通信。
+每个 Pod 都会从所在 Node 的 Pod CIDR 中分配一个 IP 地址。由于网络 [路由](https://cloud.google.com/compute/docs/vpc/routes) 还没有配置，跨节点的 Pod 之间还无法通信。
 
-本部分将为每个 worker 节点创建一条路由，将匹配 Pod CIDR 的网络请求路由到 Node 的内网IP地址上。
+本部分将为每个 worker 节点创建一条路由，将匹配 Pod CIDR 的网络请求路由到 Node 的内网 IP 地址上。
 
-> 也可以选择[其他方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this)来实现Kubernetes 网络模型。
+> 也可以选择 [其他方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this) 来实现 Kubernetes 网络模型。
 
 ## 路由表
 
 本节将为创建 `kubernetes-the-hard-way` VPC 路由收集必要的信息。
 
-列出每个worker 节点的内部IP 地址和Pod CIDR 范围:
+列出每个 worker 节点的内部 IP 地址和 Pod CIDR 范围:
 
 ```sh
 for instance in worker-0 worker-1 worker-2; do

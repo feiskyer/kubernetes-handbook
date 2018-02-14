@@ -22,7 +22,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-har
 
 ### kubelet 配置文件
 
-为了确保[Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/) 授权，Kubelet 配置文件中的客户端证书必需匹配 Node 名字。
+为了确保 [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/) 授权，Kubelet 配置文件中的客户端证书必需匹配 Node 名字。
 
 为每个 worker 节点创建 kubeconfig 配置：
 
@@ -49,7 +49,7 @@ for instance in worker-0 worker-1 worker-2; do
 done
 ```
 
-结果将会生成以下3个文件：
+结果将会生成以下 3 个文件：
 
 ```sh
 worker-0.kubeconfig

@@ -99,7 +99,7 @@ sudo systemctl start etcd
 
 ## 验证
 
-列出etcd的群集成员:
+列出 etcd 的群集成员:
 
 ```sh
 ETCDCTL_API=3 etcdctl member list

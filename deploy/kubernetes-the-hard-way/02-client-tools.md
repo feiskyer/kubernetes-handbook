@@ -2,7 +2,7 @@
 
 本次实验你将会安装一些实用的命令行工具, 用来完成这份指南，这包括 [cfssl](https://github.com/cloudflare/cfssl)、[cfssljson](https://github.com/cloudflare/cfssl) 以及 [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)。
 
-从 [cfssl 网站](https://pkg.cfssl.org)下载 `cfssl` 和 `cfssljson` 并安装：
+从 [cfssl 网站](https://pkg.cfssl.org) 下载 `cfssl` 和 `cfssljson` 并安装：
 
 ### OS X
 
@@ -41,7 +41,7 @@ sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
 
 ### 验证
 
-验证`cfssl`的版本为 1.2.0 或是更高
+验证 `cfssl` 的版本为 1.2.0 或是更高
 
 ```sh
 cfssl version
@@ -57,9 +57,9 @@ Runtime: go1.6
 
 > 注意：cfssljson 的指令工具没有提供方法来列出版本。
 
-## 安装kubectl
+## 安装 kubectl
 
-`kubectl` 命令行工具是用来与 Kubernetes API Server 沟通的，下载并安装`kubectl` 可在官方取得
+`kubectl` 命令行工具是用来与 Kubernetes API Server 沟通的，下载并安装 `kubectl` 可在官方取得
 
 ### OS X
 

@@ -4,9 +4,9 @@
 
 ## 数据加密
 
-本节将会验证 [encrypt secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#verifying-that-data-is-encrypted)的功能。
+本节将会验证 [encrypt secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#verifying-that-data-is-encrypted) 的功能。
 
-创建一个Secret:
+创建一个 Secret:
 
 ```sh
 kubectl create secret generic kubernetes-the-hard-way \
@@ -41,7 +41,7 @@ gcloud compute ssh controller-0 \
 000000ea
 ```
 
-Etcd 的密钥以 `k8s:enc:aescbc:v1:key1` 为前缀, 表示使用密钥为`key1` 的 `aescbc` 加密数据。
+Etcd 的密钥以 `k8s:enc:aescbc:v1:key1` 为前缀, 表示使用密钥为 `key1` 的 `aescbc` 加密数据。
 
 ## 部署
 

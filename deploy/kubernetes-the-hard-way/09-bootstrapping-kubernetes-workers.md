@@ -152,7 +152,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### 配置 Kube-Proxy 
+### 配置 Kube-Proxy
 
 ```sh
 sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig

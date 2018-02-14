@@ -208,7 +208,7 @@ rules:
 EOF
 ```
 
-Kubernetes API Server 使用客户端凭证授权 Kubelet 为`kubernetes` 用户，此凭证用`--kubelet-client-certificate` flag 来定义。
+Kubernetes API Server 使用客户端凭证授权 Kubelet 为 `kubernetes` 用户，此凭证用 `--kubelet-client-certificate` flag 来定义。
 
 绑定 `system:kube-apiserver-to-kubelet` ClusterRole 到 `kubernetes` 用户:
 
