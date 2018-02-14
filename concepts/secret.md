@@ -1,4 +1,4 @@
-﻿# Secret
+# Secret
 
 Secret 解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者 Pod Spec 中。Secret 可以以 Volume 或者环境变量的方式使用。
 
@@ -9,8 +9,13 @@ Secret 有三种类型：
 * `kubernetes.io/dockerconfigjson`：用来存储私有 docker registry 的认证信息。
 * `kubernetes.io/service-account-token`： 用于被 serviceaccount 引用。serviceaccout 创建时 Kubernetes 会默认创建对应的 secret。Pod 如果使用了 serviceaccount，对应的 secret 会自动挂载到 Pod 的 `/run/secrets/kubernetes.io/serviceaccount` 目录中。
 
-备注：
-serviceaccount 用来使得 Pod 能够访问 Kubernetes API
+备注：serviceaccount 用来使得 Pod 能够访问 Kubernetes API
+
+## API 版本对照表
+
+| Kubernetes 版本 | Core API 版本 |
+| --------------- | ------------- |
+| v1.5+           | core/v1       |
 
 ## Opaque Secret
 

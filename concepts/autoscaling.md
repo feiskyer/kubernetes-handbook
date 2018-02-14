@@ -12,6 +12,12 @@ Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 me
 
 > 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)。
 
+## API 版本对照表
+
+| Kubernetes 版本 | CRD API 版本   |
+| --------------- | -------------- |
+| v1.5+           | autoscaling/v1 |
+
 ## 示例
 
 ```sh
@@ -68,7 +74,7 @@ php-apache   1         1         1            1           27m
 HPA 示例
 
 ```yaml
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: php-apache

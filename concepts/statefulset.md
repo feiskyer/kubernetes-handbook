@@ -21,11 +21,11 @@ StatefulSet 中每个 Pod 的 DNS 格式为 `statefulSetName-{0..N-1}.serviceNam
 - `namespace` 为服务所在的 namespace，Headless Service 和 StatefulSet 必须在相同的 namespace
 - `.cluster.local` 为 Cluster Domain
 
-版本更新历史
+## API 版本对照表
 
-| Kubernetes 版本 |   Deployment 版本   |
+| Kubernetes 版本 |   Apps 版本   |
 | ------------- | ------------------ |
-|     v1.7      | extensions/v1beta1 |
+|   v1.6-v1.7   | apps/v1beta1 |
 |     v1.8      |   apps/v1beta2     |
 |     v1.9      |      apps/v1       |
 

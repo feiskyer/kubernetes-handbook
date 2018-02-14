@@ -35,23 +35,36 @@ Calico通过Pool和Profile的方式实现了docker CNM网络：
 1.  Pool，定义可用于Docker Network的IP资源范围，比如：10.0.0.0/8或者192.168.0.0/16；
 2.  Profile，定义Docker Network Policy的集合，由tags和rules组成；每个 Profile默认拥有一个和Profile名字相同的Tag，每个Profile可以有多个Tag，以List形式保存。
 
-具体实现见<https://github.com/projectcalico/libnetwork-plugin>，而使用方法可以参考[http://docs.projectcalico.org/v2.1/getting-started/docker/](http://docs.projectcalico.org/v2.1/getting-started/docker/)。
+具体实现见<https://github.com/projectcalico/libnetwork-plugin>，而使用方法可以参考[http://docs.projectcalico.org/v3.0/getting-started/docker/](http://docs.projectcalico.org/v3.0/getting-started/docker/)。
 
 ## Calico Kubernetes
 
-见[http://docs.projectcalico.org/v2.1/getting-started/kubernetes/](http://docs.projectcalico.org/v2.1/getting-started/kubernetes/).
+对于使用 kubeadm 创建的 Kubernetes 集群，使用以下配置安装 calico 时需要配置
 
-For Kubeadm 1.5 with Kubernetes 1.5.x:
+- `--pod-network-cidr=192.168.0.0/16`
+- `--service-cidr=10.96.0.0/12` （不能与 Calico 网络重叠）
+
+各版本的安装方法如下：
+
+* 对于 Kubernetes 1.7.x 或者更新的版本
+
+```sh
+kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+```
+
+* 对于 Kubernetes 1.6.x:
+
+```
+kubectl apply -f http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+```
+
+* 对于 Kubernetes 1.5.x:
 
 ```
 kubectl apply -f http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/hosted/kubeadm/1.5/calico.yaml
 ```
 
-For Kubeadm 1.6 with Kubernetes 1.6.x:
-
-```
-kubectl apply -f http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
-```
+更详细的自定义配置方法见[https://docs.projectcalico.org/v3.0/getting-started/kubernetes](https://docs.projectcalico.org/v3.0/getting-started/kubernetes)。
 
 这会在Pod中启动Calico-etcd，在所有Node上启动bird6、felix以及confd，并配置CNI网络为calico插件：
 

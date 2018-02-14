@@ -69,6 +69,12 @@ Session Affinity:	None
 Events:			<none>
 ```
 
+### API 版本对照表
+
+| Kubernetes 版本 | Core API 版本 |
+| --------------- | ------------- |
+| v1.5+           | core/v1       |
+
 ### 不指定 Selectors 的服务
 
 在创建 Service 的时候，也可以不指定 Selectors，用来将 service 转发到 kubernetes 集群外部的服务（而不是 Pod）。目前支持两种方法
@@ -185,7 +191,7 @@ nginx.default.svc.cluster.local. 30 IN	A	172.26.2.5
 ```
 备注： 其中 dig 命令查询的信息中，部分信息省略
 
-### 保留源 IP
+## 保留源 IP
 
 各种类型的 Service 对源 IP 的处理方法不同：
 
@@ -193,7 +199,7 @@ nginx.default.svc.cluster.local. 30 IN	A	172.26.2.5
 - NodePort Service：源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。为了避免这种情况，可以给 service 加上 annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`，让 service 只代理本地 endpoint 的请求（如果没有本地 endpoint 则直接丢包），从而保留源 IP。
 - LoadBalancer Service：源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。在 GKE/GCE 中，添加 annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal` 后可以自动从负载均衡器中删除没有本地 endpoint 的 Node。
 
-### 工作原理
+## 工作原理
 
 kube-proxy 负责将 service 负载均衡到后端 Pod 中，如下图所示
 
@@ -256,7 +262,7 @@ Traefik 提供了易用的 Ingress Controller，使用方法见 <https://docs.tr
 - 接入已有的负载均衡设备
 - 多租户网络情况下，容器网络和主机网络是隔离的，这样 `kube-proxy` 就不能正常工作
 
-这个时候就可以自定义组件，并代替 kube-proxy 来做负载均衡。基本的思路是监控 kubernetes 中 service 和 endpoints 的变化，并根据这些变化来配置负载均衡器。比如 weave flux、nginx plus、kube2haproxy 等
+这个时候就可以自定义组件，并代替 kube-proxy 来做负载均衡。基本的思路是监控 kubernetes 中 service 和 endpoints 的变化，并根据这些变化来配置负载均衡器。比如 weave flux、nginx plus、kube2haproxy 等。
 
 ## 参考资料
 

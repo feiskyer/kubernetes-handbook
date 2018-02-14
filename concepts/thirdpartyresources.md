@@ -8,9 +8,18 @@ ThirdPartyResources（TPR）是一种无需改变代码就可以扩展 Kubernete
 - versions：版本列表
 - 其他：还可以保护任何其他自定义的属性
 
-> **[warning] ThirdPartyResources 已在 v1.8 删除 **
+## API 版本对照表
+
+| Kubernetes 版本 | Extension 版本     |
+| --------------- | ------------------ |
+| v1.5-v1.7       | extensions/v1beta1 |
+| v1.8+           | 不再支持           |
+
+>  **[warning] ThirdPartyResources 已在 v1.8 删除 **
 >
-> ThirdPartyResources 已在 v1.8 版本中删除。建议从 v1.7 开始，迁移到 [CustomResourceDefinition（CRD）](customresourcedefinition.md)。
+>  ThirdPartyResources 已在 v1.8 版本中删除。建议从 v1.7 开始，迁移到 [CustomResourceDefinition（CRD）](customresourcedefinition.md)。
+
+## TPR 示例
 
 下面的例子会创建一个 `/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/...` 的 API
 

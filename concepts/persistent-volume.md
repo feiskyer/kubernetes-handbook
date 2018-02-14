@@ -20,6 +20,13 @@ Volume 的生命周期包括 5 个阶段
 - Released：PVC 解绑但还未执行回收策略
 - Failed：发生错误
 
+## API 版本对照表
+
+| Kubernetes 版本 | PV/PVC 版本 | StorageClass 版本      |
+| --------------- | ----------- | ---------------------- |
+| v1.5-v1.6       | core/v1     | storage.k8s.io/v1beta1 |
+| v1.7+           | core/v1     | storage.k8s.io/v1      |
+
 ## PV
 
 PersistentVolume（PV）是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PV 跟 Volume (卷) 类似，不过会有独立于 Pod 的生命周期。比如一个 NFS 的 PV 可以定义为

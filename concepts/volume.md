@@ -338,6 +338,12 @@ spec:
     beta.kubernetes.io/os: windows
 ```
 
+## API 版本对照表
+
+| Kubernetes 版本 | Core API 版本 |
+| --------------- | ------------- |
+| v1.5+           | core/v1       |
+
 ## 其他的 Volume 参考示例
 
 - [iSCSI Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/iscsi)

@@ -9,6 +9,13 @@
 - v1.8 版本新增 **Egress** 和 **IPBlock** 的支持
 - 网络插件要支持 Network Policy，如 Calico、Romana、Weave Net 和 trireme 等，参考 [这里](../plugins/network-policy.md)
 
+## API 版本对照表
+
+| Kubernetes 版本 | Networking API 版本  |
+| --------------- | -------------------- |
+| v1.5-v1.6       | extensions/v1beta1   |
+| v1.7+           | networking.k8s.io/v1 |
+
 ## 网络策略
 
 ### Namespace 隔离
@@ -178,7 +185,7 @@ kubelet --network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cn
 
 ```sh
 # 注意修改 CIDR，需要跟 k8s pod-network-cidr 一致，默认为 192.168.0.0/16
-kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 ```
 
 首先部署一个 nginx 服务

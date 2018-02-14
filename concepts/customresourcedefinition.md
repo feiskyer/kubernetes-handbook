@@ -2,6 +2,12 @@
 
 CustomResourceDefinition（CRD）是 v1.7 + 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
 
+## API 版本对照表
+
+| Kubernetes 版本 | CRD API 版本                 |
+| --------------- | ---------------------------- |
+| v1.8-v1.9       | apiextensions.k8s.io/v1beta1 |
+
 ## CRD 示例
 
 下面的例子会创建一个 `/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/…` 的自定义 API：

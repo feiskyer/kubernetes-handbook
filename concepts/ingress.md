@@ -1,7 +1,5 @@
 # Ingress
 
-** 术语 **
-
 在本篇文章中你将会看到一些在其他地方被交叉使用的术语，为了防止产生歧义，我们首先来澄清下。
 
 - 节点：Kubernetes 集群中的服务器；
@@ -50,6 +48,14 @@ spec:
 ```
 
 每个 Ingress 都需要配置 `rules`，目前 Kubernetes 仅支持 http 规则。上面的示例表示请求 `/testpath` 时转发到服务 `test` 的 80 端口。
+
+## API 版本对照表
+
+| Kubernetes 版本 | Extension 版本     |
+| --------------- | ------------------ |
+| v1.5-v1.9       | extensions/v1beta1 |
+
+## Ingress 类型
 
 根据 Ingress Spec 配置的不同，Ingress 可以分为以下几种类型：
 

@@ -2,6 +2,14 @@
 
 Job 负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个 Pod 成功结束。
 
+## API 版本对照表
+
+| Kubernetes 版本 | Batch API 版本 | 默认开启 |
+| --------------- | -------------- | -------- |
+| v1.5+           | batch/v1       | 是       |
+
+## Job 类型
+
 Kubernetes 支持以下几种 Job：
 
 - 非并行 Job：通常创建一个 Pod 直至其成功结束

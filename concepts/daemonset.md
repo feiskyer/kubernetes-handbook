@@ -6,11 +6,12 @@ DaemonSet 保证在每个 Node 上都运行一个容器副本，常用来部署�
 * 系统监控，比如 Prometheus Node Exporter，collectd，New Relic agent，Ganglia gmond 等
 * 系统程序，比如 kube-proxy, kube-dns, glusterd, ceph 等
 
-版本更新历史
+## API 版本对照表
 
 | Kubernetes 版本 |   Deployment 版本   |
 | ------------- | ------------------ |
-|     v1.7      | extensions/v1beta1 |
+|   v1.5-v1.6   | extensions/v1beta1 |
+| v1.7 | apps/v1beta1 |
 |     v1.8      |   apps/v1beta2     |
 |     v1.9      |      apps/v1       |
 

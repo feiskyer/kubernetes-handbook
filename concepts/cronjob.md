@@ -2,8 +2,14 @@
 
 CronJob 即定时任务，就类似于 Linux 系统的 crontab，在指定的时间周期运行指定的任务。
 
-* 在 Kubernetes 1.5+，使用 CronJob 需要开启 `batch/v2alpha1` API，即 `--runtime-config=batch/v2alpha1`
-* 从 v1.8 开始，API 升级到 `batch/v1beta1`，并在 apiserver 中默认开启
+## API 版本对照表
+
+| Kubernetes 版本 | Batch API 版本 | 默认开启 |
+| --------------- | -------------- | -------- |
+| v1.5-v1.7       | batch/v2alpha1 | 否       |
+| v1.8-v1.9       | batch/v1beta1  | 是       |
+
+注意：使用默认未开启的 API 时需要在 kube-apiserver 中配置 `--runtime-config=batch/v2alpha1`。
 
 ## CronJob Spec
 
