@@ -2,7 +2,7 @@
 
 ## Cloud Native Landscape
 
-![](CloudNativeLandscape.jpg)
+![](CloudNativeLandscape.png)
 
 ## 生态圈项目
 
