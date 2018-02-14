@@ -70,7 +70,7 @@
     - [LinuxKit](deploy/k8s-linuxkit.md)
     - [Frakti](deploy/frakti/index.md)
     - [kubeasz](https://github.com/gjmzj/kubeasz)
-  - [4.3 Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way.md)
+  - [4.3 Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way/index.md)
     - [准备部署环境](deploy/kubernetes-the-hard-way/01-prerequisites.md)
     - [安装必要工具](deploy/kubernetes-the-hard-way/02-client-tools.md)
     - [创建计算资源](deploy/kubernetes-the-hard-way/03-compute-resources.md)
