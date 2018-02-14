@@ -38,7 +38,7 @@ Kubernetes 不是一个传统意义上，包罗万象的 PaaS (平台即服务) 
 
 当然了，Kuberenets不仅仅是一个“编排系统”，它消除了编排的需要。Kubernetes通过声明式的API和一系列独立、可组合的控制器保证了应用总是在期望的状态，而用户并不需要关心中间状态是如何转换的。这使得整个系统更容易使用，而且更强大、更可靠、更具弹性和可扩展性。
 
-## 主要组件
+## 核心组件
 
 Kubernetes主要由以下几个核心组件组成： 
 
@@ -52,16 +52,7 @@ Kubernetes主要由以下几个核心组件组成：
 
 ![](architecture.png)
 
-
-
-## 社区采纳情况
-
-![](media/infographic_ExcitedAboutKubernetes_Sep.png)
-
-(图片来自[Apprenda](https://apprenda.com/blog/customers-really-using-kubernetes/))
-
 ## 参考文档
 
 - [What is Kubernetes?](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 - [HOW CUSTOMERS ARE REALLY USING KUBERNETES](https://apprenda.com/blog/customers-really-using-kubernetes/)
-
