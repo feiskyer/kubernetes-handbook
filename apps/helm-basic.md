@@ -1,39 +1,39 @@
-# Helm工作原理
+# Helm 工作原理
 
 ## 基本概念
 
-Helm的三个基本概念
+Helm 的三个基本概念
 
-- Chart：Helm应用（package），包括该应用的所有Kubernetes manifest模版，类似于YUM RPM或Apt dpkg文件
-- Repository：Helm package存储仓库
-- Release：chart的部署实例，每个chart可以部署一个或多个release
+- Chart：Helm 应用（package），包括该应用的所有 Kubernetes manifest 模版，类似于 YUM RPM 或 Apt dpkg 文件
+- Repository：Helm package 存储仓库
+- Release：chart 的部署实例，每个 chart 可以部署一个或多个 release
 
-## Helm工作原理
+## Helm 工作原理
 
-Helm包括两个部分，`helm`客户端和`tiller`服务端。
+Helm 包括两个部分，`helm` 客户端和 `tiller` 服务端。
 
 > the client is responsible for managing charts, and the server is responsible for managing releases.
 
-### helm客户端
+### helm 客户端
 
-helm客户端是一个命令行工具，负责管理charts、reprepository和release。它通过gPRC API（使用`kubectl port-forward`将tiller的端口映射到本地，然后再通过映射后的端口跟tiller通信）向tiller发送请求，并由tiller来管理对应的Kubernetes资源。
+helm 客户端是一个命令行工具，负责管理 charts、reprepository 和 release。它通过 gPRC API（使用 `kubectl port-forward` 将 tiller 的端口映射到本地，然后再通过映射后的端口跟 tiller 通信）向 tiller 发送请求，并由 tiller 来管理对应的 Kubernetes 资源。
 
-Helm客户端的使用方法参见[Helm命令](helm.html)。
+Helm 客户端的使用方法参见 [Helm 命令](helm.html)。
 
-### tiller服务端
+### tiller 服务端
 
-tiller接收来自helm客户端的请求，并把相关资源的操作发送到Kubernetes，负责管理（安装、查询、升级或删除等）和跟踪Kubernetes资源。为了方便管理，tiller把release的相关信息保存在kubernetes的ConfigMap中。
+tiller 接收来自 helm 客户端的请求，并把相关资源的操作发送到 Kubernetes，负责管理（安装、查询、升级或删除等）和跟踪 Kubernetes 资源。为了方便管理，tiller 把 release 的相关信息保存在 kubernetes 的 ConfigMap 中。
 
-tiller对外暴露gRPC API，供helm客户端调用。
+tiller 对外暴露 gRPC API，供 helm 客户端调用。
 
 ## Helm Charts
 
-Helm使用[Chart](https://github.com/kubernetes/charts)来管理Kubernetes manifest文件。每个chart都至少包括
+Helm 使用 [Chart](https://github.com/kubernetes/charts) 来管理 Kubernetes manifest 文件。每个 chart 都至少包括
 
-- 应用的基本信息`Chart.yaml`
-- 一个或多个Kubernetes manifest文件模版（放置于templates/目录中），可以包括Pod、Deployment、Service等各种Kubernetes资源
+- 应用的基本信息 `Chart.yaml`
+- 一个或多个 Kubernetes manifest 文件模版（放置于 templates / 目录中），可以包括 Pod、Deployment、Service 等各种 Kubernetes 资源
 
-### Chart.yaml示例
+### Chart.yaml 示例
 
 ```yaml
 name: The name of the chart (required)
@@ -53,10 +53,10 @@ icon: A URL to an SVG or PNG image to be used as an icon (optional).
 
 ### 依赖管理
 
-Helm支持两种方式管理依赖的方式：
+Helm 支持两种方式管理依赖的方式：
 
-- 直接把依赖的package放在`charts/`目录中
-- 使用`requirements.yaml`并用`helm dep up foochart`来自动下载依赖的packages
+- 直接把依赖的 package 放在 `charts/` 目录中
+- 使用 `requirements.yaml` 并用 `helm dep up foochart` 来自动下载依赖的 packages
 
 ```yaml
 dependencies:
@@ -68,9 +68,9 @@ dependencies:
     repository: http://another.example.com/charts
 ```
 
-### Chart模版
+### Chart 模版
 
-Chart模板基于Go template和[Sprig](https://github.com/Masterminds/sprig)，比如
+Chart 模板基于 Go template 和 [Sprig](https://github.com/Masterminds/sprig)，比如
 
 ```yaml
 apiVersion: v1
@@ -101,7 +101,7 @@ spec:
               value: {{default "minio" .Values.storage}}
 ```
 
-模版参数的默认值必须放到`values.yaml`文件中，其格式为
+模版参数的默认值必须放到 `values.yaml` 文件中，其格式为
 
 ```yaml
 imageRegistry: "quay.io/deis"
@@ -109,17 +109,17 @@ dockerTag: "latest"
 pullPolicy: "alwaysPull"
 storage: "s3"
 
-# 依赖的mysql chart的默认参数
+# 依赖的 mysql chart 的默认参数
 mysql:
   max_connections: 100
   password: "secret"
 ```
 
-## Helm插件
+## Helm 插件
 
-插件提供了扩展Helm核心功能的方法，它在客户端执行，并放在`$(helm home)/plugins`目录中。
+插件提供了扩展 Helm 核心功能的方法，它在客户端执行，并放在 `$(helm home)/plugins` 目录中。
 
-一个典型的helm插件格式为
+一个典型的 helm 插件格式为
 
 ```sh
 $(helm home)/plugins/
@@ -129,7 +129,7 @@ $(helm home)/plugins/
       |- keybase.sh
 ```
 
-而plugin.yaml格式为
+而 plugin.yaml 格式为
 
 ```yaml
 name: "keybase"
@@ -142,4 +142,4 @@ useTunnel: false
 command: "$HELM_PLUGIN_DIR/keybase.sh"
 ```
 
-这样，就可以用`helm keybase`命令来使用这个插件。
+这样，就可以用 `helm keybase` 命令来使用这个插件。

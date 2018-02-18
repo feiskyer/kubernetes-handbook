@@ -1,28 +1,28 @@
 # Helm
 
-[Helm](https://github.com/kubernetes/helm)是一个类似于yum/apt/[homebrew](https://brew.sh/)的Kubernetes应用管理工具。Helm使用[Chart](https://github.com/kubernetes/charts)来管理Kubernetes manifest文件。
+[Helm](https://github.com/kubernetes/helm)是一个类似于 yum/apt/[homebrew](https://brew.sh/)的 Kubernetes 应用管理工具。Helm 使用 [Chart](https://github.com/kubernetes/charts) 来管理 Kubernetes manifest 文件。
 
-## Helm基本使用
+## Helm 基本使用
 
-安装`helm`客户端
+安装 `helm` 客户端
 
 ```sh
 brew install kubernetes-helm
 ```
 
-初始化Helm并安装`Tiller`服务（需要事先配置好kubectl）
+初始化 Helm 并安装 `Tiller` 服务（需要事先配置好 kubectl）
 
 ```sh
 helm init
 ```
 
-更新charts列表
+更新 charts 列表
 
 ```sh
 helm repo update
 ```
 
-部署服务，比如mysql
+部署服务，比如 mysql
 
 ```sh
 ➜  ~ helm install stable/mysql
@@ -71,19 +71,19 @@ To connect to your database:
     $ mysql -h quieting-warthog-mysql -p
 ```
 
-更多命令的使用方法可以参考[Helm命令参考](helm.md)。
+更多命令的使用方法可以参考 [Helm 命令参考](helm.md)。
 
-## Helm工作原理
+## Helm 工作原理
 
-见[Helm工作原理](helm-basic.md)。
+见 [Helm 工作原理](helm-basic.md)。
 
 ## Helm Repository
 
-官方repository:
+官方 repository:
 
 * https://github.com/kubernetes/charts
 
-第三方repository:
+第三方 repository:
 
 * https://github.com/deis/charts
 * https://github.com/bitnami/charts
@@ -93,11 +93,10 @@ To connect to your database:
 * https://github.com/helm/charts
 * https://github.com/jackzampolin/tick-charts
 
-## 常用Helm插件
+## 常用 Helm 插件
 
-1.  [helm-tiller](https://github.com/adamreese/helm-tiller) - Additional commands to work with Tiller
-2.  [Technosophos's Helm Plugins](https://github.com/technosophos/helm-plugins) - Plugins for GitHub, Keybase, and GPG
-3.  [helm-template](https://github.com/technosophos/helm-template) - Debug/render templates client-side
-4.  [Helm Value Store](https://github.com/skuid/helm-value-store) - Plugin for working with Helm deployment values
+1. [helm-tiller](https://github.com/adamreese/helm-tiller) - Additional commands to work with Tiller
+2. [Technosophos's Helm Plugins](https://github.com/technosophos/helm-plugins) - Plugins for GitHub, Keybase, and GPG
+3. [helm-template](https://github.com/technosophos/helm-template) - Debug/render templates client-side
+4. [Helm Value Store](https://github.com/skuid/helm-value-store) - Plugin for working with Helm deployment values
 5. [Drone.io Helm Plugin](http://plugins.drone.io/ipedrazas/drone-helm/) - Run Helm inside of the Drone CI/CD system
-
