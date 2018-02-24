@@ -196,8 +196,8 @@ nginx.default.svc.cluster.local. 30 IN	A	172.26.2.5
 各种类型的 Service 对源 IP 的处理方法不同：
 
 - ClusterIP Service：使用 iptables 模式，集群内部的源 IP 会保留（不做 SNAT）。如果 client 和 server pod 在同一个 Node 上，那源 IP 就是 client pod 的 IP 地址；如果在不同的 Node 上，源 IP 则取决于网络插件是如何处理的，比如使用 flannel 时，源 IP 是 node flannel IP 地址。
-- NodePort Service：源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。为了避免这种情况，可以给 service 加上 annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`，让 service 只代理本地 endpoint 的请求（如果没有本地 endpoint 则直接丢包），从而保留源 IP。
-- LoadBalancer Service：源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。在 GKE/GCE 中，添加 annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal` 后可以自动从负载均衡器中删除没有本地 endpoint 的 Node。
+- NodePort Service：默认情况下，源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。为了避免这种情况，可以给 service 设置 `spec.ExternalTrafficPolicy=Local` （1.6-1.7 版本设置 Annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`），让 service 只代理本地 endpoint 的请求（如果没有本地 endpoint 则直接丢包），从而保留源 IP。
+- LoadBalancer Service：默认情况下，源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。设置 `service.spec.ExternalTrafficPolicy=Local` 后可以自动从云平台负载均衡器中删除没有本地 endpoint 的 Node，从而保留源 IP。
 
 ## 工作原理
 
@@ -254,6 +254,8 @@ Traefik 提供了易用的 Ingress Controller，使用方法见 <https://docs.tr
 在 Ingress 出现以前，Service Load Balancer 是推荐的解决 Service 局限性的方式。Service Load Balancer 将 haproxy 跑在容器中，并监控 service 和 endpoint 的变化，通过容器 IP 对外提供 4 层和 7 层负载均衡服务。
 
 社区提供的 Service Load Balancer 支持四种负载均衡协议：TCP、HTTP、HTTPS 和 SSL TERMINATION，并支持 ACL 访问控制。
+
+>  注意：Service Load Balancer 已不再推荐使用，推荐使用 [ingress](ingress.md)。
 
 ## Custom Load Balancer
 
