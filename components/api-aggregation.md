@@ -60,3 +60,8 @@ $ kubectl create -f sample/<type>.yaml
 ## 示例
 
 见[sample-apiserver](https://github.com/kubernetes/sample-apiserver)和[apiserver-builder/example](https://github.com/kubernetes-incubator/apiserver-builder/tree/master/example)。
+
+## 备注
+
+另外一种扩展 Kubernetes API 的方法是使用 [CustomResourceDefinition (CRD)](../concepts/customresourcedefinition.md)。
+
