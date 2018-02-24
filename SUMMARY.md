@@ -92,7 +92,8 @@
     - [EFK](addons/efk.md)
     - [Metrics](addons/metrics.md)
     - [Cluster AutoScaler](addons/cluster-autoscaler.md)
-  - [4.6 推荐配置](deploy/kubernetes-configuration-best-practice.md)
+  - [4.6 特性开关](deploy/feature-gates.md)
+  - [4.7 推荐配置](deploy/kubernetes-configuration-best-practice.md)
 
 ## 插件指南
 
