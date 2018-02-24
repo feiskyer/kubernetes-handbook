@@ -162,17 +162,17 @@ I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to 
 
 ## Failed to start ContainerManager failed to initialise top level QOS containers 
 
-重启 kubelet 时报错（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），目前的解决方法是：
+重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），解决方法是：
 
-1.在docker.service配置中增加的`--exec-opt native.cgroupdriver=systemd`配置。
-2.手动删除slice（貌似不管用）
-3.重启主机，这招最管用😄
+1. 在docker.service配置中增加的`--exec-opt native.cgroupdriver=systemd`配置。
+2. 手动删除slice（貌似不管用）
+3. 重启主机，这招最管用😄
 
 ```bash
 for i in $(systemctl list-unit-files —no-legend —no-pager -l | grep —color=never -o .*.slice | grep kubepod);do systemctl stop $i;done
 ```
 
-上面的几种方法在该bug修复前只有重启主机管用，该bug已于2017年4月27日修复，见 [#44940](https://github.com/kubernetes/kubernetes/pull/44940)。
+上面的几种方法在该bug修复前只有重启主机管用，该bug已于2017年4月27日修复（v1.7.0+），见 [#44940](https://github.com/kubernetes/kubernetes/pull/44940)。
 
 ## conntrack returned error: error looking for path of conntrack
 
