@@ -10,23 +10,24 @@ Container Runtime Interface (CRI)是Kubelet 1.5/1.6中主要负责的一块项�
 
 ## Docker
 
-Docker runtime的核心代码在kubelet内部，是最稳定和特性支持最好的Runtime。
+Docker runtime的核心代码在kubelet内部（`pkg/kubelet/dockershim`），是最稳定和特性支持最全的Runtime。
 
 开源电子书[《Docker从入门到实践》](https://yeasy.gitbooks.io/docker_practice/)是docker入门和实践不错的参考。
-
-## Hyper
-
-[Hyper](http://hypercontainer.io)是一个基于Hypervisor的容器运行时，为Kubernetes带来了强隔离，适用于多租户和运行不可信容器的场景。
-
-Hyper在Kubernetes的集成项目为frakti，<https://github.com/kubernetes/frakti>，目前已支持Kubernetes v1.6+。
-
-## Rkt
-
-rkt是另一个集成在kubelet内部的容器运行时，但也正在迁往CRI的路上，<https://github.com/kubernetes-incubator/rktlet>。
 
 ## Runc
 
 Runc有两个实现，cri-o和cri-containerd
 
-- [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)，还在开发中
-- [cri-o](https://github.com/kubernetes-incubator/cri-o)，已支持Kubernetes v1.6
+- [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)，已支持 Kubernetes v1.7 及以上版本
+- [cri-o](https://github.com/kubernetes-incubator/cri-o)，已支持Kubernetes v1.6 及以上版本
+
+## Hyper
+
+[Hyper](http://hypercontainer.io)是一个基于Hypervisor的容器运行时，为Kubernetes带来了强隔离，适用于多租户和运行不可信容器的场景。
+
+Hyper在Kubernetes的集成项目为frakti，<https://github.com/kubernetes/frakti>，目前已支持Kubernetes v1.6 及以上版本。
+
+## Rkt
+
+rkt是另一个集成在kubelet内部的容器运行时，但也正在迁往CRI的路上，<https://github.com/kubernetes-incubator/rktlet>。
+
