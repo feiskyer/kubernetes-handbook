@@ -13,3 +13,26 @@
 * 持久化存储分配或者挂载问题：比如分配 PV 失败（如超出配额、配置错误等）或挂载到虚拟机失败（比如 PV 正被其他异常 Pod 引用而导致无法从旧的虚拟机中卸载）。
 * 网络插件使用不当：比如网络插件使用了云平台不支持的网络协议等。
 
+
+## Node 未注册到集群中
+
+通常，在 Kubelet 启动时会自动将自己注册到 kubernetes API 中，然后通过 `kubectl get nodes` 就可以查询到该节点。 如果新的 Node 没有自动注册到 Kubernetes 集群中，那说明这个注册过程有错误发生，需要检查 kubelet 和 kube-controller-manager 的日志，进而再根据日志查找具体的错误原因。
+
+### Kubelet 日志
+
+查看 Kubelet 日志需要首先 SSH 登录到 Node 上，然后运行 `journalctl` 命令查看 kubelet 的日志：
+
+```sh
+journalctl -l -u kubelet
+```
+
+### kube-controller-manager 日志
+
+kube-controller-manager 会自动在云平台中给 Node 创建路由，如果路由创建创建失败也有可能导致 Node 注册失败。
+
+```sh
+PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
+kubectl -n kube-system logs $PODNAME --tail 100
+```
+
+#### 

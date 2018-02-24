@@ -107,8 +107,6 @@ net.netfilter.nf_conntrack_buckets=655360
 net.core.netdev_max_backlog=10000
 ```
 
-
-
 ## 参考文档
 
 - [Building Large Clusters](https://kubernetes.io/docs/admin/cluster-large/)

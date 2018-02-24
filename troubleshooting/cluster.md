@@ -125,7 +125,15 @@ $ kubectl -n kube-system logs kube-proxy-42zpn
 
 ## Kube-dns/Dashboard CrashLoopBackOff
 
-由于 Dashboard 依赖于 kube-dns，所以这个问题一般是由于 kube-dns 无法正常启动导致的。查看 kube-dns 的日志，可以发现如下的错误日志
+由于 Dashboard 依赖于 kube-dns，所以这个问题一般是由于 kube-dns 无法正常启动导致的。查看 kube-dns 的日志
+
+```sh
+$ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name) -c kubedns
+$ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name) -c dnsmasq
+$ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name) -c sidecar
+```
+
+可以发现如下的错误日志
 
 ```sh
 Waiting for services and endpoints to be initialized from apiserver...
