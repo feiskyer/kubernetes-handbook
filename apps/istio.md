@@ -42,7 +42,7 @@ Istio架构可以如下图所示
 
 ```sh
 curl -L https://git.io/getLatestIstio | sh -
-cd istio-0.2.12/
+cd istio-0.5.1/
 cp bin/istioctl /usr/local/bin
 ```
 
@@ -58,11 +58,16 @@ cp bin/istioctl /usr/local/bin
 ```sh
 $ kubectl -n istio-system get pod
 NAME                             READY     STATUS    RESTARTS   AGE
-istio-ca-5cd46b967c-q5th6        1/1       Running   0          3m
-istio-egress-56c4d999bc-82js4    1/1       Running   0          3m
-istio-ingress-5747bb855f-tv98x   1/1       Running   0          3m
-istio-mixer-77487797f6-cwtqt     2/2       Running   0          3m
-istio-pilot-86ddcb7ff5-t2zpk     1/1       Running   0          3m
+istio-ca-5869f745dd-vdblc        1/1       Running   0          43s
+istio-ingress-8458c655f5-9mc8f   1/1       Running   0          45s
+istio-mixer-6f8d7c548-9bkqt      3/3       Running   0          1m
+istio-pilot-6c96cc4859-cjx4b     2/2       Running   1          47s
+
+$ kubectl -n istio-system get svc
+NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                            AGE
+istio-ingress   LoadBalancer   10.108.221.199   <pending>     80:31857/TCP,443:30803/TCP                                         53s
+istio-mixer     ClusterIP      10.104.170.172   <none>        9091/TCP,15004/TCP,9093/TCP,9094/TCP,9102/TCP,9125/UDP,42422/TCP   1m
+istio-pilot     ClusterIP      10.109.122.23    <none>        15003/TCP,8080/TCP,9093/TCP,443/TCP                                55s
 ```
 
 ### 部署Prometheus、Grafana和Zipkin插件
