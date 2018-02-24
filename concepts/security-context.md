@@ -59,8 +59,9 @@ Pod Security Policies（PSP）是集群级的 Pod 安全策略，自动为集群
 |privileged | 运行特权容器 |
 |defaultAddCapabilities | 可添加到容器的 Capabilities|
 |requiredDropCapabilities | 会从容器中删除的 Capabilities|
+|allowedCapabilities | 允许使用的 Capabilities 列表 |
 |volumes | 控制容器可以使用哪些 volume|
-|hostNetwork|host 网络 |
+|hostNetwork|允许使用 host 网络 |
 |hostPorts | 允许的 host 端口列表 |
 |hostPID | 使用 host PID namespace|
 |hostIPC | 使用 host IPC namespace|
@@ -69,6 +70,10 @@ Pod Security Policies（PSP）是集群级的 Pod 安全策略，自动为集群
 |supplementalGroups | 允许的补充用户组 |
 |fsGroup|volume FSGroup|
 |readOnlyRootFilesystem | 只读根文件系统 |
+|allowedHostPaths | 允许 hostPath 插件使用的路径列表 |
+|allowedFlexVolumes | 允许使用的 flexVolume 插件列表 |
+|allowPrivilegeEscalation | 允许容器进程设置  [`no_new_privs`](https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt) |
+|defaultAllowPrivilegeEscalation | 默认是否允许特权升级 |
 
 ### 示例
 
@@ -93,6 +98,29 @@ spec:
     max: 8080
   volumes:
   - '*'
+```
+
+限制只允许使用 lvm 和 cifs 等 flexVolume 插件：
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: allow-flex-volumes
+spec:
+  fsGroup:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+    - flexVolume
+  allowedFlexVolumes: 
+    - driver: example/lvm
+    - driver: example/cifs
 ```
 
 ## SELinux
