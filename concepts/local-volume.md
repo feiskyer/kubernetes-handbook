@@ -1,6 +1,6 @@
 # 本地数据卷
 
-> 注意：仅在 v1.7 + 中支持，目前为 alpha 版。
+> 注意：仅在 v1.7 + 中支持，并从 v1.10 开始升级为 beta 版本。
 
 本地数据卷（Local Volume）代表一个本地存储设备，比如磁盘、分区或者目录等。主要的应用场景包括分布式存储和数据库等需要高性能和高可靠性的环境里。本地数据卷同时支持块设备和文件系统，通过 `spec.local.path` 指定；但对于文件系统来说，kubernetes 并不会限制该目录可以使用的存储空间大小。
 
@@ -10,9 +10,46 @@
 
 ## 示例
 
+StorageClass
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+```
+
 创建一个调度到 hostname 为 `example-node` 的本地数据卷：
 
 ```yaml
+# For kubernetes v1.10
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-local-pv
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/ssd1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - example-node
+```
+
+```yaml
+# For kubernetes v1.7-1.9
 apiVersion: v1
 kind: PersistentVolume
 metadata:
