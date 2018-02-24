@@ -1,10 +1,10 @@
 # Kubernetes HA
 
-Kubernetes从1.5开始，通过`kops`或者`kube-up.sh`部署的集群会自动部署一个高可用的系统，包括
+Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会自动部署一个高可用的系统，包括
 
-- etcd集群模式
-- apiserver负载均衡
-- controller manager、scheduler和cluster autoscaler自动选主（有且仅有一个运行实例）
+- etcd 集群模式
+- apiserver 负载均衡
+- controller manager、scheduler 和 cluster autoscaler 自动选主（有且仅有一个运行实例）
 
 如下图所示
 
@@ -12,15 +12,235 @@ Kubernetes从1.5开始，通过`kops`或者`kube-up.sh`部署的集群会自动�
 
 注意：以下步骤假设每台机器上 Kubelet 和 Docker 已配置并处于正常运行状态。
 
-## etcd集群
+## Etcd 集群
 
-从`https://discovery.etcd.io/new?size=3`获取token后，把 [etcd.yaml](https://kubernetes.io/docs/admin/high-availability/etcd.yaml) 放到每台机器的`/etc/kubernetes/manifests/etcd.yaml`，并替换掉`${DISCOVERY_TOKEN}`, `${NODE_NAME}`和`${NODE_IP}`，既可以由kubelet来启动一个etcd集群。
+安装 cfssl
 
-对于运行在kubelet外部的etcd，可以参考[etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md)来手动配置集群模式。
+```sh
+# On all etcd nodes
+curl -o /usr/local/bin/cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+curl -o /usr/local/bin/cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x /usr/local/bin/cfssl*
 
-## apiserver
+```
 
-把 [kube-apiserver.yaml](https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml) 放到每台Master节点的`/etc/kubernetes/manifests/`，并把相关的配置放到`/srv/kubernetes/`，即可由kubelet自动创建并启动apiserver:
+生成 CA certs:
+
+```sh
+# SSH etcd0
+mkdir -p /etc/kubernetes/pki/etcd
+cd /etc/kubernetes/pki/etcd
+cat >ca-config.json <<EOF
+{
+    "signing": {
+        "default": {
+            "expiry": "43800h"
+        },
+        "profiles": {
+            "server": {
+                "expiry": "43800h",
+                "usages": [
+                    "signing",
+                    "key encipherment",
+                    "server auth",
+                    "client auth"
+                ]
+            },
+            "client": {
+                "expiry": "43800h",
+                "usages": [
+                    "signing",
+                    "key encipherment",
+                    "client auth"
+                ]
+            },
+            "peer": {
+                "expiry": "43800h",
+                "usages": [
+                    "signing",
+                    "key encipherment",
+                    "server auth",
+                    "client auth"
+                ]
+            }
+        }
+    }
+}
+EOF
+cat >ca-csr.json <<EOF
+{
+    "CN": "etcd",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    }
+}
+EOF
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
+
+# generate client certs
+cat >client.json <<EOF
+{
+    "CN": "client",
+    "key": {
+        "algo": "ecdsa",
+        "size": 256
+    }
+}
+EOF
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client client.json | cfssljson -bare client
+```
+
+生成 etcd server/peer certs
+
+```sh
+# Copy files to other etcd nodes
+mkdir -p /etc/kubernetes/pki/etcd
+cd /etc/kubernetes/pki/etcd
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/ca.pem .
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/ca-key.pem .
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/client.pem .
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/client-key.pem .
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/ca-config.json .
+
+# Run on all etcd nodes
+cfssl print-defaults csr > config.json
+sed -i '0,/CN/{s/example\.net/'"$PEER_NAME"'/}' config.json
+sed -i 's/www\.example\.net/'"$PRIVATE_IP"'/' config.json
+sed -i 's/example\.net/'"$PUBLIC_IP"'/' config.json
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server config.json | cfssljson -bare server
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer config.json | cfssljson -bare peer
+```
+
+最后运行 etcd，将如下的 yaml 配置写入每台 etcd 节点的 `/etc/kubernetes/manifests/etcd.yaml` 文件中，注意替换
+
+- `<podname>` 为 etcd 节点名称 （比如`etcd0`, `etcd1` 和 `etcd2`）
+- `<etcd0-ip-address>`, `<etcd1-ip-address>` and `<etcd2-ip-address>` 为 etcd 节点的内网 IP 地址
+
+```sh
+cat >/etc/kubernetes/manifests/etcd.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+    component: etcd
+    tier: control-plane
+name: <podname>
+namespace: kube-system
+spec:
+containers:
+- command:
+    - etcd --name ${PEER_NAME} \
+    - --data-dir /var/lib/etcd \
+    - --listen-client-urls https://${PRIVATE_IP}:2379 \
+    - --advertise-client-urls https://${PRIVATE_IP}:2379 \
+    - --listen-peer-urls https://${PRIVATE_IP}:2380 \
+    - --initial-advertise-peer-urls https://${PRIVATE_IP}:2380 \
+    - --cert-file=/certs/server.pem \
+    - --key-file=/certs/server-key.pem \
+    - --client-cert-auth \
+    - --trusted-ca-file=/certs/ca.pem \
+    - --peer-cert-file=/certs/peer.pem \
+    - --peer-key-file=/certs/peer-key.pem \
+    - --peer-client-cert-auth \
+    - --peer-trusted-ca-file=/certs/ca.pem \
+    - --initial-cluster etcd0=https://<etcd0-ip-address>:2380,etcd1=https://<etcd1-ip-address>:2380,etcd1=https://<etcd2-ip-address>:2380 \
+    - --initial-cluster-token my-etcd-token \
+    - --initial-cluster-state new
+    image: gcr.io/google_containers/etcd-amd64:3.1.0
+    livenessProbe:
+    httpGet:
+        path: /health
+        port: 2379
+        scheme: HTTP
+    initialDelaySeconds: 15
+    timeoutSeconds: 15
+    name: etcd
+    env:
+    - name: PUBLIC_IP
+    valueFrom:
+        fieldRef:
+        fieldPath: status.hostIP
+    - name: PRIVATE_IP
+    valueFrom:
+        fieldRef:
+        fieldPath: status.podIP
+    - name: PEER_NAME
+    valueFrom:
+        fieldRef:
+        fieldPath: metadata.name
+    volumeMounts:
+    - mountPath: /var/lib/etcd
+    name: etcd
+    - mountPath: /certs
+    name: certs
+hostNetwork: true
+volumes:
+- hostPath:
+    path: /var/lib/etcd
+    type: DirectoryOrCreate
+    name: etcd
+- hostPath:
+    path: /etc/kubernetes/pki/etcd
+    name: certs
+EOF
+```
+
+> 注意：以上方法需要每个 etcd 节点都运行 kubelet。如果不想使用 kubelet，还可以通过 systemd 的方式来启动 etcd：
+>
+> ```sh
+> export ETCD_VERSION=v3.1.10
+> curl -sSL https://github.com/coreos/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz | tar -xzv --strip-components=1 -C /usr/local/bin/
+> rm -rf etcd-$ETCD_VERSION-linux-amd64*
+>
+> touch /etc/etcd.env
+> echo "PEER_NAME=$PEER_NAME" >> /etc/etcd.env
+> echo "PRIVATE_IP=$PRIVATE_IP" >> /etc/etcd.env
+>
+> cat >/etc/systemd/system/etcd.service <<EOF
+> [Unit]
+> Description=etcd
+> Documentation=https://github.com/coreos/etcd
+> Conflicts=etcd.service
+> Conflicts=etcd2.service
+>
+> [Service]
+> EnvironmentFile=/etc/etcd.env
+> Type=notify
+> Restart=always
+> RestartSec=5s
+> LimitNOFILE=40000
+> TimeoutStartSec=0
+>
+> ExecStart=/usr/local/bin/etcd --name ${PEER_NAME} \
+>     --data-dir /var/lib/etcd \
+>     --listen-client-urls https://${PRIVATE_IP}:2379 \
+>     --advertise-client-urls https://${PRIVATE_IP}:2379 \
+>     --listen-peer-urls https://${PRIVATE_IP}:2380 \
+>     --initial-advertise-peer-urls https://${PRIVATE_IP}:2380 \
+>     --cert-file=/etc/kubernetes/pki/etcd/server.pem \
+>     --key-file=/etc/kubernetes/pki/etcd/server-key.pem \
+>     --client-cert-auth \
+>     --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \
+>     --peer-cert-file=/etc/kubernetes/pki/etcd/peer.pem \
+>     --peer-key-file=/etc/kubernetes/pki/etcd/peer-key.pem \
+>     --peer-client-cert-auth \
+>     --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \
+>     --initial-cluster etcd0=https://<etcd0-ip-address>:2380,etcd1=https://<etcd1-ip-address>:2380,etcd2=https://<etcd2-ip-address>:2380 \
+>     --initial-cluster-token my-etcd-token \
+>     --initial-cluster-state new
+>
+> [Install]
+> WantedBy=multi-user.target
+> EOF
+>
+> systemctl daemon-reload
+> systemctl start etcd
+> ```
+
+## kube-apiserver
+
+把 [kube-apiserver.yaml](https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml) 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
 
 - basic_auth.csv - basic auth user and password
 - ca.crt - Certificate Authority cert
@@ -30,22 +250,60 @@ Kubernetes从1.5开始，通过`kops`或者`kube-up.sh`部署的集群会自动�
 - server.cert - Server certificate, public key
 - server.key - Server certificate, private key
 
-apiserver启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用haproxy/lvs等为master节点配置负载均衡。
+apiserver 启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用 haproxy/lvs 等为 master 节点配置负载均衡。
 
-## controller manager和scheduler
+如果使用 kubeadm 来部署集群的话，上述配置可以自动生成
 
-controller manager和scheduler需要保证任何时刻都只有一个实例运行，需要一个选主的过程，所以在启动时要设置`--leader-elect=true`，比如
+```sh
+# on master0
+# copy etcd certs
+mkdir -p /etc/kubernetes/pki/etcd
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/ca.pem /etc/kubernetes/pki/etcd
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/client.pem /etc/kubernetes/pki/etcd
+scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/client-key.pem /etc/kubernetes/pki/etcd
+# deploy master0
+cat >config.yaml <<EOF
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: <private-ip>
+etcd:
+  endpoints:
+  - https://<etcd0-ip-address>:2379
+  - https://<etcd1-ip-address>:2379
+  - https://<etcd2-ip-address>:2379
+  caFile: /etc/kubernetes/pki/etcd/ca.pem
+  certFile: /etc/kubernetes/pki/etcd/client.pem
+  keyFile: /etc/kubernetes/pki/etcd/client-key.pem
+networking:
+  podSubnet: <podCIDR>
+apiServerCertSANs:
+- <load-balancer-ip>
+apiServerExtraArgs:
+  apiserver-count: "3"
+EOF
+kubeadm init --config=config.yaml
+
+# on other master nodes
+scp root@<master0-ip-address>:/etc/kubernetes/pki/* /etc/kubernetes/pki
+rm apiserver.crt
+# 然后再执行上述 master0 的所有步骤
+```
+
+## kube-controller-manager 和 kube-scheduler
+
+kube-controller manager 和 kube-scheduler 需要保证任何时刻都只有一个实例运行，需要一个选主的过程，所以在启动时要设置 `--leader-elect=true`，比如
 
 ```
 kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把  [kube-scheduler.yaml](https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml) 和 [kube-controller-manager.yaml](https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml)  放到每台master节点的`/etc/kubernetes/manifests/`即可。
+把  [kube-scheduler.yaml](https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml) 和 [kube-controller-manager.yaml](https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml)  放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
 
 ## kube-dns
 
-kube-dns可以通过Deployment的方式来部署，默认kubeadm会自动创建。但在大规模集群的时候，需要放宽资源限制，比如
+kube-dns 可以通过 Deployment 的方式来部署，默认 kubeadm 会自动创建。但在大规模集群的时候，需要放宽资源限制，比如
 
 ```
 dns_replicas: 6
@@ -55,18 +313,37 @@ dns_cpu_requests 70m
 dns_memory_requests: 70Mi
 ```
 
-另外，也需要给dnsmasq增加资源，比如增加缓存大小到10000，增加并发处理数量`--dns-forward-max=1000`等。
+另外，也需要给 dnsmasq 增加资源，比如增加缓存大小到 10000，增加并发处理数量 `--dns-forward-max=1000` 等。
 
 ## kube-proxy
 
-默认kube-proxy使用iptables来为Service作负载均衡，这在大规模时会产生很大的Latency，可以考虑使用[IPVS](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3)的替代方式（注意 IPVS 在 v1.9 中还是 beta 状态）。
+默认 kube-proxy 使用 iptables 来为 Service 作负载均衡，这在大规模时会产生很大的 Latency，可以考虑使用 [IPVS](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3) 的替代方式（注意 IPVS 在 v1.9 中还是 beta 状态）。
+
+另外，需要注意配置 kube-proxy 使用 kube-apiserver 负载均衡的 IP 地址：
+
+```sh
+kubectl get configmap -n kube-system kube-proxy -o yaml > kube-proxy-сm.yaml
+sed -i 's#server:.*#server: https://<masterLoadBalancerFQDN>:6443#g' kube-proxy-cm.yaml
+kubectl apply -f kube-proxy-cm.yaml --force
+# restart all kube-proxy pods to ensure that they load the new configmap
+kubectl delete pod -n kube-system -l k8s-app=kube-proxy
+```
+
+## kubelet
+
+kubelet 需要配置 kube-apiserver 负载均衡的 IP 地址
+
+```sh
+sudo sed -i 's#server:.*#server: https://<masterLoadBalancerFQDN>:6443#g' /etc/kubernetes/kubelet.conf
+sudo systemctl restart kubelet
+```
 
 ## 数据持久化
 
-除了上面提到的这些配置，持久化存储也是高可用Kubernetes集群所必须的。
+除了上面提到的这些配置，持久化存储也是高可用 Kubernetes 集群所必须的。
 
-- 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如aws ebs或者gce persistent disk
-- 对于物理机部署的集群，可以考虑使用iSCSI、NFS、Gluster或者Ceph等网络存储，也可以使用RAID
+- 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如 aws ebs 或者 gce persistent disk
+- 对于物理机部署的集群，可以考虑使用 iSCSI、NFS、Gluster 或者 Ceph 等网络存储，也可以使用 RAID
 
 ## 参考文档
 
