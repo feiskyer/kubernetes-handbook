@@ -32,7 +32,29 @@ Kubernetes多组件之间的通信原理为
 4. kubelet检测到有新的Pod调度过来，通过container runtime运行该Pod
 5. kubelet通过container runtime取到Pod状态，并更新到apiserver中
 
+## 端口号
+
+### Master node(s)
+
+| Protocol | Direction | Port Range | Purpose                 |
+| -------- | --------- | ---------- | ----------------------- |
+| TCP      | Inbound   | 6443*      | Kubernetes API server   |
+| TCP      | Inbound   | 2379-2380  | etcd server client API  |
+| TCP      | Inbound   | 10250      | Kubelet API             |
+| TCP      | Inbound   | 10251      | kube-scheduler          |
+| TCP      | Inbound   | 10252      | kube-controller-manager |
+| TCP      | Inbound   | 10255      | Read-only Kubelet API   |
+
+### Worker node(s)
+
+| Protocol | Direction | Port Range  | Purpose               |
+| -------- | --------- | ----------- | --------------------- |
+| TCP      | Inbound   | 10250       | Kubelet API           |
+| TCP      | Inbound   | 10255       | Read-only Kubelet API |
+| TCP      | Inbound   | 30000-32767 | NodePort Services**   |
+
 ## 参考文档
 
 - [Master-Node communication](https://kubernetes.io/docs/concepts/architecture/master-node-communication/)
 - [Core Kubernetes: Jazz Improv over Orchestration](https://blog.heptio.com/core-kubernetes-jazz-improv-over-orchestration-a7903ea92ca)
+- [Installing kubeadm](https://kubernetes.io/docs/setup/independent/install-kubeadm/#check-required-ports)
