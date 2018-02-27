@@ -238,6 +238,15 @@ $ kubectl plugin hello
 Hello plugins!
 ```
 
+## 原始 URI
+
+kubectl 也可以用来直接访问原始 URI，比如要访问 [Metrics API](https://github.com/kubernetes-incubator/metrics-server) 可以
+
+- `kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes`
+- `kubectl get --raw /apis/metrics.k8s.io/v1beta1/pods`
+- `kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes/<node-name>`
+- `kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespace/<namespace-name>/pods/<pod-name>`
+
 ## 附录
 
 kubectl 的安装方法
