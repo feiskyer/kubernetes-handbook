@@ -49,6 +49,13 @@ kubectl -n kube-system get pods -l k8s-app=metrics-server
 - `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/pods`
 - `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/namespace/<namespace-name>/pods/<pod-name>`
 
+也可以直接通过 kubectl 命令来访问这些 API，比如
+
+- `kubectl get --raw apis/metrics.k8s.io/v1beta1/nodes`
+- `kubectl get --raw apis/metrics.k8s.io/v1beta1/pods`
+- `kubectl get --raw apis/metrics.k8s.io/v1beta1/nodes/<node-name>`
+- `kubectl get --raw apis/metrics.k8s.io/v1beta1/namespace/<namespace-name>/pods/<pod-name>`
+
 ## 排错
 
 如果发现 metrics-server Pod 无法正常启动，比如处于 CrashLoopBackOff 状态，并且 restartCount 在不停增加，则很有可能是其跟 kube-apiserver 通信有问题。查看该 Pod 的日志，可以发现
