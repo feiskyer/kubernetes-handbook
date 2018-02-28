@@ -8,7 +8,7 @@ Volume 的生命周期包括 5 个阶段
 
 1. Provisioning，即 PV 的创建，可以直接创建 PV（静态方式），也可以使用 StorageClass 动态创建
 2. Binding，将 PV 分配给 PVC
-3. Using，Pod 通过 PVC 使用该 Volume，并可以通过准入控制 PVCProtection 阻止删除正在使用的 PVC
+3. Using，Pod 通过 PVC 使用该 Volume，并可以通过准入控制 StorageProtection（1.9及以前版本为PVCProtection）阻止删除正在使用的 PVC
 4. Releasing，Pod 释放 Volume 并删除 PVC
 5. Reclaiming，回收 PV，可以保留 PV 以便下次使用，也可以直接从云存储中删除
 6. Deleting，删除 PV 并从云存储中删除后段存储
