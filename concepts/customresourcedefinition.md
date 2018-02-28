@@ -6,7 +6,7 @@ CustomResourceDefinition（CRD）是 v1.7 + 新增的无需改变代码就可以
 
 | Kubernetes 版本 | CRD API 版本                 |
 | --------------- | ---------------------------- |
-| v1.8-v1.9       | apiextensions.k8s.io/v1beta1 |
+| v1.8+           | apiextensions.k8s.io/v1beta1 |
 
 ## CRD 示例
 
@@ -144,6 +144,106 @@ validation failure list:
 spec.cronSpec in body should match '^(\d+|\*)(/\d+)?(\s+(\d+|\*)(/\d+)?){4}$'
 spec.replicas in body should be less than or equal to 10
 ```
+
+## Subresources
+
+v1.10 开始 CRD 还支持 `/status` 和 `/scale` 等两个子资源（Alpha）。使用前需要在 `kube-apiserver` 开启 `--feature-gates=CustomResourceSubresources=true`。
+
+```yaml
+# resourcedefinition.yaml
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: crontabs.stable.example.com
+spec:
+  group: stable.example.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: crontabs
+    singular: crontab
+    kind: CronTab
+    shortNames:
+    - ct
+  # subresources describes the subresources for custom resources.
+  subresources:
+    # status enables the status subresource.
+    status: {}
+    # scale enables the scale subresource.
+    scale:
+      # specReplicasPath defines the JSONPath inside of a custom resource that corresponds to Scale.Spec.Replicas.
+      specReplicasPath: .spec.replicas
+      # statusReplicasPath defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Replicas.
+      statusReplicasPath: .status.replicas
+      # labelSelectorPath defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Selector.
+      labelSelectorPath: .status.labelSelector
+```
+
+```sh
+$ kubectl create -f resourcedefinition.yaml
+$ kubectl create -f- <<EOF
+apiVersion: "stable.example.com/v1"
+kind: CronTab
+metadata:
+  name: my-new-cron-object
+spec:
+  cronSpec: "* * * * */5"
+  image: my-awesome-cron-image
+  replicas: 3
+EOF
+
+$ kubectl scale --replicas=5 crontabs/my-new-cron-object
+crontabs "my-new-cron-object" scaled
+
+$ kubectl get crontabs my-new-cron-object -o jsonpath='{.spec.replicas}'
+5
+```
+
+## Categories
+
+Categories 用来将 CRD 对象分组，这样就可以使用 `kubectl get <category-name>` 来查询属于该组的所有对象。
+
+```yaml
+# resourcedefinition.yaml
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: crontabs.stable.example.com
+spec:
+  group: stable.example.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: crontabs
+    singular: crontab
+    kind: CronTab
+    shortNames:
+    - ct
+    # categories is a list of grouped resources the custom resource belongs to.
+    categories:
+    - all
+```
+
+```yaml
+# my-crontab.yaml
+apiVersion: "stable.example.com/v1"
+kind: CronTab
+metadata:
+  name: my-new-cron-object
+spec:
+  cronSpec: "* * * * */5"
+  image: my-awesome-cron-image
+```
+
+```sh
+$ kubectl create -f resourcedefinition.yaml
+$ kubectl create -f my-crontab.yaml
+$ kubectl get all
+NAME                          AGE
+crontabs/my-new-cron-object   3s
+```
+
+
 
 ## CRD 控制器
 

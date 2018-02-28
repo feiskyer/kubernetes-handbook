@@ -21,6 +21,7 @@
 | `CustomPodDNS`                            | `false`  | Alpha | 1.9+     |
 | `CustomResourceValidation`                | `false`  | Alpha | 1.8      |
 | `CustomResourceValidation`                | `true`   | Beta  | 1.9+     |
+| `CustomResourceSubresources`              | `false`  | Alpha | 1.10     |
 | `DevicePlugins`                           | `false`  | Alpha | 1.8+     |
 | `DynamicKubeletConfig`                    | `false`  | Alpha | 1.4+     |
 | `DynamicVolumeProvisioning`               | `true`   | Alpha | 1.3-1.7  |
