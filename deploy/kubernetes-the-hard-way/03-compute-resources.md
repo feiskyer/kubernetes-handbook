@@ -2,7 +2,7 @@
 
 Kubernetes 需要一些机器去搭建管理 Kubernetes 的控制平台, 也需要一些工作节点（work node）来运行容器。在这个实验中你将会创建一些虚拟机，并利用 GCE [Compute Zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) 来运行安全且高可用的 Kubernetes 集群。
 
-> 请确定默认 Compute Zone 和 Gegion 已按照 [事前准备](01-prerequisites.md#set-a-default-compute-region-and-zone) 的设定步骤完成。
+> 请确定默认 Compute Zone 和 Region 已按照 [事前准备](01-prerequisites.md#set-a-default-compute-region-and-zone) 的设定步骤完成。
 
 ## 网络
 
