@@ -8,9 +8,60 @@ Kubernetes 支持容器请求 GPU 资源（目前仅支持 NVIDIA GPU），在�
 
 从 Kubernetes v1.8 开始，GPU 开始以 DevicePlugin 的形式实现。在使用之前需要配置
 
-- `--feature-gates="DevicePlugins=true"`
+- kubelet/kube-apiserver/kube-controller-manager: `--feature-gates="DevicePlugins=true"`
 - 在所有的 Node 上安装 Nvidia 驱动，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
 - Kubelet 配置使用 docker 容器引擎（默认就是 docker），其他容器引擎暂不支持该特性
+
+#### NVIDIA 插件
+
+NVIDIA 需要 nvidia-docker。
+
+安装 nvidia-docker
+
+```sh
+# Install docker-ce
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+
+# Add the package repositories
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+
+# Install nvidia-docker2 and reload the Docker daemon configuration
+sudo apt-get install -y nvidia-docker2
+sudo pkill -SIGHUP dockerd
+
+# Test nvidia-smi with the latest official CUDA image
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+```
+
+设置 Docker 默认运行时为 nvidia
+
+```sh
+# cat /etc/docker/daemon.json
+{
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+```
 
 部署 NVDIA 设备插件
 
@@ -22,7 +73,22 @@ kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.
 kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.9/nvidia-device-plugin.yml
 ```
 
-然后请求 `nvidia.com/gpu` 资源：
+#### GCE/GKE GPU 插件
+
+该插件不需要 nvidia-docker，并且也支持 CRI 容器运行时。
+
+```sh
+# Install NVIDIA drivers on Container-Optimized OS:
+kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/k8s-1.9/daemonset.yaml
+
+# Install NVIDIA drivers on Ubuntu (experimental):
+kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/k8s-1.9/nvidia-driver-installer/ubuntu/daemonset.yaml
+
+# Install the device plugin:
+kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.9/cluster/addons/device-plugins/nvidia-gpu/daemonset.yaml
+```
+
+#### 请求 `nvidia.com/gpu` 资源示例
 
 ```yaml
 apiVersion: v1
@@ -283,3 +349,10 @@ Fri Jun 16 19:33:35 2017
 |  No running processes found                                                 |
 +-----------------------------------------------------------------------------+
 ```
+
+## 参考文档
+
+- [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)
+- [Schedule GPUs on Kubernetes](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
+- [GoogleCloudPlatform/container-engine-accelerators](https://github.com/GoogleCloudPlatform/container-engine-accelerators)
+
