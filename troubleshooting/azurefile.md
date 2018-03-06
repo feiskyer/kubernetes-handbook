@@ -1,6 +1,6 @@
 # AzureFile 排错
 
-[AzureFile](https://docs.microsoft.com/zh-cn/azure/storage/files/storage-files-introduction) 提供了基于 SMB 协议（也称 CIFS）托管文件共享服务，支持 Windows 和 Linux 容器，并支持跨主机的共享。
+[AzureFile](https://docs.microsoft.com/zh-cn/azure/storage/files/storage-files-introduction) 提供了基于 SMB 协议（也称 CIFS）托管文件共享服务。它支持 Windows 和 Linux 容器，并支持跨主机的共享，可用于多个 Pod 之间的共享存储。AzureFile 的缺点是性能[较差](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-scale-targets)（[AKS#223](https://github.com/Azure/AKS/issues/223)），并且不提供 Premium 存储。
 
 推荐基于 StorageClass 来使用 AzureFile，即
 
@@ -118,3 +118,4 @@ subjects:
 - [Introduction of Azure File Storage](https://docs.microsoft.com/zh-cn/azure/storage/files/storage-files-introduction)
 - [AzureFile volume examples](https://github.com/kubernetes/examples/tree/master/staging/volumes/azure_file)
 - [Persistent volumes with Azure files](https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv)
+- [Azure Files scalability and performance targets](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-scale-targets)
