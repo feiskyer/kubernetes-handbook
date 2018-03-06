@@ -165,8 +165,11 @@
   - [Pod 排错](troubleshooting/pod.md)
   - [网络排错](troubleshooting/network.md)
   - [PV 排错](troubleshooting/pv.md)
+    - [AzureDisk](troubleshooting/azuredisk.md)
+    - [AzureFile](troubleshooting/azurefile.md)
   - [Windows 排错](troubleshooting/windows.md)
   - [云平台排错](troubleshooting/cloud.md)
+    - [Azure](troubleshooting/azure.md)
   - [排错工具](troubleshooting/tools.md)
 
 ## 开发与社区贡献
