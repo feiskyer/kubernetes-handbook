@@ -9,8 +9,8 @@ Kubernetes 使用 [keepalived](http://www.keepalived.org) 来产生虚拟 IP add
 
 kubernetes v1.6 版提供了三种方式去暴露 Service：
 
-1. **L4 的 LoadBalacncer** : 只能再 [cloud providers](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/) 上被使用 像是 GCE 或 AWS
-2. **NodePort** : [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) 允许再每个节点上开启一个 port 口, 借由这个 port 口会再将请求导向到随机的 pod 上
+1. **L4 的 LoadBalacncer** : 只能在 [cloud providers](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/) 上被使用 像是 GCE 或 AWS
+2. **NodePort** : [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) 允许在每个节点上开启一个 port 口, 借由这个 port 口会再将请求导向到随机的 pod 上
 3. **L7 Ingress** :[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) 为一个 LoadBalancer(例: nginx, HAProxy, traefik, vulcand) 会将 HTTP/HTTPS 的各个请求导向到相对应的 service endpoint
 
 有了这些方式, 为何我们还需要 _keepalived_ ?
@@ -32,7 +32,7 @@ Public ----(example.com = 10.4.0.3/4/5)----|-----| Host IP: 10.4.0.4 |
                                                  |___________________|
 ```
 
-我们假设 Ingress 运行再 3 个 kubernetes 节点上, 并对外暴露 `10.4.0.x` 的 IP 去做 loadbalance
+我们假设 Ingress 运行在 3 个 kubernetes 节点上, 并对外暴露 `10.4.0.x` 的 IP 去做 loadbalance
 
 DNS Round Robin (RR) 将对应到 `example.com` 的请求轮循给这 3 个节点, 如果 `10.4.0.3` 掛了, 仍有三分之一的流量会导向 `10.4.0.3`, 这样就会有一段 downtime, 直到 DNS 发现 `10.4.0.3` 掛了并修正导向
 
