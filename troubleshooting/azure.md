@@ -30,15 +30,14 @@
 
 在创建 Service 时，可以通过 `metadata.annotation` 来自定义 Azure 负载均衡的行为，可选的选项包括
 
-- `service.beta.kubernetes.io/azure-load-balancer-internal`：如果设置，则创建内网负载均衡
-- `service.beta.kubernetes.io/azure-load-balancer-internal-subnet`：设置内网负载均衡 IP 使用的子网
-- `service.beta.kubernetes.io/azure-load-balancer-mode`：设置如何为负载均衡选择所属的 AvailabilitySet（之所以有该选项是因为在 Azure 的每个 AvailabilitySet 中只能创建最多一个外网负载均衡和一个内网负载均衡），支持三种选项
-  - 不设置或者设置为空，使用 `/etc/kubernetes/azure.json` 中设置的 `primaryAvailabilitySet`
-  - 设置为 `auto`，选择负载均衡规则最少的 AvailabilitySet
-  - 设置为`as1,as2`，指定 AvailabilitySet 列表
-- `service.beta.kubernetes.io/azure-dns-label-name`：设置后为公网 IP 创建 外网 DNS
-- `service.beta.kubernetes.io/azure-shared-securityrule`：如果设置，则为多个 Service 共享相同的 NSG 规则。注意该选项需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules)。
-- `service.beta.kubernetes.io/azure-load-balancer-resource-group`：当为 Service 指定公网 IP 并且该公网 IP 与 Kubernetes 集群不在同一个 Resource Group 时，需要使用该 Annotation 指定公网 IP 所在的 Resource Group。
+| Annotation                                                   | 功能                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| service.beta.kubernetes.io/azure-load-balancer-internal      | 如果设置，则创建内网负载均衡                                 |
+| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | 设置内网负载均衡 IP 使用的子网                               |
+| service.beta.kubernetes.io/azure-load-balancer-mode          | 设置如何为负载均衡选择所属的 AvailabilitySet（之所以有该选项是因为在 Azure 的每个 AvailabilitySet 中只能创建最多一个外网负载均衡和一个内网负载均衡）。可选项为：（1）不设置或者设置为空，使用 `/etc/kubernetes/azure.json` 中设置的 `primaryAvailabilitySet`；（2）设置为 `auto`，选择负载均衡规则最少的 AvailabilitySet；（3）设置为`as1,as2`，指定 AvailabilitySet 列表 |
+| service.beta.kubernetes.io/azure-dns-label-name              | 设置后为公网 IP 创建 外网 DNS                                |
+| service.beta.kubernetes.io/azure-shared-securityrule         | 如果设置，则为多个 Service 共享相同的 NSG 规则。注意该选项需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
+| service.beta.kubernetes.io/azure-load-balancer-resource-group | 当为 Service 指定公网 IP 并且该公网 IP 与 Kubernetes 集群不在同一个 Resource Group 时，需要使用该 Annotation 指定公网 IP 所在的 Resource Group |
 
 在 Kubernetes 中，负载均衡的创建逻辑都在 kube-controller-manager 中，因而排查负载均衡相关的问题时，除了查看 Service 自身的状态，如
 
