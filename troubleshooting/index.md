@@ -2,14 +2,18 @@
 
 Kubernetes 集群以及应用排错的一般方法，主要包括
 
-* Pod 运行异常的排错方法
-* 集群状态异常排错方法
-* 网络异常的排错方法
-* 持久化存储（PV）异常的排错方法
-* 云平台异常的排错方法
-* Windows 容器异常的排错方法
+- [集群状态异常排错](cluster.md)
+- [Pod运行异常排错](pod.md)
+- [网络异常排错](network.md)
+- [持久化存储异常排错](pv.md)
+  - [AzureDisk 排错](azuredisk.md)
+  - [AzureFile 排错](azurefile.md)
+- [Windows容器排错](windows.md)
+- [云平台异常排错](cloud.md)
+  - [Azure 排错](azure.md)
+- [常用排错工具](tools.md)
 
-在排错过程中，`kubectl`  是最重要的工具，通常也是定位错误的起点。这里也列出一些常用的命令以供参考。
+在排错过程中，`kubectl`  是最重要的工具，通常也是定位错误的起点。
 
 #### 查看 Pod 状态以及运行节点
 
