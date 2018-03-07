@@ -112,6 +112,10 @@ subjects:
   namespace: kube-system 
 ```
 
+## Azure German Cloud 无法使用 AzureFile
+
+Azure German Cloud 仅在 v1.7.11+、v1.8+ 以及更新版本中支持（[#48460](https://github.com/kubernetes/kubernetes/pull/48460)），升级 Kubernetes 版本即可解决。
+
 ## 参考文档
 
 - [Known kubernetes issues on Azure](https://github.com/andyzhangx/demo/tree/master/issues)
