@@ -14,9 +14,15 @@ Pod 的特征
 
 > Kubernetes v1.8 还支持容器间共享 PID namespace，需要 docker >= 1.13.1，并配置 kubelet `--docker-disable-shared-pid=false`。
 
+## API 版本对照表
+
+| Kubernetes 版本 | Core API 版本 | 默认开启 |
+| --------------- | ------------- | -------- |
+| v1.5+           | core/v1       | 是       |
+
 ## Pod 定义
 
-通过 yaml 或 json 描述 Pod 和其内 Container 的运行环境以及期望状态，比如一个最简单的 nginx pod 可以定义为
+通过 [yaml 或 json 描述 Pod](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core) 和其内容器的运行环境以及期望状态，比如一个最简单的 nginx pod 可以定义为
 
 ```yaml
 apiVersion: v1
@@ -32,6 +38,25 @@ spec:
     ports:
     - containerPort: 80
 ```
+
+> 在生产环境中，推荐使用 Deployment、StatefulSet、Job 或者 CronJob 等控制器来创建 Pod，而不推荐直接创建 Pod。
+
+### Docker 镜像支持
+
+目前，Kubernetes 仅支持使用 Docker 镜像来创建容器，但并非支持 [Dockerfile](https://docs.docker.com/engine/reference/builder/) 定义的所有行为。如下表所示
+
+| Dockerfile 指令 | 描述                       | 支持 | 说明                                         |
+| --------------- | -------------------------- | ---- | -------------------------------------------- |
+| ENTRYPOINT      | 启动命令                   | 是   | containerSpec.command                        |
+| CMD             | 命令的参数列表             | 是   | containerSpec.args                           |
+| ENV             | 环境变量                   | 是   | containerSpec.env                            |
+| EXPOSE          | 对外开放的端口             | 否   | 使用 containerSpec.ports.containerPort 替代  |
+| VOLUME          | 数据卷                     | 是   | 使用 volumes 和 volumeMounts                 |
+| USER            | 进程运行用户以及用户组     | 是   | securityContext.runAsUser/supplementalGroups |
+| WORKDIR         | 工作目录                   | 是   | containerSpec.workingDir                     |
+| STOPSIGNAL      | 停止容器时给进程发送的信号 | 是   | SIGKILL                                      |
+| HEALTHCHECK     | 健康检查                   | 否   | 使用 livenessProbe 和 readinessProbe 替代    |
+| SHELL           | 运行启动命令的 SHELL       | 否   | 使用镜像默认 SHELL 启动命令                  |
 
 ## API 版本对照表
 
@@ -189,7 +214,7 @@ KUBERNETES_PORT_443_TCP_PORT=443
 
 由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用 [DNS](../components/kube-dns.md) 来解析服务。
 
-## ImagePullPolicy
+## 镜像拉取策略
 
 支持三种 ImagePullPolicy
 
@@ -742,3 +767,4 @@ spec:
 - [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
 - [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
 - [Manage HugePages](https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/)
+- [Document supported docker image (Dockerfile) features](https://github.com/kubernetes/kubernetes/issues/30039)
