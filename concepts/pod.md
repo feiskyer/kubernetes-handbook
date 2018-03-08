@@ -58,12 +58,6 @@ spec:
 | HEALTHCHECK     | 健康检查                   | 否   | 使用 livenessProbe 和 readinessProbe 替代    |
 | SHELL           | 运行启动命令的 SHELL       | 否   | 使用镜像默认 SHELL 启动命令                  |
 
-## API 版本对照表
-
-| Kubernetes 版本 | Core API 版本 | 默认开启 |
-| --------------- | ------------- | -------- |
-| v1.5+           | core/v1       | 是       |
-
 ## 使用 Volume
 
 Volume 可以为容器提供持久化存储，比如
@@ -201,7 +195,7 @@ spec:
 
 容器的环境变量中还可以引用容器运行前创建的所有服务的信息，比如默认的 kubernetes 服务对应以下环境变量：
 
-```
+```sh
 KUBERNETES_PORT_443_TCP_ADDR=10.0.0.1
 KUBERNETES_SERVICE_HOST=10.0.0.1
 KUBERNETES_SERVICE_PORT=443
@@ -321,10 +315,10 @@ Kubernetes 通过 cgroups 限制容器的 CPU 和内存等计算资源，包括 
 
 - `spec.containers[].resources.limits.cpu`：CPU 上限，可以短暂超过，容器也不会被停止
 - `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被终止或调度到其他资源充足的机器上
+- `spec.containers[].resources.limits.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir等）的上限，超过后 Pod 会被驱逐
 - `spec.containers[].resources.requests.cpu`：CPU 请求，也是调度 CPU 资源的依据，可以超过
 - `spec.containers[].resources.requests.memory`：内存请求，也是调度内存资源的依据，可以超过；但如果超过，容器可能会在 Node 内存不足时清理
-- `spec.containers[].resources.limits.ephemeral-storage`：临时存储的请求，调度容器存储的依据
-- `spec.containers[].resources.requests.ephemeral-storage`：临时存储的上限，超过后 Pod 会被驱逐
+- `spec.containers[].resources.requests.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir等）的请求，调度容器存储的依据
 
 比如 nginx 容器请求 30% 的 CPU 和 56MB 的内存，但限制最多只用 50% 的 CPU 和 128MB 的内存：
 
