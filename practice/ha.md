@@ -2,9 +2,9 @@
 
 Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会自动部署一个高可用的系统，包括
 
-- etcd 集群模式
-- apiserver 负载均衡
-- controller manager、scheduler 和 cluster autoscaler 自动选主（有且仅有一个运行实例）
+- Etcd 集群模式
+- kube-apiserver 负载均衡
+- kube-controller-manager、kube-scheduler 和 cluster-autoscaler 自动选主（有且仅有一个运行实例）
 
 如下图所示
 
@@ -250,9 +250,9 @@ EOF
 - server.cert - Server certificate, public key
 - server.key - Server certificate, private key
 
-apiserver 启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用 haproxy/lvs 等为 master 节点配置负载均衡。
+> 注意：确保 kube-apiserver 配置 --etcd-quorum-read=true（v1.9 之后默认为 true）。
 
-如果使用 kubeadm 来部署集群的话，上述配置可以自动生成
+如果使用 kubeadm 来部署集群的话，可以按照如下步骤配置：
 
 ```sh
 # on master0
@@ -289,6 +289,8 @@ scp root@<master0-ip-address>:/etc/kubernetes/pki/* /etc/kubernetes/pki
 rm apiserver.crt
 # 然后再执行上述 master0 的所有步骤
 ```
+
+kube-apiserver 启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用 haproxy/lvs 等为 master 节点配置负载均衡。
 
 ## kube-controller-manager 和 kube-scheduler
 
