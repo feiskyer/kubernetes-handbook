@@ -55,7 +55,15 @@ data:
 
 ## 启动kube-dns示例
 
-一般通过[addon](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)的方式部署DNS服务，这会在Kubernetes中启动一个包含三个容器的Pod，运行着DNS相关的三个服务：
+一般通过扩展的方式部署DNS服务，如把 [kube-dns.yaml](/manifests/kubedns/kube-dns.yaml) 放到 Master 节点的 `/etc/kubernetes/addons` 目录中。当然也可以手动部署：
+
+```sh
+kubectl apply -f https://kubernetes.feisky.xyz/manifests/kubedns/kube-dns.yaml
+```
+
+
+
+这会在Kubernetes中启动一个包含三个容器的Pod，运行着DNS相关的三个服务：
 
 ```sh
 # kube-dns container
@@ -68,6 +76,14 @@ dnsmasq-nanny -v=2 -logtostderr -configDir=/etc/k8s/dns/dnsmasq-nanny -restartDn
 sidecar --v=2 --logtostderr --probe=kubedns,127.0.0.1:10053,kubernetes.default.svc.cluster.local.,5,A --probe=dnsmasq,127.0.0.1:53,kubernetes.default.svc.cluster.local.,5,A
 ```
 
+Kubernetes v1.10 也支持 Beta 版的 CoreDNS，其性能较 kube-dns 更好。可以以扩展方式部署，如把 [coredns.yaml](/manifests/kubedns/coredns.yaml) 放到 Master 节点的 `/etc/kubernetes/addons` 目录中。当然也可以手动部署：
+
+```sh
+kubectl apply -f https://kubernetes.feisky.xyz/manifests/kubedns/coredns.yaml
+```
+
 ## 参考文档
 
 - [dns-pod-service 介绍](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
+- [coredns/coredns](https://github.com/coredns/coredns)
+
