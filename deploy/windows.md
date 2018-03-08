@@ -321,18 +321,70 @@ microsoft/iis:windowsservercore-1709
 
 而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
 
+## 设置 CPU 和内存
+
+从 v1.10 开始，Kubernetes 支持给 Windows 容器设置 CPU 和内存
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iis
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: iis
+    spec:
+      containers:
+      - name: iis
+        image: microsoft/iis
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: 2
+        ports:
+        - containerPort: 80
+```
+
+## Hyper-V 容器
+
+从 v1.10 开始支持 Hyper-V 隔离的容器（Alpha）。 在使用之前，需要配置 kubelet 开启 `HyperVContainer` 特性开关。然后使用 Annotation `experimental.windows.kubernetes.io/isolation-type=hyperv` 来指定容器使用 Hyper-V 隔离:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iis
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: iis
+      annotations:
+        experimental.windows.kubernetes.io/isolation-type: hyperv
+    spec:
+      containers:
+      - name: iis
+        image: microsoft/iis
+        ports:
+        - containerPort: 80
+```
+
 ### v1.9 版本已知问题
 
 - 仅  Windows Server 1709 或更新的版本才支持在 Pod 内运行多个容器（仅支持 Process 隔离）
 - 暂不支持以 Volume 挂载的方式使用 Secrets 和 ConfigMaps
 - 暂不支持 StatefulSet
 - 暂不支持 Windows Server Container Pods 的自动扩展（Horizontal Pod Autoscaling）
-- 暂不支持 Hyper-V 隔离方式
 - Windows 容器的 OS 版本需要与 Host OS 版本匹配，否则容器无法启动
 - 使用 L3 或者 Host GW 网络时，无法从 Windows Node 中直接访问 Kubernetes Services（使用 OVS/OVN 时没有这个问题）
 - 在 VMWare Fusion 的 Window Server 中 kubelet.exe 可能会无法启动（已在 [#57124](https://github.com/kubernetes/kubernetes/pull/57124) 中修复）
 - 暂不支持 Weave 网络插件
 - Calico 网络插件仅支持 Policy-Only 模式
+- 对于需要使用 `:` 作为环境变量的 .NET 容器，可以将环境变量中的 `:` 替换为 `__`（参考[这里](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration#configuration-by-environment)）
 
 ## 参考文档
 
