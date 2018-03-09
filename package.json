@@ -14,7 +14,8 @@
     "gitbook-plugin-github-buttons": "^2.1.0",
     "gitbook-plugin-mermaid": "^0.0.9",
     "gitbook-plugin-page-treeview": "^2.9.7",
-    "gitbook-plugin-search-plus": "^1.0.3"
+    "gitbook-plugin-search-plus": "^1.0.3",
+    "gitbook-plugin-versions": "^2.1.4"
   },
   "devDependencies": {},
   "scripts": {

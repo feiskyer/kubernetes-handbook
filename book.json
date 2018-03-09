@@ -11,6 +11,7 @@
         "page-treeview",
         "editlink",
         "-lunr",
+        "versions",
         "-search",
         "search-plus"
     ],
@@ -39,6 +40,10 @@
         "editlink": {
             "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master/",
             "label": "编辑本页"
+        },
+        "versions": {
+            "gitbookConfigURL": "https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/master/book.json",
+            "type": "branches"
         }
     },
     "generator": "site"
