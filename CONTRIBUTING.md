@@ -1,7 +1,7 @@
-# 如何贡献
+# CONTRIBUTING
 
-1. 在 Github 上 [Fork](https://github.com/feiskyer/kubernetes-handbook/fork) 项目到自己的仓库。
-2. 将 fork 后的项目拉到本地: `git clone https://github.com/<user-name>/kubernetes-handbook`。
-3. 新建一个分支，并添加或编辑内容：`git checkout -b new-branch`。
-4. 提交并推送到 github：`git commit -am "comments"; git push`。
-5. 在 Github 上提交 Pull Request。
+1. [Fork on Github](https://github.com/feiskyer/kubernetes-handbook/fork).
+2. Clone the forked repo: `git clone https://github.com/<user-name>/kubernetes-handbook -b en`.
+3. Create a new branch, add some changes and commit: `git checkout -b new-branch`.
+4. Push the branch to github: `git commit -am "comments"; git push`.
+5. File a Pull Request on Github to `en` branch.

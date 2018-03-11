@@ -1,7 +1,5 @@
 # Summary
 
-- [前言](README.md)
-- [如何贡献](CONTRIBUTING.md)
 - [1. Kubernetes 简介](introduction/index.md)
   - [1.1 基本概念](introduction/concepts.md)
   - [1.2 Kubernetes 101](introduction/101.md)
@@ -184,4 +182,5 @@
 - [11. 附录](appendix/index.md)
   - [生态圈](appendix/ecosystem.md)
   - [Play-With-Kubernetes](appendix/play-with-k8s.md)
+  - [如何贡献](CONTRIBUTING.md)
   - [参考文档](appendix/reference.md)
