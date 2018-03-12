@@ -2,7 +2,48 @@
 
 本章介绍 Windows 容器异常的排错方法。
 
-### Windows Pod 一直处于 ContainerCreating 状态
+## RDP 登录到 Node
+
+通常在排查 Windows 容器异常问题时需要通过 RDP 登录到 Windows Node上面查看 kubelet、docker、HNS 等的状态和日志。在使用云平台时，可以给相应的 VM 绑定一个公网 IP；而在物理机部署时，可以通过路由器上的端口映射来访问。
+
+除此之外，还有一种更简单的方法，即通过 Kubernetes Service 对外暴露 Node 的 3389 端口（注意替换为你自己的 node-ip）：
+
+```yaml
+# rdp.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdp
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 3389
+    targetPort: 3389
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: rdp
+subsets:
+  - addresses:
+      - ip: <node-ip>
+    ports:
+      - port: 3389
+```
+
+```sh
+$ kubectl create -f rdp.yaml
+$ kubectl get svc rdp
+NAME      TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
+```
+
+接着，就可以通过 rdp 服务的外网 IP 来登录 Node，如 `mstsc.exe -v 52.52.52.52`。
+
+在使用完后， 不要忘记删除 RDP 服务 `kubectl delete -f rdp.yaml`。
+
+## Windows Pod 一直处于 ContainerCreating 状态
 
 一般有两种可能的原因
 
@@ -12,7 +53,7 @@
   * `microsoft/windowsservercore:1709`
   * `microsoft/iis:windowsservercore-1709`
 
-### Windows Pod 内无法解析 DNS
+## Windows Pod 内无法解析 DNS
 
 这是一个[已知问题](https://github.com/Azure/acs-engine/issues/2027)，临时解决方法是为 Pod 直接配置 kube-dns Pod 的地址：
 
@@ -22,18 +63,18 @@ Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
 ```
 
-### Windows Pod 内无法访问 ServiceAccount Secret
+## Windows Pod 内无法访问 ServiceAccount Secret
 
 这是个[已知问题](https://github.com/moby/moby/issues/28401)，需要等 Windows Update。针对该问题的修复已经包含在 Windows 10 Insider 和 Windows Server Insider builds 17074+ 内。
 
-### Windows Pod 内无法访问 Kubernetes API
+## Windows Pod 内无法访问 Kubernetes API
 
 如果使用了 Hyper-V 隔离容器，需要开启 MAC spoofing 。
 
-###  Windows Node 内无法访问 Service ClusterIP
+##  Windows Node 内无法访问 Service ClusterIP
 
 这是个当前 Windows 网络协议栈的已知问题，只有在 Pod 内才可以访问 Service ClusterIP。
 
 ## 参考文档
 
-- [Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)
+- [Kubernetes On Windows - Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)

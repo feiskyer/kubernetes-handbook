@@ -1,18 +1,19 @@
-# Pod 异常排错
+# Troubleshooting Pods
 
-本章介绍 Pod 运行异常的排错方法。
+This chapter is about pods troubleshooting, which are applications deployed into Kubernetes.
 
-一般来说，无论 Pod 处于什么异常状态，都可以执行以下命令来查看 Pod 的状态
+Usually, no matter which errors are you run into, the first step is getting pod's current state and its logs
 
-- `kubectl get pod <pod-name> -o yaml` 查看 Pod 的配置是否正确
-- `kubectl describe pod <pod-name>` 查看 Pod 的事件
-- `kubectl logs <pod-name> [-c <container-name>]` 查看容器日志
+```sh
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+```
 
-这些事件和日志通常都会有助于排查 Pod 发生的问题。
+The pod events and its logs are usually helpful to identify the issue.
 
-## Pod 一直处于 Pending 状态
+## Pod stuck in Pending
 
-Pending 说明 Pod 还没有调度到某个 Node 上面。可以通过 `kubectl describe pod <pod-name>` 命令查看到当前 Pod 的事件，进而判断为什么没有调度。如
+Pending state indicates the Pod hasn't been scheduled yet. Check pod events and they will show you why the pod is not scheduled. 
 
 ```sh
 $ kubectl describe pod mypod
@@ -23,28 +24,34 @@ Events:
   Warning  FailedScheduling  12s (x6 over 27s)  default-scheduler  0/4 nodes are available: 2 Insufficient cpu.
 ```
 
-可能的原因包括
+Generally this is because there are insufficient resources of one type or another that prevent scheduling. An incomplete list of things that could go wrong includes
 
-- 资源不足，集群内所有的 Node 都不满足该 Pod 请求的 CPU、内存、GPU 或者临时存储空间等资源。解决方法是删除集群内不用的 Pod 或者增加新的 Node。
-- HostPort 端口已被占用，通常推荐使用 Service 对外开放服务端口
+- Cluster doesn't have enough resources, e.g. CPU, memory or GPU. You need to adjust pod's resource request or add new nodes to cluster
+- Pod requests more resources than node's capacity. You need to adjust pod's resource request or add larger nodes with more resources to cluster
+- Pod is using hostPort, but the port is already been taken by other services. Try using a Service if you're in such scenario
 
-## Pod 一直处于 Waiting 或 ContainerCreating 状态
+## Pod stuck in Waiting or ContainerCreating
 
-首先还是通过 `kubectl describe pod <pod-name>` 命令查看到当前 Pod 的事件。可能的原因包括
+In such case, Pod has been scheduled to a worker node, but it can't run on that machine.
 
-- 镜像拉取失败，比如
-  - 配置了错误的镜像
-  - Kubelet 无法访问镜像（国内环境访问 `gcr.io` 需要特殊处理）
-  - 私有镜像的密钥配置错误
-  - 镜像太大，拉取超时（可以适当调整 kubelet 的 `--image-pull-progress-deadline` 和 `--runtime-request-timeout` 选项）
-- CNI 网络错误，一般需要检查 CNI 网络插件的配置，比如
-  - 无法配置 Pod 网络
-  - 无法分配 IP 地址
-- 容器无法启动，需要检查是否打包了正确的镜像或者是否配置了正确的容器参数
+Again, get information from `kubectl describe pod <pod-name>` and check what's wrong. An incomplete list of things that could go wrong includes
 
-## Pod 处于 ImagePullBackOff 状态
+- Failed to pull image, e.g.
+  - image name is wrong
+  - registry is not accessible
+  - image hasn't been pushed to registry
+  - docker secret is wrong or not configured for secret image
+  - timeout because of big size (adjusting kubelet  `--image-pull-progress-deadline` and `--runtime-request-timeout` could help for this case)
+- Network setup error for pod's sandbox, e.g.
+  - can't setup network for pod's netns because of CNI configure error
+  - can't allocate IP address because exhausted podCIDR
+- Failed to start container, e.g.
+  - cmd or args configure error
+  - image itself contains wrong binary
 
-这通常是镜像名称配置错误或者私有镜像的密钥配置错误导致。这种情况可以使用 `docker pull <image>` 来验证镜像是否可以正常拉取。
+## Pod stuck in ImagePullBackOff
+
+`ImagePullBackOff` means image can't be pulled by a few times of retries. It could be caused by wrong image name or incorrect docker secret. In such case, `docker pull <image>` could be used to verify whether the image is correct.
 
 ```sh
 $ kubectl describe pod mypod
@@ -62,13 +69,13 @@ Events:
   Warning  Failed                 1s (x6 over 25s)   kubelet, k8s-agentpool1-38622806-0  Error: ImagePullBackOff
 ```
 
-如果是私有镜像，需要首先创建一个 docker-registry 类型的 Secret
+For private images, a docker registry secret should be created
 
 ```sh
 kubectl create secret docker-registry my-secret --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
 ```
 
-然后在容器中引用这个 Secret
+and then refer the secret in container's spec:
 
 ```yaml
 spec:
@@ -79,20 +86,25 @@ spec:
   - name: my-secret
 ```
 
-## Pod 一直处于 CrashLoopBackOff 状态
+## Pod stuck in CrashLoopBackOff
 
-CrashLoopBackOff 状态说明容器曾经启动了，但又异常退出了。此时 Pod 的 RestartCounts 通常是大于 0 的，可以先查看一下容器的日志
+In such case, Pod has been started and then exited abnormally (its restartCount should be > 0). Take a look at the container logs
 
 ```sh
 kubectl describe pod <pod-name>
 kubectl logs <pod-name>
+```
+
+If your container has previously crashed, you can access the previous container’s crash log with:
+
+```sh
 kubectl logs --previous <pod-name>
 ```
 
-这里可以发现一些容器退出的原因，比如
+From container logs, we may find the reason of crashing, e.g.
 
-- 容器进程退出
-- 健康检查失败退出
+- Container process exited
+- Health check failed
 - OOMKilled
 
 ```sh
@@ -122,13 +134,13 @@ Containers:
 ...
 ```
 
-如果此时如果还未发现线索，还可以到容器内执行命令来进一步查看退出原因
+Alternately, you can run commands inside that container with `exec`:
 
 ```sh
 kubectl exec cassandra -- cat /var/log/cassandra/system.log
 ```
 
-如果还是没有线索，那就需要 SSH 登录该 Pod 所在的 Node 上，查看 Kubelet 或者 Docker 的日志进一步排查了
+If none of these approaches work, SSH to Pod's host and check kubelet or docker's logs. The host running the Pod could be found by running:
 
 ```sh
 # Query Node
@@ -138,42 +150,44 @@ kubectl get pod <pod-name> -o wide
 ssh <username>@<node-name>
 ```
 
-## Pod 处于 Error 状态
+## Pod stuck in Error
 
-通常处于 Error 状态说明 Pod 启动过程中发生了错误。常见的原因包括
+In such case, Pod has been scheduled but failed to start. Again, get information from `kubectl describe pod <pod-name>` and check what's wrong. Reasons include:
 
-- 依赖的 ConfigMap、Secret 或者 PV 等不存在
-- 请求的资源超过了管理员设置的限制，比如超过了 LimitRange 等
-- 违反集群的安全策略，比如违反了 PodSecurityPolicy 等
-- 容器无权操作集群内的资源，比如开启 RBAC 后，需要为 ServiceAccount 配置角色绑定
+- referring non-exist ConfigMap, Secret or PV
+- exceeding resource limits (e.g. LimitRange)
+- violating PodSecurityPolicy
+- not authorized to cluster resources (e.g. with RBAC enabled, rolebinding should be created for service account)
 
-## Pod 处于 Terminating 或 Unknown 状态
+## Pod stuck in Terminating or Unknown
 
-从 v1.5 开始，Kubernetes 不会因为 Node 失联而删除其上正在运行的 Pod，而是将其标记为 Terminating 或 Unknown 状态。想要删除这些状态的 Pod 有三种方法：
+From v1.5, kube-controller-manager won't delete Pods because of Node unready. Instead, those Pods are marked with Terminating or Unknown status. If you are sure those Pods are not wanted any more, then there are three ways to delete them permanently
 
-- 从集群中删除该 Node。使用公有云时，kube-controller-manager 会在 VM 删除后自动删除对应的 Node。而在物理机部署的集群中，需要管理员手动删除 Node（如 `kubectl delete node <node-name>`。
-- Node 恢复正常。Kubelet 会重新跟 kube-apiserver 通信确认这些 Pod 的期待状态，进而再决定删除或者继续运行这些 Pod。
-- 用户强制删除。用户可以执行 `kubectl delete pods <pod> --grace-period=0 --force` 强制删除 Pod。除非明确知道 Pod 的确处于停止状态（比如 Node 所在 VM 或物理机已经关机），否则不建议使用该方法。特别是 StatefulSet 管理的 Pod，强制删除容易导致脑裂或者数据丢失等问题。
+- Delete the node from cluster, e.g. `kubectl delete node <node-name>`. If you are running with a cloud provider, node should be removed automatically after the VM is deleted from cloud provider.
+- Recover the node. After kubelet restarts, it will check Pods status with kube-apiserver and restarts or deletes those Pods.
+- Force delete the Pods, e.g. `kubectl delete pods <pod> --grace-period=0 --force`. This way is not recommended, unless you know what you are doing. For Pods belonging to StatefulSet, deleting forcibly may result in data loss or split-brain problem.
 
-## Pod 行为异常
+## Pod is running but not doing what it should do
 
-这里所说的行为异常是指 Pod 没有按预期的行为执行，比如没有运行 podSpec 里面设置的命令行参数。这一般是 podSpec yaml 文件内容有误，可以尝试使用 `--validate` 参数重建容器，比如
+If the pod has been running but not behaving as you expected, there may be errors in your pod description. Often a section of the pod description is nested incorrectly, or a key name is typed incorrectly, and so the key is ignored.
+
+Try to recreate the pod with `--validate` option:
 
 ```sh
 kubectl delete pod mypod
 kubectl create --validate -f mypod.yaml
 ```
 
-也可以查看创建后的 podSpec 是否是对的，比如
+or check whether created pod is expected by getting its description back:
 
 ```sh
 kubectl get pod mypod -o yaml
 ```
 
-## 修改静态 Pod 的 Manifest 后未自动重建
+## Static Pod not recreated after manifest changed
 
-Kubelet 使用 inotify 机制检测 `/etc/kubernetes/manifests` 目录（可通过 Kubelet 的 `--pod-manifest-path` 选项指定）中静态 Pod 的变化，并在文件发生变化后重新创建相应的 Pod。但有时也会发生修改静态 Pod 的 Manifest 后未自动创建新 Pod 的情景，此时一个简单的修复方法是重启 Kubelet。
+Kubelet monitors changes under `/etc/kubernetes/manifests`  (configured by kubelet's `--pod-manifest-path` option) directory by inotify. There is possible kubelet missed some events, which results in static Pod not recreated automatically. Restart kubelet should solve the problem.
 
-### 参考文档
+## References
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)

@@ -78,3 +78,22 @@ Kubernetes 1.9.0-1.9.3 中会有这个问题（[kubernetes#59255](https://github
 配置 `"useManagedIdentityExtension": true` 后，可以使用 [Managed Service Identity (MSI)](https://docs.microsoft.com/en-us/azure/active-directory/msi-overview) 来管理 Azure API 的认证授权。但由于 Cloud Provider 的缺陷（[kubernetes #60691](https://github.com/kubernetes/kubernetes/issues/60691) 未定义 `useManagedIdentityExtension` yaml 标签导致无法解析该选项。
 
 该问题的修复（[kubernetes#60775](https://github.com/kubernetes/kubernetes/pull/60775)）将包含在 v1.10 中。
+
+## Azure ARM API 调用请求过多
+
+有时 kube-controller-manager 或者 kubelet 会因请求调用过多而导致 Azure ARM API 失败的情况，比如
+
+```sh
+"OperationNotAllowed",\r\n    "message": "The server rejected the request because too many requests have been received for this subscription.
+```
+
+特别是在 Kubernetes 集群创建或者批量增加 Nodes 的时候。从 [v1.9.2 和 v1.10](https://github.com/kubernetes/kubernetes/issues/58770) 开始， Azure cloud provider 为一些列的 Azure 资源（如 VM、VMSS、安全组和路由表等）增加了缓存，大大缓解了这个问题。
+
+一般来说，如果该问题重复出现可以考虑
+
+- 使用 Azure instance metadata，即为所有 Node 的 `/etc/kubernetes/azure.json` 设置 `"useInstanceMetadata": true` 并重启 kubelet
+- 为 kube-controller-manager 增大 `--route-reconciliation-period`（默认为 10s），比如在 `/etc/kubernetes/manifests/kube-controller-manager.yaml` 中设置 `--route-reconciliation-period=1m` 后 kubelet 会自动重新创建 kube-controller-manager Pod。
+
+## 参考文档
+
+- [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)

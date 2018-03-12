@@ -2,6 +2,8 @@
 
 本章介绍集群状态异常的排错方法，包括 Kubernetes 主要组件以及必备扩展（如 kube-dns）等，而有关网络的异常排错请参考[网络异常排错方法](network.md)。
 
+## 概述
+
 排查集群状态异常问题通常从 Node 和 Kubernetes 服务 的状态出发，定位出具体的异常服务，再进而寻找解决方法。集群状态异常可能的原因比较多，常见的有
 
 * 虚拟机或物理机宕机
@@ -10,7 +12,7 @@
 * 数据丢失或持久化存储不可用（一般在公有云或私有云平台中）
 * 操作失误（如配置错误）
 
-从具体的场景来说
+按照不同的组件来说，具体的原因可能包括
 
 * kube-apiserver 无法启动会导致
   * 集群不可访问
@@ -34,7 +36,7 @@
 * 尽量使用复制控制器和 Service，而不是直接管理 Pod
 * 跨地域的多 Kubernetes 集群
 
-### 查看 Node 状态
+## 查看 Node 状态
 
 一般来说，可以首先查看 Node 的状态，确认 Node 本身是不是 Ready 状态
 
@@ -45,7 +47,64 @@ kubectl describe node <node-name>
 
 如果是 NotReady 状态，则可以执行 `kubectl describe node <node-name>` 命令来查看当前 Node 的事件。这些事件通常都会有助于排查 Node 发生的问题。
 
-### 查看日志
+## SSH 登录 Node
+
+在排查 Kubernetes 问题时，通常需要 SSH 登录到具体的 Node 上面查看 kubelet、docker、iptables 等的状态和日志。在使用云平台时，可以给相应的 VM 绑定一个公网 IP；而在物理机部署时，可以通过路由器上的端口映射来访问。但更简单的方法是使用 SSH Pod （不要忘记替换成你自己的 nodeName）：
+
+```yaml
+# cat ssh.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ssh
+spec:
+  selector:
+    app: ssh
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ssh
+  labels:
+    app: ssh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ssh
+  template:
+    metadata:
+      labels:
+        app: ssh
+    spec:
+      containers:
+      - name: alpine
+        image: alpine
+        ports:
+        - containerPort: 22
+        stdin: true
+        tty: true
+      hostNetwork: true
+      nodeName: <node-name>
+```
+
+```sh
+$ kubectl create -f ssh.yaml
+$ kubectl get svc ssh
+NAME      TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+ssh       LoadBalancer   10.0.99.149   52.52.52.52   22:32008/TCP   5m
+```
+
+接着，就可以通过 ssh 服务的外网 IP 来登录 Node，如 `ssh user@52.52.52.52`。
+
+在使用完后， 不要忘记删除 SSH 服务 `kubectl delete -f ssh.yaml`。
+
+## 查看日志
 
 一般来说，Kubernetes 的主要组件有两种部署方法
 
@@ -64,45 +123,43 @@ journalctl -l -u kube-proxy
 
 或者直接查看日志文件
 
-- /var/log/kube-apiserver.log
-- /var/log/kube-scheduler.log
-- /var/log/kube-controller-manager.log
-
-
-- /var/log/kubelet.log
-- /var/log/kube-proxy.log
+* /var/log/kube-apiserver.log
+* /var/log/kube-scheduler.log
+* /var/log/kube-controller-manager.log
+* /var/log/kubelet.log
+* /var/log/kube-proxy.log
 
 而对于使用 Static Pod 部署集群控制平面服务的场景，可以参考下面这些查看日志的方法。
 
-#### kube-apiserver 日志
+### kube-apiserver 日志
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-apiserver -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-#### kube-controller-manager 日志
+### kube-controller-manager 日志
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-#### kube-scheduler 日志
+### kube-scheduler 日志
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-scheduler -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-#### kube-dns 日志
+### kube-dns 日志
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l k8s-app=kube-dns -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME -c kubedns
 ```
 
-#### Kubelet 日志
+### Kubelet 日志
 
 查看 Kubelet 日志需要首先 SSH 登录到 Node 上。
 
@@ -110,7 +167,7 @@ kubectl -n kube-system logs $PODNAME -c kubedns
 journalctl -l -u kubelet
 ```
 
-#### Kube-proxy 日志
+### Kube-proxy 日志
 
 Kube-proxy 通常以 DaemonSet 的方式部署
 
@@ -160,7 +217,7 @@ I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to 
 
 这说明 Pod 网络（一般是多主机之间）访问异常，包括 Pod->Node、Node->Pod 以及 Node-Node 等之间的往来通信异常。可能的原因比较多，具体的排错方法可以参考[网络异常排错指南](network.md)。
 
-## Failed to start ContainerManager failed to initialise top level QOS containers 
+## Failed to start ContainerManager failed to initialise top level QOS containers
 
 重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），解决方法是：
 
@@ -184,6 +241,28 @@ kube-proxy[2241]: E0502 15:55:13.889842    2241 conntrack.go:42] conntrack retur
 
 解决方式是安装 `conntrack-tools` 包后重启 kube-proxy 即可。
 
+## Dashboard 中无资源使用图表
+
+Dashboard 需要访问 Heapster 来查询资源使用情况，因而需要首先检查 Heapster 是否处于正常情况下
+
+```sh
+kubectl -n kube-system get pods -l k8s-app=heapster
+NAME                        READY     STATUS    RESTARTS   AGE
+heapster-86b59f68f6-h4vt6   2/2       Running   0          5d
+```
+
+如果还有问题，那么需要查看 dashboard 的日志，确认是否还有其他问题
+
+```sh
+$ kubectl -n kube-system get pods -l k8s-app=kubernetes-dashboard
+NAME                                   READY     STATUS    RESTARTS   AGE
+kubernetes-dashboard-665b4f7df-dsjpn   1/1       Running   0          5d
+
+$ kubectl -n kube-system logs kubernetes-dashboard-665b4f7df-dsjpn
+```
+
 ## 参考文档
 
 * [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
+* [SSH into Azure Container Service (AKS) cluster nodes](https://docs.microsoft.com/en-us/azure/aks/aks-ssh#configure-ssh-access)
+* [Kubernetes dashboard FAQ](https://github.com/kubernetes/dashboard/wiki/FAQ)
