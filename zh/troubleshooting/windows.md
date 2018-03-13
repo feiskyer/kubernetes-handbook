@@ -55,13 +55,29 @@ rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 
 ## Windows Pod 内无法解析 DNS
 
-这是一个[已知问题](https://github.com/Azure/acs-engine/issues/2027)，临时解决方法是为 Pod 直接配置 kube-dns Pod 的地址：
+这是一个[已知问题](https://github.com/Azure/acs-engine/issues/2027)。在 Windows 重启后，需要清空 HNS Policy 并重启 KubeProxy 服务（每次重启都需要）：
+
+```powershell
+Start-BitsTransfer -Source https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/hns.psm1
+Import-Module .\hns.psm1
+
+Stop-Service kubeproxy
+Stop-Service kubelet
+Get-HnsNetwork | ? Name -eq l2Bridge | Remove-HnsNetwork 
+Get-HnsPolicyList | Remove-HnsPolicyList
+Start-Service kubelet
+Start-Service kubeproxy
+```
+
+临时解决方法是为 Pod 直接配置 kube-dns Pod 的地址：
 
 ```powershell
 $adapter=Get-NetAdapter
 Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.2,10.244.0.3
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
 ```
+
+如果 Kubernetes 集群是基于 acs-engine 部署的，那么 [acs-engine#2378](https://github.com/Azure/acs-engine/pull/2378) 可以修复这个问题（重新部署 Kubernetes 集群或者根据这个 PR 修改已部署集群的相关文件）。
 
 ## Windows Pod 内无法访问 ServiceAccount Secret
 

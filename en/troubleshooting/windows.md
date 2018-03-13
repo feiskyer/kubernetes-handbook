@@ -53,9 +53,25 @@ Besides reasons introduced in [Troubleshooting Pod](pod.md), there are also othe
 
 ## Windows Pod failed to resolve DNS
 
-This is a [known issue](https://github.com/Azure/acs-engine/issues/2027). A workaround is configure kube-dns Pod's IP address to normal Pods, e.g.
+This is a [known issue](https://github.com/Azure/acs-engine/issues/2027). After Windows Node rebooted, HNS Policy need to be cleaned up (**Should do this for each rebooting**):
 
 ```powershell
+# On Windows Node
+Start-BitsTransfer -Source https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/hns.psm1
+Import-Module .\hns.psm1
+
+Stop-Service kubeproxy
+Stop-Service kubelet
+Get-HnsNetwork | ? Name -eq l2Bridge | Remove-HnsNetwork 
+Get-HnsPolicyList | Remove-HnsPolicyList
+Start-Service kubelet
+Start-Service kubeproxy
+```
+
+Even with this, kube-dns clusterIP may be still not working. A workaround is configure kube-dns Pod's IP address to normal Pods, e.g.
+
+```powershell
+# In Windows container, e.g. kubectl exec -i -t <pod-name> powershell
 $adapter=Get-NetAdapter
 Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.2,10.244.0.3
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
@@ -82,6 +98,8 @@ Subsets:
 
 Events:  <none>
 ```
+
+If your kubernetes cluster is deployed by acs-engine, then [acs-engine#2378](https://github.com/Azure/acs-engine/pull/2378) could help to fix this issue (redeploy the cluster with this patch or change existing files according to it).
 
 ## Windows Pod failed to get ServiceAccount Secret
 
