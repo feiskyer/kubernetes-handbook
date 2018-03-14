@@ -217,21 +217,57 @@ I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to 
 
 这说明 Pod 网络（一般是多主机之间）访问异常，包括 Pod->Node、Node->Pod 以及 Node-Node 等之间的往来通信异常。可能的原因比较多，具体的排错方法可以参考[网络异常排错指南](network.md)。
 
-## Failed to start ContainerManager failed to initialise top level QOS containers
+## Kubelet: failed to initialize top level QOS containers
 
-重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），解决方法是：
+重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），临时解决方法是：
 
-1. 在docker.service配置中增加的`--exec-opt native.cgroupdriver=systemd`配置。
-2. 手动删除slice（貌似不管用）
-3. 重启主机，这招最管用😄
+1. 在 docker.service 配置中增加 `--exec-opt native.cgroupdriver=systemd` 选项。
+3. 重启主机
 
-```bash
-for i in $(systemctl list-unit-files —no-legend —no-pager -l | grep —color=never -o .*.slice | grep kubepod);do systemctl stop $i;done
+该问题已于2017年4月27日修复（v1.7.0+， [#44940](https://github.com/kubernetes/kubernetes/pull/44940)）。更新集群到新版本即可解决这个问题。
+
+## Kubelet 一直报 FailedNodeAllocatableEnforcement 事件
+
+当 NodeAllocatable 特性未开启时（即 kubelet 设置了 `--cgroups-per-qos=false` ），查看 node 的事件会发现每分钟都会有 `Failed to update Node Allocatable Limits` 的警告信息：
+
+```sh
+$ kubectl describe node node1
+Events:
+  Type     Reason                            Age                  From                               Message
+  ----     ------                            ----                 ----                               -------
+  Warning  FailedNodeAllocatableEnforcement  2m (x1001 over 16h)  kubelet, aks-agentpool-22604214-0  Failed to update Node Allocatable Limits "": failed to set supported cgroup subsystems for cgroup : Failed to set config for supported subsystems : failed to write 7285047296 to memory.limit_in_bytes: write /var/lib/docker/overlay2/5650a1aadf9c758946073fefa1558446ab582148ddd3ee7e7cb9d269fab20f72/merged/sys/fs/cgroup/memory/memory.limit_in_bytes: invalid argument
 ```
 
-上面的几种方法在该bug修复前只有重启主机管用，该bug已于2017年4月27日修复（v1.7.0+），见 [#44940](https://github.com/kubernetes/kubernetes/pull/44940)。
+如果 NodeAllocatable 特性确实不需要，那么该警告事件可以忽略。但根据 Kubernetes 文档 [Reserve Compute Resources for System Daemons](https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/)，最好开启该特性：
 
-## conntrack returned error: error looking for path of conntrack
+> Kubernetes nodes can be scheduled to `Capacity`. Pods can consume all the available capacity on a node by default. This is an issue because nodes typically run quite a few system daemons that power the OS and Kubernetes itself. Unless resources are set aside for these system daemons, pods and system daemons compete for resources and lead to resource starvation issues on the node.
+>
+> The `kubelet` exposes a feature named `Node Allocatable` that helps to reserve compute resources for system daemons. Kubernetes recommends cluster administrators to configure `Node Allocatable` based on their workload density on each node.
+>
+> ```sh
+>       Node Capacity
+> ---------------------------
+> |     kube-reserved       |
+> |-------------------------|
+> |     system-reserved     |
+> |-------------------------|
+> |    eviction-threshold   |
+> |-------------------------|
+> |                         |
+> |      allocatable        |
+> |   (available for pods)  |
+> |                         |
+> |                         |
+> ---------------------------
+> ```
+
+开启方法为：
+
+```sh
+kubelet --cgroups-per-qos=true --enforce-node-allocatable=pods ...
+```
+
+## Kube-proxy: error looking for path of conntrack
 
 kube-proxy 报错，并且 service 的 DNS 解析异常
 

@@ -261,6 +261,47 @@ Then it indicates there are something wrong with Pod-Node and Node-Node networki
 - add options `--exec-opt native.cgroupdriver=systemd` to docker.service
 - reboot the node
 
+## Kubelet is reporting FailedNodeAllocatableEnforcement
+
+When `--cgroups-per-qos` is disabled, kubelet will report `Failed to update Node Allocatable Limits` warning events every minutes:
+
+```sh
+$ kubectl describe node node1
+Events:
+  Type     Reason                            Age                  From                               Message
+  ----     ------                            ----                 ----                               -------
+  Warning  FailedNodeAllocatableEnforcement  2m (x1001 over 16h)  kubelet, aks-agentpool-22604214-0  Failed to update Node Allocatable Limits "": failed to set supported cgroup subsystems for cgroup : Failed to set config for supported subsystems : failed to write 7285047296 to memory.limit_in_bytes: write /var/lib/docker/overlay2/5650a1aadf9c758946073fefa1558446ab582148ddd3ee7e7cb9d269fab20f72/merged/sys/fs/cgroup/memory/memory.limit_in_bytes: invalid argument
+```
+
+If NodeAllocatable is required in your cluster, then this warning could be omit safely. However, according to [Reserve Compute Resources for System Daemons](https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/), it's better to turn it on:
+
+> Kubernetes nodes can be scheduled to `Capacity`. Pods can consume all the available capacity on a node by default. This is an issue because nodes typically run quite a few system daemons that power the OS and Kubernetes itself. Unless resources are set aside for these system daemons, pods and system daemons compete for resources and lead to resource starvation issues on the node.
+>
+> The `kubelet` exposes a feature named `Node Allocatable` that helps to reserve compute resources for system daemons. Kubernetes recommends cluster administrators to configure `Node Allocatable` based on their workload density on each node.
+>
+> ```sh
+>       Node Capacity
+> ---------------------------
+> |     kube-reserved       |
+> |-------------------------|
+> |     system-reserved     |
+> |-------------------------|
+> |    eviction-threshold   |
+> |-------------------------|
+> |                         |
+> |      allocatable        |
+> |   (available for pods)  |
+> |                         |
+> |                         |
+> ---------------------------
+> ```
+
+To enable this feature, setup kubelet with options:
+
+```sh
+kubelet --cgroups-per-qos=true --enforce-node-allocatable=pods ...
+```
+
 ## Kube-proxy: conntrack returned error: error looking for path of conntrack
 
 This error message is usually happening when setup a new cluster. kube-proxy may not find the conntrack binary on the node:
