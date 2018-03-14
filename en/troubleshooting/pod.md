@@ -34,7 +34,39 @@ Generally this is because there are insufficient resources of one type or anothe
 
 In such case, Pod has been scheduled to a worker node, but it can't run on that machine.
 
-Again, get information from `kubectl describe pod <pod-name>` and check what's wrong. An incomplete list of things that could go wrong includes
+Again, get information from `kubectl describe pod <pod-name>` and check what's wrong. 
+
+```sh
+$ kubectl -n kube-system describe pod nginx-pod
+Events:
+  Type     Reason                 Age               From               Message
+  ----     ------                 ----              ----               -------
+  Normal   Scheduled              1m                default-scheduler  Successfully assigned nginx-pod to node1
+  Normal   SuccessfulMountVolume  1m                kubelet, gpu13     MountVolume.SetUp succeeded for volume "config-volume"
+  Normal   SuccessfulMountVolume  1m                kubelet, gpu13     MountVolume.SetUp succeeded for volume "coredns-token-sxdmc"
+  Warning  FailedSync             2s (x4 over 46s)  kubelet, gpu13     Error syncing pod
+  Normal   SandboxChanged         1s (x4 over 46s)  kubelet, gpu13     Pod sandbox changed, it will be killed and re-created.
+```
+
+So the sandbox for this Pod isn't able to start. Let's check kubelet's logs for detailed reasons:
+
+```sh
+$ journalctl -u kubelet
+...
+Mar 14 04:22:04 node1 kubelet[29801]: E0314 04:22:04.649912   29801 cni.go:294] Error adding network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
+Mar 14 04:22:04 node1 kubelet[29801]: E0314 04:22:04.649941   29801 cni.go:243] Error while adding to cni network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
+Mar 14 04:22:04 node1 kubelet[29801]: W0314 04:22:04.891337   29801 cni.go:258] CNI failed to retrieve network namespace path: Cannot find network namespace for the terminated container "c4fd616cde0e7052c240173541b8543f746e75c17744872aa04fe06f52b5141c"
+Mar 14 04:22:05 node1 kubelet[29801]: E0314 04:22:05.965801   29801 remote_runtime.go:91] RunPodSandbox from runtime service failed: rpc error: code = 2 desc = NetworkPlugin cni failed to set up pod "nginx-pod" network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
+```
+
+Now we know "cni0" bridge has been configured an unexpected IP address. A simplest way to fix this issue is deleting the "cni0" bridge (network plugin will recreate it when required):
+
+```sh
+$ ip link set cni0 down
+$ brctl delbr cni0
+```
+
+Above is an example of network configuration issue. There are also many other things may go wrong. An incomplete list of them includes
 
 - Failed to pull image, e.g.
   - image name is wrong

@@ -27,6 +27,35 @@ And these are exactly the direction of what we should do when encountering netwo
   - security groups on public cloud may forbid kubernetes network connections
   - ACL on switches or routers may also forbid kubernetes network connections
 
+## Flannel Pods stuck in Init:CrashLoopBackOff
+
+When using Flannel network plugin, it is very easy to install for a fresh setup
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
+
+However, after a while, Flannel Pods may be stuck in `Init:CrashLoopBackOff` state and also result in not able to create other pods (because network ready is a requirement).
+
+```sh
+$ kubectl -n kube-system get pod
+NAME                            READY     STATUS                  RESTARTS   AGE
+kube-flannel-ds-ckfdc           0/1       Init:CrashLoopBackOff   4          2m
+kube-flannel-ds-jpp96           0/1       Init:CrashLoopBackOff   4          2m
+```
+
+Check logs of Pod `kube-flannel-ds-jpp96`
+
+```sh
+$ kubectl -n kube-system logs kube-flannel-ds-jpp96 -c install-cni
+cp: can't create '/etc/cni/net.d/10-flannel.conflist': Permission denied
+```
+
+This issue is usually caused by SELinux, close SELinux should solve the problem. There are two ways to do this:
+
+- Set `SELINUX=disabled` in file `/etc/selinux/config` (persistent even after reboot)
+- Execute command `setenforce 0` (not persistent after reboot)
+
 ## DNS not work
 
 If your docker version is above 1.13+, then docker would change default iptables FORWARD policy to DROP (at each restart). This change may cause kube-dns not reaching upstream DNS servers. A solution is run `iptables -P FORWARD ACCEPT` on each nodes, e.g.

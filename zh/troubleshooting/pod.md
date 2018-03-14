@@ -30,7 +30,39 @@ Events:
 
 ## Pod 一直处于 Waiting 或 ContainerCreating 状态
 
-首先还是通过 `kubectl describe pod <pod-name>` 命令查看到当前 Pod 的事件。可能的原因包括
+首先还是通过 `kubectl describe pod <pod-name>` 命令查看到当前 Pod 的事件
+
+```sh
+$ kubectl -n kube-system describe pod nginx-pod
+Events:
+  Type     Reason                 Age               From               Message
+  ----     ------                 ----              ----               -------
+  Normal   Scheduled              1m                default-scheduler  Successfully assigned nginx-pod to node1
+  Normal   SuccessfulMountVolume  1m                kubelet, gpu13     MountVolume.SetUp succeeded for volume "config-volume"
+  Normal   SuccessfulMountVolume  1m                kubelet, gpu13     MountVolume.SetUp succeeded for volume "coredns-token-sxdmc"
+  Warning  FailedSync             2s (x4 over 46s)  kubelet, gpu13     Error syncing pod
+  Normal   SandboxChanged         1s (x4 over 46s)  kubelet, gpu13     Pod sandbox changed, it will be killed and re-created.
+```
+
+可以发现，该 Pod 的 Sandbox 容器无法正常启动，具体原因需要查看 Kubelet 日志：
+
+```sh
+$ journalctl -u kubelet
+...
+Mar 14 04:22:04 node1 kubelet[29801]: E0314 04:22:04.649912   29801 cni.go:294] Error adding network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
+Mar 14 04:22:04 node1 kubelet[29801]: E0314 04:22:04.649941   29801 cni.go:243] Error while adding to cni network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
+Mar 14 04:22:04 node1 kubelet[29801]: W0314 04:22:04.891337   29801 cni.go:258] CNI failed to retrieve network namespace path: Cannot find network namespace for the terminated container "c4fd616cde0e7052c240173541b8543f746e75c17744872aa04fe06f52b5141c"
+Mar 14 04:22:05 node1 kubelet[29801]: E0314 04:22:05.965801   29801 remote_runtime.go:91] RunPodSandbox from runtime service failed: rpc error: code = 2 desc = NetworkPlugin cni failed to set up pod "nginx-pod" network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
+```
+
+发现是 cni0 网桥配置了一个不同网段的 IP 地址导致，删除该网桥（网络插件会自动重新创建）即可修复
+
+```sh
+$ ip link set cni0 down
+$ brctl delbr cni0
+```
+
+除了以上错误，其他可能的原因还有
 
 - 镜像拉取失败，比如
   - 配置了错误的镜像
@@ -41,6 +73,8 @@ Events:
   - 无法配置 Pod 网络
   - 无法分配 IP 地址
 - 容器无法启动，需要检查是否打包了正确的镜像或者是否配置了正确的容器参数
+
+
 
 ## Pod 处于 ImagePullBackOff 状态
 

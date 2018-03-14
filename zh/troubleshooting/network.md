@@ -26,6 +26,35 @@
   - 公有云平台的安全组禁止了 Pod 网络（注意 Pod 网络有可能与 Node 网络不在同一个网段）
   - 交换机或者路由器的 ACL 禁止了 Pod 网络
 
+## Flannel Pods 一直处于 Init:CrashLoopBackOff 状态 
+
+Flannel 网络插件非常容易部署，只要一条命令即可
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
+
+然而，部署完成后，Flannel Pod 有可能会碰到初始化失败的错误
+
+```sh
+$ kubectl -n kube-system get pod
+NAME                            READY     STATUS                  RESTARTS   AGE
+kube-flannel-ds-ckfdc           0/1       Init:CrashLoopBackOff   4          2m
+kube-flannel-ds-jpp96           0/1       Init:CrashLoopBackOff   4          2m
+```
+
+查看日志会发现
+
+```sh
+$ kubectl -n kube-system logs kube-flannel-ds-jpp96 -c install-cni
+cp: can't create '/etc/cni/net.d/10-flannel.conflist': Permission denied
+```
+
+这一般是由于 SELinux 开启导致的，关闭 SELinux 既可解决。有两种方法：
+
+- 修改 `/etc/selinux/config` 文件方法：`SELINUX=disabled`
+- 通过命令临时修改（重启会丢失）：`setenforce 0`
+
 ## Pod 无法解析 DNS
 
 如果 Node 上安装的 Docker 版本大于 1.12，那么 Docker 会把默认的 iptables FORWARD 策略改为 DROP。这会引发 Pod 网络访问的问题。解决方法则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT`，比如
