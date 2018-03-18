@@ -4,39 +4,39 @@
 
 使用 Azure Cloud Provider 后，Kubernetes 会为 LoadBalancer 类型的 Service 创建 Azure 负载均衡器以及相关的 公网 IP、BackendPool 和 Network Security Group (NSG)。注意目前 Azure Cloud Provider 仅支持 `Basic` SKU 的负载均衡，它与 `Standard` SKU 负载均衡相比有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview)：
 
-| Load Balancer                     | Basic                                                        | Standard                                         |
-| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| Back-end pool size                | up to 100                                                    | up to 1,000                                      |
-| Back-end pool boundary            | Availability Set                                             | virtual network, region                          |
-| Back-end pool design              | VMs in Availability Set, virtual machine scale set in Availability Set | Any VM instance in the virtual network           |
-| HA Ports                          | Not supported                                                | Available                                        |
-| Diagnostics                       | Limited, public only                                         | Available                                        |
-| VIP Availability                  | Not supported                                                | Available                                        |
-| Fast IP Mobility                  | Not supported                                                | Available                                        |
-| Availability Zones scenarios      | Zonal only                                                   | Zonal, Zone-redundant, Cross-zone load-balancing |
-| Outbound SNAT algorithm           | On-demand                                                    | Preallocated                                     |
-| Outbound SNAT front-end selection | Not configurable, multiple candidates                        | Optional configuration to reduce candidates      |
-| Network Security Group            | Optional on NIC/subnet                                       | Required                                         |
+| Load Balancer                     | Basic                                    | Standard                                 |
+| --------------------------------- | ---------------------------------------- | ---------------------------------------- |
+| Back-end pool size                | up to 100                                | up to 1,000                              |
+| Back-end pool boundary            | Availability Set                         | virtual network, region                  |
+| Back-end pool design              | VMs in Availability Set, virtual machine scale set in Availability Set | Any VM instance in the virtual network   |
+| HA Ports                          | Not supported                            | Available                                |
+| Diagnostics                       | Limited, public only                     | Available                                |
+| VIP Availability                  | Not supported                            | Available                                |
+| Fast IP Mobility                  | Not supported                            | Available                                |
+| Availability Zones scenarios      | Zonal only                               | Zonal, Zone-redundant, Cross-zone load-balancing |
+| Outbound SNAT algorithm           | On-demand                                | Preallocated                             |
+| Outbound SNAT front-end selection | Not configurable, multiple candidates    | Optional configuration to reduce candidates |
+| Network Security Group            | Optional on NIC/subnet                   | Required                                 |
 
 同样，对应的 Public IP 也是 Basic SKU，与 Standard SKU 相比也有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview#sku-service-limits-and-abilities)：
 
-| Public IP                    | Basic           | Standard                                   |
-| ---------------------------- | --------------- | ------------------------------------------ |
+| Public IP                    | Basic           | Standard                                 |
+| ---------------------------- | --------------- | ---------------------------------------- |
 | Availability Zones scenarios | Zonal only      | Zone-redundant (default), zonal (optional) |
-| Fast IP Mobility             | Not supported   | Available                                  |
-| VIP Availability             | Not supported   | Available                                  |
-| Counters                     | Not supported   | Available                                  |
-| Network Security Group       | Optional on NIC | Required                                   |
+| Fast IP Mobility             | Not supported   | Available                                |
+| VIP Availability             | Not supported   | Available                                |
+| Counters                     | Not supported   | Available                                |
+| Network Security Group       | Optional on NIC | Required                                 |
 
 在创建 Service 时，可以通过 `metadata.annotation` 来自定义 Azure 负载均衡的行为，可选的选项包括
 
-| Annotation                                                   | 功能                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| service.beta.kubernetes.io/azure-load-balancer-internal      | 如果设置，则创建内网负载均衡                                 |
-| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | 设置内网负载均衡 IP 使用的子网                               |
-| service.beta.kubernetes.io/azure-load-balancer-mode          | 设置如何为负载均衡选择所属的 AvailabilitySet（之所以有该选项是因为在 Azure 的每个 AvailabilitySet 中只能创建最多一个外网负载均衡和一个内网负载均衡）。可选项为：（1）不设置或者设置为空，使用 `/etc/kubernetes/azure.json` 中设置的 `primaryAvailabilitySet`；（2）设置为 `auto`，选择负载均衡规则最少的 AvailabilitySet；（3）设置为`as1,as2`，指定 AvailabilitySet 列表 |
-| service.beta.kubernetes.io/azure-dns-label-name              | 设置后为公网 IP 创建 外网 DNS                                |
-| service.beta.kubernetes.io/azure-shared-securityrule         | 如果设置，则为多个 Service 共享相同的 NSG 规则。注意该选项需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
+| Annotation                               | 功能                                       |
+| ---------------------------------------- | ---------------------------------------- |
+| service.beta.kubernetes.io/azure-load-balancer-internal | 如果设置，则创建内网负载均衡                           |
+| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | 设置内网负载均衡 IP 使用的子网                        |
+| service.beta.kubernetes.io/azure-load-balancer-mode | 设置如何为负载均衡选择所属的 AvailabilitySet（之所以有该选项是因为在 Azure 的每个 AvailabilitySet 中只能创建最多一个外网负载均衡和一个内网负载均衡）。可选项为：（1）不设置或者设置为空，使用 `/etc/kubernetes/azure.json` 中设置的 `primaryAvailabilitySet`；（2）设置为 `auto`，选择负载均衡规则最少的 AvailabilitySet；（3）设置为`as1,as2`，指定 AvailabilitySet 列表 |
+| service.beta.kubernetes.io/azure-dns-label-name | 设置后为公网 IP 创建 外网 DNS                      |
+| service.beta.kubernetes.io/azure-shared-securityrule | 如果设置，则为多个 Service 共享相同的 NSG 规则。注意该选项需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
 | service.beta.kubernetes.io/azure-load-balancer-resource-group | 当为 Service 指定公网 IP 并且该公网 IP 与 Kubernetes 集群不在同一个 Resource Group 时，需要使用该 Annotation 指定公网 IP 所在的 Resource Group |
 
 在 Kubernetes 中，负载均衡的创建逻辑都在 kube-controller-manager 中，因而排查负载均衡相关的问题时，除了查看 Service 自身的状态，如
@@ -93,6 +93,49 @@ Kubernetes 1.9.0-1.9.3 中会有这个问题（[kubernetes#59255](https://github
 
 - 使用 Azure instance metadata，即为所有 Node 的 `/etc/kubernetes/azure.json` 设置 `"useInstanceMetadata": true` 并重启 kubelet
 - 为 kube-controller-manager 增大 `--route-reconciliation-period`（默认为 10s），比如在 `/etc/kubernetes/manifests/kube-controller-manager.yaml` 中设置 `--route-reconciliation-period=1m` 后 kubelet 会自动重新创建 kube-controller-manager Pod。
+
+## AKS kubectl logs connection timed out
+
+`kubectl logs` 命令报 `getsockopt: connection timed out` 的错误（[AKS#232](https://github.com/Azure/AKS/issues/232)）：
+
+```sh
+$ kubectl --v=8 logs x
+I0308 10:32:21.539580   26486 round_trippers.go:417] curl -k -v -XGET  -H "Accept: application/json, */*" -H "User-Agent: kubectl/v1.8.1 (linux/amd64) kubernetes/f38e43b" -H "Authorization: Bearer x" https://x:443/api/v1/namespaces/default/pods/x/log?container=x
+I0308 10:34:32.790295   26486 round_trippers.go:436] GET https://X:443/api/v1/namespaces/default/pods/x/log?container=x 500 Internal Server Error in 131250 milliseconds
+I0308 10:34:32.790356   26486 round_trippers.go:442] Response Headers:
+I0308 10:34:32.790376   26486 round_trippers.go:445]     Content-Type: application/json
+I0308 10:34:32.790390   26486 round_trippers.go:445]     Content-Length: 275
+I0308 10:34:32.790414   26486 round_trippers.go:445]     Date: Thu, 08 Mar 2018 09:34:32 GMT
+I0308 10:34:32.790504   26486 request.go:836] Response Body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out","code":500}
+I0308 10:34:32.790999   26486 helpers.go:207] server response object: [{
+  "metadata": {},
+  "status": "Failure",
+  "message": "Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out",
+  "code": 500
+}]
+F0308 10:34:32.791043   26486 helpers.go:120] Error from server: Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out
+```
+
+在 AKS 中，kubectl logs, exec, and attach 等命令需要 Master 与 Nodes 节点之间建立隧道连接。在 `kube-system` namespace 中可以看到 `tunnelfront` 和 `kube-svc-redirect` Pod：
+
+```
+$ kubectl -n kube-system get po -l component=tunnel
+NAME                           READY     STATUS    RESTARTS   AGE
+tunnelfront-7644cd56b7-l5jmc   1/1       Running   0          2d
+
+$ kubectl -n kube-system get po -l component=kube-svc-redirect
+NAME                      READY     STATUS    RESTARTS   AGE
+kube-svc-redirect-pq6kf   1/1       Running   0          2d
+kube-svc-redirect-x6sq5   1/1       Running   0          2d
+kube-svc-redirect-zjl7x   1/1       Running   1          2d
+```
+
+如果它们不是处于 `Running` 状态，删除 `tunnelfront` Pod，稍等一会就会自动创建新的出来，如：
+
+```
+$ kubectl -n kube-system delete po -l component=tunnel
+pod "tunnelfront-7644cd56b7-l5jmc" deleted
+```
 
 ## 参考文档
 

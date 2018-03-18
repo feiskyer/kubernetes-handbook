@@ -322,6 +322,35 @@ NAME                        READY     STATUS    RESTARTS   AGE
 heapster-86b59f68f6-h4vt6   2/2       Running   0          5d
 ```
 
+## HPA doesn't scale Pods
+
+Check HPA's events:
+
+```sh
+$ kubectl describe hpa php-apache
+Name:                                                  php-apache
+Namespace:                                             default
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Wed, 27 Dec 2017 14:36:38 +0800
+Reference:                                             Deployment/php-apache
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  <unknown> / 50%
+Min replicas:                                          1
+Max replicas:                                          10
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
+Events:
+  Type     Reason                   Age                  From                       Message
+  ----     ------                   ----                 ----                       -------
+  Warning  FailedGetResourceMetric  3m (x2231 over 18h)  horizontal-pod-autoscaler  unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
+```
+
+Resource `pods.metrics.k8s.io` not found means [metrics-server](../addons/metrics.md) not deployed into cluster. Please refer [here](../addons/metrics.md) to deploy it.
+
 ## References
 
 - [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
