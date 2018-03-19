@@ -222,7 +222,7 @@ I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to 
 重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），临时解决方法是：
 
 1. 在 docker.service 配置中增加 `--exec-opt native.cgroupdriver=systemd` 选项。
-3. 重启主机
+2. 重启主机
 
 该问题已于2017年4月27日修复（v1.7.0+， [#44940](https://github.com/kubernetes/kubernetes/pull/44940)）。更新集群到新版本即可解决这个问题。
 
@@ -302,6 +302,35 @@ kubernetes-dashboard-665b4f7df-dsjpn   1/1       Running   0          5d
 
 $ kubectl -n kube-system logs kubernetes-dashboard-665b4f7df-dsjpn
 ```
+
+## HPA 不自动扩展 Pod
+
+查看 HPA 的事件，发现
+
+```sh
+$ kubectl describe hpa php-apache
+Name:                                                  php-apache
+Namespace:                                             default
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Wed, 27 Dec 2017 14:36:38 +0800
+Reference:                                             Deployment/php-apache
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  <unknown> / 50%
+Min replicas:                                          1
+Max replicas:                                          10
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
+Events:
+  Type     Reason                   Age                  From                       Message
+  ----     ------                   ----                 ----                       -------
+  Warning  FailedGetResourceMetric  3m (x2231 over 18h)  horizontal-pod-autoscaler  unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
+```
+
+这说明 [metrics-server](../addons/metrics.md) 未部署，可以参考 [这里](../addons/metrics.md) 部署。
 
 ## 参考文档
 

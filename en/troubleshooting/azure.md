@@ -4,39 +4,39 @@
 
 When Azure cloud provider is configured (`kube-controller-manager --cloud-provider=azure --cloud-config=/etc/kubernetes/azure.json`), Azure load balancer (ALB) will be created automatically for `LoadBalancer` typed Service. Please note that only `Basic` SKU ALB is supported now, which has some [limitations](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview) compared to `Standard` ALB:
 
-| Load Balancer                     | Basic                                                        | Standard                                         |
-| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| Back-end pool size                | up to 100                                                    | up to 1,000                                      |
-| Back-end pool boundary            | Availability Set                                             | virtual network, region                          |
-| Back-end pool design              | VMs in Availability Set, virtual machine scale set in Availability Set | Any VM instance in the virtual network           |
-| HA Ports                          | Not supported                                                | Available                                        |
-| Diagnostics                       | Limited, public only                                         | Available                                        |
-| VIP Availability                  | Not supported                                                | Available                                        |
-| Fast IP Mobility                  | Not supported                                                | Available                                        |
-| Availability Zones scenarios      | Zonal only                                                   | Zonal, Zone-redundant, Cross-zone load-balancing |
-| Outbound SNAT algorithm           | On-demand                                                    | Preallocated                                     |
-| Outbound SNAT front-end selection | Not configurable, multiple candidates                        | Optional configuration to reduce candidates      |
-| Network Security Group            | Optional on NIC/subnet                                       | Required                                         |
+| Load Balancer                     | Basic                                    | Standard                                 |
+| --------------------------------- | ---------------------------------------- | ---------------------------------------- |
+| Back-end pool size                | up to 100                                | up to 1,000                              |
+| Back-end pool boundary            | Availability Set                         | virtual network, region                  |
+| Back-end pool design              | VMs in Availability Set, virtual machine scale set in Availability Set | Any VM instance in the virtual network   |
+| HA Ports                          | Not supported                            | Available                                |
+| Diagnostics                       | Limited, public only                     | Available                                |
+| VIP Availability                  | Not supported                            | Available                                |
+| Fast IP Mobility                  | Not supported                            | Available                                |
+| Availability Zones scenarios      | Zonal only                               | Zonal, Zone-redundant, Cross-zone load-balancing |
+| Outbound SNAT algorithm           | On-demand                                | Preallocated                             |
+| Outbound SNAT front-end selection | Not configurable, multiple candidates    | Optional configuration to reduce candidates |
+| Network Security Group            | Optional on NIC/subnet                   | Required                                 |
 
 Public IP associated is Basic SKU, which has some [limitations](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview#sku-service-limits-and-abilities) compared to `Standard` Public IP:
 
-| Public IP                    | Basic           | Standard                                   |
-| ---------------------------- | --------------- | ------------------------------------------ |
+| Public IP                    | Basic           | Standard                                 |
+| ---------------------------- | --------------- | ---------------------------------------- |
 | Availability Zones scenarios | Zonal only      | Zone-redundant (default), zonal (optional) |
-| Fast IP Mobility             | Not supported   | Available                                  |
-| VIP Availability             | Not supported   | Available                                  |
-| Counters                     | Not supported   | Available                                  |
-| Network Security Group       | Optional on NIC | Required                                   |
+| Fast IP Mobility             | Not supported   | Available                                |
+| VIP Availability             | Not supported   | Available                                |
+| Counters                     | Not supported   | Available                                |
+| Network Security Group       | Optional on NIC | Required                                 |
 
 When creating LoadBalancer Service, a set of annotations could be set to customize ALB:
 
-| Annotation                                                   | Comments                                                     |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| service.beta.kubernetes.io/azure-load-balancer-internal      | If set, create internal load balancer                        |
-| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | Set subnet for internal load balancer                      |
-| service.beta.kubernetes.io/azure-load-balancer-mode          | Determine how to select ALB based on availability sets. Candidate values are: 1）Not set or empty, use `primaryAvailabilitySet` set in `/etc/kubernetes/azure.json`; 2）`auto`, select ALB which has the minimum rules associated ; 3）`as1,as2`, specify a list of availability sets |
-| service.beta.kubernetes.io/azure-dns-label-name              | Set DNS label name                                           |
-| service.beta.kubernetes.io/azure-shared-securityrule         | If set, NSG will be shared with other services. This relies on [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
+| Annotation                               | Comments                                 |
+| ---------------------------------------- | ---------------------------------------- |
+| service.beta.kubernetes.io/azure-load-balancer-internal | If set, create internal load balancer    |
+| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | Set subnet for internal load balancer    |
+| service.beta.kubernetes.io/azure-load-balancer-mode | Determine how to select ALB based on availability sets. Candidate values are: 1）Not set or empty, use `primaryAvailabilitySet` set in `/etc/kubernetes/azure.json`; 2）`auto`, select ALB which has the minimum rules associated ; 3）`as1,as2`, specify a list of availability sets |
+| service.beta.kubernetes.io/azure-dns-label-name | Set DNS label name                       |
+| service.beta.kubernetes.io/azure-shared-securityrule | If set, NSG will be shared with other services. This relies on [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
 | service.beta.kubernetes.io/azure-load-balancer-resource-group | Specify the resource group of load balancer objects that are not in the same resource group as the cluster |
 
 ## Checking logs and events
@@ -102,6 +102,49 @@ Ways to mitigate the issue:
 
 - Ensure instance metadata is used, e.g. set `useInstanceMetadata` to `true` in `/etc/kubernetes/azure.json` for all nodes and restart kubelet
 - Increase `--route-reconciliation-period` on kube-controller-manager and restart it, e.g. set the option in `/etc/kubernetes/manifests/kube-controller-manager.yaml` and kubelet will recreate kube-controller-manager pods automatically
+
+## AKS kubectl logs connection timed out
+
+`kubectl logs` reports `getsockopt: connection timed out` error ([AKS#232](https://github.com/Azure/AKS/issues/232)):
+
+```sh
+$ kubectl --v=8 logs x
+I0308 10:32:21.539580   26486 round_trippers.go:417] curl -k -v -XGET  -H "Accept: application/json, */*" -H "User-Agent: kubectl/v1.8.1 (linux/amd64) kubernetes/f38e43b" -H "Authorization: Bearer x" https://x:443/api/v1/namespaces/default/pods/x/log?container=x
+I0308 10:34:32.790295   26486 round_trippers.go:436] GET https://X:443/api/v1/namespaces/default/pods/x/log?container=x 500 Internal Server Error in 131250 milliseconds
+I0308 10:34:32.790356   26486 round_trippers.go:442] Response Headers:
+I0308 10:34:32.790376   26486 round_trippers.go:445]     Content-Type: application/json
+I0308 10:34:32.790390   26486 round_trippers.go:445]     Content-Length: 275
+I0308 10:34:32.790414   26486 round_trippers.go:445]     Date: Thu, 08 Mar 2018 09:34:32 GMT
+I0308 10:34:32.790504   26486 request.go:836] Response Body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out","code":500}
+I0308 10:34:32.790999   26486 helpers.go:207] server response object: [{
+  "metadata": {},
+  "status": "Failure",
+  "message": "Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out",
+  "code": 500
+}]
+F0308 10:34:32.791043   26486 helpers.go:120] Error from server: Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out
+```
+
+In AKS, kubectl logs, exec, and attach all require the master <-> node tunnels to be established. Check that the `tunnelfront` and `kube-svc-redirect` pods are up and running:
+
+```
+$ kubectl -n kube-system get po -l component=tunnel
+NAME                           READY     STATUS    RESTARTS   AGE
+tunnelfront-7644cd56b7-l5jmc   1/1       Running   0          2d
+
+$ kubectl -n kube-system get po -l component=kube-svc-redirect
+NAME                      READY     STATUS    RESTARTS   AGE
+kube-svc-redirect-pq6kf   1/1       Running   0          2d
+kube-svc-redirect-x6sq5   1/1       Running   0          2d
+kube-svc-redirect-zjl7x   1/1       Running   1          2d
+```
+
+If the pods are not running, deleting `tunnelfront` pod, it will be recreated after a few minutes:
+
+```
+$ kubectl -n kube-system delete po -l component=tunnel
+pod "tunnelfront-7644cd56b7-l5jmc" deleted
+```
 
 ## References
 
