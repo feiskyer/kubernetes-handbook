@@ -279,7 +279,11 @@ kube-proxy[2241]: E0502 15:55:13.889842    2241 conntrack.go:42] conntrack retur
 
 ## Dashboard 中无资源使用图表
 
-Dashboard 需要访问 Heapster 来查询资源使用情况，因而需要首先检查 Heapster 是否处于正常情况下
+正常情况下，Dashboard 首页应该会显示资源使用情况的图表，如
+
+![](images/dashboard-ui.png)
+
+如果没有这些图表，则需要首先检查 Heapster 是否正在运行（因为Dashboard 需要访问 Heapster 来查询资源使用情况）：
 
 ```sh
 kubectl -n kube-system get pods -l k8s-app=heapster
@@ -287,7 +291,9 @@ NAME                        READY     STATUS    RESTARTS   AGE
 heapster-86b59f68f6-h4vt6   2/2       Running   0          5d
 ```
 
-如果还有问题，那么需要查看 dashboard 的日志，确认是否还有其他问题
+如果查询结果为空，说明 Heapster 还未部署，可以参考 https://github.com/kubernetes/heapster 来部署。
+
+但如果 Heapster 处于正常状态，那么需要查看 dashboard 的日志，确认是否还有其他问题
 
 ```sh
 $ kubectl -n kube-system get pods -l k8s-app=kubernetes-dashboard
