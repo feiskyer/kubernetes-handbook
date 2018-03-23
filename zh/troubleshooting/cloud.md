@@ -34,5 +34,3 @@ kube-controller-manager 会自动在云平台中给 Node 创建路由，如果�
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
-
-#### 
