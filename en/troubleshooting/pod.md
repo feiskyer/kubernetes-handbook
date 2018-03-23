@@ -13,7 +13,7 @@ The pod events and its logs are usually helpful to identify the issue.
 
 ## Pod stuck in Pending
 
-Pending state indicates the Pod hasn't been scheduled yet. Check pod events and they will show you why the pod is not scheduled. 
+Pending state indicates the Pod hasn't been scheduled yet. Check pod events and they will show you why the pod is not scheduled.
 
 ```sh
 $ kubectl describe pod mypod
@@ -34,7 +34,7 @@ Generally this is because there are insufficient resources of one type or anothe
 
 In such case, Pod has been scheduled to a worker node, but it can't run on that machine.
 
-Again, get information from `kubectl describe pod <pod-name>` and check what's wrong. 
+Again, get information from `kubectl describe pod <pod-name>` and check what's wrong.
 
 ```sh
 $ kubectl -n kube-system describe pod nginx-pod
@@ -198,6 +198,35 @@ From v1.5, kube-controller-manager won't delete Pods because of Node unready. In
 - Delete the node from cluster, e.g. `kubectl delete node <node-name>`. If you are running with a cloud provider, node should be removed automatically after the VM is deleted from cloud provider.
 - Recover the node. After kubelet restarts, it will check Pods status with kube-apiserver and restarts or deletes those Pods.
 - Force delete the Pods, e.g. `kubectl delete pods <pod> --grace-period=0 --force`. This way is not recommended, unless you know what you are doing. For Pods belonging to StatefulSet, deleting forcibly may result in data loss or split-brain problem.
+
+For kubelet run in Docker containers, [an UnmountVolume.TearDown failed error](https://github.com/kubernetes/kubernetes/issues/51835) may be found in kubelet logs:
+
+```json
+{"log":"I0926 19:59:07.162477   54420 kubelet.go:1894] SyncLoop (DELETE, \"api\"): \"billcenter-737844550-26z3w_meipu(30f3ffec-a29f-11e7-b693-246e9607517c)\"\n","stream":"stderr","time":"2017-09-26T11:59:07.162748656Z"}
+{"log":"I0926 19:59:39.977126   54420 reconciler.go:186] operationExecutor.UnmountVolume started for volume \"default-token-6tpnm\" (UniqueName: \"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\") pod \"30f3ffec-a29f-11e7-b693-246e9607517c\" (UID: \"30f3ffec-a29f-11e7-b693-246e9607517c\") \n","stream":"stderr","time":"2017-09-26T11:59:39.977438174Z"}
+{"log":"E0926 19:59:39.977461   54420 nestedpendingoperations.go:262] Operation for \"\\\"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\\\" (\\\"30f3ffec-a29f-11e7-b693-246e9607517c\\\")\" failed. No retries permitted until 2017-09-26 19:59:41.977419403 +0800 CST (durationBeforeRetry 2s). Error: UnmountVolume.TearDown failed for volume \"default-token-6tpnm\" (UniqueName: \"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\") pod \"30f3ffec-a29f-11e7-b693-246e9607517c\" (UID: \"30f3ffec-a29f-11e7-b693-246e9607517c\") : remove /var/lib/kubelet/pods/30f3ffec-a29f-11e7-b693-246e9607517c/volumes/kubernetes.io~secret/default-token-6tpnm: device or resource busy\n","stream":"stderr","time":"2017-09-26T11:59:39.977728079Z"}
+```
+
+In such case, kubelet should be configured with option `--containerized` and its running container should be run with volumes:
+
+```sh
+# Take calico plugin as an example
+      -v /:/rootfs:ro,shared \
+      -v /sys:/sys:ro \
+      -v /dev:/dev:rw \
+      -v /var/log:/var/log:rw \
+      -v /run/calico/:/run/calico/:rw \
+      -v /run/docker/:/run/docker/:rw \
+      -v /run/docker.sock:/run/docker.sock:rw \
+      -v /usr/lib/os-release:/etc/os-release \
+      -v /usr/share/ca-certificates/:/etc/ssl/certs \
+      -v /var/lib/docker/:/var/lib/docker:rw,shared \
+      -v /var/lib/kubelet/:/var/lib/kubelet:rw,shared \
+      -v /etc/kubernetes/ssl/:/etc/kubernetes/ssl/ \
+      -v /etc/kubernetes/config/:/etc/kubernetes/config/ \
+      -v /etc/cni/net.d/:/etc/cni/net.d/ \
+      -v /opt/cni/bin/:/opt/cni/bin/ \
+```
 
 ## Pod is running but not doing what it should do
 

@@ -189,6 +189,35 @@ ssh <username>@<node-name>
 - Node 恢复正常。Kubelet 会重新跟 kube-apiserver 通信确认这些 Pod 的期待状态，进而再决定删除或者继续运行这些 Pod。
 - 用户强制删除。用户可以执行 `kubectl delete pods <pod> --grace-period=0 --force` 强制删除 Pod。除非明确知道 Pod 的确处于停止状态（比如 Node 所在 VM 或物理机已经关机），否则不建议使用该方法。特别是 StatefulSet 管理的 Pod，强制删除容易导致脑裂或者数据丢失等问题。
 
+如果 Kubelet 是以 Docker 容器的形式运行的，此时 kubelet 日志中可能会发现[如下的错误](https://github.com/kubernetes/kubernetes/issues/51835)：
+
+```json
+{"log":"I0926 19:59:07.162477   54420 kubelet.go:1894] SyncLoop (DELETE, \"api\"): \"billcenter-737844550-26z3w_meipu(30f3ffec-a29f-11e7-b693-246e9607517c)\"\n","stream":"stderr","time":"2017-09-26T11:59:07.162748656Z"}
+{"log":"I0926 19:59:39.977126   54420 reconciler.go:186] operationExecutor.UnmountVolume started for volume \"default-token-6tpnm\" (UniqueName: \"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\") pod \"30f3ffec-a29f-11e7-b693-246e9607517c\" (UID: \"30f3ffec-a29f-11e7-b693-246e9607517c\") \n","stream":"stderr","time":"2017-09-26T11:59:39.977438174Z"}
+{"log":"E0926 19:59:39.977461   54420 nestedpendingoperations.go:262] Operation for \"\\\"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\\\" (\\\"30f3ffec-a29f-11e7-b693-246e9607517c\\\")\" failed. No retries permitted until 2017-09-26 19:59:41.977419403 +0800 CST (durationBeforeRetry 2s). Error: UnmountVolume.TearDown failed for volume \"default-token-6tpnm\" (UniqueName: \"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\") pod \"30f3ffec-a29f-11e7-b693-246e9607517c\" (UID: \"30f3ffec-a29f-11e7-b693-246e9607517c\") : remove /var/lib/kubelet/pods/30f3ffec-a29f-11e7-b693-246e9607517c/volumes/kubernetes.io~secret/default-token-6tpnm: device or resource busy\n","stream":"stderr","time":"2017-09-26T11:59:39.977728079Z"}
+```
+
+如果是这种情况，则需要给 kubelet 容器设置 `--containerized` 参数并传入以下的存储卷
+
+```sh
+# 以使用 calico 网络插件为例
+      -v /:/rootfs:ro,shared \
+      -v /sys:/sys:ro \
+      -v /dev:/dev:rw \
+      -v /var/log:/var/log:rw \
+      -v /run/calico/:/run/calico/:rw \
+      -v /run/docker/:/run/docker/:rw \
+      -v /run/docker.sock:/run/docker.sock:rw \
+      -v /usr/lib/os-release:/etc/os-release \
+      -v /usr/share/ca-certificates/:/etc/ssl/certs \
+      -v /var/lib/docker/:/var/lib/docker:rw,shared \
+      -v /var/lib/kubelet/:/var/lib/kubelet:rw,shared \
+      -v /etc/kubernetes/ssl/:/etc/kubernetes/ssl/ \
+      -v /etc/kubernetes/config/:/etc/kubernetes/config/ \
+      -v /etc/cni/net.d/:/etc/cni/net.d/ \
+      -v /opt/cni/bin/:/opt/cni/bin/ \
+```
+
 ## Pod 行为异常
 
 这里所说的行为异常是指 Pod 没有按预期的行为执行，比如没有运行 podSpec 里面设置的命令行参数。这一般是 podSpec yaml 文件内容有误，可以尝试使用 `--validate` 参数重建容器，比如
