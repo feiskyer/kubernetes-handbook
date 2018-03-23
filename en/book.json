@@ -28,8 +28,8 @@
             "url": "https://github.com/feiskyer/kubernetes-handbook"
         },
         "editlink": {
-            "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master/",
-            "label": "编辑本页"
+            "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master/en",
+            "label": "Edit this page"
         },
         "tbfed-pagefooter": {
           "copyright":"&copy Pengfei Ni",
