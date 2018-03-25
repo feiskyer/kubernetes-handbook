@@ -6,9 +6,9 @@ Kubernetes 支持以许多种方式来贡献社区，包括汇报代码缺陷、
 
 Kubernetes 社区由三部分组成
 
-* [Steering committe](http://blog.kubernetes.io/2017/10/kubernetes-community-steering-committee-election-results.html)
-* [Special Interest Groups (SIG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-sig-list)
-* [Working Groups (WG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-working-group-list)
+- [Steering committe](http://blog.kubernetes.io/2017/10/kubernetes-community-steering-committee-election-results.html)
+- [Special Interest Groups (SIG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-sig-list)
+- [Working Groups (WG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-working-group-list)
 
 ![](images/community.png)
 

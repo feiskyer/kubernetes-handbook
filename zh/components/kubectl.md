@@ -8,6 +8,7 @@ kubectl 提供了大量的子命令，方便管理 Kubernetes 集群中的各种
 - `kubectl options` 查看全局选项
 - `kubectl <command> --help` 查看子命令的帮助
 - `kubectl [command] [PARAMS] -o=<format>` 设置输出格式（如 json、yaml、jsonpath 等）
+- `kubectl explain [RESOURCE]` 查看资源的定义
 
 ## 配置
 
@@ -31,7 +32,7 @@ kubectl config view
 
 - 创建：`kubectl run <name> --image=<image>` 或者 `kubectl create -f manifest.yaml`
 - 查询：`kubectl get <resource>`
-- 更新
+- 更新 `kubectl set` 或者 `kubectl patch`
 - 删除：`kubectl delete <resource> <name>` 或者 `kubectl delete -f manifest.yaml`
 - 查询 Pod IP：`kubectl get pod <pod-name> -o jsonpath='{.status.podIP}'`
 - 容器内执行命令：`kubectl exec -ti <pod-name> sh`
@@ -81,6 +82,7 @@ source <(kubectl completion zsh)
 ## 连接到一个正在运行的容器
 
 `kubectl attach` 用于连接到一个正在运行的容器。跟 docker 的 attach 命令类似。
+
 ```sh
   # Get output from running pod 123456-7890, using the first container by default
   kubectl attach 123456-7890
@@ -101,6 +103,7 @@ Options:
 ## 在容器内部执行命令
 
 `kubectl exec` 用于在一个正在运行的容器执行命令。跟 docker 的 exec 命令类似。
+
 ```sh
   # Get output from running 'date' from pod 123456-7890, using the first container by default
   kubectl exec 123456-7890 date
@@ -122,6 +125,7 @@ Options:
 ## 端口转发
 
 `kubectl port-forward` 用于将本地端口转发到指定的 Pod。
+
 ```sh
 # Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in the pod
 kubectl port-forward mypod 5000 6000
@@ -190,11 +194,12 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$'
 Options:
   -c, --container='': Container name. If omitted, the first container in the pod will be chosen
 ```
+
 注意：文件拷贝依赖于 tar 命令，所以容器中需要能够执行 tar 命令
 
 ## kubectl drain
 
-```
+```sh
 kubectl drain NODE [Options]
 ```
 
@@ -211,7 +216,7 @@ kubectl drain NODE [Options]
 
 `kubectl auth` 提供了两个子命令用于检查用户的鉴权情况：
 
-* `kubectl auth can-i` 检查用户是否有权限进行某个操作，比如
+- `kubectl auth can-i` 检查用户是否有权限进行某个操作，比如
 
 ```sh
   # Check to see if I can create pods in any namespace

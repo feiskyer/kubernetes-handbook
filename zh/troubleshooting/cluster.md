@@ -332,6 +332,14 @@ Events:
 
 这说明 [metrics-server](../addons/metrics.md) 未部署，可以参考 [这里](../addons/metrics.md) 部署。
 
+## Node 存储空间不足
+
+Node 存储空间不足一般是容器镜像未及时清理导致的，比如短时间内运行了很多使用较大镜像的容器等。Kubelet 会自动清理未使用的镜像，但如果想要立即清理，可以使用 [spotify/docker-gc](https://github.com/spotify/docker-gc)：
+
+```sh
+sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
+```
+
 ## 参考文档
 
 * [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)

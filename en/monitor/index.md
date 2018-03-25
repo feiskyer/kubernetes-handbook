@@ -75,7 +75,7 @@ helm install --name my-release stable/prometheus --set rbac.create=true
 
 ```
 # add repo
-helm repo add feisky https://feisky.xyz/helm-charts
+helm repo add feisky https://feisky.xyz/kubernetes-charts
 helm update
 helm install feisky/prometheus --set rbac.create=true --name prometheus --namespace kube-system
 ```
@@ -88,7 +88,7 @@ Kubernetes node 有可能会出现各种硬件、内核或者运行时等问题�
 
 ```sh
 # add repo
-helm repo add feisky https://feisky.xyz/helm-charts
+helm repo add feisky https://feisky.xyz/kubernetes-charts
 helm update
 
 # install packages

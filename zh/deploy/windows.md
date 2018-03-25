@@ -15,7 +15,7 @@ Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开�
 可以从 <<https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
 
 ```sh
-$ wget https://dl.k8s.io/v1.9.2/kubernetes-node-windows-amd64.tar.gz
+wget https://dl.k8s.io/v1.9.2/kubernetes-node-windows-amd64.tar.gz
 ```
 
 或者从 Kubernetes 源码编译
@@ -384,9 +384,8 @@ spec:
 - 在 VMWare Fusion 的 Window Server 中 kubelet.exe 可能会无法启动（已在 [#57124](https://github.com/kubernetes/kubernetes/pull/57124) 中修复）
 - 暂不支持 Weave 网络插件
 - Calico 网络插件仅支持 Policy-Only 模式
-- 对于需要使用 `:` 作为环境变量的 .NET 容器，可以将环境变量中的 `:` 替换为 `__`（参考[这里](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration#configuration-by-environment)）
+- 对于需要使用 `:` 作为环境变量的 .NET 容器，可以将环境变量中的 `:` 替换为 `__`（参考 [这里](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration#configuration-by-environment)）
 
 ## 参考文档
 
 - [Using Windows Server Containers in Kubernetes](https://kubernetes.io/docs/getting-started-guides/windows/)
-

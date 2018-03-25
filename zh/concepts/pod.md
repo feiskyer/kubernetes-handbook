@@ -12,7 +12,7 @@ Pod 的特征
 - 优雅终止：Pod 删除的时候先给其内的进程发送 SIGTERM，等待一段时间（grace period）后才强制停止依然还在运行的进程
 - 特权容器（通过 SecurityContext 配置）具有改变系统配置的权限（在网络插件中大量应用）
 
-> Kubernetes v1.8 还支持容器间共享 PID namespace，需要 docker >= 1.13.1，并配置 kubelet `--docker-disable-shared-pid=false`。
+> Kubernetes v1.8+ 还支持容器间共享 PID namespace，需要 docker >= 1.13.1，并配置 kubelet `--docker-disable-shared-pid=false`。
 
 ## API 版本对照表
 
@@ -315,10 +315,10 @@ Kubernetes 通过 cgroups 限制容器的 CPU 和内存等计算资源，包括 
 
 - `spec.containers[].resources.limits.cpu`：CPU 上限，可以短暂超过，容器也不会被停止
 - `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被终止或调度到其他资源充足的机器上
-- `spec.containers[].resources.limits.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir等）的上限，超过后 Pod 会被驱逐
+- `spec.containers[].resources.limits.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir 等）的上限，超过后 Pod 会被驱逐
 - `spec.containers[].resources.requests.cpu`：CPU 请求，也是调度 CPU 资源的依据，可以超过
 - `spec.containers[].resources.requests.memory`：内存请求，也是调度内存资源的依据，可以超过；但如果超过，容器可能会在 Node 内存不足时清理
-- `spec.containers[].resources.requests.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir等）的请求，调度容器存储的依据
+- `spec.containers[].resources.requests.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir 等）的请求，调度容器存储的依据
 
 比如 nginx 容器请求 30% 的 CPU 和 56MB 的内存，但限制最多只用 50% 的 CPU 和 128MB 的内存：
 
@@ -749,6 +749,32 @@ spec:
   selector:
     matchLabels:
       app: zookeeper
+```
+
+## Pod 时区
+
+很多容器都是配置了 UTC 时区，与国内集群的 Node 所在时区有可能不一致，可以通过 HostPath 存储插件给容器配置与 Node 一样的时区：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sh
+  namespace: default
+spec:
+  containers:
+  - image: alpine
+    stdin: true
+    tty: true
+    volumeMounts:
+    - mountPath: /etc/localtime
+      name: time
+      readOnly: true
+  volumes:
+  - hostPath:
+      path: /etc/localtime
+      type: ""
+    name: time
 ```
 
 ## 参考文档

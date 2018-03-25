@@ -63,7 +63,7 @@ Import-Module .\hns.psm1
 
 Stop-Service kubeproxy
 Stop-Service kubelet
-Get-HnsNetwork | ? Name -eq l2Bridge | Remove-HnsNetwork 
+Get-HnsNetwork | ? Name -eq l2Bridge | Remove-HnsNetwork
 Get-HnsPolicyList | Remove-HnsPolicyList
 Start-Service kubelet
 Start-Service kubeproxy
@@ -77,6 +77,8 @@ Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
 ```
 
+或者更简单的为每个 Windows Node [多运行一个 Pod](https://github.com/Azure/acs-engine/issues/2027#issuecomment-373767442)，即保证每台 Node 上面至少有两个 Pod 在运行。此时，DNS 解析也是正常的。
+
 如果 Kubernetes 集群是基于 acs-engine 部署的，那么 [acs-engine#2378](https://github.com/Azure/acs-engine/pull/2378) 可以修复这个问题（重新部署 Kubernetes 集群或者根据这个 PR 修改已部署集群的相关文件）。
 
 ## Windows Pod 内无法访问 ServiceAccount Secret
@@ -87,7 +89,7 @@ Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "defaul
 
 如果使用了 Hyper-V 隔离容器，需要开启 MAC spoofing 。
 
-##  Windows Node 内无法访问 Service ClusterIP
+## Windows Node 内无法访问 Service ClusterIP
 
 这是个当前 Windows 网络协议栈的已知问题，只有在 Pod 内才可以访问 Service ClusterIP。
 

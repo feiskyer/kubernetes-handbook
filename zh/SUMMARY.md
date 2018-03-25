@@ -75,15 +75,15 @@
     - [配置创建证书](deploy/kubernetes-the-hard-way/04-certificate-authority.md)
     - [配置生成配置](deploy/kubernetes-the-hard-way/05-kubernetes-configuration-files.md)
     - [配置生成密钥](deploy/kubernetes-the-hard-way/06-data-encryption-keys.md)
-    - [部署Etcd群集](deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md)
+    - [部署 Etcd 群集](deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md)
     - [部署控制节点](deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md)
     - [部署计算节点](deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.md)
-    - [配置Kubectl](deploy/kubernetes-the-hard-way/10-configuring-kubectl.md)
+    - [配置 Kubectl](deploy/kubernetes-the-hard-way/10-configuring-kubectl.md)
     - [配置网络路由](deploy/kubernetes-the-hard-way/11-pod-network-routes.md)
-    - [部署DNS扩展](deploy/kubernetes-the-hard-way/12-dns-addon.md)
+    - [部署 DNS 扩展](deploy/kubernetes-the-hard-way/12-dns-addon.md)
     - [烟雾测试](deploy/kubernetes-the-hard-way/13-smoke-test.md)
     - [删除集群](deploy/kubernetes-the-hard-way/14-cleanup.md)
-  - [4.4 kubectl客户端](deploy/kubectl.md)
+  - [4.4 kubectl 客户端](deploy/kubectl.md)
   - [4.5 附加组件](addons/index.md)
     - [Dashboard](addons/dashboard.md)
     - [Heapster](addons/heapster.md)
@@ -97,12 +97,12 @@
 
 - [5. 插件扩展](plugins/index.md)
   - [5.1 访问控制](plugins/auth.md)
-    - [RBAC授权](plugins/rbac.md)
+    - [RBAC 授权](plugins/rbac.md)
     - [准入控制](plugins/admission.md)
   - [5.2 网络插件](network/index.md)
     - [网络模型](network/network.md)
     - [CNI](network/cni/index.md)
-      - [CNI介绍](network/cni/index.md)
+      - [CNI 介绍](network/cni/index.md)
       - [Flannel](network/flannel/index.md)
       - [Weave](network/weave/index.md)
       - [Contiv](network/contiv/index.md)
@@ -140,6 +140,9 @@
   - [Operator](apps/operator.md)
   - [Kompose](apps/kompose.md)
   - [Deis workflow](apps/deis.md)
+  - [CI/CD](apps/cicd.md)
+    - [Jenkins X](apps/jenkinsx.md)
+    - [Spinnaker](apps/spinnaker.md)
 
 ## 实践案例
 
@@ -158,7 +161,8 @@
 - [8. 大数据与机器学习](machine-learning/index.md)
   - [Spark](machine-learning/spark.md)
   - [Tensorflow](machine-learning/tensorflow.md)
-- [9. 排错指南](troubleshooting/index.md)
+- [9. Serverless](serverless/index.md)
+- [10. 排错指南](troubleshooting/index.md)
   - [集群排错](troubleshooting/cluster.md)
   - [Pod 排错](troubleshooting/pod.md)
   - [网络排错](troubleshooting/network.md)
@@ -172,14 +176,14 @@
 
 ## 开发与社区贡献
 
-- [10. 开发指南](devel/index.md)
+- [11. 开发指南](devel/index.md)
   - [开发环境搭建](devel/index.md)
   - [单元测试和集成测试](devel/testing.md)
   - [社区贡献](devel/contribute.md)
 
 ## 附录
 
-- [11. 附录](appendix/index.md)
+- [12. 附录](appendix/index.md)
   - [生态圈](appendix/ecosystem.md)
   - [Play-With-Kubernetes](appendix/play-with-k8s.md)
   - [如何贡献](CONTRIBUTING.md)
