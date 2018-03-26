@@ -1,16 +1,16 @@
-# Volume插件扩展
+# Volume 插件扩展
 
-Kubernetes已经提供丰富的[Volume](../concepts/volume.md)和[Persistent Volume](../concepts/persistent-volume.md)插件，可以根据需要使用这些插件给容器提供持久化存储。
+Kubernetes 已经提供丰富的 [Volume](../concepts/volume.md) 和 [Persistent Volume](../concepts/persistent-volume.md) 插件，可以根据需要使用这些插件给容器提供持久化存储。
 
-如果内置的这些Volume还不满足要求，则可以使用 FlexVolume 或者 CSI 实现自己的Volume插件。
+如果内置的这些 Volume 还不满足要求，则可以使用 FlexVolume 或者 CSI 实现自己的 Volume 插件。
 
-## CSI
+## Container Storage Interface
 
-Contaner Storage Interface (CSI) 是从 v1.9 引入的容器存储接口（alpha版本），用于扩展 Kubernetes 的存储生态。实际上，CSI 是整个容器生态的标准存储接口，同样适用于 Mesos、Cloud Foundry 等其他的容器集群调度系统。
+Container Storage Interface (CSI) 是从 v1.9 引入的容器存储接口（Alpha 版本），用于扩展 Kubernetes 的存储生态。实际上，CSI 是整个容器生态的标准存储接口，同样适用于 Mesos、Cloud Foundry 等其他的容器集群调度系统。
 
 ### 原理
 
-类似于 CRI，CSI 也是基于 gRPC 实现。详细的 CSI SPEC 可以参考[这里](https://github.com/container-storage-interface/spec/blob/master/spec.md)，它要求插件开发者要实现三个 gRPC 服务：
+类似于 CRI，CSI 也是基于 gRPC 实现。详细的 CSI SPEC 可以参考 [这里](https://github.com/container-storage-interface/spec/blob/master/spec.md)，它要求插件开发者要实现三个 gRPC 服务：
 
 - **Identity Service**：用于 Kubernetes 与 CSI 插件协调版本信息
 - **Controller Service**：用于创建、删除以及管理 Volume 存储卷
@@ -22,19 +22,19 @@ Contaner Storage Interface (CSI) 是从 v1.9 引入的容器存储接口（alpha
 
 该部署方法包括：
 
-* StatefuelSet：副本数为1保证只有一个实例运行，它包含三个容器
-  * 用户实现的 CSI 插件
-  * [External Attacher](https://github.com/kubernetes-csi/external-attacher)：Kubernetes 提供的 sidecar 容器，它监听 *VolumeAttachment* 和 *PersistentVolume* 对象的变化情况，并调用 CSI 插件的 ControllerPublishVolume 和 ControllerUnpublishVolume 等 API 将 Volume 挂载或卸载到指定的 Node 上
-  * [External Provisioner](https://github.com/kubernetes-csi/external-provisioner)：Kubernetes 提供的 sidecar 容器，它监听  *PersistentVolumeClaim* 对象的变化情况，并调用 CSI 插件的 *ControllerPublish* 和 *ControllerUnpublish* 等 API管理 Volume
-* Daemonset：将 CSI 插件运行在每个 Node 上，以便 Kubelet 可以调用。它包含 2 个容器
-  * 用户实现的 CSI 插件
-  * [Driver Registrar](https://github.com/kubernetes-csi/driver-registrar)：注册 CSI 插件到 kubelet 中，并初始化 *NodeId*（即给 Node 对象增加一个 Annotation `csi.volume.kubernetes.io/nodeid`）
+- StatefuelSet：副本数为 1 保证只有一个实例运行，它包含三个容器
+  - 用户实现的 CSI 插件
+  - [External Attacher](https://github.com/kubernetes-csi/external-attacher)：Kubernetes 提供的 sidecar 容器，它监听 *VolumeAttachment* 和 *PersistentVolume* 对象的变化情况，并调用 CSI 插件的 ControllerPublishVolume 和 ControllerUnpublishVolume 等 API 将 Volume 挂载或卸载到指定的 Node 上
+  - [External Provisioner](https://github.com/kubernetes-csi/external-provisioner)：Kubernetes 提供的 sidecar 容器，它监听  *PersistentVolumeClaim* 对象的变化情况，并调用 CSI 插件的 *ControllerPublish* 和 *ControllerUnpublish* 等 API 管理 Volume
+- Daemonset：将 CSI 插件运行在每个 Node 上，以便 Kubelet 可以调用。它包含 2 个容器
+  - 用户实现的 CSI 插件
+  - [Driver Registrar](https://github.com/kubernetes-csi/driver-registrar)：注册 CSI 插件到 kubelet 中，并初始化 *NodeId*（即给 Node 对象增加一个 Annotation `csi.volume.kubernetes.io/nodeid`）
 
 ### 配置
 
 - API Server 配置：
 
-```
+```sh
 --allow-privileged=true
 --feature-gates=CSIPersistentVolume=true,MountPropagation=true
 --runtime-config=storage.k8s.io/v1alpha1=true
@@ -42,13 +42,13 @@ Contaner Storage Interface (CSI) 是从 v1.9 引入的容器存储接口（alpha
 
 - Controller-manager 配置：
 
-```
+```sh
 --feature-gates=CSIPersistentVolume=true
 ```
 
 - Kubelet 配置：
 
-```
+```sh
 --allow-privileged=true
 --feature-gates=CSIPersistentVolume=true,MountPropagation=true
 ```
@@ -81,7 +81,7 @@ metadata:
   labels:
     name: data-nfsplugin
   annotations:
-    csi.volume.kubernetes.io/volume-attributes: '{"server": "10.10.10.10", "share": "share"}'
+    csi.volume.kubernetes.io/volume-attributes: '{"server":"10.10.10.10","share":"share"}'
 spec:
   accessModes:
   - ReadWriteOnce
@@ -134,12 +134,14 @@ spec:
 
 ## FlexVolume
 
-实现一个FlexVolume包括两个步骤
+FlexVolume 是 Kubernetes v1.8+ 支持的一种存储插件扩展方式。类似于 CNI 插件，它需要外部插件将二进制文件放到预先配置的路径中（如 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`），并需要在系统中安装好所有需要的依赖。
 
-- 实现[FlexVolume插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括`init/attach/detach/mount/umount`等命令（可参考[lvm示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/flexvolume)和[NFS示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/flexvolume/nfs)）
-- 将插件放到`/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>`目录中
+实现一个 FlexVolume 包括两个步骤
 
-而在使用flexVolume时，需要指定卷的driver，格式为`<vendor~driver>/<driver>`，如下面的例子使用了`kubernetes.io/lvm`
+- 实现 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可参考 [lvm 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/flexvolume) 和 [NFS 示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/flexvolume/nfs)）
+- 将插件放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>` 目录中
+
+而在使用 flexVolume 时，需要指定卷的 driver，格式为 `<vendor~driver>/<driver>`，如下面的例子使用了 `kubernetes.io/lvm`
 
 ```yaml
 apiVersion: v1
@@ -167,7 +169,10 @@ spec:
         volumegroup: "kube_vg"
 ```
 
-> 注意：在v1.7版本，部署新的FlevVolume插件后需要重启 kubelet 和 kube-controller-manager；而从v1.8开始不需要重启它们了。
+注意：
+
+- 在 v1.7 版本，部署新的 FlevVolume 插件后需要重启 kubelet 和 kube-controller-manager；而从 v1.8 开始不需要重启它们了。
+- FlexVolume 不支持 [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)，以 PVC 方式使用前需要管理员预先创建好对应的 PV。
 
 ## 参考文档
 

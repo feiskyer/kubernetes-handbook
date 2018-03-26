@@ -1,15 +1,15 @@
-# 访问API
+# 访问 API
 
 有多种方式可以访问 Kubernetes 提供的 REST API：
 
-- [kubectl ](kubectl.md)命令行工具
+- [kubectl](kubectl.md) 命令行工具
 - SDK，支持多种语言
   - [Go](https://github.com/kubernetes/client-go)
   - [Python](https://github.com/kubernetes-incubator/client-python)
   - [Javascript](https://github.com/kubernetes-client/javascript)
   - [Java](https://github.com/kubernetes-client/java)
   - [CSharp](https://github.com/kubernetes-client/csharp)
-  - 其他[OpenAPI](https://www.openapis.org/)支持的语言，可以通过[gen](https://github.com/kubernetes-client/gen)工具生成相应的client
+  - 其他 [OpenAPI](https://www.openapis.org/) 支持的语言，可以通过 [gen](https://github.com/kubernetes-client/gen) 工具生成相应的 client
 
 ## kubectl
 
@@ -36,7 +36,7 @@ $ curl http://localhost:8080/api/
 
 ```sh
 $ APISERVER=$(kubectl config view | grep server | cut -f 2- -d ":" | tr -d " ")
-$ TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d '\t')
+$ TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d '') | grep -E'^token'| cut -f2 -d':'| tr -d'\t')
 $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 {
   "kind": "APIVersions",

@@ -1,19 +1,19 @@
 # kube-proxy
 
-每台机器上都运行一个kube-proxy服务，它监听API server中service和endpoint的变化情况，并通过iptables等来为服务配置负载均衡（仅支持TCP和UDP）。
+每台机器上都运行一个 kube-proxy 服务，它监听 API server 中 service 和 endpoint 的变化情况，并通过 iptables 等来为服务配置负载均衡（仅支持 TCP 和 UDP）。
 
-kube-proxy可以直接运行在物理机上，也可以以static pod或者daemonset的方式运行。
+kube-proxy 可以直接运行在物理机上，也可以以 static pod 或者 daemonset 的方式运行。
 
-kube-proxy当前支持一下几种实现
+kube-proxy 当前支持一下几种实现
 
-- userspace：最早的负载均衡方案，它在用户空间监听一个端口，所有服务通过iptables转发到这个端口，然后在其内部负载均衡到实际的Pod。该方式最主要的问题是效率低，有明显的性能瓶颈。
-- iptables：目前推荐的方案，完全以iptables规则的方式来实现service负载均衡。该方式最主要的问题是在服务多的时候产生太多的iptables规则，非增量式更新会引入一定的时延，大规模情况下有明显的性能问题
-- ipvs：为解决iptables模式的性能问题，v1.8新增了ipvs模式，采用增量式更新，并可以保证service更新期间连接保持不断开
-- winuserspace：同userspace，但仅工作在windows上
+- userspace：最早的负载均衡方案，它在用户空间监听一个端口，所有服务通过 iptables 转发到这个端口，然后在其内部负载均衡到实际的 Pod。该方式最主要的问题是效率低，有明显的性能瓶颈。
+- iptables：目前推荐的方案，完全以 iptables 规则的方式来实现 service 负载均衡。该方式最主要的问题是在服务多的时候产生太多的 iptables 规则，非增量式更新会引入一定的时延，大规模情况下有明显的性能问题
+- ipvs：为解决 iptables 模式的性能问题，v1.8 新增了 ipvs 模式，采用增量式更新，并可以保证 service 更新期间连接保持不断开
+- winuserspace：同 userspace，但仅工作在 windows 上
 
-注意：使用ipvs模式时，需要预先在每台Node上加载内核模块`nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh`  等。
+注意：使用 ipvs 模式时，需要预先在每台 Node 上加载内核模块 `nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh`  等。
 
-## Iptables示例
+## Iptables 示例
 
 ![](images/iptables-mode.png)
 
@@ -33,7 +33,7 @@ kube-proxy当前支持一下几种实现
 -A KUBE-SVC-7IMAZDGB2ONQNK4Z -m comment --comment "default/http:" -j KUBE-SEP-55QZ6T7MF3AHPOOB
 ```
 
-## ipvs示例
+## ipvs 示例
 
 ![](images/ipvs-mode.png)
 
@@ -47,12 +47,18 @@ TCP  10.111.21.136:80 rr persistent 10800
   -> 192.168.23.134:80            Masq    1      0          0
 ```
 
-## 启动kube-proxy示例
+## 启动 kube-proxy 示例
 
 ```sh
 kube-proxy --kubeconfig=/var/lib/kube-proxy/kubeconfig.conf
 ```
 
-## kube-proxy不足
+## kube-proxy 工作原理
 
-kube-proxy目前仅支持TCP和UDP，不支持HTTP路由，并且也没有健康检查机制。这些可以通过自定义Ingress Controller的方法来解决。
+kube-proxy 监听 API server 中 service 和 endpoint 的变化情况，并通过 userspace、iptables、ipvs 或 winuserspace 等 proxier 来为服务配置负载均衡（仅支持 TCP 和 UDP）。
+
+![](images/kube-proxy.png)
+
+## kube-proxy 不足
+
+kube-proxy 目前仅支持 TCP 和 UDP，不支持 HTTP 路由，并且也没有健康检查机制。这些可以通过自定义 Ingress Controller 的方法来解决。
