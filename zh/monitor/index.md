@@ -1,16 +1,30 @@
 # Kubernetes 监控
 
-> ** 注意事项 **
->
-> - 标签非常重要，是应用分组的重要依据
-> - 多维度的监控，包括集群内的所有节点、容器、容器内的应用以及 Kubernetes 自身
-> - 天生分布式，对复杂应用的监控聚合是个挑战
+Kubernetes 社区提供了一些列的工具来监控容器和集群的状态，并借助 Prometheus 提供告警的功能。
+
+- cAdvisor 负责单节点内部的容器和节点资源使用统计，内置在 Kubelet 内部，并通过 Kubelet `/metrics/cadvisor` 对外提供 API
+- [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/) 是一个开源分布式时序、事件和指标数据库；而 [Grafana](http://grafana.org/) 则是 InfluxDB 的 Dashboard，提供了强大的图表展示功能。它们常被组合使用展示图表化的监控数据。
+- [Heapster](https://github.com/kubernetes/heapster) 提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB 等后端存储中。
+- [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) 提供了 Kubernetes 资源对象（如 DaemonSet、Deployments 等）的度量。
+- [Prometheus](https://prometheus.io) 是另外一个监控和时间序列数据库，还提供了告警的功能。
+- [Node Problem Detector](https://github.com/kubernetes/node-problem-detector) 监测 Node 本身的硬件、内核或者运行时等问题。
 
 ## cAdvisor
 
-[cAdvisor](https://github.com/google/cadvisor) 是一个来自 Google 的容器监控工具，也是 Kubelet 内置的容器资源收集工具。它会自动收集本机容器 CPU、内存、网络和文件系统的资源占用情况，并对外提供 cAdvisor 原生的 API（默认端口为 `--cadvisor-port=4194`）。
+[cAdvisor](https://github.com/google/cadvisor) 是一个来自 Google 的容器监控工具，也是 Kubelet 内置的容器资源收集工具。它会自动收集本机容器 CPU、内存、网络和文件系统的资源占用情况，并对外提供 cAdvisor 原生的 API（默认端口为 `--cadvisor-port=4194`，未来可能会删除该端口）。
 
 ![](images/14842107270881.png)
+
+从 v1.7 开始，Kubelet metrics API 不再包含 cadvisor metrics，而是提供了一个独立的 API 接口：
+
+- Kubelet metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics`
+- Cadvisor metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics/cadvisor`
+
+然而 cadvisor metrics 通常是监控系统必需的数据。给 Prometheus 增加新的 target 可以解决这个问题，比如
+
+```sh
+helm install stable/prometheus --set rbac.create=true --name prometheus --namespace monitoring
+```
 
 ## InfluxDB 和 Grafana
 
@@ -42,7 +56,14 @@ Grafana is running at https://kubernetes-master/api/v1/proxy/namespaces/kube-sys
 InfluxDB is running at https://kubernetes-master/api/v1/proxy/namespaces/kube-system/services/monitoring-influxdb
 ```
 
-如果这些服务没有自动部署的话，可以参考 [kubernetes/heapster](https://github.com/kubernetes/heapster/tree/master/deploy/kube-config) 来部署这些服务。
+如果这些服务没有自动部署的话，可以参考 [kubernetes/heapster](https://github.com/kubernetes/heapster/tree/master/deploy/kube-config) 来部署这些服务：
+
+```sh
+git clone https://github.com/kubernetes/heapster
+cd heapster
+kubectl create -f deploy/kube-config/influxdb/
+kubectl create -f deploy/kube-config/rbac/heapster-rbac.yaml
+```
 
 ## Prometheus
 
@@ -50,36 +71,34 @@ InfluxDB is running at https://kubernetes-master/api/v1/proxy/namespaces/kube-sy
 
 ![prometheus](images/prometheus.png)
 
-使用 Prometheus 监控 Kubernetes 需要配置好数据源，一个简单的示例是 [prometheus.yml](prometheus.txt)：
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/master/monitor/prometheus.txt
-```
-
-![prometheus-web](images/14842125295113.jpg)
+使用 Prometheus 监控 Kubernetes 需要配置好数据源，一个简单的示例是 [prometheus.yml](prometheus.txt)。
 
 推荐使用 [Prometheus Operator](https://github.com/coreos/prometheus-operator) 或 [Prometheus Chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus) 来部署和管理 Prometheus，比如
 
 ```sh
-# 注意：未开启 RBAC 时，需要去掉 --set rbac.create=true 选项
-helm install --name my-release stable/prometheus --set rbac.create=true
+# 使用 prometheus charts
+# 注意：未开启 RBAC 时，需要设置 --set rbac.create=false
+helm install --name prometheus stable/prometheus --set rbac.create=true --namespace=monitoring
+helm install --name grafana stable/grafana --namespace=monitoring --set server.image=grafana/grafana:master
 ```
 
-## Kubelet Metrics
+使用端口转发的方式访问 Prometheus，如 `kubectl port-forward -n monitoring service/prometheus-prometheus-server :80`
 
-从 v1.7 开始，Kubelet metrics API 不再包含 cadvisor metrics，而是提供了一个独立的 API 接口：
+![prometheus-web](images/14842125295113.jpg)
 
-- Kubelet metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics`
-- Cadvisor metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics/cadvisor`
-
-然而 cadvisor metrics 通常是监控系统必需的数据。给 Prometheus 增加新的 target 可以解决这个问题，比如
+查询 Grafana 的管理员密码
 
 ```sh
-# add repo
-helm repo add feisky https://feisky.xyz/kubernetes-charts
-helm update
-helm install feisky/prometheus --set rbac.create=true --name prometheus --namespace kube-system
+kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
 ```
+
+然后，以端口转发的方式访问 Grafana 界面
+
+```sh
+kubectl port-forward -n monitoring service/grafana :80
+```
+
+添加 Prometheus 类型的 Data Source，填入原地址 `http://prometheus-prometheus-server.monitoring`。
 
 ## Node Problem Detector
 
