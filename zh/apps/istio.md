@@ -36,13 +36,14 @@ Istio架构可以如下图所示
 
 ## 安装
 
-> Istio目前仅支持Kubernetes，在部署Istio之前需要先部署好Kubernetes集群并配置好kubectl客户端。
+> 以下步骤假设 Kubernetes 集群已经部署并配置好了 kubectl 客户端。
 
 ### 下载Istio
 
 ```sh
 curl -L https://git.io/getLatestIstio | sh -
-cd istio-0.5.1/
+ISTIO_VERSION=$(curl -L -s https://api.github.com/repos/istio/istio/releases/latest | jq -r .tag_name)
+cd istio-${ISTIO_VERSION}
 cp bin/istioctl /usr/local/bin
 ```
 
@@ -73,45 +74,52 @@ istio-pilot     ClusterIP      10.109.122.23    <none>        15003/TCP,8080/TCP
 ### 部署Prometheus、Grafana和Zipkin插件
 
 ```sh
-kubectl apply -f install/kubernetes/addons/grafana.yaml
-kubectl apply -f install/kubernetes/addons/servicegraph.yaml
-kubectl apply -f install/kubernetes/addons/zipkin.yaml
-kubectl apply -f install/kubernetes/addons/prometheus.yaml
-# kubectl apply -f install/kubernetes/addons/zipkin-to-stackdriver.yaml
+$ kubectl apply -f install/kubernetes/addons/
+service "grafana" created
+deployment "grafana" created
+serviceaccount "grafana" created
+configmap "prometheus" created
+service "prometheus" created
+deployment "prometheus" created
+serviceaccount "prometheus" created
+clusterrole "prometheus" created
+clusterrolebinding "prometheus" created
+deployment "servicegraph" created
+service "servicegraph" created
+deployment "zipkin-to-stackdriver" created
+service "zipkin-to-stackdriver" created
+deployment "zipkin" created
+service "zipkin" created
 ```
 
-等一会所有Pod启动后，可以通过NodePort或负载均衡服务的外网IP来访问这些服务。比如通过NodePort方式，先查询服务的NodePort
+等一会所有Pod启动后，可以通过 NodePort、负载均衡服务的外网 IP 或者 `kubectl proxy` 来访问这些服务。比如通过`kubectl proxy` 方式，先启动 kubectl proxy
 
 ```sh
-$ kubectl -n istio-system get svc grafana -o jsonpath='{.spec.ports[0].nodePort}'
-32070
-$ kubectl -n istio-system get svc servicegraph -o jsonpath='{.spec.ports[0].nodePort}'
-31072
-$ kubectl -n istio-system get svc zipkin -o jsonpath='{.spec.ports[0].nodePort}'
-30032
-$ kubectl -n istio-system get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'
-30890
+$ kubectl proxy
+Starting to serve on 127.0.0.1:8001
 ```
 
-通过`http://<kubernetes-ip>:32070/dashboard/db/istio-dashboard`访问Grafana服务
+通过`http://localhost:8001/api/v1/namespaces/istio-system/services/grafana:3000/proxy/`访问Grafana服务
 
 ![](images/grafana.png)
 
-通过`http://<kubernetes-ip>:31072/dotviz`访问ServiceGraph服务，展示服务之间调用关系图
+通过`http://localhost:8001/api/v1/namespaces/istio-system/services/servicegraph:8088/proxy/`访问ServiceGraph服务，展示服务之间调用关系图
 
 ![](images/servicegraph.png)
 
-通过`http://<kubernetes-ip>:30032`访问Zipkin跟踪页面
+通过`http://localhost:8001/api/v1/namespaces/istio-system/services/zipkin:9411/proxy/`访问Zipkin跟踪页面
 
 ![](images/zipkin.png)
 
-通过`http://<kubernetes-ip>:30890`访问Prometheus页面
+通过`http://localhost:8001/api/v1/namespaces/istio-system/services/prometheus:9090/proxy/`访问Prometheus页面
 
 ![](images/prometheus.png)
 
 ## 部署示例应用
 
-在部署应用时，需要通过`istioctl kube-inject`给Pod自动插入Envoy容器，即
+### 手动注入 sidecar 容器
+
+在部署应用时，可以通过`istioctl kube-inject`给Pod手动插入Envoy sidecar 容器，即
 
 ```sh
 wget https://raw.githubusercontent.com/istio/istio/master/blog/bookinfo-v1.yaml
@@ -173,6 +181,52 @@ Events:	<none>
 ```
 
 ![](images/productpage.png)
+
+### 自动注入 sidecar 容器
+
+首先确认 `admissionregistration` API 已经开启：
+
+```sh
+$ kubectl api-versions | grep admissionregistration
+admissionregistration.k8s.io/v1beta1
+```
+
+然后部署 istio-sidecar-injector
+
+```sh
+$ ./install/kubernetes/webhook-create-signed-cert.sh \
+    --service istio-sidecar-injector \
+    --namespace istio-system \
+    --secret sidecar-injector-certs
+$ kubectl apply -f install/kubernetes/istio-sidecar-injector-configmap-release.yaml
+$ cat install/kubernetes/istio-sidecar-injector.yaml | \
+     ./install/kubernetes/webhook-patch-ca-bundle.sh > \
+     install/kubernetes/istio-sidecar-injector-with-ca-bundle.yaml
+$ kubectl apply -f install/kubernetes/istio-sidecar-injector-with-ca-bundle.yaml
+
+# Conform istio-sidecar-injector is working
+$ kubectl -n istio-system get deployment -listio=sidecar-injector
+Copy
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-sidecar-injector   1         1         1            1           1d
+```
+
+然手部署应用
+
+```sh
+# default namespace 没有 istio-injection 标签
+$ kubectl get namespace -L istio-injection
+NAME           STATUS        AGE       ISTIO-INJECTION
+default        Active        1h        
+istio-system   Active        1h        
+kube-public    Active        1h        
+kube-system    Active        1h
+
+# 打上 istio-injection=enabled 标签
+$ kubectl label namespace default istio-injection=enabled
+
+# 在 default namespace 中创建 Pod 会自动添加 istio sidecar 容器
+```
 
 ## 金丝雀部署
 
