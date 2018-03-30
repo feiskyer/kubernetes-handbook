@@ -237,9 +237,9 @@ Then it indicates kube-dns pod failed to forward dns request to upstream servers
 
 - Check docker version whether it's >= 1.13. If so, run `iptables -P FORWARD ACCEPT` on each node
 - Wait a while, kube-dns should recover automatically. If not, check on node with
-  - whether network configure is right
+  - whether network configure (e.g. local routes and cloud traffic routing) is right
   - whether upstream dns servers is accessible
-  - whether there are iptables or firewall disabled DNS
+  - whether there are iptables, firewalls or cloud network security groups disabled DNS
 
 If kubernetes API access timeout is find instead of forward errors, e.g.
 
