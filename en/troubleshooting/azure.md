@@ -103,7 +103,7 @@ Ways to mitigate the issue:
 - Ensure instance metadata is used, e.g. set `useInstanceMetadata` to `true` in `/etc/kubernetes/azure.json` for all nodes and restart kubelet
 - Increase `--route-reconciliation-period` on kube-controller-manager and restart it, e.g. set the option in `/etc/kubernetes/manifests/kube-controller-manager.yaml` and kubelet will recreate kube-controller-manager pods automatically
 
-## AKS kubectl logs connection timed out
+## AKS kubectl logs/exec connection timed out
 
 `kubectl logs` reports `getsockopt: connection timed out` error ([AKS#232](https://github.com/Azure/AKS/issues/232)):
 
@@ -139,13 +139,21 @@ kube-svc-redirect-x6sq5   1/1       Running   0          2d
 kube-svc-redirect-zjl7x   1/1       Running   1          2d
 ```
 
-If the pods are not running, deleting `tunnelfront` pod, it will be recreated after a few minutes:
+If the pods are not running or `net/http: TLS handshake timeout` error occurred, delete `tunnelfront` pod and wait a while, a new pod will be recreated after a few seconds:
 
 ```
 $ kubectl -n kube-system delete po -l component=tunnel
 pod "tunnelfront-7644cd56b7-l5jmc" deleted
 ```
 
+## LoadBalancer Service stuck in Pending after Virtual Kubelet deployed
+
+After [Virtual Kubelet](https://github.com/virtual-kubelet/virtual-kubelet) deployed, LoadBalancer Service may stuck in Pending state and public IP can't be allocated. Check the service's events (e.g. by `kubectl describe service <service-name>`), you could find the error `CreatingLoadBalancerFailed  4m (x15 over 45m)  service-controller  Error creating load balancer (will retry): failed to ensure load balancer for service default/nginx: ensure(default/nginx): lb(kubernetes) - failed to ensure host in pool: "instance not found"`. This is because the virtual Node created by Virtual Kubelet is not actually exist on Azure cloud platform, so it couldn't be added to the backends of Azure Load Balancer.
+
+Kubernetes 1.9 introduces a new flag, `ServiceNodeExclusion`, for the control plane's Controller Manager. Enabling this flag in the Controller Manager's manifest ( `kube-controller-manager --feature-gates=ServiceNodeExclusion=true`) allows Kubernetes to exclude Virtual Kubelet nodes (with label `alpha.service-controller.kubernetes.io/exclude-balancer`) from being added to Load Balancer pools, allowing you to create public facing services with external IPs without issue.
+
 ## References
 
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
+- [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
+

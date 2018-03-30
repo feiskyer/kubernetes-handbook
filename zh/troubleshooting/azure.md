@@ -130,13 +130,23 @@ kube-svc-redirect-x6sq5   1/1       Running   0          2d
 kube-svc-redirect-zjl7x   1/1       Running   1          2d
 ```
 
-如果它们不是处于 `Running` 状态，删除 `tunnelfront` Pod，稍等一会就会自动创建新的出来，如：
+如果它们不是处于 `Running` 状态或者 Exec/Logs/PortForward 等命令报 `net/http: TLS handshake timeout` 错误，删除 `tunnelfront` Pod，稍等一会就会自动创建新的出来，如：
 
 ```
 $ kubectl -n kube-system delete po -l component=tunnel
 pod "tunnelfront-7644cd56b7-l5jmc" deleted
 ```
 
+## 使用 Virtual Kubelet 后 LoadBalancer Service 无法分配公网 IP
+
+使用 Virtual Kubelet 后，LoadBalancer Service 可能会一直处于 pending 状态，无法分配 IP 地址。查看该服务的事件（如 `kubectl describe svc）`会发现错误 `CreatingLoadBalancerFailed  4m (x15 over 45m)  service-controller  Error creating load balancer (will retry): failed to ensure load balancer for service default/nginx: ensure(default/nginx): lb(kubernetes) - failed to ensure host in pool: "instance not found"`。这是由于 Virtual Kubelet 创建的虚拟 Node 并不存在于 Azure 云平台中，因而无法将其加入到 Azure Load Balancer 的后端中。
+
+解决方法是开启 ServiceNodeExclusion 特性，即设置 `kube-controller-manager --feature-gates=ServiceNodeExclusion=true`。开启后，所有带有 `alpha.service-controller.kubernetes.io/exclude-balancer` 标签的 Node 都不会加入到云平台负载均衡的后端中。
+
+注意该特性仅适用于 Kubernetes 1.9 及以上版本。
+
 ## 参考文档
 
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
+- [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
+
