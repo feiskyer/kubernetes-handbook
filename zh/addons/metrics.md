@@ -11,13 +11,13 @@
 在部署 metrics-server 之前，需要在 kube-apiserver 中开启 API Aggregation，即增加以下配置
 
 ```sh
---requestheader-client-ca-file=<path to aggregator CA cert>
+--requestheader-client-ca-file=/etc/kubernetes/certs/proxy-ca.crt
+--proxy-client-cert-file=/etc/kubernetes/certs/proxy.crt
+--proxy-client-key-file=/etc/kubernetes/certs/proxy.key
 --requestheader-allowed-names=aggregator
 --requestheader-extra-headers-prefix=X-Remote-Extra-
 --requestheader-group-headers=X-Remote-Group
 --requestheader-username-headers=X-Remote-User
---proxy-client-cert-file=<path to aggregator proxy cert>
---proxy-client-key-file=<path to aggregator proxy key>
 ```
 
 如果kube-proxy没有在Master上面运行，还需要配置
