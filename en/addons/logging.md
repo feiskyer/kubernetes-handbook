@@ -8,7 +8,7 @@ ELK 可谓是容器日志收集、处理和搜索的黄金搭档:
 
 注意：Kubernetes 默认使用 fluentd（以 DaemonSet 的方式启动）来收集日志，并将收集的日志发送给 elasticsearch。
 
-** 小提示 **
+**小提示**
 
 在使用 `cluster/kube-up.sh` 部署集群的时候，可以设置 `KUBE_LOGGING_DESTINATION` 环境变量自动部署 Elasticsearch 和 Kibana，并使用 fluentd 收集日志 (配置参考 [addons/fluentd-elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch))：
 
@@ -77,7 +77,7 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 
 ## Filebeat
 
-除了 Fluentd 和 Logstash，还可以使用 [Filebeat](https://www.elastic.co/products/beats/filebeat) 来收集日志，使用方法可以参考[使用 Filebeat 收集 Kubernetes 中的应用日志](http://rootsongjc.github.io/blogs/kubernetes-filebeat/)。
+除了 Fluentd 和 Logstash，还可以使用 [Filebeat](https://www.elastic.co/products/beats/filebeat) 来收集日志，使用方法可以参考 [使用 Filebeat 收集 Kubernetes 中的应用日志](http://rootsongjc.github.io/blogs/kubernetes-filebeat/)。
 
 ## 参考文档
 

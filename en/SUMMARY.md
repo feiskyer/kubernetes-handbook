@@ -65,8 +65,8 @@
   - [4.4 kubectl](deploy/kubectl.md)
   - [4.5 Addons](addons/index.md)
     - [Dashboard](addons/dashboard.md)
-    - [Heapster](addons/heapster.md)
-    - [EFK](addons/efk.md)
+    - [Monitoring](addons/monitor.md)
+    - [Logging](addons/logging.md)
     - [Metrics](addons/metrics.md)
     - [Cluster AutoScaler](addons/cluster-autoscaler.md)
   - [4.6 Feature Gates](deploy/feature-gates.md)
@@ -123,8 +123,6 @@
 ## Kubernetes Practice
 
 - [7. Kubernete Practice](practice/index.md)
-  - [Monitoring](monitor/index.md)
-  - [Logging](deploy/logging.md)
   - [High Availability](practice/ha.md)
   - [Debugging](practice/debugging.md)
   - [Port Mapping](practice/portmap.md)

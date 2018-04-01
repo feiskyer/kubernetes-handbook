@@ -10,7 +10,10 @@ Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 me
 - 支持两种 metrics 查询方式：Heapster 和自定义的 REST API
 - 支持多 metrics
 
-> 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)。
+注意：
+
+- 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)
+- 在使用 HPA 之前需要确保已部署好 [Heapster](../addons/monitor.md#heapster) 和 [metrics-server](../addons/metrics.md)
 
 ## API 版本对照表
 

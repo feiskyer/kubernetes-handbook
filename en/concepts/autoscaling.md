@@ -1,6 +1,6 @@
 # Horizontal Pod Autoscaling (HPA)
 
-Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 metrics 自动扩展 Pod 数量（支持 replication controller、deployment 和 replica set ）。
+The Horizontal Pod Autoscaler automatically scales the number of pods in a replication controller, deployment or replica set based on observed CPU utilization (or, with custom metrics support, on some other application-provided metrics). Note that Horizontal Pod Autoscaling does not apply to objects that can’t be scaled, for example, DaemonSets.
 
 - 控制管理器每隔 30s（可以通过 `--horizontal-pod-autoscaler-sync-period` 修改）查询 metrics 的资源使用情况
 - 支持三种 metrics 类型
@@ -10,13 +10,17 @@ Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 me
 - 支持两种 metrics 查询方式：Heapster 和自定义的 REST API
 - 支持多 metrics
 
-> 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)。
+注意：
+
+- 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)
+- 在使用 HPA 之前需要确保已部署好 [Heapster](../addons/monitor.md#heapster) 和 [metrics-server](../addons/metrics.md)
 
 ## API 版本对照表
 
-| Kubernetes 版本 | CRD API 版本   |
-| --------------- | -------------- |
-| v1.5+           | autoscaling/v1 |
+| Kubernetes 版本  | Autoscaling API 版本 |
+| --------------- | -------------------- |
+| v1.5+           | autoscaling/v1       |
+| v1.6+           | autoscaling/v2beta1  |
 
 ## 示例
 
@@ -149,3 +153,7 @@ Events:
 - 保持 Pods 和 Nodes 健康（避免 Pod 频繁重建）
 - 保证用户请求的负载均衡
 - 使用 `kubectl top node` 和 `kubectl top pod` 查看资源使用情况
+
+## References
+
+- [Kubernetes Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)

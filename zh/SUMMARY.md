@@ -80,8 +80,8 @@
   - [4.4 kubectl 客户端](deploy/kubectl.md)
   - [4.5 附加组件](addons/index.md)
     - [Dashboard](addons/dashboard.md)
-    - [Heapster](addons/heapster.md)
-    - [EFK](addons/efk.md)
+    - [监控](addons/monitor.md)
+    - [日志](addons/logging.md)
     - [Metrics](addons/metrics.md)
     - [Cluster AutoScaler](addons/cluster-autoscaler.md)
   - [4.6 特性开关](deploy/feature-gates.md)
@@ -141,8 +141,6 @@
 ## 实践案例
 
 - [7. 实践案例](practice/index.md)
-  - [监控](monitor/index.md)
-  - [日志](deploy/logging.md)
   - [高可用](practice/ha.md)
   - [调试](practice/debugging.md)
   - [端口映射](practice/portmap.md)
