@@ -55,7 +55,9 @@ rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 
 ## Windows Pod 内无法解析 DNS
 
-这是一个[已知问题](https://github.com/Azure/acs-engine/issues/2027)。在 Windows 重启后，需要清空 HNS Policy 并重启 KubeProxy 服务（每次重启都需要）：
+这是一个[已知问题](https://github.com/Azure/acs-engine/issues/2027)，有以下三种临时解决方法：
+
+（1）Windows 重启后，清空 HNS Policy 并重启 KubeProxy 服务：
 
 ```powershell
 Start-BitsTransfer -Source https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/hns.psm1
@@ -69,17 +71,61 @@ Start-Service kubelet
 Start-Service kubeproxy
 ```
 
-临时解决方法是为 Pod 直接配置 kube-dns Pod 的地址：
+（2）是为 Pod 直接配置 kube-dns Pod 的地址：
 
 ```powershell
 $adapter=Get-NetAdapter
-Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.2,10.244.0.3
+Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.4,10.244.0.6
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
 ```
 
-或者更简单的为每个 Windows Node [多运行一个 Pod](https://github.com/Azure/acs-engine/issues/2027#issuecomment-373767442)，即保证每台 Node 上面至少有两个 Pod 在运行。此时，DNS 解析也是正常的。
+（3）更简单的为每个 Windows Node [多运行一个 Pod](https://github.com/Azure/acs-engine/issues/2027#issuecomment-373767442)，即保证每台 Node 上面至少有两个 Pod 在运行。此时，DNS 解析也是正常的。
 
-如果 Kubernetes 集群是基于 acs-engine 部署的，那么 [acs-engine#2378](https://github.com/Azure/acs-engine/pull/2378) 可以修复这个问题（重新部署 Kubernetes 集群或者根据这个 PR 修改已部署集群的相关文件）。
+如果 Windows Node 运行在 Azure 上面，并且部署 Kubernetes 时使用了[自定义 VNET](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/features.md#feat-custom-vnet)，那么需要[为该 VNET 添加路由表](https://github.com/Azure/acs-engine/blob/master/docs/custom-vnet.md#post-deployment-attach-cluster-route-table-to-vnet)：
+
+```sh
+#!/bin/bash
+# KubernetesSubnet is the name of the vnet subnet
+# KubernetesCustomVNET is the name of the custom VNET itself
+rt=$(az network route-table list -g acs-custom-vnet -o json | jq -r '.[].id')
+az network vnet subnet update -n KubernetesSubnet \
+-g acs-custom-vnet \
+--vnet-name KubernetesCustomVNET \
+--route-table $rt
+```
+
+如果 VNET 在不同的 ResourceGroup 里面，那么
+
+```sh
+rt=$(az network route-table list -g RESOURCE_GROUP_NAME_KUBE -o json | jq -r '.[].id')
+az network vnet subnet update \
+-g RESOURCE_GROUP_NAME_VNET \
+--route-table $rt \
+--ids "/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP_NAME_VNET/providers/Microsoft.Network/VirtualNetworks/KUBERNETES_CUSTOM_VNET/subnets/KUBERNETES_SUBNET"
+```
+
+## Remote endpoint creation failed: HNS failed with error: The switch-port was not found
+
+这个错误发生在 kube-proxy 为服务配置负载均衡的时候，需要安装 [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848)：
+
+```powershell
+Start-BitsTransfer http://download.windowsupdate.com/d/msdownload/update/software/updt/2018/03/windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
+wusa.exe windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
+Restart-Computer
+```
+
+重启后确认更新安装成功：
+
+```powershelgl
+PS C:\k> Get-HotFix
+
+Source        Description      HotFixID      InstalledBy          InstalledOn
+------        -----------      --------      -----------          -----------
+27171k8s9000  Update           KB4087256     NT AUTHORITY\SYSTEM  3/22/2018 12:00:00 AM
+27171k8s9000  Update           KB4089848     NT AUTHORITY\SYSTEM  4/4/2018 12:00:00 AM
+```
+
+安装更新后，如果 DNS 解析还是有问题，可以按照上一节中的方法（1） 重启 kubelet 和 kube-proxy。
 
 ## Windows Pod 内无法访问 ServiceAccount Secret
 

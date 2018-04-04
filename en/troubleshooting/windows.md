@@ -101,6 +101,53 @@ Events:  <none>
 
 If your kubernetes cluster is deployed by acs-engine, then [acs-engine#2378](https://github.com/Azure/acs-engine/pull/2378) could help to fix this issue (redeploy the cluster with this patch or change existing files according to it).
 
+If kubernetes cluster is running on Azure and is using [custom VNET](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/features.md#feat-custom-vnet), then [the VNET should be attached with route table created by provisioning the cluster](https://github.com/Azure/acs-engine/blob/master/docs/custom-vnet.md#post-deployment-attach-cluster-route-table-to-vnet)：
+
+```sh
+#!/bin/bash
+rt=$(az network route-table list -g acs-custom-vnet -o json | jq -r '.[].id')
+az network vnet subnet update -n KubernetesSubnet \
+-g acs-custom-vnet \
+--vnet-name KubernetesCustomVNET \
+--route-table $rt
+```
+
+where `KubernetesSubnet` is the name of the vnet subnet, and `KubernetesCustomVNET` is the name of the custom VNET itself.
+
+An example in bash form if the VNET is in a separate ResourceGroup:
+
+```sh
+#!/bin/bash
+rt=$(az network route-table list -g RESOURCE_GROUP_NAME_KUBE -o json | jq -r '.[].id')
+az network vnet subnet update \
+-g RESOURCE_GROUP_NAME_VNET \
+--route-table $rt \
+--ids "/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP_NAME_VNET/providers/Microsoft.Network/VirtualNetworks/KUBERNETES_CUSTOM_VNET/subnets/KUBERNETES_SUBNET"
+```
+
+## Remote endpoint creation failed: HNS failed with error: The switch-port was not found
+
+This is an error happend in kube-proxy when provisioning load balancer rules for kubernetes services. [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848) should be installed to fix this issue:
+
+```powershell
+Start-BitsTransfer http://download.windowsupdate.com/d/msdownload/update/software/updt/2018/03/windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
+wusa.exe windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
+Restart-Computer
+```
+
+After the Node rebooted, recheck the fix has been installed:
+
+```powershelgl
+PS C:\k> Get-HotFix
+
+Source        Description      HotFixID      InstalledBy          InstalledOn
+------        -----------      --------      -----------          -----------
+27171k8s9000  Update           KB4087256     NT AUTHORITY\SYSTEM  3/22/2018 12:00:00 AM
+27171k8s9000  Update           KB4089848     NT AUTHORITY\SYSTEM  4/4/2018 12:00:00 AM
+```
+
+If there are still DNS resolve issues, the steps in previous steps should be applied, e.g. restart kubelet/kube-proxy and setup DnsClientServerAddress.
+
 ## Windows Pod failed to get ServiceAccount Secret
 
 This is also a [known issue](https://github.com/moby/moby/issues/28401). There is no workaround for current windows yet, but its fix has been released in Windows 10 Insider and Windows Server Insider builds 17074+.
