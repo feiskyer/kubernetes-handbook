@@ -4,4 +4,3 @@
 
 - [Jenkins X](jenkinsx.md)
 - [Spinnaker](spinnaker.md)
-

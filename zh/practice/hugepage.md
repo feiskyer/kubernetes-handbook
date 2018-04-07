@@ -1,11 +1,17 @@
 # HugePage
 
-HugePage 是 v1.9 中引入的新特性（alpha版），允许在容器中直接引用 Node 上的 HugePage。
+HugePage 是 v1.9 中引入的新特性（v1.9 Alpha，v1.10 Beta），允许在容器中直接使用 Node 上的 HugePage。
 
 ## 配置
 
 - `--feature-gates=HugePages=true`
-- Node 节点上预先分配好 HugePage
+- Node 节点上预先分配好 HugePage，如
+
+```sh
+mount -t hugetlbfs \
+    -o uid=<value>,gid=<value>,mode=<value>,pagesize=<value>,size=<value>,\
+    min_size=<value>,nr_inodes=<value> none /mnt/huge
+```
 
 ## 使用
 

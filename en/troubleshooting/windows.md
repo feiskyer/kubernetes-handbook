@@ -49,7 +49,7 @@ Besides reasons introduced in [Troubleshooting Pod](pod.md), there are also othe
 - the container image is not [compatible with Windows](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility). Note that containers on Windows Server 1709 should use images with 1709 tags, e.g.
   - `microsoft/aspnet:4.7.1-windowsservercore-1709`
   - `microsoft/windowsservercore:1709`
-  - `microsoft/iis:windowsservercore-1709
+  - `microsoft/iis:windowsservercore-1709`
 
 ## Windows Pod failed to resolve DNS
 
@@ -127,7 +127,7 @@ az network vnet subnet update \
 
 ## Remote endpoint creation failed: HNS failed with error: The switch-port was not found
 
-This is an error happend in kube-proxy when provisioning load balancer rules for kubernetes services. [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848) should be installed to fix this issue:
+This is an error happened in kube-proxy when provisioning load balancer rules for kubernetes services. [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848) should be installed to fix this issue:
 
 ```powershell
 Start-BitsTransfer http://download.windowsupdate.com/d/msdownload/update/software/updt/2018/03/windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu

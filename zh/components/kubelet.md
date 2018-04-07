@@ -66,26 +66,73 @@ LivenessProbe 探针包含在 Pod 定义的 spec.containers.{某个容器} 中�
 
 ## cAdvisor 资源监控
 
-Kubernetes 集群中，应用程序的执行情况可以在不同的级别上监测到，这些级别包括：容器、Pod、Service 和整个集群。
-Heapster 项目为 Kubernetes 提供了一个基本的监控平台，它是集群级别的监控和事件数据集成器 (Aggregator)。Heapster 以 Pod 的方式运行在集群中，Heapster 通过 Kubelet 发现所有运行在集群中的节点，并查看来自这些节点的资源使用情况。Kubelet 通过 cAdvisor 获取其所在节点及容器的数据。Heapster 通过带着关联标签的 Pod 分组这些信息，这些数据将被推到一个可配置的后端，用于存储和可视化展示。支持的后端包括 InfluxDB(使用 Grafana 实现可视化) 和 Google Cloud Monitoring。
+Kubernetes 集群中，应用程序的执行情况可以在不同的级别上监测到，这些级别包括：容器、Pod、Service 和整个集群。Heapster 项目为 Kubernetes 提供了一个基本的监控平台，它是集群级别的监控和事件数据集成器 (Aggregator)。Heapster 以 Pod 的方式运行在集群中，Heapster 通过 Kubelet 发现所有运行在集群中的节点，并查看来自这些节点的资源使用情况。Kubelet 通过 cAdvisor 获取其所在节点及容器的数据。Heapster 通过带着关联标签的 Pod 分组这些信息，这些数据将被推到一个可配置的后端，用于存储和可视化展示。支持的后端包括 InfluxDB(使用 Grafana 实现可视化) 和 Google Cloud Monitoring。
+
 cAdvisor 是一个开源的分析容器资源使用率和性能特性的代理工具，已集成到 Kubernetes 代码中。cAdvisor 自动查找所有在其所在节点上的容器，自动采集 CPU、内存、文件系统和网络使用的统计信息。cAdvisor 通过它所在节点机的 Root 容器，采集并分析该节点机的全面使用情况。
+
 cAdvisor 通过其所在节点机的 4194 端口暴露一个简单的 UI。
+
+## Kubelet Eviction（驱逐）
+
+Kubelet 会监控资源的使用情况，并使用驱逐机制防止计算和存储资源耗尽。在驱逐时，Kubelet 将 Pod 的所有容器停止，并将 PodPhase 设置为 Failed。
+
+Kubelet 定期（`housekeeping-interval`）检查系统的资源是否达到了预先配置的驱逐阈值，包括
+
+| Eviction Signal      | Condition     | Description                                                  |
+| -------------------- | ------------- | ------------------------------------------------------------ |
+| `memory.available`   | MemoryPressue | `memory.available` := `node.status.capacity[memory]` - `node.stats.memory.workingSet` （计算方法参考[这里](https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/memory-available.sh)） |
+| `nodefs.available`   | DiskPressure  | `nodefs.available` := `node.stats.fs.available`（Kubelet Volume以及日志等） |
+| `nodefs.inodesFree`  | DiskPressure  | `nodefs.inodesFree` := `node.stats.fs.inodesFree`            |
+| `imagefs.available`  | DiskPressure  | `imagefs.available` := `node.stats.runtime.imagefs.available`（镜像以及容器可写层等） |
+| `imagefs.inodesFree` | DiskPressure  | `imagefs.inodesFree` := `node.stats.runtime.imagefs.inodesFree` |
+
+这些驱逐阈值可以使用百分比，也可以使用绝对值，如
+
+```sh
+--eviction-hard=memory.available<500Mi,nodefs.available<1Gi,imagefs.available<100Gi
+--eviction-minimum-reclaim="memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi"`
+--system-reserved=memory=1.5Gi
+```
+
+这些驱逐信号可以分为软驱逐和硬驱逐
+
+- 软驱逐（Soft Eviction）：配合驱逐宽限期（eviction-soft-grace-period和eviction-max-pod-grace-period）一起使用。系统资源达到软驱逐阈值并在超过宽限期之后才会执行驱逐动作。
+- 硬驱逐（Hard Eviction ）：系统资源达到硬驱逐阈值时立即执行驱逐动作。
+
+驱逐动作包括回收节点资源和驱逐用户 Pod 两种：
+
+- 回收节点资源
+  - 配置了 imagefs 阈值时
+    - 达到 nodefs 阈值：删除已停止的 Pod
+    - 达到 imagefs 阈值：删除未使用的镜像
+  - 未配置 imagefs 阈值时
+    - 达到 nodefs阈值时，按照删除已停止的 Pod 和删除未使用镜像的顺序清理资源
+- 驱逐用户 Pod
+  - 驱逐顺序为：BestEffort、Burstable、Guaranteed
+  - 配置了 imagefs 阈值时
+    - 达到 nodefs 阈值，基于 nodefs 用量驱逐（local volume + logs）
+    - 达到 imagefs 阈值，基于 imagefs 用量驱逐（容器可写层）
+  - 未配置 imagefs 阈值时
+    - 达到 nodefs阈值时，按照总磁盘使用驱逐（local volume + logs + 容器可写层）
 
 ## 启动 kubelet 示例
 
 ```sh
-/usr/bin/kubelet --kubeconfig=/etc/kubernetes/kubelet.conf \
-    --require-kubeconfig=true \
-    --pod-manifest-path=/etc/kubernetes/manifests \
-    --allow-privileged=true \
-    --network-plugin=cni \
-    --cni-conf-dir=/etc/cni/net.d \
-    --cni-bin-dir=/opt/cni/bin \
-    --cluster-dns=10.96.0.10 \
-    --cluster-domain=cluster.local \
-    --authorization-mode=Webhook \
-    --client-ca-file=/etc/kubernetes/pki/ca.crt \
-    --feature-gates=AllAlpha=true
+/usr/bin/kubelet \
+  --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
+  --kubeconfig=/etc/kubernetes/kubelet.conf \
+  --pod-manifest-path=/etc/kubernetes/manifests \
+  --allow-privileged=true \
+  --network-plugin=cni \
+  --cni-conf-dir=/etc/cni/net.d \
+  --cni-bin-dir=/opt/cni/bin \
+  --cluster-dns=10.96.0.10 \
+  --cluster-domain=cluster.local \
+  --authorization-mode=Webhook \
+  --client-ca-file=/etc/kubernetes/pki/ca.crt \
+  --cadvisor-port=0 \
+  --rotate-certificates=true \
+  --cert-dir=/var/lib/kubelet/pki
 ```
 
 ## kubelet 工作原理
@@ -103,7 +150,7 @@ cAdvisor 通过其所在节点机的 4194 端口暴露一个简单的 UI。
 
 ### Pod 启动流程
 
-![](images/Pod 启动过程. png)
+![Pod Start](images/pod-start.png)
 
 ### 查询 Node 汇总指标
 

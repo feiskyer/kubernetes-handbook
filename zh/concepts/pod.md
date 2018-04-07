@@ -91,6 +91,26 @@ spec:
 kubectl create secret docker-registry regsecret --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 ```
 
+比如使用 Azure Container Registry（ACR）：
+
+```sh
+ACR_NAME=dregistry
+SERVICE_PRINCIPAL_NAME=acr-service-principal
+
+# Populate the ACR login server and resource id.
+ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
+ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query id --output tsv)
+
+# Create a contributor role assignment with a scope of the ACR resource.
+SP_PASSWD=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --role Reader --scopes $ACR_REGISTRY_ID --query password --output tsv)
+
+# Get the service principle client id.
+CLIENT_ID=$(az ad sp show --id http://$SERVICE_PRINCIPAL_NAME --query appId --output tsv)
+
+# Create secret
+kubectl create secret docker-registry acr-auth --docker-server $ACR_LOGIN_SERVER --docker-username $CLIENT_ID --docker-password $SP_PASSWD --docker-email
+```
+
 容器中引用该 secret：
 
 ```yaml
@@ -101,9 +121,9 @@ metadata:
 spec:
   containers:
     - name: private-reg-container
-      image: <your-private-image>
+      image: dregistry.azurecr.io/acr-auth-example
   imagePullSecrets:
-    - name: regsecret
+    - name: acr-auth
 ```
 
 ## RestartPolicy
@@ -226,8 +246,8 @@ KUBERNETES_PORT_443_TCP_PORT=443
 
 通过设置 dnsPolicy 参数，设置 Pod 中容器访问 DNS 的策略
 
-- ClusterFirst：优先基于 cluster domain 后缀，通过 kube-dns 查询 (默认策略)
-- Default：优先从 kubelet 中配置的 DNS 查询
+- ClusterFirst：优先基于 cluster domain （如 `default.svc.cluster.local`） 后缀，通过 kube-dns 查询 (默认策略)
+- Default：优先从 Node 中配置的 DNS 查询
 
 ## 使用主机的 IPC 命名空间
 
@@ -307,7 +327,37 @@ spec:
     port: 1234
     targetPort: 1234
 ```
+
 注意，必须为 headless service 设置至少一个服务端口（`spec.ports`，即便它看起来并不需要），否则 Pod 与 Pod 之间依然无法通过完整域名来访问。
+
+## 设置 Pod 的 DNS 地址
+
+从 v1.9 开始，可以在 kubelet 和 kube-apiserver 中设置 `--feature-gates=CustomPodDNS=true` 开启设置每个 Pod DNS 地址的功能。
+
+> 注意该功能在 v1.10 中为 Beta 版，v1.9 中为 Alpha 版。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: default
+  name: dns-example
+spec:
+  containers:
+    - name: test
+      image: nginx
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      - 1.2.3.4
+    searches:
+      - ns1.svc.cluster.local
+      - my.dns.search.suffix
+    options:
+      - name: ndots
+        value: "2"
+      - name: edns0
+```
 
 ## 资源限制
 

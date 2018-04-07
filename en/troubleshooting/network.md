@@ -188,7 +188,7 @@ UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1460  Metric:1
 
 ## Can't access Kubernetes API
 
-Many addons and containers need to access Kubernetes API for various data (e.g. kube-dns and operator containers). If such errors happend, then confirm whether Kubernetes API is accessible within Pods first:
+Many addons and containers need to access Kubernetes API for various data (e.g. kube-dns and operator containers). If such errors happened, then confirm whether Kubernetes API is accessible within Pods first:
 
 ```sh
 $ kubectl run curl  --image=appropriate/curl -i -t  --restart=Never --command -- sh

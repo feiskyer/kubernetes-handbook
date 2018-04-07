@@ -2,7 +2,7 @@
 
 [AzureDisk](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/about-disks-and-vhds) provides a persistent block device for Azure VMs. All Azure virtual machines have at least two disks – an operating system disk and a temporary disk. Virtual machines also can have one or more data disks. All of those disks are virtual hard disks (VHDs) stored in an Azure storage account.
 
-AzureDisk provides has better performance compared to [AzureFile](azurefile.md), especially for [Permium](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/premium-storage) tiers. But it can't be shared by multiple VMs (while AzureFile could).
+AzureDisk provides has better performance compared to [AzureFile](azurefile.md), especially for [Premium](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/premium-storage) tiers. But it can't be shared by multiple VMs (while AzureFile could).
 
 ## Types of AzureDisk
 

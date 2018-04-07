@@ -65,6 +65,21 @@ Kubernetes 1.9.0-1.9.3 中会有这个问题（[kubernetes#59746](https://github
 
 该问题的修复（[kubernetes#59747](https://github.com/kubernetes/kubernetes/pull/59747) [kubernetes#59083](https://github.com/kubernetes/kubernetes/pull/59083)）将包含到 v1.9.4 和 v1.10 中。
 
+## 外网负载均衡均衡 BackendPool 为空
+
+在使用不支持 Cloud Provider 的工具（如 kubeadm）部署的集群中，如果未给 Kubelet 配置 `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`，那么 Kubelet 会以 hostname 将其注册到集群中。此时，查看该 Node 的信息（kubectl get node <node-name> -o yaml），可以发现其 externalID 与 hostname 相同。此时，kube-controller-manager 也无法将其加入到负载均衡的后端中。
+
+一个简单的确认方式是查看 Node 的 externalID 和 name 是否不同：
+
+```sh
+$ kubectl get node -o jsonpath='{.items[*].metadata.name}'
+k8s-agentpool1-27347916-0
+$ kubectl get node -o jsonpath='{.items[*].spec.externalID}'
+/subscriptions/<subscription-id>/resourceGroups/<rg-name>/providers/Microsoft.Compute/virtualMachines/k8s-agentpool1-27347916-0
+```
+
+该问题的解决方法是先删除 Node `kubectl delete node <node-name>`，为 Kubelet 配置 `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`，最后再重启 Kubelet。
+
 ## Service 删除后 Azure 公网 IP 未自动删除
 
 Kubernetes 1.9.0-1.9.3 中会有这个问题（[kubernetes#59255](https://github.com/kubernetes/kubernetes/issues/59255)）：当创建超过 10 个 LoadBalancer Service 后有可能会碰到由于超过 FrontendIPConfiguations Quota（默认为 10）导致负载均衡无法创建的错误。此时虽然负载均衡无法创建，但公网 IP 已经创建成功了，由于 Cloud Provider 的缺陷导致删除 Service 后公网 IP 却未删除。
@@ -149,4 +164,3 @@ pod "tunnelfront-7644cd56b7-l5jmc" deleted
 
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
 - [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
-

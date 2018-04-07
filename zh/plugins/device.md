@@ -2,6 +2,8 @@
 
 Kubernetes v1.8 开始增加了 Alpha 版的 Device 插件，用来支持 GPU、FPGA、高性能 NIC、InfiniBand 等各种设备。这样，设备厂商只需要根据 Device Plugin 的接口实现一个特定设备的插件，而不需要修改 Kubernetes 核心代码。
 
+> 在 v1.10 中该特性升级为 Beta 版本。
+
 ## Device 插件原理
 
 使用 Device 插件之前，首先要开启 DevicePlugins 功能，即配置 `--feature-gates=DevicePlugins=true`（默认是关闭的）。
@@ -54,7 +56,7 @@ spec:
         nvidia.com/gpu: 1
 ```
 
-注意：** 使用该插件时需要配置 [nvidia-docker 2.0](https://github.com/NVIDIA/nvidia-docker/tree/2.0#nvidia-runtime)，并配置 `nvidia` 为默认运行时 （即配置 docker daemon 的选项 `--default-runtime=nvidia`）**。nvidia-docker 2.0 的安装方法为（以 Ubuntu Xenial 为例，其他系统的安装方法可以参考 [这里](http://nvidia.github.io/nvidia-docker/)）：
+注意：**使用该插件时需要配置 [nvidia-docker 2.0](https://github.com/NVIDIA/nvidia-docker/tree/2.0#nvidia-runtime)，并配置 `nvidia` 为默认运行时 （即配置 docker daemon 的选项 `--default-runtime=nvidia`）**。nvidia-docker 2.0 的安装方法为（以 Ubuntu Xenial 为例，其他系统的安装方法可以参考 [这里](http://nvidia.github.io/nvidia-docker/)）：
 
 ```sh
 # Configure repository

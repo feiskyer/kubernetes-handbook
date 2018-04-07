@@ -40,7 +40,7 @@ Kubernetes 不是一个传统意义上，包罗万象的 PaaS (平台即服务) 
 
 ## 核心组件
 
-Kubernetes主要由以下几个核心组件组成： 
+Kubernetes主要由以下几个核心组件组成：
 
 - etcd保存了整个集群的状态；
 - apiserver提供了资源操作的唯一入口，并提供认证、授权、访问控制、API注册和发现等机制；
@@ -51,6 +51,18 @@ Kubernetes主要由以下几个核心组件组成：
 - kube-proxy负责为Service提供cluster内部的服务发现和负载均衡
 
 ![](architecture.png)
+
+## Kubernetes 版本
+
+Kubernetes 的稳定版本在发布后会继续支持 9 个月。每个版本的支持周期为：
+
+| Kubernetes version | Release month  | End-of-life-month |
+|--------------------|----------------|-------------------|
+| v1.6.x             | March 2017     | December 2017     |
+| v1.7.x             | June 2017      | March 2018        |
+| v1.8.x             | September 2017 | June 2018         |
+| v1.9.x             | December 2017  | September 2018    |
+| v1.10.x            | March 2018     | December 2018     |
 
 ## 参考文档
 

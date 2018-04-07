@@ -89,4 +89,4 @@ kube-proxy 监听 API server 中 service 和 endpoint 的变化情况，并通�
 
 ## kube-proxy 不足
 
-kube-proxy 目前仅支持 TCP 和 UDP，不支持 HTTP 路由，并且也没有健康检查机制。这些可以通过自定义 Ingress Controller 的方法来解决。
+kube-proxy 目前仅支持 TCP 和 UDP，不支持 HTTP 路由，并且也没有健康检查机制。这些可以通过自定义 [Ingress Controller](../plugins/ingress.md) 的方法来解决。

@@ -74,6 +74,25 @@ This is a known bug ([kubernetes#59746](https://github.com/kubernetes/kubernetes
 
 The fix of this issue ([kubernetes#59747](https://github.com/kubernetes/kubernetes/pull/59747) [kubernetes#59083](https://github.com/kubernetes/kubernetes/pull/59083)) will be included in v1.9.4+ and v1.10+.
 
+## No target backends present for the external load balancer
+
+If kubelet is not configured with cloud provider (e.g. no `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config` configured), then the node will not join any Azure load balancers. This is because the node registers itself with externalID hostname, which is not recognized by kube-controller-manager.
+
+A simple way to check is comparing externalID and name (they should be different):
+
+```sh
+$ kubectl get node -o jsonpath='{.items[*].metadata.name}'
+k8s-agentpool1-27347916-0
+$ kubectl get node -o jsonpath='{.items[*].spec.externalID}'
+/subscriptions/<subscription-id>/resourceGroups/<rg-name>/providers/Microsoft.Compute/virtualMachines/k8s-agentpool1-27347916-0
+```
+
+To fix this issue
+
+- Delete the node object `kubectl delete node <node-name>`
+- Set Kubelet with options `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`
+- Finally restart kubelet
+
 ## PublicIP not removed after deleting LoadBalancer service
 
 This is a known issue ([kubernetes#59255](https://github.com/kubernetes/kubernetes/issues/59255)) in v1.9.0-1.9.3: ALB has a default quota of 10 FrontendIPConfiguations for Basic ALB. When this quota is exceeded, ALB FrontendIPConfiguation won't be created but cloud provider continues to create PublicIPs for those services. And after deleting the services, those PublicIPs not removed togather.
@@ -156,4 +175,3 @@ Kubernetes 1.9 introduces a new flag, `ServiceNodeExclusion`, for the control pl
 
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
 - [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
-

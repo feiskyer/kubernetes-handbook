@@ -1,10 +1,10 @@
-# 使用 glusterfs 做持久化存储
+# GlusterFS 持久化存储
 
-我们复用 kubernetes 的三台主机做 glusterfs 存储。
+我们复用 kubernetes 的三台主机做 GlusterFS 存储。
 
-## 安装 glusterfs
+## 安装 GlusterFS
 
-我们直接在物理机上使用 yum 安装，如果你选择在 kubernetes 上安装，请参考：https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md
+我们直接在物理机上使用 yum 安装，如果你选择在 kubernetes 上安装，请参考 <https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md>。
 
 ```bash
 # 先安装 gluster 源
@@ -29,7 +29,7 @@ $ systemctl enable glusterd.service
 $ systemctl status glusterd.service
 ```
 
-## 配置 glusterfs
+## 配置 GlusterFS
 
 ```Bash
 # 配置 hosts
@@ -131,7 +131,7 @@ $ gluster volume set k8s-volume network.ping-timeout 10
 $ gluster volume set k8s-volume performance.write-behind-window-size 1024MB
 ```
 
-## Kubernetes 中配置 glusterfs
+## Kubernetes 中使用 GlusterFS
 
 官方的文档见：https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs
 

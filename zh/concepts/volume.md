@@ -37,6 +37,12 @@
 
 注意，这些 volume 并非全部都是持久化的，比如 emptyDir、secret、gitRepo 等，这些 volume 会随着 Pod 的消亡而消失。
 
+## API 版本对照表
+
+| Kubernetes 版本 | Core API 版本 |
+| --------------- | ------------- |
+| v1.5+           | core/v1       |
+
 ## emptyDir
 
 如果 Pod 设置了 emptyDir 类型 Volume， Pod 被分配到 Node 上时候，会创建 emptyDir，只要 Pod 运行在 Node 上，emptyDir 都会存在（容器挂掉不会导致 emptyDir 丢失数据），但是如果 Pod 从 Node 上被删除（Pod 被删除，或者 Pod 发生迁移），emptyDir 也会被删除，并且永久丢失。
@@ -338,11 +344,17 @@ spec:
     beta.kubernetes.io/os: windows
 ```
 
-## API 版本对照表
+## 挂载传播
 
-| Kubernetes 版本 | Core API 版本 |
-| --------------- | ------------- |
-| v1.5+           | core/v1       |
+[挂载传播（Mount propagation）](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)是 v1.9 引入的新功能，并在 v1.10 中升级为 Beta 版本。挂载传播用来解决同一个 Volume 在不同的容器甚至是 Pod 之间挂载的问题。通过设置 `Container.volumeMounts.mountPropagation），可以为该存储卷设置不同的传播类型。如果未设置默认为私有挂载。
+
+- HostToContainer：即 Host 内在该目录中的新挂载都可以在容器中看到，等价于 Linux 内核的 rslave。
+- Bidirectional：即 Host 内在该目录中的新挂载都可以在容器中看到，同样容器内在该目录中的任何新挂载也都可以在 Host 中看到，等价于 Linux 内核的 rshared。仅特权容器（privileged）可以使用 Bidirectional 类型。
+
+注意：
+
+- 使用前需要开启 MountPropagation 特性
+- Docker 服务的 systemd 配置文件中需要设置 `MountFlags=shared`
 
 ## 其他的 Volume 参考示例
 

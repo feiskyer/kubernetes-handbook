@@ -102,6 +102,19 @@ kube-dns 的代码已经从 kubernetes 里面分离出来，放到了 <https://g
 
 kube-dns、dnsmasq-nanny 和 sidecar 的代码均是从 `cmd/<cmd-name>/main.go` 开始，并分别调用 `pkg/dns`、`pkg/dnsmasq` 和 `pkg/sidecar` 完成相应的功能。而最核心的 DNS 解析则是直接引用了 `github.com/skynetservices/skydns/server` 的代码，具体实现见 [skynetservices/skydns](https://github.com/skynetservices/skydns/tree/master/server)。
 
+## CoreDNS
+
+从 v1.10 开始还可以使用 Beta 版本的 [CoreDNS](https://coredns.io/) 来提供命名服务，其效率更高，资源占用率更小。
+
+可以使用替换 kube-dns 的方式将其部署到 Kubernetes 集群中：
+
+```sh
+$ git clone https://github.com/coredns/deployment
+$ cd deployment
+$ ./deploy.sh | kubectl apply -f -
+$ kubectl delete --namespace=kube-system deployment kube-dns
+```
+
 ## 参考文档
 
 - [dns-pod-service 介绍](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)

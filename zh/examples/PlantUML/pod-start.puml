@@ -1,5 +1,5 @@
 @startuml
-title Pod启动过程
+title Pod Start Procedure
 
 skinparam handwritten true
 skinparam ParticipantBackgroundColor #EEEBDC
@@ -7,21 +7,28 @@ skinparam ParticipantBorderColor #FF8844
 
 actor User
 
-User -> APIServer : 创建Pod
+User -> APIServer : Create Pod
 activate APIServer
-APIServer -> Etcd : 存储PodSpec
+APIServer -> Etcd : Store PodSpec
 deactivate APIServer
 
-Scheduler --> APIServer : 监听Pod，调度Node
+Scheduler --> APIServer : Watch Pod and scheduler to a Node
+APIServer -> Etcd : Update pod's Node
 
-APIServer -> Etcd : 更新Node绑定
+Kubelet --> APIServer : Watch Pods by syncLoop
+Kubelet -> KubeGenericRuntimeManager : SyncPod
+KubeGenericRuntimeManager -> dockershim : createPodSandbox
+dockershim -> docker: RunPodSandbox
+dockershim -> CNI: Setup sandbox network
+CNI --> dockershim
+dockershim --> KubeGenericRuntimeManager
 
-Kubelet --> APIServer : 监听Pod
-Kubelet -> docker : 启动Docker Sandbox
-docker -> CNI : 配置sandbox网络
-CNI --> docker
-docker --> Kubelet
-Kubelet --> APIServer : 更新Pod状态
-APIServer -> Etcd : 存储Pod状态
+KubeGenericRuntimeManager -> dockershim: pullImage and startContainer
+dockershim -> docker: pullImage and startContainer
+docker --> dockershim
+dockershim --> KubeGenericRuntimeManager
+
+Kubelet --> APIServer : Update Pod to Running
+APIServer -> Etcd : Store Pod status
 
 @enduml
