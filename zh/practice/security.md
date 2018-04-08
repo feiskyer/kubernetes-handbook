@@ -185,3 +185,52 @@ spec:
     - name: trustworthy-container
       image: sotrustworthy:latest
 ```
+
+## kube-bench
+
+[kube-bench](https://github.com/aquasecurity/kube-bench) 提供了一个简单的工具来检查 Kubernetes 的配置（包括 master 和 node）是否符合最佳的安全实践（基于 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)）。
+
+安装 `kube-bench`：
+
+```sh
+docker run --rm -v `pwd`:/host aquasec/kube-bench:latest
+```
+
+使用 `kube-bench`：
+
+```sh
+# ./kube-bench
+This tool runs the CIS Kubernetes 1.6 Benchmark v1.0.0 checks.
+
+Usage:
+  ./kube-bench [command]
+
+Available Commands:
+  federated   Run benchmark checks for a Kubernetes federated deployment.
+  help        Help about any command
+  master      Run benchmark checks for a Kubernetes master node.
+  node        Run benchmark checks for a Kubernetes node.
+
+Flags:
+      --alsologtostderr                  log to standard error as well as files
+  -c, --check string                     A comma-delimited list of checks to run as specified in CIS document. Example --check="1.1.1,1.1.2"
+      --config string                    config file (default is ./cfg/config.yaml)
+  -g, --group string                     Run all the checks under this comma-delimited list of groups. Example --group="1.1"
+  -h, --help                             help for ./kube-bench
+      --json                             Prints the results as JSON
+      --log_backtrace_at traceLocation   when logging hits line file:N, emit a stack trace (default :0)
+      --log_dir string                   If non-empty, write log files in this directory
+      --logtostderr                      log to standard error instead of files (default false)
+      --pgsql                            Save the results to PostgreSQL
+      --stderrthreshold severity         logs at or above this threshold go to stderr (default 2)
+  -v, --v Level                          log level for V logs
+      --vmodule moduleSpec               comma-separated list of pattern=N settings for file-filtered logging
+
+Use "./kube-bench [command] --help" for more information about a command.
+```
+
+## 参考文档
+
+- [Securing a Kubernetes cluster](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/)
+- [kube-bench](https://github.com/aquasecurity/kube-bench)
+

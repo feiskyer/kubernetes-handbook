@@ -173,20 +173,50 @@ apiVersion: storage.k8s.io/v1
     userSecretName: ceph-secret-user
 ```
 
-#### Local Volume 示例
+### Local Volume
 
-Local Volume 需要开启 `VolumeScheduling` 特性（`--feature-gates=VolumeScheduling`）：
+Local Volume 允许将 Node 本地的磁盘、分区或者目录作为持久化存储使用。注意，Local Volume 不支持动态创建，使用前需要预先创建好 PV。
 
 ```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 100Gi
+  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/ssd1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - example-node
+---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: local-fast
+  name: local-storage
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ```
 
-注意：Local Volume 在首次被容器引用时才会创建。
+推荐配置
+
+- 对于需要强 IO 隔离的场景，推荐使用整块磁盘作为 Volume
+- 对于需要容量隔离的场景，推荐使用分区作为 Volume
+- 避免在集群中重新创建同名的 Node（无法避免时需要先删除通过 Affinity 引用该 Node 的 PV）
+- 对于文件系统类型的本地存储，推荐使用 UUID （如 `ls -l /dev/disk/by-uuid`）作为系统挂载点
+- 对于无文件系统的块存储，推荐生成一个唯一 ID 作软链接（如 `/dev/dis/by-id`）。这可以保证 Volume 名字唯一，并不会与其他 Node 上面的同名 Volume 混淆
 
 ## PVC
 
@@ -262,11 +292,21 @@ allowVolumeExpansion: true
 
 这样，用户就可以修改 PVC 中请求存储的大小（如通过 `kubectl edit` 命令）请求更大的存储空间。
 
-## Raw Block Volume
+## 块存储（Raw Block Volume）
 
-Kubernetes v1.9 还新增了 Alpha 版的 Raw Block Volume。目前仅 Fibre Channel 支持以 Block Volume 的形式挂载。
+Kubernetes v1.9 新增了 Alpha 版的 Raw Block Volume，可通过设置 `volumeMode: Block`（可选项为 `Filesystem`和 `Block`）来使用块存储。
+
+支持块存储的 PV 插件包括
+
+- Local Volume
+- fc
+- iSCSI
+- RBD
+- AWS EBS
+- GCE PD
 
 ```yaml
+# Persistent Volumes using a Raw Block Volume
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -283,6 +323,7 @@ spec:
     lun: 0
     readOnly: false
 ---
+# Persistent Volume Claim requesting a Raw Block Volume
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -294,6 +335,25 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+# Pod specification adding Raw Block Device path in container
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-block-volume
+spec:
+  containers:
+    - name: fc-container
+      image: fedora:26
+      command: ["/bin/sh", "-c"]
+      args: [ "tail -f /dev/null" ]
+      volumeDevices:
+        - name: data
+          devicePath: /dev/xvda
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: block-pvc
 ```
 
 ## StorageObjectInUseProtection
