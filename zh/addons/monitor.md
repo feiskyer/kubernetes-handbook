@@ -85,26 +85,33 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 推荐使用 [Prometheus Operator](https://github.com/coreos/prometheus-operator) 或 [Prometheus Chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus) 来部署和管理 Prometheus，比如
 
 ```sh
-# 使用 prometheus charts
-# 注意：未开启 RBAC 时，需要设置 --set rbac.create=false
-helm install --name prometheus stable/prometheus --set rbac.create=true --namespace=monitoring
-helm install --name grafana stable/grafana --namespace=monitoring --set server.image=grafana/grafana:master
+# 使用 prometheus operator
+helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
+helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
 ```
 
-使用端口转发的方式访问 Prometheus，如 `kubectl port-forward -n monitoring service/prometheus-prometheus-server :80`
+使用端口转发的方式访问 Prometheus，如 `kubectl --namespace monitoring port-forward service/kube-prometheus-prometheus :9090`
 
 ![prometheus-web](images/14842125295113.jpg)
+
+如果发现 exporter-kubelets 功能不正常，比如报 `server returned HTTP status 401 Unauthorized` 错误，则需要给 Kubelet 配置 webhook 认证：
+
+```sh
+kubelet --authentication-token-webhook=true --authorization-mode=Webhook
+```
 
 查询 Grafana 的管理员密码
 
 ```sh
-kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
+kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.user}" | base64 --decode ; echo
+kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.password}" | base64 --decode ; echo
 ```
 
 然后，以端口转发的方式访问 Grafana 界面
 
 ```sh
-kubectl port-forward -n monitoring service/grafana :80
+kubectl port-forward -n monitoring service/kube-prometheus-grafana :80
 ```
 
 添加 Prometheus 类型的 Data Source，填入原地址 `http://prometheus-prometheus-server.monitoring`。

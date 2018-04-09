@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,7 +10,7 @@ spec:
   ports:
   - name: web
     port: 80
-    targetPort: 8580
+    targetPort: 8080
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -18,7 +19,7 @@ metadata:
   namespace: kube-system
 spec:
   rules:
-  - host: traefik-ui.local
+  - host: traefik-ui.minikube
     http:
       paths:
       - path: /
