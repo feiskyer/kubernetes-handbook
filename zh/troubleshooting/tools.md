@@ -98,10 +98,13 @@ Weave Scope 由 [App 和 Probe 两部分](https://www.weave.works/docs/scope/lat
 kubectl apply -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')&k8s-service-type=LoadBalancer"
 ```
 
+### 查看界面
+
 安装完成后，可以通过 weave-scope-app 来访问交互界面
 
 ```sh
 kubectl -n weave get service weave-scope-app
+kubectl -n weave port-forward service/weave-scope-app :80
 ```
 
 ![](images/weave-scope.png)
@@ -109,3 +112,61 @@ kubectl -n weave get service weave-scope-app
 点击 Pod，还可以查看该 Pod 所有容器的实时状态和度量数据：
 
 ![](images/scope-pod.png)
+
+### 已知问题
+
+在 Ubuntu 内核 4.4.0 上面开启 `--probe.ebpf.connections` 时（默认开启），Node 有可能会因为[内核问题而不停重启](https://github.com/weaveworks/scope/issues/3131)：
+
+```sh
+[ 263.736006] CPU: 0 PID: 6309 Comm: scope Not tainted 4.4.0-119-generic #143-Ubuntu
+[ 263.736006] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090007 06/02/2017
+[ 263.736006] task: ffff88011cef5400 ti: ffff88000a0e4000 task.ti: ffff88000a0e4000
+[ 263.736006] RIP: 0010:[] [] bpf_map_lookup_elem+0x6/0x20
+[ 263.736006] RSP: 0018:ffff88000a0e7a70 EFLAGS: 00010082
+[ 263.736006] RAX: ffffffff8117cd70 RBX: ffffc90000762068 RCX: 0000000000000000
+[ 263.736006] RDX: 0000000000000000 RSI: ffff88000a0e7cd8 RDI: 000000001cdee380
+[ 263.736006] RBP: ffff88000a0e7cf8 R08: 0000000005080021 R09: 0000000000000000
+[ 263.736006] R10: 0000000000000020 R11: ffff880159e1c700 R12: 0000000000000000
+[ 263.736006] R13: ffff88011cfaf400 R14: ffff88000a0e7e38 R15: ffff88000a0f8800
+[ 263.736006] FS: 00007f5b0cd79700(0000) GS:ffff88015b600000(0000) knlGS:0000000000000000
+[ 263.736006] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 263.736006] CR2: 000000001cdee3a8 CR3: 000000011ce04000 CR4: 0000000000040670
+[ 263.736006] Stack:
+[ 263.736006] ffff88000a0e7cf8 ffffffff81177411 0000000000000000 00001887000018a5
+[ 263.736006] 000000001cdee380 ffff88000a0e7cd8 0000000000000000 0000000000000000
+[ 263.736006] 0000000005080021 ffff88000a0e7e38 0000000000000000 0000000000000046
+[ 263.736006] Call Trace:
+[ 263.736006] [] ? __bpf_prog_run+0x7a1/0x1360
+[ 263.736006] [] ? update_curr+0x79/0x170
+[ 263.736006] [] ? update_cfs_shares+0xbc/0x100
+[ 263.736006] [] ? update_curr+0x79/0x170
+[ 263.736006] [] ? dput+0xb8/0x230
+[ 263.736006] [] ? follow_managed+0x265/0x300
+[ 263.736006] [] ? kmem_cache_alloc_trace+0x1d4/0x1f0
+[ 263.736006] [] ? seq_open+0x5a/0xa0
+[ 263.736006] [] ? probes_open+0x33/0x100
+[ 263.736006] [] ? dput+0x34/0x230
+[ 263.736006] [] ? mntput+0x24/0x40
+[ 263.736006] [] trace_call_bpf+0x37/0x50
+[ 263.736006] [] kretprobe_perf_func+0x3d/0x250
+[ 263.736006] [] ? pre_handler_kretprobe+0x135/0x1b0
+[ 263.736006] [] kretprobe_dispatcher+0x3d/0x60
+[ 263.736006] [] ? do_sys_open+0x1b2/0x2a0
+[ 263.736006] [] ? kretprobe_trampoline_holder+0x9/0x9
+[ 263.736006] [] trampoline_handler+0x133/0x210
+[ 263.736006] [] ? do_sys_open+0x1b2/0x2a0
+[ 263.736006] [] kretprobe_trampoline+0x25/0x57
+[ 263.736006] [] ? kretprobe_trampoline_holder+0x9/0x9
+[ 263.736006] [] SyS_openat+0x14/0x20
+[ 263.736006] [] entry_SYSCALL_64_fastpath+0x1c/0xbb
+```
+
+解决方法有两种
+
+- 禁止 eBPF 探测，如 `--probe.ebpf.connections=false`
+- 升级内核，如升级到 4.13.0
+
+## 参考文档
+
+- [Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
+- [Monitoring Kuberietes with sysdig](https://sysdig.com/blog/kubernetes-service-discovery-docker/)
