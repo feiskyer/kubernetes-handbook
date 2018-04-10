@@ -3,17 +3,8 @@
 > Kubernetes 一键部署脚本（使用 docker 运行时）
 
 ```sh
-# 注意部分镜像和安装包需要科学上网才可以访问
-# (1) 代理配置方法为：
-#     export http_proxy=http://ip:port
-# (2) Docker 代理配置方法为
-#     cat /etc/systemd/system/docker.service.d/http-proxy.conf
-#   
-#     [Service]
-#     Environment="HTTP_PROXY=http://proxy.example.com:80/"
-#
-
 # on master
+export USE_MIRROR=true
 git clone https://github.com/feiskyer/ops
 cd ops
 kubernetes/install-kubernetes.sh
@@ -24,6 +15,7 @@ git clone https://github.com/feiskyer/ops
 cd ops
 export TOKEN=xxxxx
 export MASTER_IP=xx.xx.xx.xx
+export USE_MIRROR=true
 kubernetes/add-docker-node.sh
 ```
 
