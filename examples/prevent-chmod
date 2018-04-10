@@ -1,0 +1,9 @@
+{
+  "defaultAction": "SCMP_ACT_ALLOW",
+  "syscalls": [
+    {
+      "name": "chmod",
+      "action": "SCMP_ACT_ERRNO"
+    }
+  ]
+}

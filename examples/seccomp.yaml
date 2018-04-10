@@ -1,0 +1,19 @@
+# Put prevent-chmod to /var/lib/kubelet/seccomp/prevent-chmod before creating
+# this Pod.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: chmod-prevented
+  annotations:
+    container.seccomp.security.alpha.kubernetes.io/chmod: localhost/prevent-chmod
+    #seccomp.security.alpha.kubernetes.io/pod: localhost/prevent-chmod DOESN'T WORK either
+spec:
+  containers:
+  - name: chmod
+    image: busybox
+    command:
+      - "chmod"
+    args:
+      - "666"
+      - /etc/hostname
+  restartPolicy: Never

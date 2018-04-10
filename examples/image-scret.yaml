@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myregistrykey
+data:
+  .dockercfg: ewogICAgICAiaHR0cHM6Ly9pbmRleC5kb2NrZXIuaW8vdjEvIjogewogICAgICAgICAgImF1dGgiOiAicGFzc3dkIiwKICAgICAgICAgICJlbWFpbCI6ICJ1c2VyQGVtYWlsIgogICAgICAgfQp9Cg==
+type: kubernetes.io/dockercfg

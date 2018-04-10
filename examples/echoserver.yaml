@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      run: source-ip-app
+    name: source-ip-app
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      run: source-ip-app
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      run: source-ip-app
+    name: source-ip-app
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        run: source-ip-app
+    template:
+      metadata:
+        labels:
+          run: source-ip-app
+      spec:
+        containers:
+        - image: k8s.gcr.io/echoserver:1.4
+          name: source-ip-app
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+
