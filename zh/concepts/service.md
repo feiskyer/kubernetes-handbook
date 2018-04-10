@@ -69,6 +69,27 @@ Session Affinity:	None
 Events:			<none>
 ```
 
+当服务需要多个端口时，每个端口都必须设置一个名字
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 9376
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 9377
+```
+
 ### API 版本对照表
 
 | Kubernetes 版本 | Core API 版本 |
@@ -103,7 +124,7 @@ subsets:
       - port: 9376
 ```
 
-（2）通过 DNS 转发，在 service 定义中指定 externalName。此时 DNS 服务会给 `<service-name>.<namespace>.svc.cluster.local` 创建一个 CNAME 记录，其值为 `my.database.example.com`。并且，该服务不会自动分配 Cluster IP，需要通过 service 的 DNS 来访问（这种服务也称为 Headless Service）。
+（2）通过 DNS 转发，在 service 定义中指定 externalName。此时 DNS 服务会给 `<service-name>.<namespace>.svc.cluster.local` 创建一个 CNAME 记录，其值为 `my.database.example.com`。并且，该服务不会自动分配 Cluster IP，需要通过 service 的 DNS 来访问。
 
 ```yaml
 kind: Service
@@ -115,6 +136,8 @@ spec:
   type: ExternalName
   externalName: my.database.example.com
 ```
+
+注意：Endpoints 的 IP 地址不能是 127.0.0.0/8、169.254.0.0/16 和 224.0.0.0/24，也不能是 Kubernetes 中其他服务的 clusterIP。
 
 ### Headless 服务
 
@@ -174,6 +197,7 @@ spec:
       restartPolicy: Always
 
 ```
+
 ```sh
 # 查询创建的 nginx 服务
 $ kubectl get service --all-namespaces=true
@@ -189,6 +213,7 @@ $ dig @172.26.255.70  nginx.default.svc.cluster.local
 nginx.default.svc.cluster.local. 30 IN	A	172.26.1.5
 nginx.default.svc.cluster.local. 30 IN	A	172.26.2.5
 ```
+
 备注： 其中 dig 命令查询的信息中，部分信息省略
 
 ## 保留源 IP
@@ -205,7 +230,7 @@ kube-proxy 负责将 service 负载均衡到后端 Pod 中，如下图所示
 
 ![](images/service-flow.png)
 
-## Ingress Controller
+## Ingress
 
 Service 虽然解决了服务发现和负载均衡的问题，但它在使用上还是有一些限制，比如
 
@@ -255,7 +280,7 @@ Traefik 提供了易用的 Ingress Controller，使用方法见 <https://docs.tr
 
 社区提供的 Service Load Balancer 支持四种负载均衡协议：TCP、HTTP、HTTPS 和 SSL TERMINATION，并支持 ACL 访问控制。
 
->  注意：Service Load Balancer 已不再推荐使用，推荐使用 [ingress](ingress.md)。
+> 注意：Service Load Balancer 已不再推荐使用，推荐使用 [ingress](ingress.md)。
 
 ## Custom Load Balancer
 
