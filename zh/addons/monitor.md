@@ -101,6 +101,13 @@ helm install coreos/kube-prometheus --name kube-prometheus --namespace monitorin
 kubelet --authentication-token-webhook=true --authorization-mode=Webhook
 ```
 
+如果发现 K8SControllerManagerDown 和 K8SSchedulerDown 告警，则说明 kube-controller-manager 和 kube-scheduler 是以 Pod 的形式运行在集群中的，并且 prometheus 部署的监控服务与它们的标签不一致。可通过修改服务标签的方法解决，如
+
+```sh
+kubectl -n kube-system set selector service kube-prometheus-exporter-kube-controller-manager  component=kube-controller-manager
+kubectl -n kube-system set selector service kube-prometheus-exporter-kube-scheduler  component=kube-scheduler
+```
+
 查询 Grafana 的管理员密码
 
 ```sh
