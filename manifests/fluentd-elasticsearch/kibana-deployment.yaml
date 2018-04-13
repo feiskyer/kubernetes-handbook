@@ -6,7 +6,7 @@ metadata:
   labels:
     k8s-app: kibana-logging
     kubernetes.io/cluster-service: "true"
-    addonmanager.kubernetes.io/mode: Reconcile
+    addonmanager.kubernetes.io/mode: EnsureExists
 spec:
   replicas: 1
   selector:
@@ -29,8 +29,8 @@ spec:
         env:
           - name: ELASTICSEARCH_URL
             value: http://elasticsearch-logging:9200
-          - name: SERVER_BASEPATH
-            value: /api/v1/namespaces/kube-system/services/kibana-logging/proxy
+            #- name: SERVER_BASEPATH
+            #value: /api/v1/namespaces/kube-system/services/kibana-logging/proxy
           - name: XPACK_MONITORING_ENABLED
             value: "false"
           - name: XPACK_SECURITY_ENABLED
