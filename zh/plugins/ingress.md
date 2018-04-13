@@ -8,13 +8,24 @@
 
 ## 常见 Ingress Controller
 
-* [Ingress Examples](https://github.com/kubernetes/ingress-nginx)
+* [Nginx Ingress](https://github.com/kubernetes/ingress-nginx)
+
+  ```sh
+  helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
+  ```
+
 * [Dummy controller backend](https://github.com/kubernetes/ingress/tree/master/examples/custom-controller)
+
 * [HAProxy Ingress controller](https://github.com/jcmoraisjr/haproxy-ingress)
+
 * [Linkerd](https://linkerd.io/config/0.9.1/linkerd/index.html#ingress-identifier)
+
 * [traefik](https://docs.traefik.io/toml/#kubernetes-ingress-backend)
+
 * [AWS Application Load Balancer Ingress Controller](https://github.com/coreos/alb-ingress-controller)
+
 * [kube-ingress-aws-controller](https://github.com/zalando-incubator/kube-ingress-aws-controller)
+
 * [Voyager: HAProxy Ingress Controller](https://github.com/appscode/voyager)
 
 ## Ingress 使用方法
