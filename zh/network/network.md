@@ -225,3 +225,22 @@ Kubernetes v1.8 已经支持 ipvs 负载均衡模式（alpha 版）。
 - ipsec：加密链接
 
 项目主页为 <https://github.com/kopeio/kope-routing>。
+
+### [Kube-router](https://github.com/cloudnativelabs/kube-router)
+
+[Kube-router](https://github.com/cloudnativelabs/kube-router) 是一个基于 BGP 的网络插件，并提供了可选的 ipvs 服务发现（替代 kube-proxy）以及网络策略功能。
+
+部署 Kube-router：
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+```
+
+部署 Kube-router 并替换 kube-proxy（这个功能其实不需要了，kube-proxy 已经内置了 ipvs 模式的支持）：
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
+# Remove kube-proxy
+kubectl -n kube-system delete ds kube-proxy
+docker run --privileged --net=host gcr.io/google_containers/kube-proxy-amd64:v1.7.3 kube-proxy --cleanup-iptables
+```
