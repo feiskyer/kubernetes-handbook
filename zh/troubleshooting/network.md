@@ -55,6 +55,42 @@ cp: can't create '/etc/cni/net.d/10-flannel.conflist': Permission denied
 - 修改 `/etc/selinux/config` 文件方法：`SELINUX=disabled`
 - 通过命令临时修改（重启会丢失）：`setenforce 0`
 
+## Pod 无法分配 IP
+
+Pod 一直处于 ContainerCreating 状态，查看事件发现网络插件无法为其分配 IP：
+
+```sh
+  Normal   SandboxChanged          5m (x74 over 8m)    kubelet, k8s-agentpool-66825246-0  Pod sandbox changed, it will be killed and re-created.
+  Warning  FailedCreatePodSandBox  21s (x204 over 8m)  kubelet, k8s-agentpool-66825246-0  Failed create pod sandbox: rpc error: code = Unknown desc = NetworkPlugin cni failed to set up pod "deployment-azuredisk6-56d8dcb746-487td_default" network: Failed to allocate address: Failed to delegate: Failed to allocate address: No available addresses
+```
+
+查看网络插件的 IP 分配情况，进一步发现 IP 地址确实已经全部分配完，但真正处于 Running 状态的 Pod 数却很少：
+
+```sh
+# 详细路径取决于具体的网络插件，当使用 host-local IPAM 插件时，路径位于 /var/lib/cni/networks 下面
+$ cd /var/lib/cni/networks/kubenet
+$ ls -al|wc -l
+258
+
+$ docker ps | grep POD | wc -l
+7
+```
+
+这有两种可能的原因
+
+- 网络插件本身的问题，Pod 停止后其 IP 未释放
+- Pod 重新创建的速度比 Kubelet 调用 CNI 插件回收网络（垃圾回收时删除已停止 Pod 前会先调用 CNI 清理网络）的速度快
+
+对第一个问题，没有好的方法，只能联系插件开发者修复未释放问题。
+
+而第二个问题则可以给 Kubelet 配置更快的垃圾回收，如
+
+```sh
+--minimum-container-ttl-duration=15s
+--maximum-dead-containers-per-container=1
+--maximum-dead-containers=100
+```
+
 ## Pod 无法解析 DNS
 
 如果 Node 上安装的 Docker 版本大于 1.12，那么 Docker 会把默认的 iptables FORWARD 策略改为 DROP。这会引发 Pod 网络访问的问题。解决方法则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT`，比如

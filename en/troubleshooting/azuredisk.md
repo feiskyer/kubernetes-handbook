@@ -102,6 +102,27 @@ The attaching process of AzureDisk usually takes 1 minutes for v1.9.1 and previo
 
 After v1.9.2 and v1.10, a VM cache [#57432](https://github.com/kubernetes/kubernetes/pull/57432) is added and reduced the whole attaching time to about 30 seconds.
 
+If Node is using `Standard_B1s` VM, then the first time of mounting AzureDisk is probably tending to fail because of slow disk formating (usually more than 70s). Then it will success in next retry:
+
+```sh
+$ kubectl describe pod <pod-name>
+...
+Events:
+  FirstSeen     LastSeen        Count   From                                    SubObjectPath                           Type            Reason                  Message
+  ---------     --------        -----   ----                                    -------------                           --------        ------                  -------
+  8m            8m              1       default-scheduler                                                               Normal          Scheduled               Successfully assigned nginx-azuredisk to aks-nodepool1-15012548-0
+  7m            7m              1       kubelet, aks-nodepool1-15012548-0                                               Normal          SuccessfulMountVolume   MountVolume.SetUp succeeded for volume "default-token-mrw8h"
+  5m            5m              1       kubelet, aks-nodepool1-15012548-0                                               Warning         FailedMount             Unable to mount volumes for pod "nginx-azuredisk_default(4eb22bb2-0bb5-11e8-8
+d9e-0a58ac1f0a2e)": timeout expired waiting for volumes to attach/mount for pod "default"/"nginx-azuredisk". list of unattached/unmounted volumes=[disk01]
+  5m            5m              1       kubelet, aks-nodepool1-15012548-0                                               Warning         FailedSync              Error syncing pod
+  4m            4m              1       kubelet, aks-nodepool1-15012548-0                                               Normal          SuccessfulMountVolume   MountVolume.SetUp succeeded for volume "pvc-20240841-0bb5-11e8-8d9e-0a58ac1f0
+a2e"
+  4m            4m              1       kubelet, aks-nodepool1-15012548-0       spec.containers{nginx-azuredisk}        Normal          Pulling                 pulling image "nginx"
+  3m            3m              1       kubelet, aks-nodepool1-15012548-0       spec.containers{nginx-azuredisk}        Normal          Pulled                  Successfully pulled image "nginx"
+  3m            3m              1       kubelet, aks-nodepool1-15012548-0       spec.containers{nginx-azuredisk}        Normal          Created                 Created container
+  2m            2m              1       kubelet, aks-nodepool1-15012548-0       spec.containers{nginx-azuredisk}        Normal          Started                 Started container
+```
+
 ## AzureDisk not supported in Azure German Cloud
 
 Azure German Cloud is only supported in v1.7.9+, v1.8.3+ and newer versions ([#50673](https://github.com/kubernetes/kubernetes/pull/50673)).
