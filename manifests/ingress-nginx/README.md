@@ -3,7 +3,7 @@
 Deploy nginx ingress controller:
 
 ```sh
-helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
+helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system
 ```
 
 ## TLS
