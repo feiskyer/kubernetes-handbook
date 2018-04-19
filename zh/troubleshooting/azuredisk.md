@@ -48,7 +48,7 @@ Update-AzureRmVM -ResourceGroupName $rg -VM $vm -verbose -debug
 - `Get-AzureRMVM -ResourceGroupName $rg -Name $vmname | Restart-AzureVM`
 - `kubectl uncordon NODE`
 
-该问题的修复 [#60183](https://github.com/kubernetes/kubernetes/pull/60183) 将包含在 v1.10 中。
+该问题的修复 [#60183](https://github.com/kubernetes/kubernetes/pull/60183) 已包含在 v1.10 中。
 
 ## 挂载新的 AzureDisk 后，该 Node 中其他 Pod 已挂载的 AzureDisk 不可用
 
@@ -118,6 +118,14 @@ a2e"
 ## Azure German Cloud 无法使用 AzureDisk
 
 Azure German Cloud 仅在 v1.7.9+、v1.8.3+ 以及更新版本中支持（[#50673](https://github.com/kubernetes/kubernetes/pull/50673)），升级 Kubernetes 版本即可解决。
+
+## MountVolume.WaitForAttach failed
+
+```sh
+MountVolume.WaitForAttach failed for volume "pvc-f1562ecb-3e5f-11e8-ab6b-000d3af9f967" : azureDisk - Wait for attach expect device path as a lun number, instead got: /dev/disk/azure/scsi1/lun1 (strconv.Atoi: parsing "/dev/disk/azure/scsi1/lun1": invalid syntax)
+```
+
+[该问题](https://github.com/kubernetes/kubernetes/issues/62540) 仅在 Kubernetes v1.10.0 和 v1.10.1 中存在，将在 v1.10.2 中修复。
 
 ## 参考文档
 

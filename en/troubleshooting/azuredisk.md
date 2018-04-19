@@ -127,6 +127,26 @@ a2e"
 
 Azure German Cloud is only supported in v1.7.9+, v1.8.3+ and newer versions ([#50673](https://github.com/kubernetes/kubernetes/pull/50673)).
 
+## MountVolume.WaitForAttach failed
+
+```sh
+MountVolume.WaitForAttach failed for volume "pvc-f1562ecb-3e5f-11e8-ab6b-000d3af9f967" : azureDisk - Wait for attach expect device path as a lun number, instead got: /dev/disk/azure/scsi1/lun1 (strconv.Atoi: parsing "/dev/disk/azure/scsi1/lun1": invalid syntax)
+```
+
+[The issue](https://github.com/kubernetes/kubernetes/issues/62540) only exists in Kubernetes v1.10.0 and v1.10.1, and will be fixed in v1.10.2.
+
+## mountDevice:FormatAndMount failed
+
+ If uid or gid is set on AzureDisk's `mountOptions`, e.g.  `uid=999,gid=999`, then FormatAndMount will fail with error:
+
+```sh
+azureDisk - mountDevice:FormatAndMount failed with exit status 32
+```
+
+This is because ext4 filesystem is used on AzureDisk by default, so git/uid mount options couldn't be set on mount time.
+
+To get rid of this issue, use Pod's security context instead, e.g. [runAsUser and fsGroup](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container).
+
 ## References
 
 - [Known kubernetes issues on Azure](https://github.com/andyzhangx/demo/tree/master/issues)

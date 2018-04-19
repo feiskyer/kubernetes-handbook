@@ -67,6 +67,7 @@ An incomplete list of things that could go wrong include:
 
 - Authorization failed because of cloud-config misconfigured, e.g. clientId, clientSecret, tenantId, subscriptionId, resourceGroup. Fix the configuation in `/etc/kubernetes/azure.json` should solve the problem.
 - Client configured is not authorized to ALB/PublicIP/NSG. Add authorization in Azure portal or create a new one (`az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<subscriptionID>/resourceGroups/<resourceGroupName>"` and update `/etc/kubernetes/azure.json` on all nodes) should solve the problem
+- There is also a NSG issue in Kubernetes v1.8.X: `Security rule must specify SourceAddressPrefixes, SourceAddressPrefix, or SourceApplicationSecurityGroups`. To get rid of this issue, you could either upgrade cluster to v1.9.X/v1.10.X or replace SourceAddressPrefixes rule with multiple SourceAddressPrefix rules.
 
 ## No target backends present for the internal load balancer (ILB)
 
