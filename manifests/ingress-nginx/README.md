@@ -6,15 +6,22 @@ Deploy nginx ingress controller:
 helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system
 ```
 
-## TLS
+## Enable TLS
 
-Enable tls:
+Option 1: use cert-manager (recommended):
+
+```sh
+helm install --namespace=kube-system --name cert-manager stable/cert-manager --set ingressShim.extraArgs='{--default-issuer-name=letsencrypt,--default-issuer-kind=ClusterIssuer}'
+kubectl apply -f cert-manager/cluster-issuer.yaml
+```
+
+Option 2: use lego:
 
 ```sh
 kubectl apply -f lego/
 ```
 
-Create ingress with TLS:
+## Create ingress with TLS
 
 - Change `echo-tls.example.com` to your host in [echoserver/ingress-tls.yaml](echoserver/ingress-tls.yaml)
 - Add an A record in your DNS provider
