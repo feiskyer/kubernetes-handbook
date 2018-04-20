@@ -118,6 +118,72 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
 
 在 Azure 上面推荐使用 [acs-engine](azure.md#Windows) 自动部署 Master 和 Windows 节点。
 
+首先创建一个包含 Windows 的 Kubernetes 集群配置文件 `windows.json`
+
+```json
+{
+    "apiVersion": "vlabs",
+    "properties": {
+        "orchestratorProfile": {
+            "orchestratorType": "Kubernetes",
+            "orchestratorVersion": "1.10.1",
+            "kubernetesConfig": {
+                "networkPolicy": "none",
+                "enableAggregatedAPIs": true,
+                "enableRbac": true
+            }
+        },
+        "masterProfile": {
+            "count": 3,
+            "dnsPrefix": "kubernetes-windows",
+            "vmSize": "Standard_D2_v3"
+        },
+        "agentPoolProfiles": [
+            {
+                "name": "windowspool1",
+                "count": 3,
+                "vmSize": "Standard_D2_v3",
+                "availabilityProfile": "AvailabilitySet",
+                "osType": "Windows"
+            }
+        ],
+        "windowsProfile": {
+            "adminUsername": "<your-username>",
+            "adminPassword": "<your-password>"
+        },
+        "linuxProfile": {
+            "adminUsername": "azure",
+            "ssh": {
+                "publicKeys": [
+                    {
+                        "keyData": "<your-ssh-public-key>"
+                    }
+                ]
+            }
+        },
+        "servicePrincipalProfile": {
+            "clientId": "",
+            "secret": ""
+        }
+    }
+}
+
+```
+
+然后使用 acs-engine 部署：
+
+```sh
+# create a new resource group.
+az group create --name myResourceGroup  --location "centralus"
+
+# start deploy the kubernetes
+acs-engine deploy --resource-group myResourceGroup --subscription-id <subscription-id> --auto-suffix --api-model windows.json --location centralus --dns-prefix <dns-prefix>
+
+# setup kubectl
+export KUBECONFIG="$(pwd)/_output/<name-with-suffix>/kubeconfig/kubeconfig.centralus.json"
+kubectl get node
+```
+
 ### 手动部署
 
 1. 在 Windows Server 中 [安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
