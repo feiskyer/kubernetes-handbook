@@ -43,6 +43,31 @@ spec:
        maxConnections: 100
 ```
 
+熔断示例：
+
+```sh
+cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1beta1
+kind: DestinationPolicy
+metadata:
+  name: httpbin-circuit-breaker
+spec:
+  destination:
+    name: httpbin
+    labels:
+      version: v1
+  circuitBreaker:
+    simpleCb:
+      maxConnections: 1
+      httpMaxPendingRequests: 1
+      sleepWindow: 3m
+      httpDetectionInterval: 1s
+      httpMaxEjectionPercent: 100
+      httpConsecutiveErrors: 1
+      httpMaxRequestsPerConnection: 1
+EOF
+```
+
 ## 故障注入
 
 Istio 支持为应用注入故障，以模拟实际生产中碰到的各种问题，包括
@@ -70,6 +95,7 @@ spec:
       version: v1
   httpFault:
     delay:
+      percent: 100
       fixedDelay: 5s
     abort:
       percent: 10
@@ -80,29 +106,33 @@ spec:
 
 ![service-versions](images/istio-service-versions.png)
 
-首先部署v2版本的应用，并配置默认路由到v1版本：
+首先部署 bookinfo，并配置默认路由为 v1 版本：
 
 ```sh
-wget https://raw.githubusercontent.com/istio/istio/master/blog/bookinfo-ratings.yaml
-kubectl apply -f <(istioctl kube-inject -f bookinfo-ratings.yaml)
+# 以下命令假设 bookinfo 示例程序已部署，如未部署，可以执行下面的命令
+$ kubectl apply -f https://github.com/istio/istio/raw/master/samples/bookinfo/kube/bookinfo.yaml
+# 此时，三个版本的 reviews 服务以负载均衡的方式轮询。
 
-wget https://raw.githubusercontent.com/istio/istio/master/blog/bookinfo-reviews-v2.yaml
-kubectl apply -f <(istioctl kube-inject -f bookinfo-reviews-v2.yaml)
+# 创建默认路由，全部请求转发到 v1
+$ kubectl apply -f https://github.com/istio/istio/raw/master/samples/bookinfo/kube/route-rule-all-v1.yaml
 
-# create default route
-cat <<EOF | istioctl create -f -
+$ kubectl get routerules ratings-default -o yaml
 apiVersion: config.istio.io/v1alpha2
 kind: RouteRule
 metadata:
-  name: reviews-default
+  clusterName: ""
+  name: ratings-default
+  namespace: default
+  resourceVersion: "1268520"
+  selfLink: /apis/config.istio.io/v1alpha2/namespaces/default/routerules/ratings-default
+  uid: 4d546ad3-4701-11e8-8148-000d3aa3ed96
 spec:
   destination:
-    name: reviews
+    name: ratings
+  precedence: 1
   route:
   - labels:
       version: v1
-    weight: 100
-EOF
 ```
 
 示例一：将 10% 请求发送到 v2 版本而其余 90% 发送到 v1 版本
@@ -126,28 +156,26 @@ spec:
 EOF
 ```
 
-示例二：将特定用户的请求全部发到 v2 版本
+示例二：将 jason 用户的请求全部发到 v2 版本
 
 ```sh
-
 cat <<EOF | istioctl create -f -
 apiVersion: config.istio.io/v1alpha2
 kind: RouteRule
 metadata:
- name: reviews-test-v2
+  name: reviews-test-v2
 spec:
- destination:
-   name: reviews
- precedence: 2
- match:
-   request:
-     headers:
-       cookie:
-         regex: "^(.*?;)?(user=jason)(;.*)?$"
- route:
- - labels:
-     version: v2
-   weight: 100
+  destination:
+    name: reviews
+  precedence: 2
+  match:
+    request:
+      headers:
+        cookie:
+          regex: "^(.*?;)?(user=jason)(;.*)?$"
+  route:
+  - labels:
+      version: v2
 EOF
 ```
 
@@ -223,6 +251,164 @@ EOF
 ```sh
 export BOOKINFO_URL=$(kubectl get po -n istio-system -l istio=ingress -o jsonpath={.items[0].status.hostIP}):$(kubectl get svc -n istio-system istio-ingress -o jsonpath={.spec.ports[0].nodePort})
 wrk -t1 -c1 -d20s http://$BOOKINFO_URL/productpage
+```
+
+## Istio Ingress
+
+Istio 在部署时会自动创建一个 Ingress 控制器
+
+```sh
+$ kubectl -n istio-system get service istio-ingress
+NAME            TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+istio-ingress   LoadBalancer   10.0.125.189   <pending>       80:32058/TCP,443:32009/TCP   3d
+```
+
+在使用时，可以为 Ingress 添加 `kubernetes.io/ingress.class: istio` Annotation 来使用 istio-ingress。
+
+```sh
+$ kubectl apply -f <(istioctl kube-inject -f samples/httpbin/httpbin.yaml)
+$ cat <<EOF | kubectl create -f -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: simple-ingress
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /status/.*
+        backend:
+          serviceName: httpbin
+          servicePort: 8000
+      - path: /delay/.*
+        backend:
+          serviceName: httpbin
+          servicePort: 8000
+EOF
+$ kubectl get ingress simple-ingress -o wide
+NAME             HOSTS     ADDRESS                 PORTS     AGE
+simple-ingress   *         130.211.10.121          80        1d
+$ curl -I http://130.211.10.121/status/200
+```
+
+istio-ingress 还支持 TLS：
+
+```sh
+$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /tmp/tls.key -out /tmp/tls.crt -subj "/CN=foo.bar.com"
+$ kubectl create -n istio-system secret tls istio-ingress-certs --key /tmp/tls.key --cert /tmp/tls.crt
+$ cat <<EOF | kubectl create -f -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: secure-ingress
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  tls:
+    # 目前不支持 SNI，所以实际上 secretName 直接忽略
+    - secretName: istio-ingress-certs
+  rules:
+  - http:
+      paths:
+      - path: /status/.*
+        backend:
+          serviceName: httpbin
+          servicePort: 8000
+      - path: /delay/.*
+        backend:
+          serviceName: httpbin
+          servicePort: 8000
+EOF
+```
+
+当然，对 Ingress 流量也一样可以通过 Istio 来管理
+
+```yaml
+cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: status-route
+spec:
+  destination:
+    name: httpbin
+  match:
+    # Optionally limit this rule to istio ingress pods only
+    source:
+      name: istio-ingress
+      labels:
+        istio: ingress
+    request:
+      headers:
+        uri:
+          prefix: /delay/ #must match the path specified in ingress spec
+              # if using prefix paths (/delay/.*), omit the .*.
+              # if using exact match, use exact: /status
+```
+
+## Egress 流量
+
+默认情况下，Istio 接管了容器的内外网流量，从容器内部无法访问 Kubernetes 集群外的服务。可以通过 EgreeRule 为需要的容器开放 Egress 访问，如
+
+```yaml
+$ cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1alpha2
+kind: EgressRule
+metadata:
+  name: httpbin-egress-rule
+spec:
+  destination:
+    service: httpbin.org
+  ports:
+    - port: 80
+      protocol: http
+EOF
+
+$ cat <<EOF | istioctl create -f -
+kind: EgressRule
+metadata:
+  name: wikipedia-range1
+spec:
+  destination:
+      service: 91.198.174.192/27
+  ports:
+      - port: 443
+        protocol: tcp
+EOF
+```
+
+需要注意的是 EgreeRule 仅支持 HTTP、TCP 和 HTTPS，对于其他协议需要通过 `--includeIPRanges` 的方式设置 IP 地址范围，如
+
+```sh
+kubectl apply -f <(istioctl kube-inject -f samples/sleep/sleep.yaml --includeIPRanges=10.0.0.1/24)
+```
+
+## 流量镜像
+
+```sh
+$ cat <<EOF | istioctl create -f -
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: mirror-traffic-to-httbin-v2
+spec:
+  destination:
+    name: httpbin
+  precedence: 11
+  route:
+  - labels:
+      version: v1
+    weight: 100
+  - labels: 
+      version: v2
+    weight: 0
+  mirror:
+    name: httpbin
+    labels:
+      version: v2
+EOF
 ```
 
 ## 参考文档

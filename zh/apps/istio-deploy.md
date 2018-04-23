@@ -120,6 +120,12 @@ Starting to serve on 127.0.0.1:8001
 
 ![](images/servicegraph.png)
 
+- `/force/forcegraph.html` As explored above, this is an interactive [D3.js](https://d3js.org/) visualization.
+- `/dotviz` is a static [Graphviz](https://www.graphviz.org/) visualization.
+- `/dotgraph` provides a [DOT](https://en.wikipedia.org/wiki/DOT_(graph_description_language)) serialization.
+- `/d3graph` provides a JSON serialization for D3 visualization.
+- `/graph` provides a generic JSON serialization.
+
 通过`http://localhost:8001/api/v1/namespaces/istio-system/services/zipkin:9411/proxy/`访问Zipkin跟踪页面
 
 ![](images/zipkin.png)

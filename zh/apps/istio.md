@@ -88,6 +88,8 @@ Events:	<none>
 
 ![](images/productpage.png)
 
+默认情况下，三个版本的 reviews 服务以负载均衡的方式轮询。
+
 ### 自动注入 sidecar 容器
 
 首先确认 `admissionregistration` API 已经开启：
