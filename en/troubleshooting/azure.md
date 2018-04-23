@@ -69,6 +69,23 @@ An incomplete list of things that could go wrong include:
 - Client configured is not authorized to ALB/PublicIP/NSG. Add authorization in Azure portal or create a new one (`az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<subscriptionID>/resourceGroups/<resourceGroupName>"` and update `/etc/kubernetes/azure.json` on all nodes) should solve the problem
 - There is also a NSG issue in Kubernetes v1.8.X: `Security rule must specify SourceAddressPrefixes, SourceAddressPrefix, or SourceApplicationSecurityGroups`. To get rid of this issue, you could either upgrade cluster to v1.9.X/v1.10.X or replace SourceAddressPrefixes rule with multiple SourceAddressPrefix rules.
 
+## Service external IP is not accessible
+
+Azure Cloud Provider creates a health probe for each Kubernetes services and only probe-successful backend VMs are added to Azure Load Balancer (ALB). If the external IP is not accessible, it's probably caused by health probing.
+
+An incomplete list of such cases include:
+
+- Backend VMs in unhealthy (Solution: login the VM and check, or restart VM)
+- Containers are not listening on configured ports (Solution: correct container port configuration)
+- Firewall or network security groups block the port on ALB (Solution: add a new rule to expose the port)
+- If an ILB VIP is configured inside a VNet, and one of the participant backend VMs is trying to access the Internal Load Balancer VIP, that results in failure. This is an [unsupported scenario](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm). (Solution: use service's clusterIP instead)
+- Some or all containers are not responding any accesses. Note that only part of containers not responding could result in service not accessible, this is because
+  - Azure probes service periodically by `NodeIP:NodePort`
+  - Then, on the Node, kube-proxy load balances it to backend containers
+  - And then, if it load balances the access to abnormal containers, then probe is failed and the Node VM may be removed from ALB traffic backends
+  - Finally, ALB may think all backends are unhealthy
+  - The solution is use [Readiness Probles](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/), which could ensure the unhealthy containers removed from service's endpoints
+
 ## No target backends present for the internal load balancer (ILB)
 
 This is a known bug ([kubernetes#59746](https://github.com/kubernetes/kubernetes/issues/59746) [kubernetes#60060](https://github.com/kubernetes/kubernetes/issues/60060) [acs-engine#2151](https://github.com/Azure/acs-engine/issues/2151)) in kubernetes v1.9.0-v1.9.3, which is caused by an error when matching ILB's AvaibilitySet.
@@ -176,3 +193,5 @@ Kubernetes 1.9 introduces a new flag, `ServiceNodeExclusion`, for the control pl
 
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
 - [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
+- [Troubleshoot Azure Load Balancer](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)
+

@@ -2,7 +2,7 @@
 
 ## Azure 负载均衡
 
-使用 Azure Cloud Provider 后，Kubernetes 会为 LoadBalancer 类型的 Service 创建 Azure 负载均衡器以及相关的 公网 IP、BackendPool 和 Network Security Group (NSG)。注意目前 Azure Cloud Provider 仅支持 `Basic` SKU 的负载均衡，它与 `Standard` SKU 负载均衡相比有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview)：
+使用 Azure Cloud Provider 后，Kubernetes 会为 LoadBalancer 类型的 Service 创建 Azure 负载均衡器以及相关的 公网 IP、BackendPool 和 Network Security Group (NSG)。注意目前 Azure Cloud Provider 仅支持 `Basic` SKU 的负载均衡，并将在 v1.11 中支持 Standard SKU。`Basic` 与 `Standard` SKU 负载均衡相比有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview)：
 
 | Load Balancer                     | Basic                                    | Standard                                 |
 | --------------------------------- | ---------------------------------------- | ---------------------------------------- |
@@ -59,6 +59,20 @@ kubectl -n kube-system logs $PODNAME --tail 100
 - clientId、clientSecret、tenandId 或 subscriptionId 配置错误导致 Azure API 认证失败：更新所有节点的 `/etc/kubernetes/azure.json` ，修复错误的配置即可恢复服务
 - 配置的客户端无权管理 LB/NSG/PublicIP/VM：可以为使用的 clientId 增加授权或创建新的 `az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<subscriptionID>/resourceGroups/<resourceGroupName>"`
 - Kuberentes v1.8.X 中还有可能出现 `Security rule must specify SourceAddressPrefixes, SourceAddressPrefix, or SourceApplicationSecurityGroups` 的错误，这是由于 Azure Go SDK 的问题导致的，可以通过升级集群到 v1.9.X/v1.10.X 或者将 SourceAddressPrefixes 替换为多条 SourceAddressPrefix 规则来解决
+
+## 负载均衡公网 IP 无法访问
+
+Azure Cloud Provider 会为负载均衡器创建探测器，只有探测正常的服务才可以响应用户的请求。负载均衡公网 IP 无法访问一般是探测失败导致的，可能原因有：
+
+- 后端 VM  本身不正常（可以重启 VM 恢复）
+- 后端容器未监听在设置的端口上（可通过配置正确的端口解决）
+- 防火墙或网络安全组阻止了要访问的端口（可通过增加安全规则解决）
+- 当使用内网负载均衡时，从同一个 ILB 的后端 VM 上访问 ILB VIP 时也会失败，这是 Azure 的[预期行为](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)（此时可以访问 service 的 clusterIP）
+- 后端容器不响应（部分或者全部）外部请求时也会导致负载均衡 IP 无法访问。注意这里包含**部分容器不响应的场景**，这是由于 Azure 探测器与 Kubernetes 服务发现机制共同导致的结果：
+  - （1）Azure 探测器定期去访问 service 的端口（即 NodeIP:NodePort）
+  - （2）Kubernetes 将其负载均衡到后端容器中
+  - （3）当负载均衡到异常容器时，访问失败会导致探测失败，进而 Azure 可能会将 VM 移出负载均衡
+  - 该问题的解决方法是使用[健康探针](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)，保证异常容器自动从服务的后端（endpoints）中删除。
 
 ## 内网负载均衡 BackendPool 为空
 
@@ -165,3 +179,4 @@ pod "tunnelfront-7644cd56b7-l5jmc" deleted
 
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
 - [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
+- [Troubleshoot Azure Load Balancer](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)
