@@ -7,14 +7,14 @@ Istio 提供了 RBAC 访问控制以及双向 TLS 认证等安全管理功能。
 Istio Role-Based Access Control (RBAC) 提供了 namespace、service 以及 method 级别的访问控制。其特性包括
 
 - 简单易用：提供基于角色的语意
-- 支持认证：提供服务-服务和用户-服务的认证
+- 支持认证：提供服务 - 服务和用户 - 服务的认证
 - 灵活：提供角色和角色绑定的自定义属性
 
 ![image-20180423202459184](images/image-20180423202459184.png)
 
 ### 开启 RBAC
 
-可以通过创建 Mixer Adapter Rule 来给特定的namespace 开启 RBAC，如
+可以通过创建 Mixer Adapter Rule 来给特定的 namespace 开启 RBAC，如
 
 ```yaml
    apiVersion: "config.istio.io/v1alpha2"
@@ -71,7 +71,7 @@ Istio Role-Based Access Control (RBAC) 提供了 namespace、service 以及 meth
 
 Istio RBAC 提供了 ServiceRole 和 ServiceRoleBinding 两种资源对象，并以 CustomResourceDefinition (CRD) 的方式管理。
 
-- ServiceRole 定义了一个可访问特定资源（namespace之内）的服务角色，并支持以前缀通配符和后缀通配符的形式匹配一组服务
+- ServiceRole 定义了一个可访问特定资源（namespace 之内）的服务角色，并支持以前缀通配符和后缀通配符的形式匹配一组服务
 - ServiceRoleBinding 定义了赋予指定角色的绑定，即可以指定的角色和动作访问服务
 
 ```yaml
@@ -89,7 +89,7 @@ Istio RBAC 提供了 ServiceRole 和 ServiceRoleBinding 两种资源对象，并
        methods: ["GET"]
        constraints:
        - key: "version"
-         values: ["v1", "v2"]   
+         values: ["v1", "v2"]
    ---
    apiVersion: "config.istio.io/v1alpha2"
    kind: ServiceRoleBinding

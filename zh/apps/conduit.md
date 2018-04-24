@@ -2,6 +2,8 @@
 
 [Conduit](https://conduit.io) 是 Buoyant 公司推出的下一代轻量级 service mesh。与 linkerd 不同的是，它专用于 Kubernetes 集群中，并且比 linkerd 更轻量级（基于 Rust 和 Go，没有了 JVM 等大内存的开销），可以以 sidecar 的方式把代理服务跟实际服务的 Pod 运行在一起（这点跟 Istio 类似）。
 
+> 注意：Conduit 目前还处于 Alpha 阶段，不建议在生产环境中使用。
+
 ```sh
 $ curl https://run.conduit.io/install | bash
 ..

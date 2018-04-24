@@ -19,12 +19,14 @@ cd istio-${ISTIO_VERSION}
 cp bin/istioctl /usr/local/bin
 ```
 
-## 部署Istio服务
+> 想要尝鲜的同学可以从[每日构建](https://gcsweb.istio.io/gcs/istio-prerelease/)中下载。
+
+## 部署 Istio 服务
 
 两种方式（选择其一执行）
 
-- 禁止Auth：`kubectl apply -f install/kubernetes/istio.yaml`
-- 启用Auth：`kubectl apply -f install/kubernetes/istio-auth.yaml`
+- 禁止 Auth：`kubectl apply -f install/kubernetes/istio.yaml`
+- 启用 Auth：`kubectl apply -f install/kubernetes/istio-auth.yaml`
 
 部署完成后，可以检查 isotio-system namespace 中的服务是否正常运行：
 
@@ -80,7 +82,7 @@ istioctl -n onprem register mysql 1.2.3.4 3306
 istioctl -n onprem register svc1 1.2.3.4 http:7000
 ```
 
-## 部署Prometheus、Grafana和Zipkin插件
+## 部署 Prometheus、Grafana 和 Zipkin 插件
 
 ```sh
 $ kubectl apply -f install/kubernetes/addons/
@@ -105,18 +107,18 @@ service "zipkin" created
 >
 > kubectl delete -f install/kubernetes/addons/zipkin-to-stackdriver.yaml
 
-等一会所有Pod启动后，可以通过 NodePort、负载均衡服务的外网 IP 或者 `kubectl proxy` 来访问这些服务。比如通过`kubectl proxy` 方式，先启动 kubectl proxy
+等一会所有 Pod 启动后，可以通过 NodePort、负载均衡服务的外网 IP 或者 `kubectl proxy` 来访问这些服务。比如通过 `kubectl proxy` 方式，先启动 kubectl proxy
 
 ```sh
 $ kubectl proxy
 Starting to serve on 127.0.0.1:8001
 ```
 
-通过`http://localhost:8001/api/v1/namespaces/istio-system/services/grafana:3000/proxy/`访问Grafana服务
+通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/grafana:3000/proxy/` 访问 Grafana 服务
 
 ![](images/grafana.png)
 
-通过`http://localhost:8001/api/v1/namespaces/istio-system/services/servicegraph:8088/proxy/`访问ServiceGraph服务，展示服务之间调用关系图
+通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/servicegraph:8088/proxy/` 访问 ServiceGraph 服务，展示服务之间调用关系图
 
 ![](images/servicegraph.png)
 
@@ -126,10 +128,10 @@ Starting to serve on 127.0.0.1:8001
 - `/d3graph` provides a JSON serialization for D3 visualization.
 - `/graph` provides a generic JSON serialization.
 
-通过`http://localhost:8001/api/v1/namespaces/istio-system/services/zipkin:9411/proxy/`访问Zipkin跟踪页面
+通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/zipkin:9411/proxy/` 访问 Zipkin 跟踪页面
 
 ![](images/zipkin.png)
 
-通过`http://localhost:8001/api/v1/namespaces/istio-system/services/prometheus:9090/proxy/`访问Prometheus页面
+通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/prometheus:9090/proxy/` 访问 Prometheus 页面
 
 ![](images/prometheus.png)

@@ -1,10 +1,10 @@
 # Istio 策略管理
 
-Mixer 为应用程序和基础架构后端之间提供了一个通用的策略控制层，负责先决条件检查（如认证授权）、配额管理并从Envoy代理中收集遥测数据等。
+Mixer 为应用程序和基础架构后端之间提供了一个通用的策略控制层，负责先决条件检查（如认证授权）、配额管理并从 Envoy 代理中收集遥测数据等。
 
 ![](images/istio-mixer.png)
 
-Mixer支持灵活的插件模型（即 Adapters），支持GCP、AWS、Prometheus、Heapster等各种丰富功能的后端。
+Mixer 支持灵活的插件模型（即 Adapters），支持 GCP、AWS、Prometheus、Heapster 等各种丰富功能的后端。
 
 ![](images/istio-adapters.png)
 
@@ -12,7 +12,7 @@ Mixer支持灵活的插件模型（即 Adapters），支持GCP、AWS、Prometheu
 
 ## 实现原理
 
-本质上，Mixer 是一个[属性](https://istio.io/docs/concepts/policy-and-control/attributes.html)处理机，进入 Mixer 的请求带有一系列的属性，Mixer 按照不同的处理阶段处理：
+本质上，Mixer 是一个 [属性](https://istio.io/docs/concepts/policy-and-control/attributes.html) 处理机，进入 Mixer 的请求带有一系列的属性，Mixer 按照不同的处理阶段处理：
 
 - 通过全局 Adapters 为请求引入新的属性
 - 通过解析（Resolution）识别要用于处理请求的配置资源
@@ -21,7 +21,7 @@ Mixer支持灵活的插件模型（即 Adapters），支持GCP、AWS、Prometheu
 
 ![](images/istio-phase.png)
 
-Adapters 后端以 [Mixer 配置](https://istio.io/docs/concepts/policy-and-control/mixer-config.html) 的方式注册到 Istio 中，参考[这里](https://github.com/istio/istio/tree/master/mixer/testdata/config)查看示例配置。
+Adapters 后端以 [Mixer 配置](https://istio.io/docs/concepts/policy-and-control/mixer-config.html) 的方式注册到 Istio 中，参考 [这里](https://github.com/istio/istio/tree/master/mixer/testdata/config) 查看示例配置。
 
 ## 流量限制示例
 

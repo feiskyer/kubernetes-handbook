@@ -58,6 +58,54 @@ spec:
 | HEALTHCHECK     | 健康检查                   | 否   | 使用 livenessProbe 和 readinessProbe 替代    |
 | SHELL           | 运行启动命令的 SHELL       | 否   | 使用镜像默认 SHELL 启动命令                  |
 
+## Pod 生命周期
+
+Kubernetes 以 `PodStatus.Phase` 抽象 Pod 的状态（但并不直接反映所有容器的状态）。可能的 Phase 包括
+
+- Pending: Pod 已经在 apiserver 中创建，但还没有调度到 Node 上面
+- Running: Pod 已经调度到 Node 上面，所有容器都已经创建，并且至少有一个容器还在运行或者正在启动
+- Succeeded: Pod 调度到 Node 上面后成功运行结束，并且不会重启
+- Failed: Pod 调度到 Node 上面后至少有一个容器运行失败（即推出码不为 0 或者被系统终止）
+- Unknonwn: 状态为止，通常是由于 apiserver 无法与 kubelet 通信导致
+
+可以用 kubectl 命令查询 Pod Phase：
+
+```sh
+$ kubectl get pod reviews-v1-5bdc544bbd-5qgxj -o jsonpath="{.status.phase}"
+Running
+```
+
+PodSpec 中的 `restartPolicy` 可以用来设置是否对退出的 Pod 重启，可选项包括 `Always`、`OnFailure`、以及 `Never`。比如
+
+- 单容器的 Pod，容器成功退出时，不同 `restartPolicy` 时的动作为
+  - Always: 重启 Container; Pod `phase` 保持 Running.
+  - OnFailure: Pod `phase` 变成 Succeeded.
+  - Never: Pod `phase` 变成 Succeeded.
+- 单容器的 Pod，容器失败退出时，不同 `restartPolicy` 时的动作为
+  - Always: 重启 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
+  - Never: Pod `phase` 变成 Failed.
+- 2个容器的 Pod，其中一个容器在运行而另一个失败退出时，不同 `restartPolicy` 时的动作为
+  - Always: 重启 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
+  - Never: 不重启 Container; Pod `phase` 保持 Running.
+- 2个容器的 Pod，其中一个容器停止而另一个失败退出时，不同 `restartPolicy` 时的动作为
+  - Always: 重启 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
+  - Never: Pod `phase` 变成 Failed.
+- 单容器的 Pod，容器内存不足（OOM），不同 `restartPolicy` 时的动作为
+  - Always: 重启 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
+  - Never: 记录失败事件; Pod `phase` 变成 Failed.
+- Pod 还在运行，但磁盘不可访问时
+  - 终止所有容器
+  - Pod `phase` 变成 Failed
+  - 如果 Pod 是由某个控制器管理的，则重新创建一个 Pod 并调度到其他 Node 运行
+- Pod 还在运行，但由于网络分区故障导致 Node 无法访问
+  - Node controller等待 Node 事件超时
+  - Node controller 将 Pod `phase` 设置为 Failed.
+  - 如果 Pod 是由某个控制器管理的，则重新创建一个 Pod 并调度到其他 Node 运行
+
 ## 使用 Volume
 
 Volume 可以为容器提供持久化存储，比如
