@@ -1,6 +1,6 @@
 # Helm
 
-[Helm](https://github.com/kubernetes/helm)是一个类似于 yum/apt/[homebrew](https://brew.sh/)的 Kubernetes 应用管理工具。Helm 使用 [Chart](https://github.com/kubernetes/charts) 来管理 Kubernetes manifest 文件。
+[Helm](https://github.com/kubernetes/helm) 是一个类似于 yum/apt/[homebrew](https://brew.sh/) 的 Kubernetes 应用管理工具。Helm 使用 [Chart](https://github.com/kubernetes/charts) 来管理 Kubernetes manifest 文件。
 
 ## Helm 基本使用
 
@@ -351,6 +351,21 @@ helm lint
 # 打包 chart 到 tgz
 helm package deis-workflow
 ```
+
+## Helm UI
+
+[Kubeapps](https://github.com/kubeapps/kubeapps) 提供了一个开源的 Helm UI 界面，方便以图形界面的形式管理 Helm 应用。
+
+```sh
+curl -s https://api.github.com/repos/kubeapps/kubeapps/releases/latest | grep -i $(uname -s) | grep browser_download_url | cut -d '"' -f 4 | wget -i -
+sudo mv kubeapps-$(uname -s| tr '[:upper:]' '[:lower:]')-amd64 /usr/local/bin/kubeapps
+sudo chmod +x /usr/local/bin/kubeapps
+
+kubeapps up
+kubeapps dashboard
+```
+
+更多使用方法请参考 [Kubeapps 官方网站](https://kubeapps.com/)。
 
 ## Helm Repository
 
