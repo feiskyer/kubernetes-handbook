@@ -17,6 +17,8 @@ kube-proxy 当前支持一下几种实现
 
 ![](images/iptables-mode.png)
 
+(图片来自[cilium/k8s-iptables-diagram](https://github.com/cilium/k8s-iptables-diagram))
+
 ```sh
 # Masquerade
 -A KUBE-MARK-DROP -j MARK --set-xmark 0x8000/0x8000

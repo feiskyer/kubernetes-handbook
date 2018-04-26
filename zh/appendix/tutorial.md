@@ -14,9 +14,10 @@
 
 ## 在线指导
 
+- [Kubernetes the hard way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
+- [AWS Workshop for Kubernetes](https://github.com/aws-samples/aws-workshop-for-kubernetes)
 - [Learn Kubernetes using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/kubernetes)
 - [Kubernetes Bootcamp](https://kubernetesbootcamp.github.io/kubernetes-bootcamp/index.html)
-- [Kubernetes the hard way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
 - [Kubernetes By Example](http://kubernetesbyexample.com)
 
 ## 电子书籍

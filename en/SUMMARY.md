@@ -158,6 +158,5 @@
 
 - [11. Appendix](appendix/index.md)
   - [Ecosystem](appendix/ecosystem.md)
-  - [Play-With-Kubernetes](appendix/play-with-k8s.md)
   - [CONTRIBUTING](CONTRIBUTING.md)
   - [References](appendix/reference.md)
