@@ -4,20 +4,20 @@
 
 说到 Kubernetes 的网络，其实无非就是以下三种情况之一
 
-* Pod 访问容器外部网络
-* 从容器外部访问 Pod 网络
-* Pod 之间相互访问
+- Pod 访问容器外部网络
+- 从容器外部访问 Pod 网络
+- Pod 之间相互访问
 
 当然，以上每种情况还都分别包括本地访问和跨主机访问两种场景，并且一般情况下都是通过 Service 间接访问 Pod。
 
 排查网络问题基本上也是从这几种情况出发，定位出具体的网络异常点，再进而寻找解决方法。网络异常可能的原因比较多，常见的有
 
 - CNI 网络插件配置错误，导致多主机网络不通，比如
-  -  IP 网段与现有网络冲突
-  -  插件使用了底层网络不支持的协议
-  -  忘记开启 IP 转发等
-     -  `sysctl net.ipv4.ip_forward`
-     -  `sysctl net.bridge.bridge-nf-call-iptables`
+  - IP 网段与现有网络冲突
+  - 插件使用了底层网络不支持的协议
+  - 忘记开启 IP 转发等
+    - `sysctl net.ipv4.ip_forward`
+    - `sysctl net.bridge.bridge-nf-call-iptables`
 - Pod 网络路由丢失，比如
   - kubenet 要求网络中有 podCIDR 到主机 IP 地址的路由，这些路由如果没有正确配置会导致 Pod 网络通信等问题
   - 在公有云平台上，kube-controller-manager 会自动为所有 Node 配置路由，但如果配置不当（如认证授权失败、超出配额等），也有可能导致无法配置路由
@@ -26,7 +26,7 @@
   - 公有云平台的安全组禁止了 Pod 网络（注意 Pod 网络有可能与 Node 网络不在同一个网段）
   - 交换机或者路由器的 ACL 禁止了 Pod 网络
 
-## Flannel Pods 一直处于 Init:CrashLoopBackOff 状态 
+## Flannel Pods 一直处于 Init:CrashLoopBackOff 状态
 
 Flannel 网络插件非常容易部署，只要一条命令即可
 
@@ -329,8 +329,13 @@ spec:
       ...
 ```
 
+## 内核导致的问题
+
+除了以上问题，还有可能碰到因内核问题导致的服务无法访问或者服务访问超时的错误，比如
+
+- [未设置 `--random-fully` 导致无法为 SNAT 分配端口，进而会导致服务访问超时](https://tech.xing.com/a-reason-for-unexplained-connection-timeouts-on-kubernetes-docker-abd041cf7e02)。注意， Kubernetes 暂时没有为 SNAT 设置 `--random-fully` 选项，如果碰到这个问题可以参考[这里](https://gist.github.com/maxlaverse/1fb3bfdd2509e317194280f530158c98) 配置。
+
 ## 参考文档
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)
 - [Debug Services](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/)
-
