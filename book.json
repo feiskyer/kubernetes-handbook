@@ -7,7 +7,7 @@
         "mermaid",
         "github",
         "editlink",
-        "page-toc",
+        "anchor-navigation-ex-toc",
         "-lunr",
         "-search",
         "search-plus",
@@ -19,11 +19,6 @@
         "fontSize": 11
     },
     "pluginsConfig": {
-        "page-toc": {
-          "selector": ".markdown-section h1, .markdown-section h2, .markdown-section h3",
-          "position": "before-first",
-          "showByDefault": true
-        },
         "github": {
             "url": "https://github.com/feiskyer/kubernetes-handbook"
         },
