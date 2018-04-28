@@ -1,45 +1,45 @@
 # Draft
 
-Draft是微软Deis团队开源（见<https://github.com/azure/draft>）的容器应用开发辅助工具，它可以帮助开发人员简化容器应用程序的开发流程。
+Draft 是微软 Deis 团队开源（见 <https://github.com/azure/draft>）的容器应用开发辅助工具，它可以帮助开发人员简化容器应用程序的开发流程。
 
-Draft主要由三个命令组成
+Draft 主要由三个命令组成
 
-- `draft init`：初始化docker registry账号，并在Kubernetes集群中部署draftd（负责镜像构建、将镜像推送到docker registry以及部署应用等）
-- `draft create`：draft根据packs检测应用的开发语言，并自动生成Dockerfile和Kubernetes Helm Charts
-- `draft up`：根据Dockfile构建镜像，并使用Helm将应用部署到Kubernetes集群（支持本地或远端集群）。同时，还会在本地启动一个draft client，监控代码变化，并将更新过的代码推送给draftd。
+- `draft init`：初始化 docker registry 账号，并在 Kubernetes 集群中部署 draftd（负责镜像构建、将镜像推送到 docker registry 以及部署应用等）
+- `draft create`：draft 根据 packs 检测应用的开发语言，并自动生成 Dockerfile 和 Kubernetes Helm Charts
+- `draft up`：根据 Dockfile 构建镜像，并使用 Helm 将应用部署到 Kubernetes 集群（支持本地或远端集群）。同时，还会在本地启动一个 draft client，监控代码变化，并将更新过的代码推送给 draftd。
 
-## Draft安装
+## Draft 安装
 
-由于Draft需要构建镜像并部署应用到Kubernetes集群，因而在安装Draft之前需要
+由于 Draft 需要构建镜像并部署应用到 Kubernetes 集群，因而在安装 Draft 之前需要
 
-- 部署一个Kubernetes集群，部署方法可以参考[kubernetes部署方法](../deploy/index.md)
-- 安装并初始化helm（需要v2.4.x版本，并且不要忘记运行`helm init`），具体步骤可以参考[helm使用方法](helm-app.md)
-- 注册docker registry账号，比如[Docker Hub](https://hub.docker.com/)或[Quay.io](https://quay.io/)
-- 配置Ingress Controller并在DNS中设置通配符域`*`的A记录（如`*.draft.example.com`）到Ingress IP地址。最简单的Ingress Controller创建方式是使用helm：
+- 部署一个 Kubernetes 集群，部署方法可以参考 [kubernetes 部署方法](../deploy/index.md)
+- 安装并初始化 helm（需要 v2.4.x 版本，并且不要忘记运行 `helm init`），具体步骤可以参考 [helm 使用方法](helm-app.md)
+- 注册 docker registry 账号，比如 [Docker Hub](https://hub.docker.com/) 或[Quay.io](https://quay.io/)
+- 配置 Ingress Controller 并在 DNS 中设置通配符域 `*` 的 A 记录（如 `*.draft.example.com`）到 Ingress IP 地址。最简单的 Ingress Controller 创建方式是使用 helm：
 
 ```sh
-# 部署nginx ingress controller
+# 部署 nginx ingress controller
 $ helm install stable/nginx-ingress --namespace=kube-system --name=nginx-ingress
-# 等待ingress controller配置完成，并记下外网IP
+# 等待 ingress controller 配置完成，并记下外网 IP
 $ kubectl --namespace kube-system get services -w nginx-ingress-nginx-ingress-controller
 ```
 
-> **[info] minikube Ingress Controller**
+> **minikube Ingress Controller**
 >
-> minikube中配置和使用Ingress Controller的方法可以参考[这里](../practice/minikube-ingress.md)。
+> minikube 中配置和使用 Ingress Controller 的方法可以参考 [这里](../practice/minikube-ingress.md)。
 
-初始化好Kubernetes集群和Helm后，可以在[这里](https://github.com/Azure/draft/blob/master/docs/install.md)下载draft二进制文件，并配置draft
+初始化好 Kubernetes 集群和 Helm 后，可以在 [这里](https://github.com/Azure/draft/blob/master/docs/install.md) 下载 draft 二进制文件，并配置 draft
 
 ```sh
 # 注意修改用户名、密码和邮件
 $ token=$(echo '{"username":"feisky","password":"secret","email":"feisky@email.com"}' | base64)
-# 注意修改registry.org和basedomain
+# 注意修改 registry.org 和 basedomain
 $ draft init --set registry.url=docker.io,registry.org=feisky,registry.authtoken=${token},basedomain=app.feisky.xyz
 ```
 
-## Draft入门
+## Draft 入门
 
-draft源码中提供了很多应用的[示例](https://github.com/Azure/draft/blob/master/examples)，我们来看一下怎么用draft来简化python应用的开发流程。
+draft 源码中提供了很多应用的 [示例](https://github.com/Azure/draft/blob/master/examples)，我们来看一下怎么用 draft 来简化 python 应用的开发流程。
 
 ```sh
 $ git clone https://github.com/Azure/draft.git
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 ```
 
-Draft create生成Dockerfile和chart
+Draft create 生成 Dockerfile 和 chart
 
 ```sh
 $ draft create
@@ -83,7 +83,7 @@ $ cat draft.toml
     watch_delay = 2
 ```
 
-Draft Up构建镜像并部署应用
+Draft Up 构建镜像并部署应用
 
 ```sh
 $ draft up
@@ -112,7 +112,7 @@ de7e97d0d889b4cdb81ae4b972097d759c59e06e: digest: sha256:7ee10c1a56ced4f854e7934
 Watching local files for changes...
 ```
 
-打开一个新的shell，就可以通过子域名来访问应用了
+打开一个新的 shell，就可以通过子域名来访问应用了
 
 ```sh
 $ curl virulent-sheep.app.feisky.xyz

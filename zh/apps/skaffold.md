@@ -73,4 +73,3 @@ Deploy complete in 173.770268ms
 - 构建一个新的镜像（带有不同的 sha256 TAG）
 - 修改 `k8s-pod.yaml` 文件中的镜像为新的 TAG
 - 重新部署 `k8s-pod.yaml` 
-
