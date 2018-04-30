@@ -16,14 +16,29 @@ argo install
 ```
 
 ```sh
-# Install an Artifact Repository
-helm install stable/minio --name argo-artifacts --set service.type=LoadBalancer
+ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+ACCESS_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+helm install --name argo-artifacts --set accessKey=$ACCESS_KEY,secretKey=$ACCESS_SECRET_KEY,service.type=LoadBalancer stable/minio
 ```
 
-访问 Minio UI（通过 `kubectl port-forward service/argo-artifacts-minio :9000`）并创建名为 `my-bucket` 的 Bucket。然后修改 Argo 工作流控制器使用 Minio：
+创建名为 `my-bucket` 的 Bucket（可以通过 `kubectl port-forward service/argo-artifacts-minio :9000` 访问 Minio UI 来操作）：
 
 ```sh
-$ kubectl -n kube-system create secret generic argo-artifacts-minio --from-literal=accesskey=AKIAIOSFODNN7EXAMPLE --from-literal=secretkey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+# download mc client
+sudo wget https://dl.minio.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc
+sudo chmod +x /usr/local/bin/mc
+
+# create my-bucket
+EXTERNAL_IP=$(kubectl get service argo-artifacts-minio -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+mc config host add argo-artifacts-minio-local http://$EXTERNAL_IP:9000 $ACCESS_KEY $ACCESS_SECRET_KEY --api=s3v4
+mc mb argo-artifacts-minio-local/my-bucket
+```
+
+然后修改 Argo 工作流控制器使用 Minio：
+
+```sh
+$ kubectl -n kube-system create secret generic argo-artifacts-minio --from-literal=accesskey=$ACCESS_KEY --from-literal=secretkey=$ACCESS_SECRET_KEY
 $ kubectl edit configmap workflow-controller-configmap -n kube-system
 ...
     executorImage: argoproj/argoexec:v2.0.0
