@@ -12,6 +12,8 @@ This handbook aims to provide a detailed guide of running and understanding both
 - Applications
 - Troubleshooting
 
+> Note: Only troubleshooting part is translated yet. New translations are welcomed.
+
 ## Reading
 
 - English：[GitBook](https://kubernetes.feisky.xyz/en/) [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/en/SUMMARY.md)
