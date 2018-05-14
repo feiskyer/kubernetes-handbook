@@ -188,11 +188,11 @@ kubectl get node
 
 1. 在 Windows Server 中 [安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
 
-   ```
-   Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-   Install-Package -Name Docker -ProviderName DockerMsftProvider
-   Restart-Computer -Force
-   ```
+```powershell
+Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+Install-Package -Name Docker -ProviderName DockerMsftProvider
+Restart-Computer -Force
+```
 
 2. 根据前面的下载部分下载或者编译 kubelet.exe 和 kube-proxy.exe
 
@@ -200,21 +200,21 @@ kubectl get node
 
 4. 创建 HNS 网络，配置 CNI 网络插件
 
-   ```sh
-   wget https://github.com/Microsoft/SDN/archive/master.zip -o master.zip
-   Expand-Archive master.zip -DestinationPath master
-   mkdir C:/k/
-   mv master/SDN-master/Kubernetes/windows/* C:/k/
-   rm -recurse -force master,master.zip
-   ```
+```sh
+wget https://github.com/Microsoft/SDN/archive/master.zip -o master.zip
+Expand-Archive master.zip -DestinationPath master
+mkdir C:/k/
+mv master/SDN-master/Kubernetes/windows/* C:/k/
+rm -recurse -force master,master.zip
+```
 
 5. 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
 
-   ```sh
-   [Environment]::SetEnvironmentVariable("KUBECONFIG", "C:\k\config", [EnvironmentVariableTarget]::User)
-   ./start-kubelet.ps1 -ClusterCidr 192.168.0.0/16
-   ./start-kubeproxy.ps1
-   ```
+```sh
+[Environment]::SetEnvironmentVariable("KUBECONFIG", "C:\k\config", [EnvironmentVariableTarget]::User)
+./start-kubelet.ps1 -ClusterCidr 192.168.0.0/16
+./start-kubeproxy.ps1
+```
 
 6. 如果使用 Host-Gateway 网络插件，还需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加静态路由
 
