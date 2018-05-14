@@ -15,7 +15,7 @@ Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开�
 可以从 <<https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
 
 ```sh
-wget https://dl.k8s.io/v1.9.2/kubernetes-node-windows-amd64.tar.gz
+wget https://dl.k8s.io/v1.10.2/kubernetes-node-windows-amd64.tar.gz
 ```
 
 或者从 Kubernetes 源码编译
@@ -186,7 +186,7 @@ kubectl get node
 
 ### 手动部署
 
-1. 在 Windows Server 中 [安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
+(1) 在 Windows Server 中 [安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
 
 ```powershell
 Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
@@ -194,11 +194,11 @@ Install-Package -Name Docker -ProviderName DockerMsftProvider
 Restart-Computer -Force
 ```
 
-2. 根据前面的下载部分下载或者编译 kubelet.exe 和 kube-proxy.exe
+(2) 根据前面的下载部分下载 kubelet.exe 和 kube-proxy.exe
 
-3. 从 Master 节点上面拷贝 Node spec file (kube config)
+(3) 从 Master 节点上面拷贝 Node spec file (kube config)
 
-4. 创建 HNS 网络，配置 CNI 网络插件
+(4) 创建 HNS 网络，配置 CNI 网络插件
 
 ```sh
 wget https://github.com/Microsoft/SDN/archive/master.zip -o master.zip
@@ -208,7 +208,7 @@ mv master/SDN-master/Kubernetes/windows/* C:/k/
 rm -recurse -force master,master.zip
 ```
 
-5. 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
+(5) 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
 
 ```sh
 [Environment]::SetEnvironmentVariable("KUBECONFIG", "C:\k\config", [EnvironmentVariableTarget]::User)
@@ -216,7 +216,7 @@ rm -recurse -force master,master.zip
 ./start-kubeproxy.ps1
 ```
 
-6. 如果使用 Host-Gateway 网络插件，还需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加静态路由
+(6) 如果使用 Host-Gateway 网络插件，还需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加静态路由
 
 详细的操作步骤可以参考 [这里](https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/live/virtualization/windowscontainers/kubernetes/getting-started-kubernetes-windows.md)。
 
@@ -379,17 +379,15 @@ spec:
 
 在 `Windows Server version 1709` 中必须使用带有 1709 标签的镜像，如
 
-```
-microsoft/aspnet:4.7.1-windowsservercore-1709
-microsoft/windowsservercore:1709
-microsoft/iis:windowsservercore-1709
-```
+- microsoft/aspnet:4.7.1-windowsservercore-1709
+- microsoft/windowsservercore:1709
+- microsoft/iis:windowsservercore-1709
 
 而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
 
 ## 设置 CPU 和内存
 
-从 v1.10 开始，Kubernetes 支持给 Windows 容器设置 CPU 和内存
+从 v1.10 开始，Kubernetes 支持给 Windows 容器设置 CPU 和内存：
 
 ```yaml
 apiVersion: apps/v1
@@ -439,7 +437,7 @@ spec:
         - containerPort: 80
 ```
 
-### v1.9 版本已知问题
+### v1.9.X 和 v1.10.X 版本已知问题
 
 - 仅  Windows Server 1709 或更新的版本才支持在 Pod 内运行多个容器（仅支持 Process 隔离）
 - 暂不支持以 Volume 挂载的方式使用 Secrets 和 ConfigMaps
