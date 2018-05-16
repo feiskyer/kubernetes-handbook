@@ -450,6 +450,37 @@ spec:
 - Calico 网络插件仅支持 Policy-Only 模式
 - 对于需要使用 `:` 作为环境变量的 .NET 容器，可以将环境变量中的 `:` 替换为 `__`（参考 [这里](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration#configuration-by-environment)）
 
+## 附录：Docker EE 安装方法
+
+安装 Docker EE 稳定版本
+
+```powershell
+Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+Install-Package -Name docker -ProviderName DockerMsftProvider
+Restart-Computer -Force
+```
+
+安装 Docker EE 预览版本
+
+```powershell
+Install-Module DockerProvider
+Install-Package -Name Docker -ProviderName DockerProvider -RequiredVersion preview
+```
+
+升级 Docker EE 版本
+
+```powershell
+# Check the installed version
+Get-Package -Name Docker -ProviderName DockerMsftProvider
+
+# Find the current version
+Find-Package -Name Docker -ProviderName DockerMsftProvider
+
+# Upgrade Docker EE
+Install-Package -Name Docker -ProviderName DockerMsftProvider -Update -Force
+Start-Service Docker
+```
+
 ## 参考文档
 
 - [Using Windows Server Containers in Kubernetes](https://kubernetes.io/docs/getting-started-guides/windows/)
