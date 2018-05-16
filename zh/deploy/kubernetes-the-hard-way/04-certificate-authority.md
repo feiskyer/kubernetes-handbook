@@ -164,6 +164,43 @@ worker-2-key.pem
 worker-2.pem
 ```
 
+### Kube-controller-manager 客户端凭证
+
+```sh
+cat > kube-controller-manager-csr.json <<EOF
+{
+  "CN": "system:kube-controller-manager",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Portland",
+      "O": "system:kube-controller-manager",
+      "OU": "Kubernetes The Hard Way",
+      "ST": "Oregon"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
+```
+
+结果将产生以下几个文件：
+
+```sh
+kube-controller-manager-key.pem
+kube-controller-manager.pem
+```
+
 ### Kube-proxy 客户端凭证
 
 ```sh
@@ -199,6 +236,43 @@ cfssl gencert \
 ```sh
 kube-proxy-key.pem
 kube-proxy.pem
+```
+
+### kube-scheduler 证书
+
+```sh
+cat > kube-scheduler-csr.json <<EOF
+{
+  "CN": "system:kube-scheduler",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Portland",
+      "O": "system:kube-scheduler",
+      "OU": "Kubernetes The Hard Way",
+      "ST": "Oregon"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  kube-scheduler-csr.json | cfssljson -bare kube-scheduler
+```
+
+结果将产生以下两个文件：
+
+```sh
+kube-scheduler-key.pem
+kube-scheduler.pem
 ```
 
 ### Kubernetes API Server 证书
@@ -255,6 +329,43 @@ kubernetes-key.pem
 kubernetes.pem
 ```
 
+### Service Account 证书
+
+```sh
+at > service-account-csr.json <<EOF
+{
+  "CN": "service-accounts",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Portland",
+      "O": "Kubernetes",
+      "OU": "Kubernetes The Hard Way",
+      "ST": "Oregon"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  service-account-csr.json | cfssljson -bare service-account
+```
+
+结果将生成以下两个文件
+
+```sh
+service-account-key.pem
+service-account.pem
+```
+
 ## 分发客户端和服务器证书
 
 将客户端凭证以及私钥复制到每个工作节点上:
@@ -267,13 +378,13 @@ done
 
 将服务器凭证以及私钥复制到每个控制节点上:
 
-
 ```sh
 for instance in controller-0 controller-1 controller-2; do
-  gcloud compute scp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem ${instance}:~/
+  gcloud compute scp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+    service-account-key.pem service-account.pem ${instance}:~/
 done
 ```
 
-> `kube-proxy` 和 `kubelet` client 凭证将会在下一节中用来创建客户端簽发请求文件。
+> `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 客户端凭证将会在下一节中用来创建客户端簽发请求文件。
 
 下一步：[配置和生成 Kubernetes 配置文件](05-kubernetes-configuration-files.md)。

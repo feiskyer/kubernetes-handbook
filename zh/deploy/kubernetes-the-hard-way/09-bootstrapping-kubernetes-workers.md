@@ -8,7 +8,7 @@
 * [kubelet](https://kubernetes.io/docs/admin/kubelet)
 * [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)
 
-## 事前準备
+## 事前准备
 
 以下命令需要在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。可以使用 `gcloud` 命令登录到 worker 节点上，比如
 
@@ -16,12 +16,15 @@
 gcloud compute ssh worker-0
 ```
 
+可以使用 tmux 同时登录到三个 Worker 节点上，加快部署步骤。
+
 ## 部署 Kubernetes Worker 节点
 
 安装 OS 依赖组件：
 
 ```sh
-sudo apt-get -y install socat
+sudo apt-get update
+sudo apt-get -y install socat conntrack ipset
 ```
 
 > socat 命令用于支持 `kubectl port-forward` 命令。
@@ -30,11 +33,14 @@ sudo apt-get -y install socat
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
+  https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.0.0-beta.0/crictl-v1.0.0-beta.0-linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-the-hard-way/runsc \
+  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc5/runc.amd64 \
   https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz \
-  https://github.com/kubernetes-incubator/cri-containerd/releases/download/v1.0.0-beta.0/cri-containerd-1.0.0-beta.0.linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubelet
+  https://github.com/containerd/containerd/releases/download/v1.1.0/containerd-1.1.0.linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubelet
 ```
 
 创建安装目录：
@@ -52,10 +58,12 @@ sudo mkdir -p \
 安装 worker 二进制文件
 
 ```sh
-sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
-sudo tar -xvf cri-containerd-1.0.0-beta.0.linux-amd64.tar.gz -C /
-chmod +x kubectl kube-proxy kubelet
-sudo mv kubectl kube-proxy kubelet /usr/local/bin/
+  chmod +x kubectl kube-proxy kubelet runc.amd64 runsc
+  sudo mv runc.amd64 runc
+  sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
+  sudo tar -xvf crictl-v1.0.0-beta.0-linux-amd64.tar.gz -C /usr/local/bin/
+  sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
+  sudo tar -xvf containerd-1.1.0.linux-amd64.tar.gz -C /
 ```
 
 ### 配置 CNI 网路
@@ -70,7 +78,7 @@ POD_CIDR=$(curl -s -H "Metadata-Flavor: Google" \
 生成 `bridge` 网络插件配置文件
 
 ```sh
-cat > 10-bridge.conf <<EOF
+cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
 {
     "cniVersion": "0.3.1",
     "name": "bridge",
@@ -92,7 +100,7 @@ EOF
 生成 `loopback` 网络插件配置文件
 
 ```sh
-cat > 99-loopback.conf <<EOF
+cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
 {
     "cniVersion": "0.3.1",
     "type": "loopback"
@@ -100,49 +108,98 @@ cat > 99-loopback.conf <<EOF
 EOF
 ```
 
-将网络插件配置文件移动到 CNI 配置目录中：
+### 配置 containerd
 
 ```sh
-sudo mv 10-bridge.conf 99-loopback.conf /etc/cni/net.d/
+sudo mkdir -p /etc/containerd/
+
+# Untrusted workloads will be run using the gVisor (runsc) runtime.
+cat << EOF | sudo tee /etc/containerd/config.toml
+[plugins]
+  [plugins.cri.containerd]
+    snapshotter = "overlayfs"
+    [plugins.cri.containerd.default_runtime]
+      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_engine = "/usr/local/bin/runc"
+      runtime_root = ""
+    [plugins.cri.containerd.untrusted_workload_runtime]
+      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_engine = "/usr/local/bin/runsc"
+      runtime_root = "/run/containerd/runsc"
+EOF
+
+# Create the containerd.service systemd unit file
+cat <<EOF | sudo tee /etc/systemd/system/containerd.service
+[Unit]
+Description=containerd container runtime
+Documentation=https://containerd.io
+After=network.target
+
+[Service]
+ExecStartPre=/sbin/modprobe overlay
+ExecStart=/bin/containerd
+Restart=always
+RestartSec=5
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-999
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target
+EOF
 ```
 
 ### 配置 Kubelet
 
 ```sh
-sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-sudo mv ca.pem /var/lib/kubernetes/
+  sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
+  sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+  sudo mv ca.pem /var/lib/kubernetes/
 ```
 
 生成 `kubelet.service` systemd 配置文件：
 
 ```sh
-cat > kubelet.service <<EOF
+cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
+kind: KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    enabled: true
+  x509:
+    clientCAFile: "/var/lib/kubernetes/ca.pem"
+authorization:
+  mode: Webhook
+clusterDomain: "cluster.local"
+clusterDNS:
+  - "10.32.0.10"
+podCIDR: "${POD_CIDR}"
+runtimeRequestTimeout: "15m"
+tlsCertFile: "/var/lib/kubelet/${HOSTNAME}.pem"
+tlsPrivateKeyFile: "/var/lib/kubelet/${HOSTNAME}-key.pem"
+EOF
+
+cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
 [Unit]
 Description=Kubernetes Kubelet
 Documentation=https://github.com/kubernetes/kubernetes
-After=cri-containerd.service
-Requires=cri-containerd.service
+After=containerd.service
+Requires=containerd.service
 
 [Service]
 ExecStart=/usr/local/bin/kubelet \\
-  --allow-privileged=true \\
-  --anonymous-auth=false \\
-  --authorization-mode=Webhook \\
-  --client-ca-file=/var/lib/kubernetes/ca.pem \\
-  --cloud-provider= \\
-  --cluster-dns=10.32.0.10 \\
-  --cluster-domain=cluster.local \\
+  --config=/var/lib/kubelet/kubelet-config.yaml \\
   --container-runtime=remote \\
-  --container-runtime-endpoint=unix:///var/run/cri-containerd.sock \\
+  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
   --image-pull-progress-deadline=2m \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
   --network-plugin=cni \\
-  --pod-cidr=${POD_CIDR} \\
   --register-node=true \\
-  --runtime-request-timeout=15m \\
-  --tls-cert-file=/var/lib/kubelet/${HOSTNAME}.pem \\
-  --tls-private-key-file=/var/lib/kubelet/${HOSTNAME}-key.pem \\
   --v=2
 Restart=on-failure
 RestartSec=5
@@ -156,23 +213,28 @@ EOF
 
 ```sh
 sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
-
 ```
 
 生成 `kube-proxy.service` systemd 配置文件：
 
 ```sh
-cat > kube-proxy.service <<EOF
+cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
+kind: KubeProxyConfiguration
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+clientConnection:
+  kubeconfig: "/var/lib/kube-proxy/kubeconfig"
+mode: "iptables"
+clusterCIDR: "10.200.0.0/16"
+EOF
+
+cat <<EOF | sudo tee /etc/systemd/system/kube-proxy.service
 [Unit]
 Description=Kubernetes Kube Proxy
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kube-proxy \\
-  --cluster-cidr=10.200.0.0/16 \\
-  --kubeconfig=/var/lib/kube-proxy/kubeconfig \\
-  --proxy-mode=iptables \\
-  --v=2
+  --config=/var/lib/kube-proxy/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
 
@@ -184,35 +246,29 @@ EOF
 ### 启动 worker 服务
 
 ```sh
-sudo mv kubelet.service kube-proxy.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable containerd cri-containerd kubelet kube-proxy
-sudo systemctl start containerd cri-containerd kubelet kube-proxy
+sudo systemctl enable containerd kubelet kube-proxy
+sudo systemctl start containerd kubelet kube-proxy
 ```
 
 > 记得在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。
 
 ## 验证
 
-登入任意一台控制节点：
+登入任意一台控制节点查询 Nodes 列表
 
 ```sh
-gcloud compute ssh controller-0
-```
-
-列出目前已注册的 Kubernetes 节点:
-
-```sh
-kubectl get nodes
+gcloud compute ssh controller-0 \
+  --command "kubectl get nodes --kubeconfig admin.kubeconfig"
 ```
 
 输出为
 
 ```sh
 NAME       STATUS    ROLES     AGE       VERSION
-worker-0   Ready     <none>    18s       v1.9.0
-worker-1   Ready     <none>    18s       v1.9.0
-worker-2   Ready     <none>    18s       v1.9.0
+worker-0   Ready     <none>    20s       v1.10.2
+worker-1   Ready     <none>    20s       v1.10.2
+worker-2   Ready     <none>    20s       v1.10.2
 ```
 
 下一步：[配置 Kubectl](10-configuring-kubectl.md)。

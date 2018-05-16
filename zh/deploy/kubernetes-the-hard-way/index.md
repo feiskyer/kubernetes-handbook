@@ -4,8 +4,6 @@
 
 如有翻译不好的地方或文字上的错误, 欢迎提出 [Issue](https://github.com/feiskyer/kubernetes-handbook) 或是 [PR](https://github.com/feiskyer/kubernetes-handbook)。
 
-另外，繁体中文版翻译见 [Kubernetes-The-Hard-Way-ZH-tw](https://github.com/kweisamx/Kubernetes-The-Hard-Way-ZH-tw)。
-
 ---
 
 本教程将带领你一步步配置和部署一套高可用的 Kubernetes 集群。它不适用于想要一键自动化部署 Kubernetes 集群的人。如果你想要一键自动化部署，请参考 [Google Container Engine](https://cloud.google.com/container-engine) 或 [Getting Started Guides](http://kubernetes.io/docs/getting-started-guides/)。
@@ -24,10 +22,11 @@ Kubernetes The Hard Way 的主要目的是学习, 也就是说它会花很多时
 
 Kubernetes The Hard Way 将引导你建立高可用的 Kubernetes 集群, 包括每个组件之间的加密以及 RBAC 认证
 
-* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.9.0
-* [cri-containerd Container Runtime](https://github.com/kubernetes-incubator/cri-containerd) 1.0.0-alpha.0
+* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.10.2
+* [Containerd Container Runtime](https://github.com/containerd/containerd) 1.1.0
 * [CNI Container Networking](https://github.com/containernetworking/cni) 0.6.0
-* [etcd](https://github.com/coreos/etcd) 3.2.11
+* [gVisor](https://github.com/google/gvisor) 08879266fef3a67fac1a77f1ea133c3ac75759dd
+* [etcd](https://github.com/coreos/etcd) 3.3.5
 
 ## 实验步骤
 

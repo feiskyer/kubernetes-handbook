@@ -49,7 +49,7 @@ gcloud compute routes list --filter "network: kubernetes-the-hard-way"
 输出为
 
 ```sh
-AME                            NETWORK                  DEST_RANGE     NEXT_HOP                  PRIORITY
+NAME                            NETWORK                  DEST_RANGE     NEXT_HOP                  PRIORITY
 default-route-236a40a8bc992b5b  kubernetes-the-hard-way  0.0.0.0/0      default-internet-gateway  1000
 default-route-df77b1e818a56b30  kubernetes-the-hard-way  10.240.0.0/24                            1000
 kubernetes-route-10-200-0-0-24  kubernetes-the-hard-way  10.200.0.0/24  10.240.0.20               1000

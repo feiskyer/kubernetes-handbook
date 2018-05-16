@@ -13,10 +13,10 @@ kubectl create -f https://storage.googleapis.com/kubernetes-the-hard-way/kube-dn
 输出为
 
 ```sh
+service "kube-dns" created
 serviceaccount "kube-dns" created
 configmap "kube-dns" created
-service "kube-dns" created
-deployment "kube-dns" created
+deployment.extensions "kube-dns" created
 ```
 
 列出 `kube-dns` 部署的 Pod 列表:
@@ -30,7 +30,6 @@ kubectl get pods -l k8s-app=kube-dns -n kube-system
 ```sh
 NAME                        READY     STATUS    RESTARTS   AGE
 kube-dns-3097350089-gq015   3/3       Running   0          20s
-kube-dns-3097350089-q64qc   3/3       Running   0          20s
 ```
 
 ## 验证

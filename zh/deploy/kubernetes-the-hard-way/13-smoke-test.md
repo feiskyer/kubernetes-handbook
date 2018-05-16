@@ -17,7 +17,12 @@ kubectl create secret generic kubernetes-the-hard-way \
 
 ```sh
 gcloud compute ssh controller-0 \
-  --command "ETCDCTL_API=3 etcdctl get /registry/secrets/default/kubernetes-the-hard-way | hexdump -C"
+  --command "sudo ETCDCTL_API=3 etcdctl get \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/etcd/ca.pem \
+  --cert=/etc/etcd/kubernetes.pem \
+  --key=/etc/etcd/kubernetes-key.pem\
+  /registry/secrets/default/kubernetes-the-hard-way | hexdump -C"
 ```
 
 输出为
@@ -203,6 +208,102 @@ Last-Modified: Tue, 21 Nov 2017 14:28:04 GMT
 Connection: keep-alive
 ETag: "5a1437f4-264"
 Accept-Ranges: bytes
+```
+
+## 非可信负载
+
+非可信负载可以运行在 [gVisor](https://github.com/google/gvisor) 容器引擎之中。
+
+```sh
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: untrusted
+  annotations:
+    io.kubernetes.cri.untrusted-workload: "true"
+spec:
+  containers:
+    - name: webserver
+      image: gcr.io/hightowerlabs/helloworld:2.0.0
+EOF
+```
+
+验证
+
+```sh
+kubectl get pods -o wide
+```
+
+```
+NAME                       READY     STATUS    RESTARTS   AGE       IP           NODE
+busybox-68654f944b-djjjb   1/1       Running   0          5m        10.200.0.2   worker-0
+nginx-65899c769f-xkfcn     1/1       Running   0          4m        10.200.1.2   worker-1
+untrusted                  1/1       Running   0          10s       10.200.0.3   worker-0
+```
+
+查看 untrusted Pod 运行信息
+
+```sh
+# SSH to the node
+INSTANCE_NAME=$(kubectl get pod untrusted --output=jsonpath='{.spec.nodeName}')
+gcloud compute ssh ${INSTANCE_NAME}
+
+# List the containers running under gVisor
+sudo runsc --root  /run/containerd/runsc/k8s.io list
+```
+
+输出
+
+```sh
+I0514 14:03:56.108368   14988 x:0] ***************************
+I0514 14:03:56.108548   14988 x:0] Args: [runsc --root /run/containerd/runsc/k8s.io list]
+I0514 14:03:56.108730   14988 x:0] Git Revision: 08879266fef3a67fac1a77f1ea133c3ac75759dd
+I0514 14:03:56.108787   14988 x:0] PID: 14988
+I0514 14:03:56.108838   14988 x:0] UID: 0, GID: 0
+I0514 14:03:56.108877   14988 x:0] Configuration:
+I0514 14:03:56.108912   14988 x:0]              RootDir: /run/containerd/runsc/k8s.io
+I0514 14:03:56.109000   14988 x:0]              Platform: ptrace
+I0514 14:03:56.109080   14988 x:0]              FileAccess: proxy, overlay: false
+I0514 14:03:56.109159   14988 x:0]              Network: sandbox, logging: false
+I0514 14:03:56.109238   14988 x:0]              Strace: false, max size: 1024, syscalls: []
+I0514 14:03:56.109315   14988 x:0] ***************************
+ID                                                                 PID         STATUS      BUNDLE                                                           CREATED                          OWNER
+3528c6b270c76858e15e10ede61bd1100b77519e7c9972d51b370d6a3c60adbb   14766       running     /run/containerd/io.containerd.runtime.v1.linux/k8s.io/3528c6b270c76858e15e10ede61bd1100b77519e7c9972d51b370d6a3c60adbb   2018-05-14T14:02:34.302378996Z
+7ff747c919c2dcf31e64d7673340885138317c91c7c51ec6302527df680ba981   14716       running     /run/containerd/io.containerd.runtime.v1.linux/k8s.io/7ff747c919c2dcf31e64d7673340885138317c91c7c51ec6302527df680ba981   2018-05-14T14:02:32.159552044Z
+I0514 14:03:56.111287   14988 x:0] Exiting with status: 0
+```
+
+查询容器中的进程
+
+```sh
+POD_ID=$(sudo crictl -r unix:///var/run/containerd/containerd.sock \
+  pods --name untrusted -q)
+
+CONTAINER_ID=$(sudo crictl -r unix:///var/run/containerd/containerd.sock \
+  ps -p ${POD_ID} -q)
+
+sudo runsc --root /run/containerd/runsc/k8s.io ps ${CONTAINER_ID}
+```
+
+输出
+
+```
+I0514 14:05:16.499237   15096 x:0] ***************************
+I0514 14:05:16.499542   15096 x:0] Args: [runsc --root /run/containerd/runsc/k8s.io ps 3528c6b270c76858e15e10ede61bd1100b77519e7c9972d51b370d6a3c60adbb]
+I0514 14:05:16.499597   15096 x:0] Git Revision: 08879266fef3a67fac1a77f1ea133c3ac75759dd
+I0514 14:05:16.499644   15096 x:0] PID: 15096
+I0514 14:05:16.499695   15096 x:0] UID: 0, GID: 0
+I0514 14:05:16.499734   15096 x:0] Configuration:
+I0514 14:05:16.499769   15096 x:0]              RootDir: /run/containerd/runsc/k8s.io
+I0514 14:05:16.499880   15096 x:0]              Platform: ptrace
+I0514 14:05:16.499962   15096 x:0]              FileAccess: proxy, overlay: false
+I0514 14:05:16.500042   15096 x:0]              Network: sandbox, logging: false
+I0514 14:05:16.500120   15096 x:0]              Strace: false, max size: 1024, syscalls: []
+I0514 14:05:16.500197   15096 x:0] ***************************
+UID       PID       PPID      C         STIME     TIME      CMD
+0         1         0         0         14:02     40ms      app
+I0514 14:05:16.501354   15096 x:0] Exiting with status: 0
 ```
 
 下一步：[删除集群](14-cleanup.md)。

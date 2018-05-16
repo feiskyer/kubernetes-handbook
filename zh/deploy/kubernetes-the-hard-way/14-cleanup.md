@@ -18,13 +18,9 @@ gcloud -q compute instances delete \
 
 ```sh
 gcloud -q compute forwarding-rules delete kubernetes-forwarding-rule \
-  --region $(gcloud config get-value compute/region)
+    --region $(gcloud config get-value compute/region)
 gcloud -q compute target-pools delete kubernetes-target-pool
-```
-
-删除 `kubernetes-the-hard-way` 静态 IP 地址：
-
-```sh
+gcloud -q compute http-health-checks delete kubernetes
 gcloud -q compute addresses delete kubernetes-the-hard-way
 ```
 
@@ -34,16 +30,17 @@ gcloud -q compute addresses delete kubernetes-the-hard-way
 gcloud -q compute firewall-rules delete \
   kubernetes-the-hard-way-allow-nginx-service \
   kubernetes-the-hard-way-allow-internal \
-  kubernetes-the-hard-way-allow-external
+  kubernetes-the-hard-way-allow-external \
+  kubernetes-the-hard-way-allow-health-check
 ```
 
 删除 Pod 网络路由:
 
 ```sh
 gcloud -q compute routes delete \
-  kubernetes-route-10-200-0-0-24 \
-  kubernetes-route-10-200-1-0-24 \
-  kubernetes-route-10-200-2-0-24
+    kubernetes-route-10-200-0-0-24 \
+    kubernetes-route-10-200-1-0-24 \
+    kubernetes-route-10-200-2-0-24
 ```
 
 删除 `kubernetes` 子网:
