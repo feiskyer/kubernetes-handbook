@@ -200,8 +200,8 @@ Timeout waiting for initialization
 
 这说明 kube-dns pod 无法转发 DNS 请求到上游 DNS 服务器。解决方法为
 
-- 如果使用的 Docker 版本大于 1.12，则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT`
-- 等待一段时间，如果还未恢复，则检查 Node 网络是否正确配置，比如是否可以正常请求上游DNS服务器、是否有安全组禁止了 DNS 请求等
+- 如果使用的 Docker 版本大于 1.12，则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT` 开启 Docker 容器的 IP 转发
+- 等待一段时间，如果还未恢复，则检查 Node 网络是否正确配置，比如是否可以正常请求上游DNS服务器、是否开启了 IP 转发（包括 Node 内部和公有云上虚拟网卡等）、是否有安全组禁止了 DNS 请求等
 
 
 如果错误日志中不是转发 DNS 请求超时，而是访问 kube-apiserver 超时，比如
