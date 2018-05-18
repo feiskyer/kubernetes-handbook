@@ -48,10 +48,16 @@ rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 一般有两种可能的原因
 
 * Pause 镜像配置错误
-* 容器[镜像版本与 Windows 系统不兼容](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)。注意在 Windows Server 1709 上面需要使用 1709 标签的镜像，比如
-  * `microsoft/aspnet:4.7.1-windowsservercore-1709`
-  * `microsoft/windowsservercore:1709`
-  * `microsoft/iis:windowsservercore-1709`
+* 容器[镜像版本与 Windows 系统不兼容](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
+  * 在 Windows Server 1709 上面需要使用 1709 标签的镜像，比如
+    * `microsoft/aspnet:4.7.2-windowsservercore-1709`
+    * `microsoft/windowsservercore:1709`
+    * `microsoft/iis:windowsservercore-1709`
+  * 在 Windows Server 1803 上面需要使用 1803 标签的镜像，比如
+    * `microsoft/aspnet:4.7.2-windowsservercore-1803`
+    * `microsoft/iis:windowsservercore-1803`
+    * `microsoft/windowsservercore:1803`
+
 
 ## Windows Pod 内无法解析 DNS
 
@@ -129,7 +135,7 @@ Source        Description      HotFixID      InstalledBy          InstalledOn
 
 ## Windows Pod 内无法访问 ServiceAccount Secret
 
-这是个[已知问题](https://github.com/moby/moby/issues/28401)，需要等 Windows Update。针对该问题的修复已经包含在 Windows 10 Insider 和 Windows Server Insider builds 17074+ 内。
+这是老版本 Windows 的[已知问题](https://github.com/moby/moby/issues/28401)，升级 Windows 到 1803 即可解决，升级步骤见[这里](https://blogs.windows.com/windowsexperience/2018/04/30/how-to-get-the-windows-10-april-2018-update/)。
 
 ## Windows Pod 内无法访问 Kubernetes API
 
