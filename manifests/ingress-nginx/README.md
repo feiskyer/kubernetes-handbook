@@ -36,7 +36,6 @@ metadata:
   annotations:
     kubernetes.io/tls-acme: "true"
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/ssl-redirect: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt
 spec:
