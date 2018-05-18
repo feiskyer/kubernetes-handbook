@@ -46,10 +46,15 @@ Don't forget to delete the service after user: `kubectl delete -f rdp.yaml`.
 Besides reasons introduced in [Troubleshooting Pod](pod.md), there are also other causes including:
 
 - the pause image is misconfigured
-- the container image is not [compatible with Windows](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility). Note that containers on Windows Server 1709 should use images with 1709 tags, e.g.
-  - `microsoft/aspnet:4.7.1-windowsservercore-1709`
-  - `microsoft/windowsservercore:1709`
-  - `microsoft/iis:windowsservercore-1709`
+- the container image is not [compatible with Windows](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility).
+  - Containers on Windows Server 1709 should use images with 1709 tags, e.g.
+    - `microsoft/aspnet:4.7.2-windowsservercore-1709`
+    - `microsoft/windowsservercore:1709`
+    - `microsoft/iis:windowsservercore-1709`
+  - Containers on Windows Server 1803 should use images with 1803 tags, e.g.
+    - `microsoft/aspnet:4.7.2-windowsservercore-1803`
+    - `microsoft/windowsservercore:1803`
+    - `microsoft/iis:windowsservercore-1803`
 
 ## Windows Pod failed to resolve DNS
 
@@ -150,7 +155,7 @@ If there are still DNS resolve issues, the steps in previous steps should be app
 
 ## Windows Pod failed to get ServiceAccount Secret
 
-This is also a [known issue](https://github.com/moby/moby/issues/28401). There is no workaround for current windows yet, but its fix has been released in Windows 10 Insider and Windows Server Insider builds 17074+.
+This is a [known issue](https://github.com/moby/moby/issues/28401) for old Windows releases. The fix has been included in Windows 1803, please follow [here](https://blogs.windows.com/windowsexperience/2018/04/30/how-to-get-the-windows-10-april-2018-update/) to upgrade Windows.
 
 ## Windows Pod failed to access Kubernetes API
 
