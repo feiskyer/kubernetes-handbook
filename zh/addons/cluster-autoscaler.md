@@ -1,113 +1,17 @@
 # Cluster AutoScaler
 
-Cluster AutoScaler 是一个自动扩展和收缩 Kubernetes 集群 Node 的扩展。当集群容量不足时，它会自动去 Cloud Provider （支持 GCE、GKE 和 AWS）创建新的 Node，而在 Node 长时间资源利用率很低时自动将其删除以节省开支。
+Cluster AutoScaler 是一个自动扩展和收缩 Kubernetes 集群 Node 的扩展。当集群容量不足时，它会自动去 Cloud Provider （支持 GCE、GKE、Azure、AKS、AWS 等）创建新的 Node，而在 Node 长时间（超过 10 分钟）资源利用率很低时（低于 50%）自动将其删除以节省开支。
 
 Cluster AutoScaler 独立于 Kubernetes 主代码库，维护在 <https://github.com/kubernetes/autoscaler>。
 
 ## 部署
 
-Cluster AutoScaler v1.0+ 可以基于 Docker 镜像 `gcr.io/google_containers/cluster-autoscaler:v1.0.0` 来部署，详细的部署步骤可以参考
+Cluster AutoScaler v1.0+ 可以基于 Docker 镜像 `gcr.io/google_containers/cluster-autoscaler:v1.2.2` 来部署，详细的部署步骤可以参考
 
 - GCE: <https://kubernetes.io/docs/concepts/cluster-administration/cluster-management/>
 - GKE: <https://cloud.google.com/container-engine/docs/cluster-autoscaler>
 - AWS: <https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md>
 - Azure: <https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/azure>
-
-比如 Azure 中的部署方式为
-
-```yaml
-apiVersion: v1
-data:
-  ClientID: <client-id>
-  ClientSecret: <client-secret>
-  ResourceGroup: <resource-group>
-  SubscriptionID: <subscription-id>
-  TenantID: <tenand-id>
-  ScaleSetName: <scale-set-name>
-kind: ConfigMap
-metadata:
-  name: cluster-autoscaler-azure
-  namespace: kube-system
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: cluster-autoscaler
-  namespace: kube-system
-  labels:
-    app: cluster-autoscaler
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: cluster-autoscaler
-  template:
-    metadata:
-      labels:
-        app: cluster-autoscaler
-    spec:
-      tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
-      nodeSelector:
-        kubernetes.io/role: master
-      containers:
-      - image: gcr.io/google_containers/cluster-autoscaler:{{ca_version}}
-        name: cluster-autoscaler
-        resources:
-          limits:
-            cpu: 100m
-            memory: 300Mi
-          requests:
-            cpu: 100m
-            memory: 300Mi
-        env:
-        - name: ARM_SUBSCRIPTION_ID
-          valueFrom:
-            configMapKeyRef:
-              name: cluster-autoscaler-azure
-              key: SubscriptionID
-        - name: ARM_RESOURCE_GROUP
-          valueFrom:
-            configMapKeyRef:
-              name: cluster-autoscaler-azure
-              key: ResourceGroup
-        - name: ARM_TENANT_ID
-          valueFrom:
-            configMapKeyRef:
-              name: cluster-autoscaler-azure
-              key: TenantID
-        - name: ARM_CLIENT_ID
-          valueFrom:
-            configMapKeyRef:
-              name: cluster-autoscaler-azure
-              key: ClientID
-        - name: ARM_CLIENT_SECRET
-          valueFrom:
-            configMapKeyRef:
-              name: cluster-autoscaler-azure
-              key: ClientSecret
-        - name: ARM_SCALE_SET_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: cluster-autoscaler-azure
-              key: ScaleSetName
-        command:
-          - ./cluster-autoscaler
-          - --v=4
-          - --cloud-provider=azure
-          - --skip-nodes-with-local-storage=false
-          - --nodes="1:10:$(ARM_SCALE_SET_NAME)"
-        volumeMounts:
-          - name: ssl-certs
-            mountPath: /etc/ssl/certs/ca-certificates.crt
-            readOnly: true
-        imagePullPolicy: "Always"
-      volumes:
-      - name: ssl-certs
-        hostPath:
-          path: "/etc/ssl/certs/ca-certificates.crt"
-```
 
 ## 工作原理
 
