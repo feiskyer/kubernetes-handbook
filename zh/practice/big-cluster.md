@@ -73,6 +73,20 @@ affinity:
      topologyKey: kubernetes.io/hostname
 ```
 
+## Kube-apiserver 配置
+
+- 设置 `--max-requests-inflight=3000`
+- 设置 `--max-mutating-requests-inflight=1000`
+
+## Kube-scheduler 配置
+
+- 设置 `--kube-api-qps=100`
+
+## Kube-controller-manager 配置
+
+- 设置 `--kube-api-qps=100`
+- 设置 `--kube-api-burst=100`
+
 ## Kubelet 配置
 
 * 设置 `--image-pull-progress-deadline=30m`
