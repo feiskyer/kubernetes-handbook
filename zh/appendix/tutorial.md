@@ -18,7 +18,9 @@
 - [AWS Workshop for Kubernetes](https://github.com/aws-samples/aws-workshop-for-kubernetes)
 - [Learn Kubernetes using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/kubernetes)
 - [Kubernetes Bootcamp](https://kubernetesbootcamp.github.io/kubernetes-bootcamp/index.html)
+- [Kubernetes Certified Administration (CKA) online resources](https://github.com/walidshaari/Kubernetes-Certified-Administrator)
 - [Kubernetes By Example](http://kubernetesbyexample.com)
+- [Kubernetes Learning Resources](https://docs.google.com/spreadsheets/d/10NltoF_6y3mBwUzQ4bcQLQfCE1BWSgUDcJXy-Qp2JEU/edit#gid=0)
 
 ## 电子书籍
 
