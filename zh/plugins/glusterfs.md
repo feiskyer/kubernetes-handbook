@@ -72,17 +72,17 @@ State: Peer in Cluster (Connected)
 
 GlusterFS 中的 volume 的模式有很多种，包括以下几种：
 
-- ** 分布卷（默认模式）**：即 DHT, 也叫 分布卷: 将文件以 hash 算法随机分布到 一台服务器节点中存储。
-- ** 复制模式 **：即 AFR, 创建 volume 时带 replica x 数量: 将文件复制到 replica x 个节点中。
-- ** 条带模式 **：即 Striped, 创建 volume 时带 stripe x 数量： 将文件切割成数据块，分别存储到 stripe x 个节点中 (类似 raid 0)。
-- ** 分布式条带模式 **：最少需要 4 台服务器才能创建。 创建 volume 时 stripe 2 server = 4 个节点： 是 DHT 与 Striped 的组合型。
-- ** 分布式复制模式 **：最少需要 4 台服务器才能创建。 创建 volume 时 replica 2 server = 4 个节点：是 DHT 与 AFR 的组合型。
-- ** 条带复制卷模式 **：最少需要 4 台服务器才能创建。 创建 volume 时 stripe 2 replica 2 server = 4 个节点： 是 Striped 与 AFR 的组合型。
-- ** 三种模式混合 **： 至少需要 8 台 服务器才能创建。 stripe 2 replica 2 , 每 4 个节点 组成一个 组。
+- **分布卷(默认模式)**：即 DHT, 也叫 分布卷: 将文件以 hash 算法随机分布到 一台服务器节点中存储。
+- **复制模式**：即 AFR, 创建 volume 时带 replica x 数量: 将文件复制到 replica x 个节点中。
+- **条带模式**：即 Striped, 创建 volume 时带 stripe x 数量： 将文件切割成数据块，分别存储到 stripe x 个节点中 (类似 raid 0)。
+- **分布式条带模式**：最少需要 4 台服务器才能创建。 创建 volume 时 stripe 2 server = 4 个节点： 是 DHT 与 Striped 的组合型。
+- **分布式复制模式**：最少需要 4 台服务器才能创建。 创建 volume 时 replica 2 server = 4 个节点：是 DHT 与 AFR 的组合型。
+- **条带复制卷模式**：最少需要 4 台服务器才能创建。 创建 volume 时 stripe 2 replica 2 server = 4 个节点： 是 Striped 与 AFR 的组合型。
+- **三种模式混合**： 至少需要 8 台 服务器才能创建。 stripe 2 replica 2 , 每 4 个节点 组成一个 组。
 
-这几种模式的示例图参考：[CentOS7 安装 GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)。
+这几种模式的示例图参考 [GlusterFS Documentation](https://docs.gluster.org/en/latest/Quick-Start-Guide/Architecture/#types-of-volumes)。
 
-因为我们只有三台主机，在此我们使用默认的 ** 分布卷模式 **。** 请勿在生产环境上使用该模式，容易导致数据丢失。**
+因为我们只有三台主机，在此我们使用默认的**分布卷模式**。**请勿在生产环境上使用该模式，容易导致数据丢失。**
 
 ```bash
 # 创建分布卷
@@ -133,7 +133,7 @@ $ gluster volume set k8s-volume performance.write-behind-window-size 1024MB
 
 ## Kubernetes 中使用 GlusterFS
 
-官方的文档见：https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs
+官方的文档见<https://github.com/kubernetes/examples/tree/master/staging/volumes/glusterfs>.
 
 以下用到的所有 yaml 和 json 配置文件可以在 [glusterfs](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/glusterfs) 中找到。注意替换其中私有镜像地址为你自己的镜像地址。
 
@@ -142,13 +142,10 @@ $ gluster volume set k8s-volume performance.write-behind-window-size 1024MB
 
 ```bash
 # 在所有 k8s node 中安装 glusterfs 客户端
-
 $ yum install -y glusterfs glusterfs-fuse
 
 # 配置 hosts
-
 $ vi /etc/hosts
-
 172.20.0.113   sz-pg-oam-docker-test-001.tendcloud.com
 172.20.0.114   sz-pg-oam-docker-test-002.tendcloud.com
 172.20.0.115   sz-pg-oam-docker-test-003.tendcloud.com
@@ -202,7 +199,7 @@ $ kubectl get svc
 ## 创建测试 pod
 
 ```bash
-$ curl -O https://raw.githubusercontent.com/kubernetes/kubernetes/master/examples/volumes/glusterfs/glusterfs-pod.json
+$ curl -O https://github.com/kubernetes/examples/raw/master/staging/volumes/glusterfs/glusterfs-pod.json
 
 # 编辑 glusterfs-pod.json
 # 修改 volumes  下的 path 为上面创建的 volume 名称
@@ -227,14 +224,15 @@ $ df -h
 
 ## 配置 PersistentVolume
 
-PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是 kubernetes 提供的两种 API 资源，用于抽象存储细节。管理员关注于如何通过 pv 提供存储功能而无需关注用户如何使用，同样的用户只需要挂载 PVC 到容器中而不需要关注存储卷采用何种技术实现。
-
-PVC 和 PV 的关系跟 pod 和 node 关系类似，前者消耗后者的资源。PVC 可以向 PV 申请指定大小的存储资源并设置访问模式。
+PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是 kubernetes 提供的两种 API 资源，用于抽象存储细节。管理员关注于如何通过 pv 提供存储功能而无需关注用户如何使用，同样的用户只需要挂载 PVC 到容器中而不需要关注存储卷采用何种技术实现。PVC 和 PV 的关系跟 pod 和 node 关系类似，前者消耗后者的资源。PVC 可以向 PV 申请指定大小的存储资源并设置访问模式。
 
 **PV 属性 **
 
 - storage 容量
-- 读写属性：分别为 ReadWriteOnce：单个节点读写； ReadOnlyMany：多节点只读 ； ReadWriteMany：多节点读写
+- 读写属性：分别为
+  - ReadWriteOnce：单个节点读写；
+  - ReadOnlyMany：多节点只读 ；
+  - ReadWriteMany：多节点读写
 
 ```bash
 $ cat glusterfs-pv.yaml
@@ -349,4 +347,4 @@ index.html
 ## 参考
 
 - [CentOS 7 安装 GlusterFS](http://www.cnblogs.com/jicki/p/5801712.html)
-- [GlusterFS with kubernetes](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs)
+- <https://github.com/gluster/gluster-kubernetes>
