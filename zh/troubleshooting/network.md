@@ -81,7 +81,13 @@ $ docker ps | grep POD | wc -l
 - 网络插件本身的问题，Pod 停止后其 IP 未释放
 - Pod 重新创建的速度比 Kubelet 调用 CNI 插件回收网络（垃圾回收时删除已停止 Pod 前会先调用 CNI 清理网络）的速度快
 
-对第一个问题，没有好的方法，只能联系插件开发者修复未释放问题。
+对第一个问题，最好联系插件开发者询问修复方法或者临时性的解决方法。当然，如果对网络插件的工作原理很熟悉的话，也可以考虑手动释放未使用的 IP 地址，比如：
+
+* 停止 Kubelet
+* 找到 IPAM 插件保存已分配 IP 地址的文件，比如 `/var/lib/cni/networks/cbr0`（flannel）或者 `/var/run/azure-vnet-ipam.json`（Azure CNI）等
+* 查询容器已用的 IP 地址，比如 `kubectl get pod -o wide --all-namespaces | grep <node-name>`
+* 对比两个列表，从 IPAM 文件中删除未使用的 IP 地址，并手动删除相关的虚拟网卡和网络命名空间（如果有的话）
+* 重启启动 Kubelet
 
 而第二个问题则可以给 Kubelet 配置更快的垃圾回收，如
 
@@ -181,7 +187,7 @@ kubectl get pods -l key1=value1,key2=value2
 * CNI 网络或主机路由异常也会导致类似的问题
 * kube-proxy 服务有可能未启动或者未正确配置相应的 iptables 规则，比如正常情况下名为 `hostnames` 的服务会配置以下 iptables 规则
 
-```
+```sh
 $ iptables-save | grep hostnames
 -A KUBE-SEP-57KPRZ3JQVENLNBR -s 10.244.3.6/32 -m comment --comment "default/hostnames:" -j MARK --set-xmark 0x00004000/0x00004000
 -A KUBE-SEP-57KPRZ3JQVENLNBR -p tcp -m comment --comment "default/hostnames:" -m tcp -j DNAT --to-destination 10.244.3.6:9376

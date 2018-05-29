@@ -27,6 +27,49 @@ And these are exactly the direction of what we should do when encountering netwo
   - security groups on public cloud may forbid kubernetes network connections
   - ACL on switches or routers may also forbid kubernetes network connections
 
+## Pod failed to allocate IP address
+
+Pod stuck on ContainerCreating state and its events report `Failed to allocate address` error:
+
+```sh
+  Normal   SandboxChanged          5m (x74 over 8m)    kubelet, k8s-agentpool-66825246-0  Pod sandbox changed, it will be killed and re-created.
+  Warning  FailedCreatePodSandBox  21s (x204 over 8m)  kubelet, k8s-agentpool-66825246-0  Failed create pod sandbox: rpc error: code = Unknown desc = NetworkPlugin cni failed to set up pod "deployment-azuredisk6-56d8dcb746-487td_default" network: Failed to allocate address: Failed to delegate: Failed to allocate address: No available addresses
+```
+
+Check the allocated IP addresses in plugin IPAM store, you may find that all IP addresses have been allocated, but the number is much less that running Pods:
+
+```sh
+# Kubenet for example. The real path of IPAM store file depends on network plugin implementation.
+$ cd /var/lib/cni/networks/kubenet
+$ ls -al|wc -l
+258
+
+$ docker ps | grep POD | wc -l
+7
+```
+
+There are two possible reasons for such case, which include
+
+* Bugs in network plugin, which forgets deallocating the IP address when Pod terminated
+* Pods creation is much more faster than garbage collection of terminated Pods
+
+For the first reason, contacting author of plugin for workaround or fixes is first choice. But you can also deallocate IP addresses manually if you are sure about what you are doing:
+
+* Stop Kubelet
+* Find the IPAM store file for the CNI plugin and get a list of all allocated IP addresses, e.g.  `/var/lib/cni/networks/cbr0` (flannel) and `/var/run/azure-vnet-ipam.json` (Azure CNI)
+
+- Get list of using IP addresses, e.g. by  `kubectl get pod -o wide --all-namespaces | grep <node-name>`
+- Compare the two list, remove the unused IP addresses from the store file, and then delete related netns or virtual nics (this requires deep understand of the network plugin)
+- Finally restart kubelet
+
+For the second reason, a fast garbage collection could be configured for kubelet, e.g.
+
+```sh
+--minimum-container-ttl-duration=15s
+--maximum-dead-containers-per-container=1
+--maximum-dead-containers=100
+```
+
 ## Flannel Pods stuck in Init:CrashLoopBackOff
 
 When using Flannel network plugin, it is very easy to install for a fresh setup
