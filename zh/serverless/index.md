@@ -27,6 +27,22 @@ Serverless，即无服务器架构，将大家从服务器中解放了出来，�
 - Fission: https://github.com/fission/fission
 - Kubeless: https://github.com/kubeless/kubeless
 - OpenWhisk: https://github.com/apache/incubator-openwhisk
+- Fn: https://fnproject.io/
+
+## 商业产品
+
+- AWS Lambda: http://docs.aws.amazon.com/lambda/latest/dg/welcome.html
+- AWS Fargate: https://aws.amazon.com/cn/fargate/
+- Azure Container Instance (ACI): https://azure.microsoft.com/zh-cn/services/container-instances/
+- Azure Functions: https://azure.microsoft.com/zh-cn/services/functions/
+- Google Cloud Functions: https://cloud.google.com/functions/
+- Hyper: https://hyper.sh/
+- Huawei CCI: https://www.huaweicloud.com/product/cci.html
+- Aliyun Serverless Kubernetes: https://help.aliyun.com/document_detail/71480.html
+
+很多商业产品也可以与 Kubernetes 进行无缝集成，即通过 [Virtual Kubelet](https://github.com/virtual-kubelet/virtual-kubelet) 将商业 Serverless 产品（如 ACI 和 Fargate等）作为 Kubernetes 集群的一个无限 Node 使用，这样就无需考虑 Node 数量的问题。
+
+![](images/virtual-kubelet.png)
 
 ## 参考文档
 
