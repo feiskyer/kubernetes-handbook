@@ -14,31 +14,9 @@ Istio Role-Based Access Control (RBAC) 提供了 namespace、service 以及 meth
 
 ### 开启 RBAC
 
-可以通过创建 Mixer Adapter Rule 来给特定的 namespace 开启 RBAC，如
-
-```yaml
-   apiVersion: "config.istio.io/v1alpha2"
-   kind: rbac
-   metadata:
-     name: handler
-     namespace: istio-system
-   spec:
-     config_store_url: "k8s://"
-     cache_duration: "30s"
-
-   ---
-   apiVersion: "config.istio.io/v1alpha2"
-   kind: rule
-   metadata:
-     name: rbaccheck
-     namespace: istio-system
-   spec:
-     match: destination.namespace == "default"
-     actions:
-     # handler and instance names default to the rule's namespace.
-     - handler: handler.rbac
-       instances:
-       - requestcontext.authorization
+```sh
+# Enable RBAC for default namespace
+istioctl create -f samples/bookinfo/kube/istio-rbac-enable.yaml
 ```
 
 ### 实现原理
@@ -46,28 +24,50 @@ Istio Role-Based Access Control (RBAC) 提供了 namespace、service 以及 meth
 在实现原理上，Istio RBAC 作为 [Mixer Adaper](https://istio.io/docs/concepts/policy-and-control/mixer.html#adapters) 对请求上下文（Request Context）进行认证，并返回授权结果：ALLOW 或者 DENY。请求上下文包含访问对象和动作等两部分，如
 
 ```yaml
-   apiVersion: "config.istio.io/v1alpha2"
-   kind: authorization
-   metadata:
-     name: requestcontext
-     namespace: istio-system
-   spec:
-     subject:
-       user: source.user | ""
-       groups: ""
-       properties:
-         service: source.service | ""
-         namespace: source.namespace | ""
-     action:
-       namespace: destination.namespace | ""
-       service: destination.service | ""
-       method: request.method | ""
-       path: request.path | ""
-       properties:
-         version: request.headers["version"] | ""
+apiVersion: "config.istio.io/v1alpha2"
+kind: authorization
+metadata:
+  name: requestcontext
+  namespace: istio-system
+spec:
+  subject:
+    user: source.user | ""
+    groups: ""
+    properties:
+      app: source.labels["app"] | ""
+      version: source.labels["version"] | ""
+      namespace: source.namespace | ""
+  action:
+    namespace: destination.namespace | ""
+    service: destination.service | ""
+    method: request.method | ""
+    path: request.path | ""
+    properties:
+      app: destination.labels["app"] | ""
+      version: destination.labels["version"] | ""
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: rbac
+metadata:
+  name: handler
+  namespace: istio-system
+spec:
+  config_store_url: "k8s://"
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: rule
+metadata:
+  name: rbaccheck
+  namespace: istio-system
+spec:
+  match: destination.namespace == "default"
+  actions:
+  - handler: handler.rbac
+    instances:
+    - requestcontext.authorization
 ```
 
-### RBAC Policy
+### 访问控制
 
 Istio RBAC 提供了 ServiceRole 和 ServiceRoleBinding 两种资源对象，并以 CustomResourceDefinition (CRD) 的方式管理。
 
@@ -75,36 +75,33 @@ Istio RBAC 提供了 ServiceRole 和 ServiceRoleBinding 两种资源对象，并
 - ServiceRoleBinding 定义了赋予指定角色的绑定，即可以指定的角色和动作访问服务
 
 ```yaml
-   apiVersion: "config.istio.io/v1alpha2"
-   kind: ServiceRole
-   metadata:
-     name: tester
-     namespace: default
-   spec:
-     rules:
-     - services: ["test-*"]
-       methods: ["*"]
-     - services: ["bookstore.default.svc.cluster.local"]
-       paths: ["*/reviews"]
-       methods: ["GET"]
-       constraints:
-       - key: "version"
-         values: ["v1", "v2"]
-   ---
-   apiVersion: "config.istio.io/v1alpha2"
-   kind: ServiceRoleBinding
-   metadata:
-     name: test-binding-products
-     namespace: default
-   spec:
-     subjects:
-     - user: "alice@yahoo.com"
-     - properties:
-         service: "reviews.abc.svc.cluster.local"
-         namespace: "abc"
-     roleRef:
-       kind: ServiceRole
-       name: "products-viewer"
+apiVersion: "config.istio.io/v1alpha2"
+kind: ServiceRole
+metadata:
+  name: service-viewer
+  namespace: default
+spec:
+  rules:
+  - services: ["*"]
+    methods: ["GET"]
+    constraints:
+    - key: "app"
+      values: ["productpage", "details", "reviews", "ratings"]
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: ServiceRoleBinding
+metadata:
+  name: bind-service-viewer
+  namespace: default
+spec:
+  subjects:
+  - properties:
+      namespace: "default"
+  - properties:
+      namespace: "istio-system"
+  roleRef:
+    kind: ServiceRole
+    name: "service-viewer"
 ```
 
 ## 双向 TLS
@@ -137,6 +134,4 @@ Istio Auth 由三部分组成：
 
 - [Istio Security 文档](https://istio.io/docs/concepts/security/)
 - [Istio Role-Based Access Control (RBAC)](https://istio.io/docs/concepts/security/rbac.html)
-
-
 - [Istio 双向 TLS 文档](https://istio.io/docs/concepts/security/mutual-tls.html)

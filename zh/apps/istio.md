@@ -103,27 +103,16 @@ $ kubectl api-versions | grep admissionregistration
 admissionregistration.k8s.io/v1beta1
 ```
 
-然后部署 istio-sidecar-injector
+然后确认 istio-sidecar-injector 正常运行
 
 ```sh
-$ ./install/kubernetes/webhook-create-signed-cert.sh \
-    --service istio-sidecar-injector \
-    --namespace istio-system \
-    --secret sidecar-injector-certs
-$ kubectl apply -f install/kubernetes/istio-sidecar-injector-configmap-release.yaml
-$ cat install/kubernetes/istio-sidecar-injector.yaml | \
-     ./install/kubernetes/webhook-patch-ca-bundle.sh > \
-     install/kubernetes/istio-sidecar-injector-with-ca-bundle.yaml
-$ kubectl apply -f install/kubernetes/istio-sidecar-injector-with-ca-bundle.yaml
-
 # Conform istio-sidecar-injector is working
-$ kubectl -n istio-system get deployment -listio=sidecar-injector
-Copy
+$ kubectl -n istio-system get deploy istio-sidecar-injector
 NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-istio-sidecar-injector   1         1         1            1           1d
+istio-sidecar-injector   1         1         1            1           4m
 ```
 
-然手部署应用
+为需要自动注入 sidecar 的 namespace 加上标签 `istio-injection=enabled`：
 
 ```sh
 # default namespace 没有 istio-injection 标签
@@ -136,9 +125,9 @@ kube-system    Active        1h
 
 # 打上 istio-injection=enabled 标签
 $ kubectl label namespace default istio-injection=enabled
-
-# 在 default namespace 中创建 Pod 会自动添加 istio sidecar 容器
 ```
+
+这样，在 default namespace 中创建 Pod 后自动添加 istio sidecar 容器。
 
 ## 参考文档
 
