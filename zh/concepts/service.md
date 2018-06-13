@@ -3,7 +3,7 @@
 Kubernetes 在设计之初就充分考虑了针对容器的服务发现与负载均衡机制，提供了 Service 资源，并通过 kube-proxy 配合 cloud provider 来适应不同的应用场景。随着 kubernetes 用户的激增，用户场景的不断丰富，又产生了一些新的负载均衡机制。目前，kubernetes 中的负载均衡大致可以分为以下几种机制，每种机制都有其特定的应用场景：
 
 - Service：直接用 Service 提供 cluster 内部的负载均衡，并借助 cloud provider 提供的 LB 提供外部访问
-- Ingress Controller：还是用 Service 提供 cluster 内部的负载均衡，但是通过自定义 LB 提供外部访问
+- Ingress Controller：还是用 Service 提供 cluster 内部的负载均衡，但是通过自定义 Ingress Controller 提供外部访问
 - Service Load Balancer：把 load balancer 直接跑在容器中，实现 Bare Metal 的 Service Load Balancer
 - Custom Load Balancer：自定义负载均衡，并替代 kube-proxy，一般在物理部署 Kubernetes 时使用，方便接入公司已有的外部服务
 
@@ -276,11 +276,11 @@ Traefik 提供了易用的 Ingress Controller，使用方法见 <https://docs.tr
 
 ## Service Load Balancer
 
-在 Ingress 出现以前，Service Load Balancer 是推荐的解决 Service 局限性的方式。Service Load Balancer 将 haproxy 跑在容器中，并监控 service 和 endpoint 的变化，通过容器 IP 对外提供 4 层和 7 层负载均衡服务。
+在 Ingress 出现以前，[Service Load Balancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) 是推荐的解决 Service 局限性的方式。Service Load Balancer 将 haproxy 跑在容器中，并监控 service 和 endpoint 的变化，通过容器 IP 对外提供 4 层和 7 层负载均衡服务。
 
 社区提供的 Service Load Balancer 支持四种负载均衡协议：TCP、HTTP、HTTPS 和 SSL TERMINATION，并支持 ACL 访问控制。
 
-> 注意：Service Load Balancer 已不再推荐使用，推荐使用 [ingress](ingress.md)。
+> 注意：Service Load Balancer 已不再推荐使用，推荐使用 [Ingress Controller](ingress.md)。
 
 ## Custom Load Balancer
 
@@ -291,6 +291,15 @@ Traefik 提供了易用的 Ingress Controller，使用方法见 <https://docs.tr
 
 这个时候就可以自定义组件，并代替 kube-proxy 来做负载均衡。基本的思路是监控 kubernetes 中 service 和 endpoints 的变化，并根据这些变化来配置负载均衡器。比如 weave flux、nginx plus、kube2haproxy 等。
 
+## 集群外部访问服务
+
+Service 的 ClusterIP 是 Kubernetes 内部的虚拟 IP 地址，无法直接从外部直接访问。但如果需要从外部访问这些服务该怎么办呢，有多种方法
+
+* 使用 NodePort 服务在每台机器上绑定一个端口，这样就可以通过 `<NodeIP>:NodePort` 来访问该服务。
+* 使用 LoadBalancer 服务借助 Cloud Provider 创建一个外部的负载均衡器，并将请求转发到 `<NodeIP>:NodePort`。该方法仅适用于运行在云平台之中的 Kubernetes 集群。对于物理机部署的集群，可以使用 [MetalLB](https://github.com/google/metallb) 实现类似的功能。
+* 使用 Ingress Controller 在 Service 之上创建 L7 负载均衡并对外开放。
+* 使用 [ECMP](https://en.wikipedia.org/wiki/Equal-cost_multi-path_routing) 将 Service ClusterIP 网段路由到每个 Node，这样可以直接通过 ClusterIP 来访问服务，甚至也可以直接在集群外部使用 kube-dns。这一版用在物理机部署的情况下。
+
 ## 参考资料
 
 - https://kubernetes.io/docs/concepts/services-networking/service/
@@ -299,3 +308,4 @@ Traefik 提供了易用的 Ingress Controller，使用方法见 <https://docs.tr
 - https://www.nginx.com/blog/load-balancing-kubernetes-services-nginx-plus/
 - https://github.com/weaveworks/flux
 - https://github.com/AdoHe/kube2haproxy
+- [Accessing Kubernetes Services Without Ingress, NodePort, or LoadBalancer](https://medium.com/@kyralak/accessing-kubernetes-services-without-ingress-nodeport-or-loadbalancer-de6061b42d72)
