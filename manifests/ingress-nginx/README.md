@@ -6,6 +6,10 @@ Deploy nginx ingress controller:
 helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system
 ```
 
+> For Chinese only:
+> 
+> helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system --set defaultBackend.image.repository=crproxy.trafficmanager.net:6000/google_containers/defaultbackend
+
 Wait a while and get the external IP of ingress service
 
 ```sh
@@ -19,9 +23,11 @@ Then setup a DNS A record for your domain name to the external IP.
 ### Option 1: use cert-manager (recommended):
 
 ```sh
-helm install --namespace=kube-system --name cert-manager stable/cert-manager --set ingressShim.extraArgs='{--default-issuer-name=letsencrypt,--default-issuer-kind=ClusterIssuer}'
+# Install cert-manager
+helm install --namespace=kube-system --name cert-manager stable/cert-manager --set ingressShim.defaultIssuerName=letsencrypt --set ingressShim.defaultIssuerKind=ClusterIssuer
+
 # create cluster issuer
-kubectl apply -f cert-manager/cluster-issuer.yaml
+kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/master/manifests/ingress-nginx/cert-manager/cluster-issuer.yaml
 ```
 
 Create the ingress
