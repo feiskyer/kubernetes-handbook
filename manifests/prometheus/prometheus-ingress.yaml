@@ -24,7 +24,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: kube-prometheus-prometheus
+          serviceName: kube-prometheus
           servicePort: 9090
   - host: grafana.example.com
     http:
