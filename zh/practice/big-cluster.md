@@ -33,12 +33,12 @@ Kubernetes v1.9 单集群最大支持 5000 个节点，也就是说 Kubernetes �
 
 可以参考 AWS 配置 Master 节点的大小：
 
-- 1-5 nodes: m3.medium
-- 6-10 nodes: m3.large
-- 11-100 nodes: m3.xlarge
-- 101-250 nodes: m3.2xlarge
-- 251-500 nodes: c4.4xlarge
-- more than 500 nodes: c4.8xlarge
+* 1-5 nodes: m3.medium
+* 6-10 nodes: m3.large
+* 11-100 nodes: m3.xlarge
+* 101-250 nodes: m3.2xlarge
+* 251-500 nodes: c4.4xlarge
+* more than 500 nodes: c4.8xlarge
 
 ## 为扩展分配更多资源
 
@@ -54,8 +54,8 @@ Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Po
 
 以下扩展服务需要增大副本数：
 
-- [elasticsearch](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/es-statefulset.yaml)
-- [kube-dns](http://releases.k8s.io/master/cluster/addons/dns/kube-dns.yaml.in)
+* [elasticsearch](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/es-statefulset.yaml)
+* [kube-dns](http://releases.k8s.io/master/cluster/addons/dns/kube-dns.yaml.in)
 
 另外，为了保证多个副本分散调度到不同的 Node 上，需要为容器配置 [AntiAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity)。比如，对 kube-dns，可以增加如下的配置：
 
@@ -75,22 +75,23 @@ affinity:
 
 ## Kube-apiserver 配置
 
-- 设置 `--max-requests-inflight=3000`
-- 设置 `--max-mutating-requests-inflight=1000`
+* 设置 `--max-requests-inflight=3000`
+* 设置 `--max-mutating-requests-inflight=1000`
 
 ## Kube-scheduler 配置
 
-- 设置 `--kube-api-qps=100`
+* 设置 `--kube-api-qps=100`
 
 ## Kube-controller-manager 配置
 
-- 设置 `--kube-api-qps=100`
-- 设置 `--kube-api-burst=100`
+* 设置 `--kube-api-qps=100`
+* 设置 `--kube-api-burst=100`
 
 ## Kubelet 配置
 
 * 设置 `--image-pull-progress-deadline=30m`
 * 设置 `--serialize-image-pulls=false`（需要 Docker 使用 overlay2 ）
+* Kubelet 单节点允许运行的最大 Pod 数：`--max-pods=110`（默认是 110，可以根据实际需要设置）
 
 ## Docker 配置
 
@@ -119,9 +120,33 @@ net.netfilter.nf_conntrack_max=10485760
 net.netfilter.nf_conntrack_tcp_timeout_established=300
 net.netfilter.nf_conntrack_buckets=655360
 net.core.netdev_max_backlog=10000
+
+fs.inotify.max_user_instances=524288
+fs.inotify.max_user_watches=524288
 ```
+
+## 应用配置
+
+在运行 Pod 的时候也需要注意遵循一些最佳实践，比如
+
+* 为容器设置资源请求和限制
+  * `spec.containers[].resources.limits.cpu`
+  * `spec.containers[].resources.limits.memory`
+  * `spec.containers[].resources.requests.cpu`
+  * `spec.containers[].resources.requests.memory`
+  * `spec.containers[].resources.limits.ephemeral-storage`
+  * `spec.containers[].resources.requests.ephemeral-storage`
+* 对关键应用使用 PodDisruptionBudget、nodeAffinity、podAffinity 和 podAntiAffinity 等保护
+* 尽量使用控制器来管理容器（如 Deployment、StatefulSet、DaemonSet、Job 等）
+* 更多内容参考[这里](../deploy/kubernetes-configuration-best-practice.md)
+
+## 必要的扩展
+
+监控、告警以及可视化（如 Prometheus 和 Grafana）至关重要，推荐部署并开启。
 
 ## 参考文档
 
-- [Building Large Clusters](https://kubernetes.io/docs/admin/cluster-large/)
-- [Scaling Kubernetes to 2,500 Nodes](https://blog.openai.com/scaling-kubernetes-to-2500-nodes/)
+* [Building Large Clusters](https://kubernetes.io/docs/admin/cluster-large/)
+* [Scaling Kubernetes to 2,500 Nodes](https://blog.openai.com/scaling-kubernetes-to-2500-nodes/)
+* [Scaling Kubernetes for 25M users](https://medium.com/@brendanrius/scaling-kubernetes-for-25m-users-a7937e3536a0)
+
