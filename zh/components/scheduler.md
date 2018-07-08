@@ -165,10 +165,12 @@ tolerations:
 
 ## 优先级调度
 
-从 v1.8 开始，kube-scheduler 支持定义 Pod 的优先级，从而保证高优先级的 Pod 优先调度。开启方法为
+从 v1.8 开始，kube-scheduler 支持定义 Pod 的优先级，从而保证高优先级的 Pod 优先调度。并从 v1.11 开始默认开启。
 
-- apiserver 配置 `--feature-gates=PodPriority=true` 和 `--runtime-config=scheduling.k8s.io/v1alpha1=true`
-- kube-scheduler 配置 `--feature-gates=PodPriority=true`
+> 注：在 v1.8-v1.10 版本中的开启方法为
+>
+> - apiserver 配置 `--feature-gates=PodPriority=true` 和 `--runtime-config=scheduling.k8s.io/v1alpha1=true`
+> - kube-scheduler 配置 `--feature-gates=PodPriority=true`
 
 在指定 Pod 的优先级之前需要先定义一个 PriorityClass（非 namespace 资源），如
 
@@ -267,7 +269,7 @@ kube-scheduler 还支持使用 `--policy-config-file` 指定一个调度策略�
 - 为了保证 Critical Pods 的正常运行，当它们处于异常状态时会自动重新调度。Critical Pods 是指
   - annotation 包括 `scheduler.alpha.kubernetes.io/critical-pod=''`
   - tolerations 包括 `[{"key":"CriticalAddonsOnly", "operator":"Exists"}]`
-
+  - priorityClass 为 `system-cluster-critical` 或者 `system-node-critical`
 
 ## 启动 kube-scheduler 示例
 

@@ -1,4 +1,4 @@
-# kubectl 客户端
+# kubectl 安装
 
 本章介绍 kubectl 的安装方法。
 

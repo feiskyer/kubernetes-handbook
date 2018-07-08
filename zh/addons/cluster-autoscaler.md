@@ -6,12 +6,14 @@ Cluster AutoScaler 独立于 Kubernetes 主代码库，维护在 <https://github
 
 ## 部署
 
-Cluster AutoScaler v1.0+ 可以基于 Docker 镜像 `gcr.io/google_containers/cluster-autoscaler:v1.2.2` 来部署，详细的部署步骤可以参考
+Cluster AutoScaler v1.0+ 可以基于 Docker 镜像 `gcr.io/google_containers/cluster-autoscaler:v1.3.0` 来部署，详细的部署步骤可以参考
 
 - GCE: <https://kubernetes.io/docs/concepts/cluster-administration/cluster-management/>
 - GKE: <https://cloud.google.com/container-engine/docs/cluster-autoscaler>
 - AWS: <https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md>
 - Azure: <https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/azure>
+
+注意，在开启 RBAC 的集群中创建 [cluster-autoscaler ClusterRole](https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/rbac/cluster-autoscaler/cluster-autoscaler-rbac.yaml)。
 
 ## 工作原理
 

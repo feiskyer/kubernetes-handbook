@@ -8,10 +8,24 @@ kube-proxy 当前支持一下几种实现
 
 - userspace：最早的负载均衡方案，它在用户空间监听一个端口，所有服务通过 iptables 转发到这个端口，然后在其内部负载均衡到实际的 Pod。该方式最主要的问题是效率低，有明显的性能瓶颈。
 - iptables：目前推荐的方案，完全以 iptables 规则的方式来实现 service 负载均衡。该方式最主要的问题是在服务多的时候产生太多的 iptables 规则，非增量式更新会引入一定的时延，大规模情况下有明显的性能问题
-- ipvs：为解决 iptables 模式的性能问题，v1.8 新增了 ipvs 模式，采用增量式更新，并可以保证 service 更新期间连接保持不断开
-- winuserspace：同 userspace，但仅工作在 windows 上
+- ipvs：为解决 iptables 模式的性能问题，v1.11 新增了 ipvs 模式（v1.8 开始支持测试版，并在 v1.11 GA），采用增量式更新，并可以保证 service 更新期间连接保持不断开
+- winuserspace：同 userspace，但仅工作在 windows 节点上
 
-注意：使用 ipvs 模式时，需要预先在每台 Node 上加载内核模块 `nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh`  等。
+注意：使用 ipvs 模式时，需要预先在每台 Node 上加载内核模块 `nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh` 等。
+
+```sh
+# load module <module_name>
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+
+# to check loaded modules, use
+lsmod | grep -e ipvs -e nf_conntrack_ipv4
+# or
+cut -f1 -d " "  /proc/modules | grep -e ip_vs -e nf_conntrack_ipv4
+```
 
 ## Iptables 示例
 
@@ -65,6 +79,8 @@ kube-proxy 当前支持一下几种实现
 
 ## ipvs 示例
 
+[Kube-proxy IPVS mode](https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md) 列出了各种服务在 IPVS 模式下的工作原理。
+
 ![](images/ipvs-mode.png)
 
 ```sh
@@ -72,15 +88,34 @@ $ ipvsadm -ln
 IP Virtual Server version 1.2.1 (size=4096)
 Prot LocalAddress:Port Scheduler Flags
   -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
-TCP  10.111.21.136:80 rr persistent 10800
-  -> 192.168.23.130:80            Masq    1      0          0
-  -> 192.168.23.134:80            Masq    1      0          0
+TCP  10.0.0.1:443 rr persistent 10800
+  -> 192.168.0.1:6443             Masq    1      1          0
+TCP  10.0.0.10:53 rr
+  -> 172.17.0.2:53                Masq    1      0          0
+UDP  10.0.0.10:53 rr
+  -> 172.17.0.2:53                Masq    1      0          0
 ```
+
+注意，IPVS 模式也会使用 iptables 来执行 SNAT 和 IP 伪装（MASQUERADE），并使用 ipset 来简化 iptables 规则的管理：
+
+| ipset 名                       | 成员                                                         | 用途                                                         |
+| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| KUBE-CLUSTER-IP                | All service IP + port                                        | Mark-Masq for cases that `masquerade-all=true` or `clusterCIDR` specified |
+| KUBE-LOOP-BACK                 | All service IP + port + IP                                   | masquerade for solving hairpin purpose                       |
+| KUBE-EXTERNAL-IP               | service external IP + port                                   | masquerade for packages to external IPs                      |
+| KUBE-LOAD-BALANCER             | load balancer ingress IP + port                              | masquerade for packages to load balancer type service        |
+| KUBE-LOAD-BALANCER-LOCAL       | LB ingress IP + port with `externalTrafficPolicy=local`      | accept packages to load balancer with `externalTrafficPolicy=local` |
+| KUBE-LOAD-BALANCER-FW          | load balancer ingress IP + port with `loadBalancerSourceRanges` | package filter for load balancer with `loadBalancerSourceRanges` specified |
+| KUBE-LOAD-BALANCER-SOURCE-CIDR | load balancer ingress IP + port + source CIDR                | package filter for load balancer with `loadBalancerSourceRanges` specified |
+| KUBE-NODE-PORT-TCP             | nodeport type service TCP port                               | masquerade for packets to nodePort(TCP)                      |
+| KUBE-NODE-PORT-LOCAL-TCP       | nodeport type service TCP port with `externalTrafficPolicy=local` | accept packages to nodeport service with `externalTrafficPolicy=local` |
+| KUBE-NODE-PORT-UDP             | nodeport type service UDP port                               | masquerade for packets to nodePort(UDP)                      |
+| KUBE-NODE-PORT-LOCAL-UDP       | nodeport type service UDP port with`externalTrafficPolicy=local` | accept packages to nodeport service with`externalTrafficPolicy=local` |
 
 ## 启动 kube-proxy 示例
 
 ```sh
-kube-proxy --kubeconfig=/var/lib/kube-proxy/kubeconfig.conf
+kube-proxy --kubeconfig=/var/lib/kubelet/kubeconfig --cluster-cidr=10.240.0.0/12 --feature-gates=ExperimentalCriticalPodAnnotation=true --proxy-mode=iptables
 ```
 
 ## kube-proxy 工作原理

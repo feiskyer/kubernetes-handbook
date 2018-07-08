@@ -16,9 +16,10 @@ kind: PodSecurityPolicy
 metadata:
   name: restricted
   annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
+    # Seccomp v1.11 使用 'runtime/default'，而 v1.10 及更早版本使用 'docker/default'
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
+    seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
     apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
-    seccomp.security.alpha.kubernetes.io/defaultProfileName:  'docker/default'
     apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
 spec:
   privileged: false
@@ -73,7 +74,21 @@ Sysctls 允许容器设置内核参数，分为安全 Sysctls 和非安全 Sysct
   - `net.ipv4.tcp_syncookies`
 - 非安全 Sysctls：即设置好有可能影响其他 Pod 和 Node 上其他服务的内核选项，默认禁止。如果使用，需要管理员在配置 kubelet 时开启，如 `kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,net.ipv4.route.min_pmtu'`
 
-Sysctls 还在 alpha 阶段，需要通过 Pod annotation 设置，如：
+Sysctls 在 v1.11 升级为 Beta 版，可以通过 PSP spec 直接设置，如
+
+```yaml
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: sysctl-psp
+spec:
+  allowedUnsafeSysctls:
+  - kernel.msg*
+  forbiddenSysctls:
+  - kernel.shm_rmid_forced
+```
+
+而 v1.10 及更早版本则为 Alpha 阶段，需要通过 Pod annotation 设置，如：
 
 ```yaml
 apiVersion: v1
@@ -233,4 +248,3 @@ Use "./kube-bench [command] --help" for more information about a command.
 
 - [Securing a Kubernetes cluster](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/)
 - [kube-bench](https://github.com/aquasecurity/kube-bench)
-

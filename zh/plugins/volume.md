@@ -1,4 +1,4 @@
-# Volume 插件扩展
+# 存储插件
 
 Kubernetes 已经提供丰富的 [Volume](../concepts/volume.md) 和 [Persistent Volume](../concepts/persistent-volume.md) 插件，可以根据需要使用这些插件给容器提供持久化存储。
 

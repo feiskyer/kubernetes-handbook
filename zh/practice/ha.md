@@ -252,42 +252,112 @@ EOF
 
 > 注意：确保 kube-apiserver 配置 --etcd-quorum-read=true（v1.9 之后默认为 true）。
 
+### kubeadm
+
 如果使用 kubeadm 来部署集群的话，可以按照如下步骤配置：
 
 ```sh
 # on master0
-# copy etcd certs
-mkdir -p /etc/kubernetes/pki/etcd
-scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/ca.pem /etc/kubernetes/pki/etcd
-scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/client.pem /etc/kubernetes/pki/etcd
-scp root@<etcd0-ip-address>:/etc/kubernetes/pki/etcd/client-key.pem /etc/kubernetes/pki/etcd
 # deploy master0
 cat >config.yaml <<EOF
-apiVersion: kubeadm.k8s.io/v1alpha1
+apiVersion: kubeadm.k8s.io/v1alpha2
 kind: MasterConfiguration
-api:
-  advertiseAddress: <private-ip>
-etcd:
-  endpoints:
-  - https://<etcd0-ip-address>:2379
-  - https://<etcd1-ip-address>:2379
-  - https://<etcd2-ip-address>:2379
-  caFile: /etc/kubernetes/pki/etcd/ca.pem
-  certFile: /etc/kubernetes/pki/etcd/client.pem
-  keyFile: /etc/kubernetes/pki/etcd/client-key.pem
-networking:
-  podSubnet: <podCIDR>
+kubernetesVersion: v1.11.0
 apiServerCertSANs:
-- <load-balancer-ip>
-apiServerExtraArgs:
-  apiserver-count: "3"
+- "LOAD_BALANCER_DNS"
+api:
+    controlPlaneEndpoint: "LOAD_BALANCER_DNS:LOAD_BALANCER_PORT"
+etcd:
+  local:
+    extraArgs:
+      listen-client-urls: "https://127.0.0.1:2379,https://CP0_IP:2379"
+      advertise-client-urls: "https://CP0_IP:2379"
+      listen-peer-urls: "https://CP0_IP:2380"
+      initial-advertise-peer-urls: "https://CP0_IP:2380"
+      initial-cluster: "CP0_HOSTNAME=https://CP0_IP:2380"
+    serverCertSANs:
+      - CP0_HOSTNAME
+      - CP0_IP
+    peerCertSANs:
+      - CP0_HOSTNAME
+      - CP0_IP
+networking:
+    # This CIDR is a Calico default. Substitute or remove for your CNI provider.
+    podSubnet: "192.168.0.0/16"
 EOF
 kubeadm init --config=config.yaml
 
+# copy TLS certs to other master nodes
+CONTROL_PLANE_IPS="10.0.0.7 10.0.0.8"
+for host in ${CONTROL_PLANE_IPS}; do
+    scp /etc/kubernetes/pki/ca.crt "${USER}"@$host:
+    scp /etc/kubernetes/pki/ca.key "${USER}"@$host:
+    scp /etc/kubernetes/pki/sa.key "${USER}"@$host:
+    scp /etc/kubernetes/pki/sa.pub "${USER}"@$host:
+    scp /etc/kubernetes/pki/front-proxy-ca.crt "${USER}"@$host:
+    scp /etc/kubernetes/pki/front-proxy-ca.key "${USER}"@$host:
+    scp /etc/kubernetes/pki/etcd/ca.crt "${USER}"@$host:etcd-ca.crt
+    scp /etc/kubernetes/pki/etcd/ca.key "${USER}"@$host:etcd-ca.key
+    scp /etc/kubernetes/admin.conf "${USER}"@$host:
+done
+
+
 # on other master nodes
-scp root@<master0-ip-address>:/etc/kubernetes/pki/* /etc/kubernetes/pki
-rm apiserver.crt
-# 然后再执行上述 master0 的所有步骤
+cat > kubeadm-config.yaml <<EOF
+apiVersion: kubeadm.k8s.io/v1alpha2
+kind: MasterConfiguration
+kubernetesVersion: v1.11.0
+apiServerCertSANs:
+- "LOAD_BALANCER_DNS"
+api:
+    controlPlaneEndpoint: "LOAD_BALANCER_DNS:LOAD_BALANCER_PORT"
+etcd:
+  local:
+    extraArgs:
+      listen-client-urls: "https://127.0.0.1:2379,https://CP1_IP:2379"
+      advertise-client-urls: "https://CP1_IP:2379"
+      listen-peer-urls: "https://CP1_IP:2380"
+      initial-advertise-peer-urls: "https://CP1_IP:2380"
+      initial-cluster: "CP0_HOSTNAME=https://CP0_IP:2380,CP1_HOSTNAME=https://CP1_IP:2380"
+      initial-cluster-state: existing
+    serverCertSANs:
+      - CP1_HOSTNAME
+      - CP1_IP
+    peerCertSANs:
+      - CP1_HOSTNAME
+      - CP1_IP
+networking:
+    # This CIDR is a calico default. Substitute or remove for your CNI provider.
+    podSubnet: "192.168.0.0/16"
+EOF
+# move files
+mkdir -p /etc/kubernetes/pki/etcd
+mv /home/${USER}/ca.crt /etc/kubernetes/pki/
+mv /home/${USER}/ca.key /etc/kubernetes/pki/
+mv /home/${USER}/sa.pub /etc/kubernetes/pki/
+mv /home/${USER}/sa.key /etc/kubernetes/pki/
+mv /home/${USER}/front-proxy-ca.crt /etc/kubernetes/pki/
+mv /home/${USER}/front-proxy-ca.key /etc/kubernetes/pki/
+mv /home/${USER}/etcd-ca.crt /etc/kubernetes/pki/etcd/ca.crt
+mv /home/${USER}/etcd-ca.key /etc/kubernetes/pki/etcd/ca.key
+mv /home/${USER}/admin.conf /etc/kubernetes/admin.conf
+# Run the kubeadm phase commands to bootstrap the kubelet:
+kubeadm alpha phase certs all --config kubeadm-config.yaml
+kubeadm alpha phase kubelet config write-to-disk --config kubeadm-config.yaml
+kubeadm alpha phase kubelet write-env-file --config kubeadm-config.yaml
+kubeadm alpha phase kubeconfig kubelet --config kubeadm-config.yaml
+systemctl start kubelet
+# Add the node to etcd cluster
+CP0_IP=10.0.0.7
+CP0_HOSTNAME=cp0
+CP1_IP=10.0.0.8
+CP1_HOSTNAME=cp1
+KUBECONFIG=/etc/kubernetes/admin.conf kubectl exec -n kube-system etcd-${CP0_HOSTNAME} -- etcdctl --ca-file /etc/kubernetes/pki/etcd/ca.crt --cert-file /etc/kubernetes/pki/etcd/peer.crt --key-file /etc/kubernetes/pki/etcd/peer.key --endpoints=https://${CP0_IP}:2379 member add ${CP1_HOSTNAME} https://${CP1_IP}:2380
+kubeadm alpha phase etcd local --config kubeadm-config.yaml
+# Deploy the master components
+kubeadm alpha phase kubeconfig all --config kubeadm-config.yaml
+kubeadm alpha phase controlplane all --config kubeadm-config.yaml
+kubeadm alpha phase mark-master --config kubeadm-config.yaml
 ```
 
 kube-apiserver 启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用 haproxy/lvs 等为 master 节点配置负载均衡。
@@ -349,7 +419,7 @@ sudo systemctl restart kubelet
 
 ## 参考文档
 
-- https://kubernetes.io/docs/admin/high-availability/
+- [Creating Highly Available Clusters with kubeadm](https://kubernetes.io/docs/setup/independent/high-availability/)
 - http://kubecloud.io/setup-ha-k8s-kops/
 - https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md
 - [Kubernetes Master Tier For 1000 Nodes Scale](http://fuel-ccp.readthedocs.io/en/latest/design/k8s_1000_nodes_architecture.html)

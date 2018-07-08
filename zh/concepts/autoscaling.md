@@ -12,14 +12,15 @@ Horizontal Pod Autoscaling (HPA) 可以根据 CPU 使用率或应用自定义 me
 
 注意：
 
-- 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)
-- 在使用 HPA 之前需要确保已部署好 [Heapster](../addons/monitor.md#heapster) 和 [metrics-server](../addons/metrics.md)
+- 本章是关于 Pod 的自动扩展，而 Node 的自动扩展请参考 [Cluster AutoScaler](../addons/cluster-autoscaler.md)。
+- 在使用 HPA 之前需要 **确保已部署好 [metrics-server](../addons/metrics.md)**。
 
 ## API 版本对照表
 
-| Kubernetes 版本 | CRD API 版本   |
-| --------------- | -------------- |
-| v1.5+           | autoscaling/v1 |
+| Kubernetes 版本  | autoscaling API 版本   | 支持的 metrics |
+| --------------- | ---------------------- | ------------- |
+| v1.5+           | autoscaling/v1         | CPU           |
+| v1.6+           | autoscaling/v2beta1    | Memory及自定义 |
 
 ## 示例
 
@@ -121,7 +122,7 @@ status:
 
 ## 状态条件
 
-v1.7 + 可以在客户端中看到 Kubernetes 为 HorizontalPodAutoscaler 设置的状态条件 `status.conditions`，用来判断 HorizontalPodAutoscaler 是否可以扩展（AbleToScale）、是否开启扩展（ScalingActive）以及是否受到限制（ScalingLimitted）。
+v1.7+ 可以在客户端中看到 Kubernetes 为 HorizontalPodAutoscaler 设置的状态条件 `status.conditions`，用来判断 HorizontalPodAutoscaler 是否可以扩展（AbleToScale）、是否开启扩展（ScalingActive）以及是否受到限制（ScalingLimitted）。
 
 ```sh
 $ kubectl describe hpa cm-test

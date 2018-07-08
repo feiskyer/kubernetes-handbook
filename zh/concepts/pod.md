@@ -793,9 +793,9 @@ spec:
 
 ## 优先级
 
-从 v1.9 开始，可以为 Pod 设置一个优先级（alpha），保证高优先级的 Pod 优先调度。
+从 v1.8 开始，可以为 Pod 设置一个优先级，保证高优先级的 Pod 优先调度。
 
-优先级调度功能还在 Alpha 版，使用前需要开启：
+优先级调度功能目前为 Beta 版，在 v1.11 版本中默认开启。对 v1.8-1.10 版本中使用前需要开启：
 
 - `--feature-gates=PodPriority=true`
 - `--runtime-config=scheduling.k8s.io/v1alpha1=true --admission-control=Controller-Foo,Controller-Bar,...,Priority`
@@ -811,6 +811,8 @@ value: 1000000
 globalDefault: false
 description: "This priority class should be used for XYZ service pods only."
 ```
+
+> Kubernetes 自动创建了 `system-cluster-critical` 和 `system-node-critical` 等两个 PriorityClass，用于 Kubernetes 核心组件。
 
 为 Pod 指定优先级
 
@@ -831,7 +833,7 @@ spec:
 
 当调度队列有多个 Pod 需要调度时，优先调度高优先级的 Pod。而当高优先级的 Pod 无法调度时，Kubernetes 会尝试先删除低优先级的 Pod 再将其调度到对应 Node 上（Preemption）。
 
-注意：受限于 Kubernetes 的调度策略，抢占并不总是成功。
+注意：**受限于 Kubernetes 的调度策略，抢占并不总是成功**。
 
 ## PodDisruptionBudget
 
@@ -847,6 +849,49 @@ spec:
   selector:
     matchLabels:
       app: zookeeper
+```
+
+## Sysctls
+
+Sysctls 允许容器设置内核参数，分为安全 Sysctls 和非安全 Sysctls：
+
+- 安全 Sysctls：即设置后不影响其他 Pod 的内核选项，只作用在容器 namespace 中，默认开启。包括以下几种
+  - `kernel.shm_rmid_forced`
+  - `net.ipv4.ip_local_port_range`
+  - `net.ipv4.tcp_syncookies`
+- 非安全 Sysctls：即设置好有可能影响其他 Pod 和 Node 上其他服务的内核选项，默认禁止。如果使用，需要管理员在配置 kubelet 时开启，如 `kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,net.ipv4.route.min_pmtu'`
+
+v1.6-v1.10 示例：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-example
+  annotations:
+    security.alpha.kubernetes.io/sysctls: kernel.shm_rmid_forced=1
+    security.alpha.kubernetes.io/unsafe-sysctls: net.ipv4.route.min_pmtu=1000,kernel.msgmax=1 2 3
+spec:
+  ...
+```
+
+从 v1.11 开始，Sysctls 升级为 Beta 版本，不再区分安全和非安全 sysctl，统一通过 podSpec.securityContext.sysctls 设置，如
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-example
+spec:
+  securityContext:
+    sysctls:
+    - name: kernel.shm_rmid_forced
+      value: "0"
+    - name: net.ipv4.route.min_pmtu
+      value: "552"
+    - name: kernel.msgmax
+      value: "65536"
+  ...
 ```
 
 ## Pod 时区

@@ -15,6 +15,44 @@ kube-apiserver 支持同时提供 https（默认监听在 6443 端口）和 http
 $ kubectl --v=8 get pods
 ```
 
+可通过 `kubectl api-versions` 和 `kubectl api-resources` 查询 Kubernetes API 支持的 API 版本以及资源对象。
+
+```sh
+$ kubectl api-versions
+admissionregistration.k8s.io/v1beta1
+apiextensions.k8s.io/v1beta1
+apiregistration.k8s.io/v1
+apiregistration.k8s.io/v1beta1
+apps/v1
+apps/v1beta1
+apps/v1beta2
+authentication.k8s.io/v1
+authentication.k8s.io/v1beta1
+authorization.k8s.io/v1
+authorization.k8s.io/v1beta1
+autoscaling/v1
+autoscaling/v2beta1
+batch/v1
+batch/v1beta1
+certificates.k8s.io/v1beta1
+events.k8s.io/v1beta1
+extensions/v1beta1
+metrics.k8s.io/v1beta1
+networking.k8s.io/v1
+policy/v1beta1
+rbac.authorization.k8s.io/v1
+rbac.authorization.k8s.io/v1beta1
+scheduling.k8s.io/v1beta1
+storage.k8s.io/v1
+storage.k8s.io/v1beta1
+v1
+
+$ kubectl api-resources --api-group=storage.k8s.io
+NAME                SHORTNAMES   APIGROUP         NAMESPACED   KIND
+storageclasses      sc           storage.k8s.io   false        StorageClass
+volumeattachments                storage.k8s.io   false        VolumeAttachment
+```
+
 ## OpenAPI 和 Swagger
 
 通过 `/swaggerapi` 可以查看 Swagger API，`/swagger.json` 查看 OpenAPI。
@@ -48,71 +86,6 @@ Kubernetes API 的每个请求都会经过多阶段的访问控制之后才会�
 准入控制（Admission Control）用来对请求做进一步的验证或添加默认参数。不同于授权和认证只关心请求的用户和操作，准入控制还处理请求的内容，并且仅对创建、更新、删除或连接（如代理）等有效，而对读操作无效。准入控制也支持同时开启多个插件，它们依次调用，只有全部插件都通过的请求才可以放过进入系统。
 
 更多准入控制模块的使用方法可以参考 [Kubernetes 准入控制](../plugins/admission.md)。
-
-## API Aggregation
-
-API Aggregation 允许在不修改 Kubernetes 核心代码的同时扩展 Kubernetes API。
-
-> 备注：另外一种扩展 Kubernetes API 的方法是使用 [CustomResourceDefinition (CRD)](../concepts/customresourcedefinition.md)。
-
-### 开启 API Aggregation
-
-kube-apiserver 增加以下配置
-
-```sh
---requestheader-client-ca-file=<path to aggregator CA cert>
---requestheader-allowed-names=aggregator
---requestheader-extra-headers-prefix=X-Remote-Extra-
---requestheader-group-headers=X-Remote-Group
---requestheader-username-headers=X-Remote-User
---proxy-client-cert-file=<path to aggregator proxy cert>
---proxy-client-key-file=<path to aggregator proxy key>
-```
-
-如果 `kube-proxy` 没有在 Master 上面运行，还需要配置
-
-```sh
---enable-aggregator-routing=true
-```
-
-### 创建扩展 API
-
-1. 确保开启 APIService API（默认开启，可用 `kubectl get apiservice` 命令验证）
-2. 创建 RBAC 规则
-3. 创建一个 namespace，用来运行扩展的 API 服务
-4. 创建 CA 和证书，用于 https
-5. 创建一个存储证书的 secret
-6. 创建一个部署扩展 API 服务的 deployment，并使用上一步的 secret 配置证书，开启 https 服务
-7. 创建一个 ClusterRole 和 ClusterRoleBinding
-8. 创建一个非 namespace 的 apiservice，注意设置 `spec.caBundle`
-9. 运行 `kubectl get <resource-name>`，正常应该返回 `No resources found.`
-
-可以使用 [apiserver-builder](https://github.com/kubernetes-incubator/apiserver-builder) 工具自动化上面的步骤。
-
-```sh
-# 初始化项目
-$ cd GOPATH/src/github.com/my-org/my-project
-$ apiserver-boot init repo --domain <your-domain>
-$ apiserver-boot init glide
-
-# 创建资源
-$ apiserver-boot create group version resource --group <group> --version <version> --kind <Kind>
-
-# 编译
-$ apiserver-boot build executables
-$ apiserver-boot build docs
-
-# 本地运行
-$ apiserver-boot run local
-
-# 集群运行
-$ apiserver-boot run in-cluster --name nameofservicetorun --namespace default --image gcr.io/myrepo/myimage:mytag
-$ kubectl create -f sample/<type>.yaml
-```
-
-### 示例
-
-见 [sample-apiserver](https://github.com/kubernetes/sample-apiserver) 和 [apiserver-builder/example](https://github.com/kubernetes-incubator/apiserver-builder/tree/master/example)。
 
 ## 启动 apiserver 示例
 
@@ -208,4 +181,3 @@ $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 - [v1.8 API Reference](https://kubernetes.io/docs/api-reference/v1.8/)
 - [v1.9 API Reference](https://kubernetes.io/docs/api-reference/v1.9/)
 - [v1.10 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
-

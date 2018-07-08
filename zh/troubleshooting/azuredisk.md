@@ -12,6 +12,7 @@
 > 注意：
 > - AzureDisk 的类型必须跟 VM OS Disk 类型一致，即要么都是 Manged Disks，要么都是 Blob Disks。当两者不一致时，AzureDisk PV 会报无法挂载的错误。
 > - 由于 Managed Disks 需要创建和管理存储账户，其创建过程会比 Blob Disks 慢（3 分钟 vs 1-2 分钟）。
+> - 但节点最大支持同时挂载 16 个 AzureDisk。
 
 使用 [acs-engine](https://github.com/Azure/acs-engine) 部署的 Kubernetes 集群，会自动创建两个 StorageClass，默认为managed-standard（即HDD）：
 
@@ -38,11 +39,11 @@ Cannot attach data disk 'cdb-dynamic-pvc-92972088-11b9-11e8-888f-000d3a018174' t
 （1）更新所有受影响的虚拟机状态
 
 ```powershell
-$vm = Get-AzureRMVM -ResourceGroupName $rg -Name $vmname  
+$vm = Get-AzureRMVM -ResourceGroupName $rg -Name $vmname
 Update-AzureRmVM -ResourceGroupName $rg -VM $vm -verbose -debug
 ```
 
-（2）重启虚拟机 
+（2）重启虚拟机
 
 - `kubectl cordon NODE`
 - 如果 Node 上运行有 StatefulSet，需要手动删除相应的 Pod
@@ -132,6 +133,6 @@ MountVolume.WaitForAttach failed for volume "pvc-f1562ecb-3e5f-11e8-ab6b-000d3af
 ## 参考文档
 
 - [Known kubernetes issues on Azure](https://github.com/andyzhangx/demo/tree/master/issues)
-- [Introduction of AzureDisk](https://docs.microsoft.com/zh-cn/azure/virtual-machines/windows/about-disks-and-vhds) 
+- [Introduction of AzureDisk](https://docs.microsoft.com/zh-cn/azure/virtual-machines/windows/about-disks-and-vhds)
 - [AzureDisk volume examples](https://github.com/kubernetes/examples/tree/master/staging/volumes/azure_disk)
 - [High-performance Premium Storage and managed disks for VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/premium-storage)

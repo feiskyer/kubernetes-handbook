@@ -1,6 +1,6 @@
-# kube-dns
+# DNS
 
-kube-dns 为 Kubernetes 集群提供命名服务，一般通过 addon 的方式部署，从 v1.3 版本开始，成为了一个内建的自启动服务。
+DNS 是 Kubernetes 的核心功能之一，通过 kube-dns 或 CoreDNS 作为集群的必备扩展来提供命名服务。
 
 ## 支持的 DNS 格式
 
@@ -104,7 +104,7 @@ kube-dns、dnsmasq-nanny 和 sidecar 的代码均是从 `cmd/<cmd-name>/main.go`
 
 ## CoreDNS
 
-从 v1.10 开始还可以使用 Beta 版本的 [CoreDNS](https://coredns.io/) 来提供命名服务，其效率更高，资源占用率更小。
+从 v1.11 开始还可以使用 [CoreDNS](https://coredns.io/) 来提供命名服务，其效率更高，资源占用率更小。
 
 可以使用替换 kube-dns 的方式将其部署到 Kubernetes 集群中：
 

@@ -22,8 +22,8 @@ Kubernetes 目前提供了以下几种准入控制插件
 - NodeRestriction：限制 kubelet 仅可访问 node、endpoint、pod、service 以及 secret、configmap、PV 和 PVC 等相关的资源（仅适用于 v1.7+）
 - EventRateLimit：限制事件请求数量（仅适用于 v1.9）
 - ExtendedResourceToleration：为使用扩展资源（如 GPU 和 FPGA 等）的 Pod 自动添加 tolerations
-- StorageProtection：自动给新创建的 PVC 增加 `kubernetes.io/pvc-protection` finalizer（1.9 及以前版本为 `PVCProtection`）
-- PersistentVolumeClaimResize：仅允许设置 `allowVolumeExpansion=true` 的 StorageClass 调整 PVC 大小
+- StorageProtection：自动给新创建的 PVC 增加 `kubernetes.io/pvc-protection` finalizer（v1.9 及以前版本为 `PVCProtection`，v.11 GA）
+- PersistentVolumeClaimResize：允许设置 `allowVolumeExpansion=true` 的 StorageClass 调整 PVC 大小（v1.11 Beta）
 - PodNodeSelector：限制一个 Namespace 中可以使用的 Node 选择标签
 - ValidatingAdmissionWebhook：使用 Webhook 验证请求，这些 Webhook 并行调用，并且任何一个调用拒绝都会导致请求失败
 - MutatingAdmissionWebhook：使用 Webhook 修改请求，这些 Webhook 依次顺序调用

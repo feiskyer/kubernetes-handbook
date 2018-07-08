@@ -28,7 +28,7 @@ ABAC（Attribute Based Access Control）本来是不错的概念，但是在 Kub
 
 在 RBAC 中定义了两个对象，用于描述在用户和资源之间的连接权限。
 
-**Role 与 ClusterRole**
+### Role 与 ClusterRole
 
 Role（角色）是一系列权限的集合，例如一个角色可以包含读取 Pod 的权限和列出 Pod 的权限。Role 只能用来给某个特定 namespace 中的资源作鉴权，对多 namespace 和集群级的资源或者是非资源类的 API（如 `/healthz`）使用 ClusterRole。
 
@@ -58,7 +58,7 @@ rules:
   verbs: ["get", "watch", "list"]
 ```
 
-**RoleBinding 和 ClusterRoleBinding**
+### RoleBinding 和 ClusterRoleBinding
 
 RoleBinding 把角色（Role 或 ClusterRole）的权限映射到用户或者用户组，从而让这些用户继承角色在 namespace 中的权限。ClusterRoleBinding 让用户继承 ClusterRole 在整个集群中的权限。
 
@@ -101,6 +101,38 @@ roleRef:
   name: secret-reader
   apiGroup: rbac.authorization.k8s.io
 ```
+
+### ClusterRole 聚合
+
+从 v1.9 开始，在 ClusterRole 中可以通过 `aggregationRule` 来与其他 ClusterRole 聚合使用（该特性在 v1.11 GA）。
+
+比如
+
+```yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring
+aggregationRule:
+  clusterRoleSelectors:
+  - matchLabels:
+      rbac.example.com/aggregate-to-monitoring: "true"
+rules: [] # Rules are automatically filled in by the controller manager.
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring-endpoints
+  labels:
+    rbac.example.com/aggregate-to-monitoring: "true"
+# These rules will be added to the "monitoring" role.
+rules:
+- apiGroups: [""]
+  resources: ["services", "endpoints", "pods"]
+  verbs: ["get", "list", "watch"]
+```
+
+### 默认 ClusterRole
 
 RBAC 现在被 Kubernetes 深度集成，并使用它给系统组件进行授权。[System Roles](https://kubernetes.io/docs/admin/authorization/rbac/#default-roles-and-role-bindings) 一般具有前缀 `system:`，很容易识别：
 

@@ -108,6 +108,8 @@ spec:
 
 ### Kubernetes v1.6 和 v1.7
 
+> `alpha.kubernetes.io/nvidia-gpu` 已在 v1.10 中删除，新版本请使用 `nvidia.com/gpu`。
+
 在 Kubernetes v1.6 和 v1.7 中使用 GPU 需要预先配置
 
 - 在所有的 Node 上安装 Nvidia 驱动，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
@@ -355,4 +357,3 @@ Fri Jun 16 19:33:35 2017
 - [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)
 - [Schedule GPUs on Kubernetes](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 - [GoogleCloudPlatform/container-engine-accelerators](https://github.com/GoogleCloudPlatform/container-engine-accelerators)
-

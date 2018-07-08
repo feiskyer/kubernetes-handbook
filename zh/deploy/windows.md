@@ -8,7 +8,11 @@ Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开�
 - 支持 kubeadm 命令将 Windows 节点加入到已有集群中
 - 推荐使用 Windows Server Version 1709+ 和 Docker Version 17.06+
 
-> 注意：控制平面的服务依然运行在 Linux 服务器中，而 Windows 节点上只运行 Kubelet、Kube-proxy 以及网络插件等服务。
+> 注意：
+>
+> 1. 控制平面的服务依然运行在 Linux 服务器中，而 Windows 节点上只运行 Kubelet、Kube-proxy 以及网络插件等服务。
+> 2. 推荐使用 Windows Server 1803（修复了 Windows 容器软链接的问题，从而 ServiceAccount 和 ConfigMap 可以正常使用）
+
 
 ## 下载
 
@@ -440,7 +444,6 @@ spec:
 ### v1.9.X 和 v1.10.X 版本已知问题
 
 - 仅  Windows Server 1709 或更新的版本才支持在 Pod 内运行多个容器（仅支持 Process 隔离）
-- 暂不支持以 Volume 挂载的方式使用 Secrets 和 ConfigMaps
 - 暂不支持 StatefulSet
 - 暂不支持 Windows Server Container Pods 的自动扩展（Horizontal Pod Autoscaling）
 - Windows 容器的 OS 版本需要与 Host OS 版本匹配，否则容器无法启动

@@ -4,14 +4,18 @@ Kubernetes 社区提供了一些列的工具来监控容器和集群的状态，
 
 - cAdvisor 负责单节点内部的容器和节点资源使用统计，内置在 Kubelet 内部，并通过 Kubelet `/metrics/cadvisor` 对外提供 API
 - [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/) 是一个开源分布式时序、事件和指标数据库；而 [Grafana](http://grafana.org/) 则是 InfluxDB 的 Dashboard，提供了强大的图表展示功能。它们常被组合使用展示图表化的监控数据。
-- [Heapster](https://github.com/kubernetes/heapster) 提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB 等后端存储中。
+- [metrics-server](metrics.md) 提供了整个集群的资源监控数据，但要注意
+  - Metrics API 只可以查询当前的度量数据，并不保存历史数据
+  - Metrics API URI 为 `/apis/metrics.k8s.io/`，在 [k8s.io/metrics](https://github.com/kubernetes/metrics) 维护
+  - 必须部署 `metrics-server` 才能使用该 API，metrics-server 通过调用 Kubelet Summary API 获取数据
 - [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) 提供了 Kubernetes 资源对象（如 DaemonSet、Deployments 等）的度量。
 - [Prometheus](https://prometheus.io) 是另外一个监控和时间序列数据库，还提供了告警的功能。
 - [Node Problem Detector](https://github.com/kubernetes/node-problem-detector) 监测 Node 本身的硬件、内核或者运行时等问题。
+- ~~[Heapster](https://github.com/kubernetes/heapster) 提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB 等后端存储中（已弃用）~~
 
 ## cAdvisor
 
-[cAdvisor](https://github.com/google/cadvisor) 是一个来自 Google 的容器监控工具，也是 Kubelet 内置的容器资源收集工具。它会自动收集本机容器 CPU、内存、网络和文件系统的资源占用情况，并对外提供 cAdvisor 原生的 API（默认端口为 `--cadvisor-port=4194`，未来可能会删除该端口）。
+[cAdvisor](https://github.com/google/cadvisor) 是一个来自 Google 的容器监控工具，也是 Kubelet 内置的容器资源收集工具。它会自动收集本机容器 CPU、内存、网络和文件系统的资源占用情况，并对外提供 cAdvisor 原生的 API（默认端口为 `--cadvisor-port=4194`）。
 
 ![](images/14842107270881.png)
 
@@ -20,11 +24,13 @@ Kubernetes 社区提供了一些列的工具来监控容器和集群的状态，
 - Kubelet metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics`
 - Cadvisor metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics/cadvisor`
 
-然而 cadvisor metrics 通常是监控系统必需的数据。给 Prometheus 增加新的 target 可以解决这个问题，比如
+这样，在 Prometheus 等工具中需要使用新的 Metrics API 来获取这些数据，比如下面的 Prometheus 自动配置了 cadvisor metrics API：
 
 ```sh
 helm install stable/prometheus --set rbac.create=true --name prometheus --namespace monitoring
 ```
+
+注意：cadvisor 监听的端口将在 v1.12 中删除，建议所有外部工具使用 Kubelet Metrics API 替代。
 
 ## InfluxDB 和 Grafana
 
@@ -38,7 +44,7 @@ Kubelet 内置的 cAdvisor 只提供了单机的容器资源占用情况，而 [
 
 - 仅 Kubernetes v1.7.X 或者更老的集群推荐使用 Heapster。
 - 从 Kubernetes v1.8 开始，资源使用情况的度量（如容器的 CPU 和内存使用）就已经通过 Metrics API 获取，并且 HPA 也从 metrics-server 查询必要的数据。
-- Heapster 将在未来弃用，推荐部署 [metrics-server](metrics.md) 替代 Heapster 的功能。 
+- **Heapster 已在 v1.11 中弃用，推荐 v1.8 及以上版本部署 [metrics-server](metrics.md) 替代 Heapster**
 
 Heapster 首先从 Kubernetes apiserver 查询所有 Node 的信息，然后再从 kubelet 提供的 API 采集节点和容器的资源占用，同时在 `/metrics` API 提供了 Prometheus 格式的数据。Heapster 采集到的数据可以推送到各种持久化的后端存储中，如 InfluxDB、Google Cloud Monitoring、OpenTSDB 等。
 

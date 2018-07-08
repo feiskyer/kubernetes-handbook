@@ -1,6 +1,6 @@
-# Kubernetes 网络
+# Kubernetes 网络模型
 
-## Kubernetes 网络模型
+## 网络模型
 
 - IP-per-Pod，每个 Pod 都拥有一个独立 IP 地址，Pod 内所有容器共享一个网络命名空间
 - 集群内所有 Pod 都在一个直接连通的扁平网络中，可通过 IP 直接访问

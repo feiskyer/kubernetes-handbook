@@ -1,6 +1,6 @@
 # CustomResourceDefinition
 
-CustomResourceDefinition（CRD）是 v1.7 + 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
+CustomResourceDefinition（CRD）是 v1.7 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
 
 ## API 版本对照表
 
@@ -21,8 +21,16 @@ metadata:
 spec:
   # group name to use for REST API: /apis/<group>/<version>
   group: stable.example.com
-  # version name to use for REST API: /apis/<group>/<version>
-  version: v1
+  # versions to use for REST API: /apis/<group>/<version>
+  versions:
+  - name: v1beta1
+    # Each version can be enabled/disabled by Served flag.
+    served: true
+    # One and only one version must be marked as the storage version.
+    storage: true
+  - name: v1
+    served: true
+    storage: false
   # either Namespaced or Cluster
   scope: Namespaced
   names:
@@ -147,7 +155,9 @@ spec.replicas in body should be less than or equal to 10
 
 ## Subresources
 
-v1.10 开始 CRD 还支持 `/status` 和 `/scale` 等两个子资源（Alpha）。使用前需要在 `kube-apiserver` 开启 `--feature-gates=CustomResourceSubresources=true`。
+v1.10 开始 CRD 还支持 `/status` 和 `/scale` 等两个子资源（Beta），并且从 v1.11 开始默认开启。
+
+> v1.10 版本使用前需要在 `kube-apiserver` 开启 `--feature-gates=CustomResourceSubresources=true`。
 
 ```yaml
 # resourcedefinition.yaml
@@ -242,8 +252,6 @@ $ kubectl get all
 NAME                          AGE
 crontabs/my-new-cron-object   3s
 ```
-
-
 
 ## CRD 控制器
 

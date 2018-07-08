@@ -8,7 +8,7 @@ Volume 的生命周期包括 5 个阶段
 
 1. Provisioning，即 PV 的创建，可以直接创建 PV（静态方式），也可以使用 StorageClass 动态创建
 2. Binding，将 PV 分配给 PVC
-3. Using，Pod 通过 PVC 使用该 Volume，并可以通过准入控制 StorageObjectInUseProtection（1.9及以前版本为PVCProtection）阻止删除正在使用的 PVC
+3. Using，Pod 通过 PVC 使用该 Volume，并可以通过准入控制 StorageObjectInUseProtection（1.9 及以前版本为 PVCProtection）阻止删除正在使用的 PVC
 4. Releasing，Pod 释放 Volume 并删除 PVC
 5. Reclaiming，回收 PV，可以保留 PV 以便下次使用，也可以直接从云存储中删除
 6. Deleting，删除 PV 并从云存储中删除后段存储
@@ -110,6 +110,8 @@ kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"s
 ```
 
 #### GCE 示例
+
+> 单个 GCE 节点最大支持挂载 16 个 Google Persistent Disk。开启 `AttachVolumeLimit` 特性后，根据节点的类型最大可以挂载 128 个。
 
 ```yaml
 kind: StorageClass
@@ -263,13 +265,18 @@ spec:
 
 ## 扩展 PV 空间
 
+> ExpandPersistentVolumes 在 v1.8 开始 Alpha，v1.11 升级为 Beta 版。
+
 v1.8 开始支持扩展 PV 空间，支持在不丢失数据和重启容器的情况下扩展 PV 的大小。注意，** 当前的实现仅支持不需要调整文件系统大小（XFS、Ext3、Ext4）的 PV，并且只支持以下几种存储插件 **：
 
+- AzureDisk
+- AzureFile
 - gcePersistentDisk
 - awsElasticBlockStore
 - Cinder
 - glusterfs
 - rbd
+- Portworx
 
 开启扩展 PV 空间的功能需要配置
 
@@ -294,16 +301,20 @@ allowVolumeExpansion: true
 
 ## 块存储（Raw Block Volume）
 
-Kubernetes v1.9 新增了 Alpha 版的 Raw Block Volume，可通过设置 `volumeMode: Block`（可选项为 `Filesystem`和 `Block`）来使用块存储。
+Kubernetes v1.9 新增了 Alpha 版的 Raw Block Volume，可通过设置 `volumeMode: Block`（可选项为 `Filesystem` 和 `Block`）来使用块存储。
 
 支持块存储的 PV 插件包括
 
 - Local Volume
 - fc
 - iSCSI
-- RBD
+- Ceph RBD
 - AWS EBS
 - GCE PD
+- AzureDisk
+- Cinder
+
+使用示例
 
 ```yaml
 # Persistent Volumes using a Raw Block Volume
@@ -346,7 +357,7 @@ spec:
     - name: fc-container
       image: fedora:26
       command: ["/bin/sh", "-c"]
-      args: [ "tail -f /dev/null" ]
+      args: ["tail -f /dev/null"]
       volumeDevices:
         - name: data
           devicePath: /dev/xvda
@@ -357,6 +368,8 @@ spec:
 ```
 
 ## StorageObjectInUseProtection
+
+> 准入控制 StorageObjectInUseProtection 在 v1.11 版本 GA。
 
 当开启准入控制 StorageObjectInUseProtection（`--admission-control=StorageObjectInUseProtection`）时，删除使用中的 PV 和 PVC 后，它们会等待使用者删除后才删除（而不是之前的立即删除）。而在使用者删除之前，它们会一直处于 Terminating 状态。
 
