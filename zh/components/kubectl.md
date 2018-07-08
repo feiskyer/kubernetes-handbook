@@ -38,7 +38,11 @@ kubectl config view
 - 容器内执行命令：`kubectl exec -ti <pod-name> sh`
 - 容器日志：`kubectl logs [-f] <pod-name>`
 - 导出服务：`kubectl expose deploy <name> --port=80`
-- Base64 解码：`kubectl get secret SECRET -o go-template='{{.data.KEY | base64decode}}'`
+- Base64 解码：
+
+```sh
+kubectl get secret SECRET -o go-template='{{ .data.KEY | base64decode }}'
+```
 
 注意，`kubectl run` 仅支持 Pod、Replication Controller、Deployment、Job 和 CronJob 等几种资源。具体的资源类型是由参数决定的，默认为 Deployment：
 
