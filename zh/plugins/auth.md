@@ -12,7 +12,7 @@ Kubernetes 集群的所有操作基本上都是通过 kube-apiserver 这个组�
 
 开启 TLS 时，所有的请求都需要首先认证。Kubernetes 支持多种认证机制，并支持同时开启多个认证插件（只要有一个认证通过即可）。如果认证成功，则用户的 `username` 会传入授权模块做进一步授权验证；而对于认证失败的请求则返回 HTTP 401。
 
-> **[warning] Kubernetes 不管理用户 **
+> **Kubernetes 不直接管理用户**
 >
 > 虽然 Kubernetes 认证和授权用到了 username，但 Kubernetes 并不直接管理用户，不能创建 `user` 对象，
 > 也不存储 username。但是 Kubernetes 提供了 Service Account，用来与 API 交互。
@@ -50,7 +50,7 @@ Kubernetes 授权仅处理以下的请求属性：
 - Webhook
 - Node
 
-> **[info] AlwaysDeny 和 AlwaysAllow**
+> **AlwaysDeny 和 AlwaysAllow**
 >
 > Kubernetes 还支持 AlwaysDeny 和 AlwaysAllow 模式，其中 AlwaysDeny 仅用来测试，而 AlwaysAllow 则
 > 允许所有请求（会覆盖其他模式）。

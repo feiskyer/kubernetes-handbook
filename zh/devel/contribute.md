@@ -24,7 +24,7 @@ Kubernetes 社区由三部分组成
 - 必要的逻辑添加注释说明变更的理由
 - 遵循代码约定，如 [Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/coding-conventions.md)、[API Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md) 和 [kubectl Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/kubectl-conventions.md)
 - 确保修改部分可以本地跑过单元测试和功能测试
-- 使用 [Bot 命令](https://github.com/kubernetes/test-infra/blob/master/commands.md) 设置正确的标签或重试失败的测试
+- 使用 [Bot 命令](https://prow.k8s.io/command-help) 设置正确的标签或重试失败的测试
 
 ## 提交 Pull Request 到发布分支
 

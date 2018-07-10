@@ -15,7 +15,7 @@ ThirdPartyResources（TPR）是一种无需改变代码就可以扩展 Kubernete
 | v1.5-v1.7       | extensions/v1beta1 |
 | v1.8+           | 不再支持           |
 
->  **[warning] ThirdPartyResources 已在 v1.8 删除 **
+>  **ThirdPartyResources 已在 v1.8 删除**
 >
 >  ThirdPartyResources 已在 v1.8 版本中删除。建议从 v1.7 开始，迁移到 [CustomResourceDefinition（CRD）](customresourcedefinition.md)。
 

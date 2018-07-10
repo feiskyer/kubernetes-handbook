@@ -71,7 +71,7 @@ configmap "special-config" created
 
 ConfigMap 可以通过三种方式在 Pod 中使用，三种分别方式为：设置环境变量、设置容器命令行参数以及在 Volume 中直接挂载文件或目录。
 
-> **[warning] 注意 **
+> **注意**
 >
 > - ConfigMap 必须在 Pod 引用它之前创建
 > - 使用 `envFrom` 时，将会自动忽略无效的键
