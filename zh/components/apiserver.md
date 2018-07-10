@@ -55,9 +55,27 @@ volumeattachments                storage.k8s.io   false        VolumeAttachment
 
 ## OpenAPI 和 Swagger
 
-通过 `/swaggerapi` 可以查看 Swagger API，`/swagger.json` 查看 OpenAPI。
+通过 `/swaggerapi` 可以查看 Swagger API，`/openapi/v2` 查看 OpenAPI。
 
 开启 `--enable-swagger-ui=true` 后还可以通过 `/swagger-ui` 访问 Swagger UI。
+
+根据 OpenAPI 也可以生成各种语言的客户端，比如可以用下面的命令生成 Go 语言的客户端：
+
+```sh
+git clone https://github.com/kubernetes-client/gen /tmp/gen
+cat >go.settings <<EOF
+# Kubernetes branch name
+export KUBERNETES_BRANCH="release-1.11"
+
+# client version for packaging and releasing.
+export CLIENT_VERSION="1.0"
+
+# Name of the release package
+export PACKAGE_NAME="client-go"
+EOF
+
+/tmp/gen/openapi/go.sh ./client-go ./go.settings
+```
 
 ## 访问控制
 
@@ -69,7 +87,7 @@ Kubernetes API 的每个请求都会经过多阶段的访问控制之后才会�
 
 开启 TLS 时，所有的请求都需要首先认证。Kubernetes 支持多种认证机制，并支持同时开启多个认证插件（只要有一个认证通过即可）。如果认证成功，则用户的 `username` 会传入授权模块做进一步授权验证；而对于认证失败的请求则返回 HTTP 401。
 
-> **[warning] Kubernetes 不管理用户 **
+> **Kubernetes 不直接管理用户**
 >
 > 虽然 Kubernetes 认证和授权用到了 username，但 Kubernetes 并不直接管理用户，不能创建 `user` 对象，也不存储 username。
 
@@ -176,8 +194,9 @@ $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 
 ## API 参考文档
 
-- [v1.6 API Reference](https://kubernetes.io/docs/api-reference/v1.6)
-- [v1.7 API Reference](https://kubernetes.io/docs/api-reference/v1.7/)
-- [v1.8 API Reference](https://kubernetes.io/docs/api-reference/v1.8/)
-- [v1.9 API Reference](https://kubernetes.io/docs/api-reference/v1.9/)
+最近 4 个稳定版本的 API 参考文档为：
+
+- [v1.11 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/)
 - [v1.10 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
+- [v1.9 API Reference](https://kubernetes.io/docs/api-reference/v1.9/)
+- [v1.8 API Reference](https://kubernetes.io/docs/api-reference/v1.8/)
