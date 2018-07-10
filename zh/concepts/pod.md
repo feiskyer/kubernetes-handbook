@@ -22,7 +22,7 @@ Pod 的特征
 
 ## Pod 定义
 
-通过 [yaml 或 json 描述 Pod](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core) 和其内容器的运行环境以及期望状态，比如一个最简单的 nginx pod 可以定义为
+通过 [yaml 或 json 描述 Pod](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core) 和其内容器的运行环境以及期望状态，比如一个最简单的 nginx pod 可以定义为
 
 ```yaml
 apiVersion: v1

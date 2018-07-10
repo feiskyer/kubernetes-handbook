@@ -28,7 +28,7 @@ $ kubectl --namespace kube-system get services -w nginx-ingress-nginx-ingress-co
 >
 > minikube 中配置和使用 Ingress Controller 的方法可以参考 [这里](../practice/minikube-ingress.md)。
 
-初始化好 Kubernetes 集群和 Helm 后，可以在 [这里](https://github.com/Azure/draft/blob/master/docs/install.md) 下载 draft 二进制文件，并配置 draft
+初始化好 Kubernetes 集群和 Helm 后，可以在 [这里](https://github.com/Azure/draft/releases/latest) 下载 draft 二进制文件，并配置 draft
 
 ```sh
 # 注意修改用户名、密码和邮件

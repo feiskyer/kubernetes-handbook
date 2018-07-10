@@ -375,11 +375,11 @@ kubeapps dashboard
 
 第三方 repository:
 
+* https://github.com/coreos/prometheus-operator/tree/master/helm
 * https://github.com/deis/charts
 * https://github.com/bitnami/charts
 * https://github.com/att-comdev/openstack-helm
 * https://github.com/sapcc/openstack-helm
-* https://github.com/mgoodness/kube-prometheus-charts
 * https://github.com/helm/charts
 * https://github.com/jackzampolin/tick-charts
 
@@ -390,7 +390,3 @@ kubeapps dashboard
 3. [helm-template](https://github.com/technosophos/helm-template) - Debug/render templates client-side
 4. [Helm Value Store](https://github.com/skuid/helm-value-store) - Plugin for working with Helm deployment values
 5. [Drone.io Helm Plugin](http://plugins.drone.io/ipedrazas/drone-helm/) - Run Helm inside of the Drone CI/CD system
-
-
-
-

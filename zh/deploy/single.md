@@ -49,7 +49,8 @@ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port \
 安装 calico 网络插件：
 
 ```sh
-curl -O -L https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+curl -O -L https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
 sed -i -e '/nodeSelector/d' calico.yaml
 sed -i -e '/node-role.kubernetes.io\/master:""/d' calico.yaml
 sed -i -e 's/10\.96\.232/10.0.0/' calico.yaml

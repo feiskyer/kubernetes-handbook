@@ -56,7 +56,7 @@ spec:
         nvidia.com/gpu: 1
 ```
 
-注意：**使用该插件时需要配置 [nvidia-docker 2.0](https://github.com/NVIDIA/nvidia-docker/tree/2.0#nvidia-runtime)，并配置 `nvidia` 为默认运行时 （即配置 docker daemon 的选项 `--default-runtime=nvidia`）**。nvidia-docker 2.0 的安装方法为（以 Ubuntu Xenial 为例，其他系统的安装方法可以参考 [这里](http://nvidia.github.io/nvidia-docker/)）：
+注意：**使用该插件时需要配置 [nvidia-docker 2.0](https://github.com/NVIDIA/nvidia-docker/)，并配置 `nvidia` 为默认运行时 （即配置 docker daemon 的选项 `--default-runtime=nvidia`）**。nvidia-docker 2.0 的安装方法为（以 Ubuntu Xenial 为例，其他系统的安装方法可以参考 [这里](http://nvidia.github.io/nvidia-docker/)）：
 
 ```sh
 # Configure repository

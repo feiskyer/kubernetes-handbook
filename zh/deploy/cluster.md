@@ -6,13 +6,13 @@
 
 ### etcd 集群
 
-从 `https://discovery.etcd.io/new?size=3` 获取 token 后，把 <https://kubernetes.io/docs/admin/high-availability/etcd.yaml> 放到每台机器的 `/etc/kubernetes/manifests/etcd.yaml`，并替换掉 `${DISCOVERY_TOKEN}`, `${NODE_NAME}` 和 `${NODE_IP}`，即可以由 kubelet 来启动一个 etcd 集群。
+从 `https://discovery.etcd.io/new?size=3` 获取 token 后，把 `etcd.yaml` 放到每台机器的 `/etc/kubernetes/manifests/etcd.yaml`，并替换掉 `${DISCOVERY_TOKEN}`, `${NODE_NAME}` 和 `${NODE_IP}`，即可以由 kubelet 来启动一个 etcd 集群。
 
 对于运行在 kubelet 外部的 etcd，可以参考 [etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md) 来手动配置集群模式。
 
 ### kube-apiserver
 
-把 <https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml> 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
+把 `kube-apiserver.yaml` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
 
 - basic_auth.csv - basic auth user and password
 - ca.crt - Certificate Authority cert
@@ -40,7 +40,7 @@ kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把 [kube-scheduler.yaml](https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml) 和[kube-controller-manager.yaml](https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml)(非 GCE 平台需要适当修改) 放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
+把 `kube-scheduler.yaml` 和 `kube-controller-manager` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 kube-scheduler 和 kube-controller-manager。
 
 ### kube-dns
 

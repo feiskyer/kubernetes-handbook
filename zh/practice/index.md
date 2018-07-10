@@ -2,8 +2,8 @@
 
 Kubernetes 实践及常用技巧，包括
 
-- [监控](../monitor/index.md)
-- [日志](../deploy/logging.md)
+- [监控](../addons/monitor.md)
+- [日志](../addons/logging.md)
 - [高可用](ha.md)
 - [调试](debugging.md)
 - [端口映射](portmap.md)

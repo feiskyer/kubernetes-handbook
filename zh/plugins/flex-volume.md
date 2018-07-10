@@ -6,7 +6,7 @@ FlexVolume 是 Kubernetes v1.8+ 支持的一种存储插件扩展方式。类似
 
 实现一个 FlexVolume 包括两个步骤
 
-- 实现 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可参考 [lvm 示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/flexvolume/lvm) 和 [NFS 示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/flexvolume/nfs)）
+- 实现 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可参考 [lvm 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/lvm) 和 [NFS 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/nfs)）
 - 将插件放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>` 目录中
 
 FlexVolume 的接口包括
@@ -25,14 +25,14 @@ FlexVolume 的接口包括
 
 ```json
 {
-	"status": "<Success/Failure/Not supported>",
-	"message": "<Reason for success/failure>",
-	"device": "<Path to the device attached. This field is valid only for attach & waitforattach call-outs>"
-	"volumeName": "<Cluster wide unique name of the volume. Valid only for getvolumename call-out>"
-	"attached": <True/False (Return true if volume is attached on the node. Valid only for isattached call-out)>
-    "capabilities": <Only included as part of the Init response>
+  "status": "<Success/Failure/Not supported>",
+  "message": "<Reason for success/failure>",
+  "device": "<Path to the device attached. This field is valid only for attach & waitforattach call-outs>",
+  "volumeName": "<Cluster wide unique name of the volume. Valid only for getvolumename call-out>",
+  "attached": "<True/False (Return true if volume is attached on the node. Valid only for isattached call-out)>",
+    "capabilities":
     {
-        "attach": <True/False (Return true if the driver implements attach and detach)>
+        "attach": "<True/False (Return true if the driver implements attach and detach)>"
     }
 }
 ```

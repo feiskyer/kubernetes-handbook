@@ -362,16 +362,18 @@ spec:
 
 ## 其他的 Volume 参考示例
 
-- [iSCSI Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/iscsi)
-- [cephfs Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/cephfs)
-- [Flocker Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/flocker)
-- [GlusterFS Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs)
-- [RBD Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/rbd)
-- [Secret Volume 示例](secret.md# 将 secret 挂载到 volume 中)
+https://github.com/kubernetes/examples/tree/master/staging/volumes/iscsi
+
+- [iSCSI Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/iscsi)
+- [cephfs Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/cephfs)
+- [Flocker Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/flocker)
+- [GlusterFS Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/glusterfs)
+- [RBD Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/rbd)
+- [Secret Volume 示例](secret.md)
 - [downwardAPI Volume 示例](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
-- [AzureFileVolume 示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/azure_file/README.md)
-- [AzureDiskVolume 示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/azure_disk/README.md)
-- [Quobyte Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/quobyte)
-- [PortworxVolume Volume 示例](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/portworx/README.md)
-- [ScaleIO Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio)
-- [StorageOS Volume 示例](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/storageos)
+- [AzureFile Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/azure_file)
+- [AzureDisk Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/azure_disk)
+- [Quobyte Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/quobyte)
+- [Portworx Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/portworx)
+- [ScaleIO Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/scaleio)
+- [StorageOS Volume 示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/storageos)

@@ -7,14 +7,14 @@
 - 端到端可视化
 - 增强 Kubernetes 的可靠性、可视性以及安全性
 
-> 注意：Conduit 目前还处于 Alpha 阶段，不建议在生产环境中使用。
+> 注意：Conduit 目前还处于 Alpha 阶段，并且将在未来合并到 Linkerd 2.0 中。
 
 ## 部署
 
 首先安装 conduit 命令行工具：
 
 ```sh
-$ curl https://run.conduit.io/install | bash
+$ curl https://run.conduit.io/install | sh
 $ sudo cp $HOME/.conduit/bin/conduit /usr/local/bin
 ```
 
@@ -24,22 +24,19 @@ $ sudo cp $HOME/.conduit/bin/conduit /usr/local/bin
 $ conduit install | kubectl apply -f -
 namespace "conduit" created
 serviceaccount "conduit-controller" created
-clusterrole.rbac.authorization.k8s.io "conduit-controller" created
-clusterrolebinding.rbac.authorization.k8s.io "conduit-controller" created
+clusterrole "conduit-controller" created
+clusterrolebinding "conduit-controller" created
 serviceaccount "conduit-prometheus" created
-clusterrole.rbac.authorization.k8s.io "conduit-prometheus" created
-clusterrolebinding.rbac.authorization.k8s.io "conduit-prometheus" created
+clusterrole "conduit-prometheus" created
+clusterrolebinding "conduit-prometheus" created
 service "api" created
 service "proxy-api" created
-deployment.extensions "controller" created
+deployment "controller" created
 service "web" created
-deployment.extensions "web" created
+deployment "web" created
 service "prometheus" created
-deployment.extensions "prometheus" created
+deployment "prometheus" created
 configmap "prometheus-config" created
-service "grafana" created
-deployment.extensions "grafana" created
-configmap "grafana-config" created
 
 $ kubectl -n conduit get svc
 NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)             AGE

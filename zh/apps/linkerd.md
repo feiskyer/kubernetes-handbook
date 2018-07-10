@@ -46,8 +46,8 @@ Linkerd 以 DaemonSet 的方式部署在每个 Node 节点上：
 # Deploy linkerd.
 # For CNI, deploy linkerd-cni.yml instead.
 # kubectl apply -f https://github.com/linkerd/linkerd-examples/raw/master/k8s-daemonset/k8s/linkerd-cni.yml
-$ kubectl create ns linkerd
-$ kubectl apply -f https://raw.githubusercontent.com/linkerd/linkerd-examples/master/k8s-daemonset/k8s/servicemesh.yml
+kubectl create ns linkerd
+kubectl apply -f https://raw.githubusercontent.com/linkerd/linkerd-examples/master/k8s-daemonset/k8s/servicemesh.yml
 
 $ kubectl -n linkerd get pod
 NAME        READY     STATUS    RESTARTS   AGE
@@ -125,7 +125,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/linkerd/linkerd-examples/ma
 
 # If load balancer is supported in kubernetes cluster
 $ L5D_SVC_IP=$(kubectl get svc l5d -n l5d-system -o jsonpath="{.status.loadBalancer.ingress[0].*}")
-$ echo open http://$L5D_SVC_IP:9990 
+$ echo open http://$L5D_SVC_IP:9990
 
 # Or else
 $ HOST_IP=$(kubectl get po -l app=l5d -n l5d-system -o jsonpath="{.items[0].status.hostIP}")

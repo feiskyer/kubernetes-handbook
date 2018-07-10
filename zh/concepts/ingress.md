@@ -5,7 +5,7 @@
 - 节点：Kubernetes 集群中的服务器；
 - 集群：Kubernetes 管理的一组服务器集合；
 - 边界路由器：为局域网和 Internet 路由数据包的路由器，执行防火墙保护局域网络；
-- 集群网络：遵循 Kubernetes[网络模型](https://kubernetes.io/docs/admin/networking/) 实现集群内的通信的具体实现，比如 [flannel](https://github.com/coreos/flannel#flannel) 和 [OVS](https://kubernetes.io/docs/admin/ovs-networking/)。
+- 集群网络：遵循 Kubernetes[网络模型](https://kubernetes.io/docs/admin/networking/) 实现集群内的通信的具体实现，比如 [flannel](https://github.com/coreos/flannel#flannel) 和 [OVS](https://github.com/openvswitch/ovn-kubernetes)。
 - 服务：Kubernetes 的服务 (Service) 是使用标签选择器标识的一组 pod [Service](https://kubernetes.io/docs/user-guide/services/)。 除非另有说明，否则服务的虚拟 IP 仅可在集群内部访问。
 
 ## 什么是 Ingress？

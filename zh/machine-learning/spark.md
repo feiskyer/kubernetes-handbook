@@ -39,7 +39,7 @@ Kubernetes 示例 [github](https://github.com/kubernetes/examples/tree/master/st
 
 ### 部署条件
 
-* 一个 kubernetes 群集, 可参考 [集群部署](https://feisky.gitbooks.io/kubernetes/deploy/cluster.html)
+* 一个 kubernetes 群集, 可参考 [集群部署](../deploy/cluster.md)
 * kube-dns 正常运作
 
 ### 创建一个命名空间
@@ -224,12 +224,7 @@ $ kubectl create -f spark-ui-proxy-service.yaml
 $ kubectl proxy --port=8001
 ```
 
-可以透过 [http://localhost:8001/api/v1/proxy/namespaces/spark-cluster/services/spark-master:8080](http://localhost:8001/api/v1/proxy/namespaces/spark-cluster/services/spark-master:8080/)
-察看, 若 kubectl 中断就无法这样观察了, 但我们再先前有设定 nodeport
-所以也可以透过任意台 node 的端口 30080 去察看
-例如：http://10.201.2.34:30080
-10.201.2.34 是群集的其中一台 node, 这边可换成你自己的
-
+可以透过 `http://localhost:8001/api/v1/proxy/namespaces/spark-cluster/services/spark-master:8080/` 察看, 若 kubectl 中断就无法这样观察了, 但我们再先前有设定 nodeport 所以也可以透过任意台 node 的端口 30080 去察看（例如 `http://10.201.2.34:30080`）。
 
 ### 部署 Spark workers
 
@@ -285,7 +280,7 @@ spark-ui-proxy-controller-d4br2   1/1       Running   4          6d
 ### 创建 Zeppelin UI
 
 我们可以利用 Zeppelin UI 经由 web notebook 直接去执行我们的任务,
-详情可以看 [Zeppelin UI](http://zeppelin.apache.org/) 与[ Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
+详情可以看 [Zeppelin UI](http://zeppelin.apache.org/) 与 [ Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
 
 zeppelin-controller.yaml
 

@@ -31,6 +31,10 @@ $ echo '{"cniVersion": "0.3.1","type":"IGNORED", "name": "a","ipam": {"type": "h
 
 ![](cni-plugins.png)
 
+**CNI Plugin Chains**
+
+CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行每个插件。这对支持端口映射（portmapping）、虚拟机等非常有帮助。配置方法可以参考后面的[端口映射示例](#端口映射示例)。
+
 ## Bridge
 
 Bridge是最简单的CNI网络插件，它首先在Host创建一个网桥，然后再通过veth pair连接该网桥到container netns。
@@ -319,10 +323,6 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 
 [michaelhenkel/opencontrail-cni-plugin](https://github.com/michaelhenkel/opencontrail-cni-plugin)提供了一个OpenContrail的CNI插件。
 
-## [CNI Plugin Chains](cni-chain.md)
-
-CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行每个插件。这对支持端口映射（portmapping）、虚拟机等非常有帮助。
-
 ### Network Configuration Lists
 
 [CNI SPEC](https://github.com/containernetworking/cni/blob/master/SPEC.md#network-configuration-lists) 支持指定网络配置列表，包含多个网络插件，由 Runtime 依次执行。注意
@@ -452,4 +452,3 @@ CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行
 [CNI-Genie](https://github.com/Huawei-PaaS/CNI-Genie)是华为PaaS团队推出的同时支持多种网络插件（支持calico, canal, romana, weave等）的CNI插件。
 
 项目主页为<https://github.com/Huawei-PaaS/CNI-Genie>。
-

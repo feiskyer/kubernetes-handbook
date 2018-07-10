@@ -121,7 +121,7 @@ Starting to serve on 127.0.0.1:8001
 
 - `/force/forcegraph.html` As explored above, this is an interactive [D3.js](https://d3js.org/) visualization.
 - `/dotviz` is a static [Graphviz](https://www.graphviz.org/) visualization.
-- `/dotgraph` provides a [DOT](https://en.wikipedia.org/wiki/DOT_(graph_description_language)) serialization.
+- `/dotgraph` provides a [DOT](https://en.wikipedia.org/wiki/DOT_\(graph_description_language\)) serialization.
 - `/d3graph` provides a JSON serialization for D3 visualization.
 - `/graph` provides a generic JSON serialization.
 

@@ -22,7 +22,7 @@ Kubernetes 社区由三部分组成
 
 - 使用小的提交，将不同功能的代码分拆到不同的提交甚至是不同的 Pull Request 中
 - 必要的逻辑添加注释说明变更的理由
-- 遵循代码约定，如 [Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/coding-conventions.md)、[API Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md) 和[kubectl Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/kubectl-conventions.md)
+- 遵循代码约定，如 [Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/coding-conventions.md)、[API Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md) 和 [kubectl Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/kubectl-conventions.md)
 - 确保修改部分可以本地跑过单元测试和功能测试
 - 使用 [Bot 命令](https://github.com/kubernetes/test-infra/blob/master/commands.md) 设置正确的标签或重试失败的测试
 
@@ -58,5 +58,5 @@ hack/cherry_pick_pull.sh upstream/release-1.7 51870
 - **[Kubernetes Developer Guide](https://github.com/kubernetes/community/tree/master/contributors/devel)**
 - [Special Interest Groups](https://github.com/kubernetes/community)
 - [Feature Tracking and Backlog](https://github.com/kubernetes/features)
-- [Community Expectations](https://github.com/kubernetes/community/blob/master/contributors/devel/community-expectations.md)
+- [Community Expectations](https://github.com/kubernetes/community/blob/master/contributors/guide/community-expectations.md)
 - [Kubernetes release managers](https://github.com/kubernetes/sig-release/blob/master/release-managers.md)

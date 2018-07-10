@@ -7,17 +7,13 @@ Romana是Panic Networks在2016年提出的开源项目，旨在解决Overlay方�
 对使用kubeadm部署的Kubernetes集群：
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/romana/romana/romana-2.0/docs/kubernetes/romana-kubeadm.yml
+kubectl apply -f https://raw.githubusercontent.com/romana/romana/master/docs/kubernetes/romana-kubeadm.yml
 ```
 
 对使用kops部署的Kubernetes集群:
 
 ```sh
-# Connect to the master node
-ssh admin@master-ip
-# Check that Kubernetes is running and that the master is in NotReady state
-kubectl get nodes
-kubectl apply -f https://raw.githubusercontent.com/romana/romana/romana-2.0/docs/kubernetes/romana-kops.yml
+kubectl apply -f https://raw.githubusercontent.com/romana/romana/master/docs/kubernetes/romana-kops.yml
 ```
 
 使用kops时要注意
@@ -51,5 +47,5 @@ kubectl apply -f https://raw.githubusercontent.com/romana/romana/romana-2.0/docs
 - <http://romana.io/>
 - [Romana basics](http://romana.io/how/romana_basics/)
 - [Romana Github](https://github.com/romana/romana)
-- [Romana 2.0](https://github.com/romana/romana/tree/romana-2.0/docs/kubernetes)
+- [Romana 2.0](http://romana.readthedocs.io/en/latest/index.html)
 

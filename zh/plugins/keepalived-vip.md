@@ -40,12 +40,11 @@ DNS Round Robin (RR) 将对应到 `example.com` 的请求轮循给这 3 个节�
 
 这边 IPVS 可以帮助我们解决这件事, 这个想法是虚拟 IP(VIP) 对应到每个 service 上, 并将 VIP 暴露到 kubernetes 群集之外
 
-### 与 [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) 或 [nginx](https://github.com/kubernetes/ingress/tree/master/controllers/nginx) 的区别
+### 与 [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) 或 [ingress-nginx](https://github.com/kubernetes/ingress-nginx) 的区别
 
 我们看到以下的图
 
-
-```
+```sh
                                                ___________________
                                               |                   |
                                               | VIP: 10.4.0.50    |
@@ -72,14 +71,14 @@ Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.3 |
 
 ## 环境需求
 
-只需要确认要运行 keepalived-vip 的 kubernetes 群集 [DaemonSets](https://github.com/kubernetes/kubernetes/blob/master/docs/design/daemon.md) 功能是正常的就行了
+只需要确认要运行 keepalived-vip 的 kubernetes 群集 [DaemonSets](../concepts/daemonset.md) 功能是正常的就行了
 
 ### RBAC
 
-由于 kubernetes 在 1.6 后引进了 RBAC 的概念, 所以我们要先去设定 rule, 至於有关 RBAC 的详情请至 [说明](https://feisky.gitbooks.io/kubernetes/plugins/auth.html)
-
+由于 kubernetes 在 1.6 后引进了 RBAC 的概念, 所以我们要先去设定 rule, 至於有关 RBAC 的详情请至 [说明](../plugins/rbac.md)。
 
 vip-rbac.yaml
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole

@@ -15,7 +15,7 @@ apt-get update
 apt-get -y install "docker-engine=1.13.1-0~ubuntu-$(lsb_release -cs)"
 
 # 安装 etcd
-ETCD_VER=v3.2.13
+ETCD_VER=v3.2.18
 DOWNLOAD_URL="https://github.com/coreos/etcd/releases/download"
 curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
 tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
@@ -23,7 +23,7 @@ sudo /bin/cp -f etcd-${ETCD_VER}-linux-amd64/{etcd,etcdctl} /usr/bin
 rm -rf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz etcd-${ETCD_VER}-linux-amd64
 
 # 安装 Go
-curl -sL https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz | tar -C /usr/local -zxf -
+curl -sL https://storage.googleapis.com/golang/go1.10.2.linux-amd64.tar.gz | tar -C /usr/local -zxf -
 export GOPATH=/gopath
 export PATH=$PATH:$GOPATH/bin:/usr/local/bin:/usr/local/go/bin/
 
@@ -107,7 +107,7 @@ fetch = +refs/pull/*:refs/remotes/origin/pull/*
 - 机器人命令：[命令列表](https://github.com/kubernetes/test-infra/blob/master/commands.md) 和 [使用文档](https://prow.k8s.io/plugin-help.html)。
 - [Kubernetes TestGrid](https://k8s-testgrid.appspot.com/)，包含所有的测试历史
 - [Kuberentes Submit Queue Status](https://submit-queue.k8s.io/#/queue)，包含所有的 Pull Request 状态以及合并队列
-- [Node Performance Dashboard](http://146.148.52.109/#/builds)，包含 Node 组性能测试报告
+- [Node Performance Dashboard](http://node-perf-dash.k8s.io/#/builds)，包含 Node 组性能测试报告
 - [Kubernetes Performance Dashboard](http://perf-dash.k8s.io/)，包含 Density 和 Load 测试报告
 - [Kubernetes PR Dashboard](https://k8s-gubernator.appspot.com/pr)，包含主要关注的 Pull Request 列表（需要以 Github 登录）
 - [Jenkins Logs](https://k8s-gubernator.appspot.com/) 和 [Prow Status](http://prow.k8s.io/?type=presubmit)，包含所有 Pull Request 的 Jenkins 测试日志

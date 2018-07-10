@@ -4,23 +4,21 @@
 
 ## 如何开发 Ingress Controller 扩展
 
-[NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx)和 [GLBC](https://github.com/kubernetes/ingress-gce) 提供了两个 Ingress Controller 的完整示例，可以在此基础上方便的开发新的 Ingress Controller。
+[NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx) 和 [GLBC](https://github.com/kubernetes/ingress-gce) 提供了两个 Ingress Controller 的完整示例，可以在此基础上方便的开发新的 Ingress Controller。
 
 ## 常见 Ingress Controller
 
 * [Nginx Ingress](https://github.com/kubernetes/ingress-nginx)
 
-  ```sh
-  helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
-  ```
-
-* [Dummy controller backend](https://github.com/kubernetes/ingress/tree/master/examples/custom-controller)
+```sh
+helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
+```
 
 * [HAProxy Ingress controller](https://github.com/jcmoraisjr/haproxy-ingress)
 
 * [Linkerd](https://linkerd.io/config/0.9.1/linkerd/index.html#ingress-identifier)
 
-* [traefik](https://docs.traefik.io/toml/#kubernetes-ingress-backend)
+* [traefik](https://docs.traefik.io/configuration/backends/kubernetes/)
 
 * [AWS Application Load Balancer Ingress Controller](https://github.com/coreos/alb-ingress-controller)
 

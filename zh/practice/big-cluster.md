@@ -1,6 +1,6 @@
 # Kubernetes 大规模集群
 
-Kubernetes v1.9 单集群最大支持 5000 个节点，也就是说 Kubernetes 最新稳定版的单个集群支持
+Kubernetes v1.6-v1.11 单集群最大支持 5000 个节点，也就是说 Kubernetes 最新稳定版的单个集群支持
 
 * 不超过 5000 个节点
 * 不超过 150000 个 Pod
@@ -46,7 +46,7 @@ Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Po
 
 以下扩展服务需要增大 CPU 和内存：
 
-* [kube-dns](http://releases.k8s.io/master/cluster/addons/dns/kube-dns.yaml.in)
+* [DNS (kube-dns or CoreDNS)](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)
 * [InfluxDB and Grafana](http://releases.k8s.io/master/cluster/addons/cluster-monitoring/influxdb/influxdb-grafana-controller.yaml)
 * [Kibana](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/kibana-deployment.yaml)
 * [FluentD with ElasticSearch Plugin](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml)
@@ -55,7 +55,7 @@ Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Po
 以下扩展服务需要增大副本数：
 
 * [elasticsearch](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/es-statefulset.yaml)
-* [kube-dns](http://releases.k8s.io/master/cluster/addons/dns/kube-dns.yaml.in)
+* [DNS (kube-dns or CoreDNS)](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)
 
 另外，为了保证多个副本分散调度到不同的 Node 上，需要为容器配置 [AntiAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity)。比如，对 kube-dns，可以增加如下的配置：
 
@@ -146,7 +146,6 @@ fs.inotify.max_user_watches=524288
 
 ## 参考文档
 
-* [Building Large Clusters](https://kubernetes.io/docs/admin/cluster-large/)
+* [Building Large Clusters](https://kubernetes.io/docs/setup/cluster-large/)
 * [Scaling Kubernetes to 2,500 Nodes](https://blog.openai.com/scaling-kubernetes-to-2500-nodes/)
 * [Scaling Kubernetes for 25M users](https://medium.com/@brendanrius/scaling-kubernetes-for-25m-users-a7937e3536a0)
-

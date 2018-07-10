@@ -7,7 +7,7 @@
 - 定义配置文件的时候，指定最新的稳定 API 版本。
 - 在部署配置文件到集群之前应该保存在版本控制系统中。这样当需要的时候能够快速回滚，必要的时候也可以快速的创建集群。
 - 使用 YAML 格式而不是 JSON 格式的配置文件。在大多数场景下它们都可以互换，但是 YAML 格式比 JSON 更友好。
-- 尽量将相关的对象放在同一个配置文件里，这样比分成多个文件更容易管理。参考 [guestbook-all-in-one.yaml](https://github.com/kubernetes/kubernetes/tree/master/examples/guestbook/all-in-one/guestbook-all-in-one.yaml) 文件中的配置。
+- 尽量将相关的对象放在同一个配置文件里，这样比分成多个文件更容易管理。参考 [guestbook-all-in-one.yaml](https://github.com/kubernetes/examples/blob/master/guestbook/all-in-one/guestbook-all-in-one.yaml) 文件中的配置。
 - 使用 `kubectl` 命令时指定配置文件目录。
 - 不要指定不必要的默认配置，这样更容易保持配置文件简单并减少配置错误。
 - 将资源对象的描述放在一个 annotation 中可以更好的内省。
