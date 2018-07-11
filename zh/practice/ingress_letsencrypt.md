@@ -9,13 +9,13 @@
 直接使用 Helm 部署即可：
 
 ```sh
-helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
+helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system
 ```
 
 部署成功后，查询 Ingress 服务的公网 IP 地址（下文中假设该 IP 是 `6.6.6.6`）：
 
 ```sh
-$ kubectl get service nginx-ingress-controller
+$ kubectl -n kube-system get service nginx-ingress-controller
 NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
 nginx-ingress-controller   LoadBalancer   10.0.216.124   6.6.6.6         80:31935/TCP,443:31797/TCP   4d
 ```
@@ -25,14 +25,14 @@ nginx-ingress-controller   LoadBalancer   10.0.216.124   6.6.6.6         80:3193
 ## 开启  Let's Encrypt
 
 ```sh
-git clone https://github.com/jetstack/kube-lego
-cd kube-lego
-kubectl apply -f examples/nginx/lego/
+# Install cert-manager
+helm install --namespace=kube-system --name cert-manager stable/cert-manager --set ingressShim.defaultIssuerName=letsencrypt --set ingressShim.defaultIssuerKind=ClusterIssuer
+
+# create cluster issuer
+kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/master/manifests/ingress-nginx/cert-manager/cluster-issuer.yaml
 ```
 
-注意：kube-lego 已经不再更新，其功能正在迁移到 [cert-manager](https://github.com/jetstack/cert-manager/)。
-
-## 创建 Ingress 资源
+## 创建 Ingress
 
 首先，创建一个 Secret，用于登录认证：
 
@@ -41,7 +41,42 @@ $ htpasswd -c auth foo
 $ kubectl -n kube-system create secret generic basic-auth --from-file=auth
 ```
 
-然后创建 Ingress（以 Kubernetes Dashboard 服务为例并假设域名为 `dashboard.example.com`）：
+### HTTP Ingress 示例
+
+为 nginx 服务（端口 80）创建 TLS Ingress，并且自动将 `http://echo-tls.example.com` 重定向到 `https://echo-tls.example.com`：
+
+```sh
+cat <<EOF | kubectl create -f-
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web
+  namespace: default
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - echo-tls.example.com
+    secretName: web-tls
+  rules:
+  - host: echo-tls.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx
+          servicePort: 80
+EOF
+```
+
+### TLS Ingress
+
+为 Kubernetes Dashboard 服务（端口443）创建 TLS Ingress，并且禁止该域名的 HTTP 访问：
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -50,10 +85,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/auth-type: basic
+    kubernetes.io/ingress.allow-http: "false"
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
     nginx.ingress.kubernetes.io/auth-secret: basic-auth
-    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt
   name: dashboard
   namespace: kube-system
 spec:
@@ -68,5 +105,5 @@ spec:
       - path: /
         backend:
           serviceName: kubernetes-dashboard
-          servicePort: 80
+          servicePort: 443
 ```
