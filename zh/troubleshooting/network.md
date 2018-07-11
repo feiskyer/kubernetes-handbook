@@ -89,6 +89,11 @@ $ docker ps | grep POD | wc -l
 * 对比两个列表，从 IPAM 文件中删除未使用的 IP 地址，并手动删除相关的虚拟网卡和网络命名空间（如果有的话）
 * 重启启动 Kubelet
 
+```sh
+# Take kubenet for example to delete the unused IPs
+$ for hash in $(tail -n +1 * | grep '^[A-Za-z0-9]*$' | cut -c 1-8); do if [ -z $(docker ps -a | grep $hash | awk '{print $1}') ]; then grep -ilr $hash ./; fi; done | xargs rm
+```
+
 而第二个问题则可以给 Kubelet 配置更快的垃圾回收，如
 
 ```sh

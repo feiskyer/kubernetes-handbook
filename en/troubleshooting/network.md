@@ -62,6 +62,11 @@ For the first reason, contacting author of plugin for workaround or fixes is fir
 - Compare the two list, remove the unused IP addresses from the store file, and then delete related netns or virtual nics (this requires deep understand of the network plugin)
 - Finally restart kubelet
 
+```sh
+# Take kubenet for example to delete the unused IPs
+$ for hash in $(tail -n +1 * | grep '^[A-Za-z0-9]*$' | cut -c 1-8); do if [ -z $(docker ps -a | grep $hash | awk '{print $1}') ]; then grep -ilr $hash ./; fi; done | xargs rm
+```
+
 For the second reason, a fast garbage collection could be configured for kubelet, e.g.
 
 ```sh
@@ -70,7 +75,7 @@ For the second reason, a fast garbage collection could be configured for kubelet
 --maximum-dead-containers=100
 ```
 
-## Flannel Pods stuck in Init:CrashLoopBackOff
+## Flannel Pods stuck in `Init:CrashLoopBackOff`
 
 When using Flannel network plugin, it is very easy to install for a fresh setup
 
