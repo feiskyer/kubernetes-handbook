@@ -175,6 +175,27 @@ $ curl http://localhost:8080/api/
 ### curl
 
 ```sh
+# In Pods with service account.
+$ TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+$ CACERT=/run/secrets/kubernetes.io/serviceaccount/ca.crt
+$ curl --cacert $CACERT --header "Authorization: Bearer $TOKEN"  https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT/api
+{
+  "kind": "APIVersions",
+  "versions": [
+    "v1"
+  ],
+  "serverAddressByClientCIDRs": [
+    {
+      "clientCIDR": "0.0.0.0/0",
+      "serverAddress": "10.0.1.149:443"
+    }
+  ]
+}
+```
+
+
+```sh
+# Outside of Pods.
 $ APISERVER=$(kubectl config view | grep server | cut -f 2- -d ":" | tr -d " ")
 $ TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d '') | grep -E'^token'| cut -f2 -d':'| tr -d'\t')
 $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
