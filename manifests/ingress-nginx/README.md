@@ -6,8 +6,8 @@ Deploy nginx ingress controller:
 helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system
 ```
 
-> For Chinese only:
-> 
+> **For Chinese only**:
+>
 > helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system --set defaultBackend.image.repository=crproxy.trafficmanager.net:6000/google_containers/defaultbackend
 
 Wait a while and get the external IP of ingress service
@@ -17,6 +17,12 @@ kubectl -n kube-system get svc nginx-ingress-controller
 ```
 
 Then setup a DNS A record for your domain name to the external IP.
+
+> Note: If RBAC is not enabled for the cluster, then nginx ingress controller should be deployed with
+>
+> ```sh
+> helm install stable/nginx-ingress --set rbac.create=false --set rbac.createRole=false --set rbac.createClusterRole=false
+> ```
 
 ## Enable TLS
 

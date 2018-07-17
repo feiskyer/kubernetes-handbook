@@ -218,6 +218,14 @@ ssh <username>@<node-name>
       -v /opt/cni/bin/:/opt/cni/bin/ \
 ```
 
+处于 `Terminating` 状态的 Pod 在 Kubelet 恢复正常运行后一般会自动删除。但有时也会出现无法删除的情况，并且通过 `kubectl delete pods <pod> --grace-period=0 --force` 也无法强制删除。此时一般是由于 `finalizers` 导致的，通过 `kubectl edit` 将 finalizers 删除即可解决。
+
+```yaml
+"finalizers": [
+  "foregroundDeletion"
+]
+```
+
 ## Pod 行为异常
 
 这里所说的行为异常是指 Pod 没有按预期的行为执行，比如没有运行 podSpec 里面设置的命令行参数。这一般是 podSpec yaml 文件内容有误，可以尝试使用 `--validate` 参数重建容器，比如

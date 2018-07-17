@@ -228,6 +228,14 @@ In such case, kubelet should be configured with option `--containerized` and its
       -v /opt/cni/bin/:/opt/cni/bin/ \
 ```
 
+Pods in `Terminating` state should be removed after Kubelet recovery. But sometimes, the Pods may not be deleted automatically and even force deletion (`kubectl delete pods <pod> --grace-period=0 --force`) doesn't work. In such case, `finalizers` is probably the cause and remove it with `kubelet edit` could mitigate the problem.
+
+```yaml
+"finalizers": [
+  "foregroundDeletion"
+]
+```
+
 ## Pod is running but not doing what it should do
 
 If the pod has been running but not behaving as you expected, there may be errors in your pod description. Often a section of the pod description is nested incorrectly, or a key name is typed incorrectly, and so the key is ignored.
