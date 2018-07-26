@@ -49,9 +49,9 @@ spec:
 
 PV 的访问模式（accessModes）有三种：
 
-* ReadWriteOnce（RWO）：是最基本的方式，可读可写，但只支持被单个 Pod 挂载。
-* ReadOnlyMany（ROX）：可以以只读的方式被多个 Pod 挂载。
-* ReadWriteMany（RWX）：这种存储可以以读写的方式被多个 Pod 共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
+* ReadWriteOnce（RWO）：是最基本的方式，可读可写，但只支持被单个节点挂载。
+* ReadOnlyMany（ROX）：可以以只读的方式被多个节点挂载。
+* ReadWriteMany（RWX）：这种存储可以以读写的方式被多个节点共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
 
 PV 的回收策略（persistentVolumeReclaimPolicy，即 PVC 释放卷的时候 PV 该如何操作）也有三种
 
