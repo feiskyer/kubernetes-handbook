@@ -144,7 +144,7 @@
   - [流量管理](apps/istio-traffic-management.md)
   - [安全管理](apps/istio-security.md)
   - [策略管理](apps/istio-policy.md)
-  - [Metrics](apps/istio-metrics.md)
+  - [度量管理](apps/istio-metrics.md)
   - [排错](apps/istio-troubleshoot.md)
   - [社区](apps/istio-community.md)
 - [Devops](apps/devops.md)

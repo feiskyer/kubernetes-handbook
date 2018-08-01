@@ -1,4 +1,4 @@
-# Istio Metrics
+# Istio 度量
 
 ## Service Telemetry
 

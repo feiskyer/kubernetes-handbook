@@ -1,13 +1,9 @@
 # Istio 安装部署
 
-在安装 Istio 之前要确保 Kubernetes 集群（仅支持 v1.7.3 及以后版本）已部署并配置好本地的 kubectl 客户端。比如，使用 minikube：
+在安装 Istio 之前要确保 Kubernetes 集群（仅支持 v1.9.0 及以后版本）已部署并配置好本地的 kubectl 客户端。比如，使用 minikube：
 
 ```sh
-minikube start \
-  --extra-config=controller-manager.ClusterSigningCertFile="/var/lib/localkube/certs/ca.crt" \
-  --extra-config=controller-manager.ClusterSigningKeyFile="/var/lib/localkube/certs/ca.key" \
-  --extra-config=apiserver.Admission.PluginNames=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota \
-  --kubernetes-version=v1.9.0
+minikube start --memory=4096 --kubernetes-version=v1.11.1 --vm-driver=hyperkit
 ```
 
 ## 下载 Istio
@@ -29,18 +25,21 @@ kubectl create -f install/kubernetes/helm/helm-service-account.yaml
 helm init --service-account tiller
 ```
 
-两种方式（选择其一执行）
-
-- 开启自动 sidecar 注入
+然后使用 Helm 部署：
 
 ```sh
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set tracing.enabled=true --set servicegraph.enabled=true --set prometheus.enabled=true --set grafana.enabled=true
-```
-
-- 不开启自动 sidecar 注入
-
-```sh
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set sidecarInjectorWebhook.enabled=false --set tracing.enabled=true --set servicegraph.enabled=true --set prometheus.enabled=true --set grafana.enabled=true
+kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system \
+  --set ingress.enabled=true \
+  --set gateways.enabled=true \
+  --set galley.enabled=true \
+  --set sidecarInjectorWebhook.enabled=true \
+  --set mixer.enabled=true \
+  --set prometheus.enabled=true \
+  --set grafana.enabled=true \
+  --set servicegraph.enabled=true \
+  --set tracing.enabled=true \
+  --set kiali.enabled=false
 ```
 
 部署完成后，可以检查 isotio-system namespace 中的服务是否正常运行：
@@ -74,32 +73,19 @@ istio-telemetry            ClusterIP      10.0.86.182    <none>        9091/TCP,
 prometheus                 ClusterIP      10.0.13.19     <none>        9090/TCP
 ```
 
-### Mesh Expansion
+## 网格扩展
 
-Istio 还支持管理非 Kubernetes 管理的应用。此时，需要在应用所在的 VM 或者物理中部署 Istio，具体步骤请参考 <https://istio.io/docs/setup/kubernetes/mesh-expansion.html>。
+Istio 还支持管理非 Kubernetes 应用。此时需要在应用所在的 VM 或者物理中部署 Istio，具体步骤请参考 <https://istio.io/docs/setup/kubernetes/mesh-expansion.html>。注意，在部署前需要满足以下条件
+
+- 待接入服务器必须能够通过 IP 接入网格中的服务端点。通常这需要 VPN 或者 VPC 的支持，或者容器网络为服务端点提供直接路由（非 NAT 或者防火墙屏蔽）。该服务器无需访问 Kubernetes 指派的集群 IP 地址。
+- Istio 控制平面服务（Pilot、Mixer、Citadel）以及 Kubernetes 的 DNS 服务器必须能够从虚拟机进行访问，通常会使用[内部负载均衡器](https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer)（也可以使用 NodePort）来满足这一要求，在虚拟机上运行 Istio 组件，或者使用自定义网络配置。
 
 部署好后，就可以向 Istio 注册应用，如
 
 ```sh
 # istioctl register servicename machine-ip portname:port
-istioctl -n onprem register mysql 1.2.3.4 3306
-istioctl -n onprem register svc1 1.2.3.4 http:7000
-```
-
-## 部署示例应用
-
-```sh
-kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/kube/bookinfo.yaml)
-```
-
-稍等一会，使用端口转发的方式访问 productpage 服务：
-
-```sh
-$ kubectl port-forward service/productpage :9080
-Forwarding from 127.0.0.1:54198 -> 9080
-Forwarding from [::1]:54198 -> 9080
-
-# Open http://127.0.0.1:54198 in browser.
+$ istioctl -n onprem register mysql 1.2.3.4 3306
+$ istioctl -n onprem register svc1 1.2.3.4 http:7000
 ```
 
 ## Prometheus、Grafana 和 Zipkin
