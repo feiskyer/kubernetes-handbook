@@ -1,23 +1,29 @@
 # Istio 度量
 
-## Service Telemetry
+## 新增指标
 
-```yaml
-# Configuration for metric instances
+Istio 支持 [自定义指标、日志](https://istio.io/docs/tasks/telemetry/metrics-logs/) 以及 [TCP 指标](https://istio.io/docs/tasks/telemetry/tcp-metrics/)。可以通过指标配置来新增这些度量，每个配置包括三方面的内容：
+
+1. 从 Istio 属性中生成度量实例，如logentry 、metrics 等。
+2. 创建处理器（适配 Mixer），用来处理生成的度量实例，如 prometheus。
+3. 根据一系列的股则，把度量实例传递给处理器，即创建 rule。
+
+ ```yaml
+# 指标 instance 的配置
 apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: doublerequestcount
   namespace: istio-system
 spec:
-  value: "2" # count each request twice
+  value: "2" # 每个请求计数两次
   dimensions:
     source: source.service | "unknown"
     destination: destination.service | "unknown"
     message: '"twice the fun!"'
   monitored_resource_type: '"UNSPECIFIED"'
 ---
-# Configuration for a Prometheus handler
+# prometheus handler 的配置
 apiVersion: "config.istio.io/v1alpha2"
 kind: prometheus
 metadata:
@@ -25,15 +31,15 @@ metadata:
   namespace: istio-system
 spec:
   metrics:
-  - name: double_request_count # Prometheus metric name
-    instance_name: doublerequestcount.metric.istio-system # Mixer instance name (fully-qualified)
+  - name: double_request_count # Prometheus 指标名称
+    instance_name: doublerequestcount.metric.istio-system # Mixer Instance 名称（全限定名称）
     kind: COUNTER
     label_names:
     - source
     - destination
     - message
 ---
-# Rule to send metric instances to a Prometheus handler
+# 将指标 Instance 发送给 prometheus handler 的 rule 对象
 apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
@@ -44,120 +50,44 @@ spec:
   - handler: doublehandler.prometheus
     instances:
     - doublerequestcount.metric
----
-# Configuration for logentry instances
-apiVersion: "config.istio.io/v1alpha2"
-kind: logentry
-metadata:
-  name: newlog
-  namespace: istio-system
-spec:
-  severity: '"warning"'
-  timestamp: request.time
-  variables:
-    source: source.labels["app"] | source.service | "unknown"
-    user: source.user | "unknown"
-    destination: destination.labels["app"] | destination.service | "unknown"
-    responseCode: response.code | 0
-    responseSize: response.size | 0
-    latency: response.duration | "0ms"
-  monitored_resource_type: '"UNSPECIFIED"'
----
-# Configuration for a stdio handler
-apiVersion: "config.istio.io/v1alpha2"
-kind: stdio
-metadata:
-  name: newhandler
-  namespace: istio-system
-spec:
- severity_levels:
-   warning: 1 # Params.Level.WARNING
- outputAsJson: true
----
-# Rule to send logentry instances to a stdio handler
-apiVersion: "config.istio.io/v1alpha2"
-kind: rule
-metadata:
-  name: newlogstdio
-  namespace: istio-system
-spec:
-  match: "true" # match for all requests
-  actions:
-   - handler: newhandler.stdio
-     instances:
-     - newlog.logentry
----
+ ```
+
+## Prometheus
+
+在命令行中执行以下命令：
+
+```
+$ kubectl -n istio-system port-forward service/prometheus 9090:9090 &
 ```
 
-## TCP Telemetry
+在 Web 浏览器中访问 `http://localhost:9090` 即可以访问 Prometheus UI，查询度量指标。
 
-```yaml
-# Configuration for a metric measuring bytes sent from a server
-# to a client
-apiVersion: "config.istio.io/v1alpha2"
-kind: metric
-metadata:
-  name: mongosentbytes
-  namespace: default
-spec:
-  value: connection.sent.bytes | 0 # uses a TCP-specific attribute
-  dimensions:
-    source_service: source.service | "unknown"
-    source_version: source.labels["version"] | "unknown"
-    destination_version: destination.labels["version"] | "unknown"
-  monitoredResourceType: '"UNSPECIFIED"'
----
-# Configuration for a metric measuring bytes sent from a client
-# to a server
-apiVersion: "config.istio.io/v1alpha2"
-kind: metric
-metadata:
-  name: mongoreceivedbytes
-  namespace: default
-spec:
-  value: connection.received.bytes | 0 # uses a TCP-specific attribute
-  dimensions:
-    source_service: source.service | "unknown"
-    source_version: source.labels["version"] | "unknown"
-    destination_version: destination.labels["version"] | "unknown"
-  monitoredResourceType: '"UNSPECIFIED"'
----
-# Configuration for a Prometheus handler
-apiVersion: "config.istio.io/v1alpha2"
-kind: prometheus
-metadata:
-  name: mongohandler
-  namespace: default
-spec:
-  metrics:
-  - name: mongo_sent_bytes # Prometheus metric name
-    instance_name: mongosentbytes.metric.default # Mixer instance name (fully-qualified)
-    kind: COUNTER
-    label_names:
-    - source_service
-    - source_version
-    - destination_version
-  - name: mongo_received_bytes # Prometheus metric name
-    instance_name: mongoreceivedbytes.metric.default # Mixer instance name (fully-qualified)
-    kind: COUNTER
-    label_names:
-    - source_service
-    - source_version
-    - destination_version
----
-# Rule to send metric instances to a Prometheus handler
-apiVersion: "config.istio.io/v1alpha2"
-kind: rule
-metadata:
-  name: mongoprom
-  namespace: default
-spec:
-  match: context.protocol == "tcp"
-         && destination.service == "mongodb.default.svc.cluster.local"
-  actions:
-  - handler: mongohandler.prometheus
-    instances:
-    - mongoreceivedbytes.metric
-    - mongosentbytes.metric
+## Jaeger 分布式跟踪
+
+在命令行中执行以下命令：
+
+```
+$ kubectl -n istio-system port-forward service/jaeger-query 16686:16686 &
 ```
 
+在 Web 浏览器中访问 `http://localhost:16686` 即可以访问 Jaeger UI。
+
+## Grafana 可视化
+
+在命令行中执行以下命令：
+
+```
+$ kubectl -n istio-system port-forward service/grafana 3000:3000 &
+```
+
+在 Web 浏览器中访问 `http://localhost:3000` 即可以访问 Grafana 界面。
+
+## 服务图
+
+在命令行中执行以下命令：
+
+```
+$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') 8088:8088 &
+```
+
+在 Web 浏览器中访问 `http://localhost:8088/force/forcegraph.html` 即可以访问生成的服务图。

@@ -39,12 +39,13 @@ Istio 架构可以如下图所示
 
 Istio 的安装部署步骤见 [这里](istio-deploy.md)。
 
-## 注入 Sidecar 容器
+## 注入 Sidecar 容器前对 Pod 的要求
 
 为 Pod 注入 Sidecar 容器后才能成为服务网格的一部分。Istio 要求 Pod 必须满足以下条件：
 
-- Pod 要关联服务并且必须属于单一的服务
-- 端口必须要命名，格式为 `协议-后缀`，其中协议包括 `http`、`http2`、`grpc`、`mongo` 以及 `redis`。否则会被视为 TCP 流量
+- Pod 要关联服务并且必须属于单一的服务，不支持属于多个服务的 Pod
+- 端口必须要命名，格式为 `<协议>[-<后缀>]`，其中协议包括 `http`、`http2`、`grpc`、`mongo` 以及 `redis`。否则会被视为 TCP 流量
+- 推荐所有 Deployment 中增加 `app` 标签，用来在分布式跟踪中添加上下文信息
 
 ## 示例应用
 
@@ -67,6 +68,8 @@ deployment.extensions "reviews-v3" configured
 service "productpage" configured
 deployment.extensions "productpage-v1" configured
 ingress.extensions "gateway" configured
+
+$ kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
 原始应用如下图所示
@@ -77,23 +80,13 @@ ingress.extensions "gateway" configured
 
 ![](images/bookinfo2.png)
 
-服务启动后，可以通过 Ingress 地址 `http://<ingress-address>/productpage` 来访问 BookInfo 应用：
+服务启动后，可以通过 Gateway 地址 `http://<gateway-address>/productpage` 来访问 BookInfo 应用：
 
 ```sh
-$ kubectl describe ingress
-Name:			gateway
-Namespace:		default
-Address:		192.168.0.77
-Default backend:	default-http-backend:80 (10.8.0.4:8080)
-Rules:
-  Host	Path	Backends
-  ----	----	--------
-  *
-    	/productpage 	productpage:9080 (<none>)
-    	/login 		productpage:9080 (<none>)
-    	/logout 	productpage:9080 (<none>)
-Annotations:
-Events:	<none>
+$ kubectl get svc istio-ingressgateway -n istio-system
+kubectl get svc istio-ingressgateway -n istio-system
+NAME                   TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)                                                                                                     AGE
+istio-ingressgateway   LoadBalancer   10.0.203.82   x.x.x.x        80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:31720/TCP,8060:31948/TCP,15030:32340/TCP,15031:31958/TCP   2h
 ```
 
 ![](images/productpage.png)

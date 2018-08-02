@@ -4,7 +4,7 @@ Mixer 为应用程序和基础架构后端之间提供了一个通用的策略�
 
 ![](images/istio-mixer.png)
 
-Mixer 支持灵活的插件模型（即 Adapters），支持 GCP、AWS、Prometheus、Heapster 等各种丰富功能的后端。
+Mixer 是高度模块化和可扩展的组件。他的一个关键功能就是把不同后端的策略和遥测收集系统的细节抽象出来，使得 Istio 的其余部分对这些后端不知情。Mixer 处理不同基础设施后端的灵活性是通过使用通用插件模型实现的。每个插件都被称为 **Adapter**，Mixer通过它们与不同的基础设施后端连接，这些后端可提供核心功能，例如日志、监控、配额、ACL 检查等。通过配置能够决定在运行时使用的确切的适配器套件，并且可以轻松扩展到新的或定制的基础设施后端。
 
 ![](images/istio-adapters.png)
 
@@ -19,8 +19,6 @@ Mixer 支持灵活的插件模型（即 Adapters），支持 GCP、AWS、Prometh
 - 分发请求到各个 Adapters 后端处理
 
 ![](images/istio-phase.png)
-
-Adapters 后端以 [Mixer 配置](https://istio.io/docs/tasks/policy-enforcement/rate-limiting/) 的方式注册到 Istio 中，参考 [这里](https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/kube/mixer-rule-ratings-ratelimit.yaml) 查看示例配置。
 
 ## 流量限制示例
 
@@ -80,19 +78,17 @@ spec:
 apiVersion: config.istio.io/v1alpha2
 kind: QuotaSpec
 metadata:
-  creationTimestamp: null
   name: request-count
   namespace: istio-system
 spec:
   rules:
   - quotas:
     - charge: 1
-      quota: RequestCount
+      quota: requestcount
 ---
 apiVersion: config.istio.io/v1alpha2
 kind: QuotaSpecBinding
 metadata:
-  creationTimestamp: null
   name: request-count
   namespace: istio-system
 spec:

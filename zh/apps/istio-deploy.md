@@ -45,32 +45,43 @@ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
 部署完成后，可以检查 isotio-system namespace 中的服务是否正常运行：
 
 ```sh
-$ kubectl -n istio-system get pod
-NAME                                       READY     STATUS      RESTARTS   AGE
-istio-citadel-7bdc7775c7-mcxcc             1/1       Running     0          2m
-istio-egressgateway-795fc9b47-r4m2r        1/1       Running     0          2m
-istio-ingress-84659cf44c-gwmrs             1/1       Running     0          2m
-istio-ingressgateway-7d89dbf85f-czz4p      1/1       Running     0          2m
-istio-mixer-post-install-ltmk2             0/1       Completed   0          1m
-istio-pilot-66f4dd866c-7nnrn               2/2       Running     0          2m
-istio-policy-76c8896799-rdppv              2/2       Running     0          2m
-istio-sidecar-injector-645c89bc64-csq8r    1/1       Running     0          2m
-istio-statsd-prom-bridge-949999c4c-2gvb6   1/1       Running     0          2m
-istio-telemetry-6554768879-n5cc2           2/2       Running     0          2m
-prometheus-86cb6dd77c-mgs7v                1/1       Running     0          2m
+$  kubectl -n istio-system get pod
+NAME                                        READY     STATUS    RESTARTS   AGE
+grafana-5fb774bcc9-2rkng                    1/1       Running   0          6m
+istio-citadel-5b956fdf54-5nb25              1/1       Running   0          6m
+istio-egressgateway-6cff45b4db-gt8tr        1/1       Running   0          6m
+istio-galley-699888c459-sgz7z               1/1       Running   0          6m
+istio-ingress-fc79cc885-dvjqh               1/1       Running   0          6m
+istio-ingressgateway-fc648887c-q5s5h        1/1       Running   0          6m
+istio-pilot-6cd95f9cc4-fjdb5                2/2       Running   0          6m
+istio-policy-75f75cc6fd-4mlhn               2/2       Running   0          6m
+istio-sidecar-injector-6d59d46ff4-m79tl     1/1       Running   0          6m
+istio-statsd-prom-bridge-7f44bb5ddb-phkh6   1/1       Running   0          6m
+istio-telemetry-544b8d7dcf-mk5kw            2/2       Running   0          6m
+istio-tracing-ff94688bb-7hmfb               1/1       Running   0          6m
+prometheus-84bd4b9796-hcjwc                 1/1       Running   0          6m
+servicegraph-6c6dbbf599-q4rxd               1/1       Running   0          6m
 
 $ kubectl -n istio-system get service
-NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                               AGE
-istio-citadel              ClusterIP      10.0.175.222   <none>        8060/TCP,9093/TCP                                                     3m
-istio-egressgateway        ClusterIP      10.0.24.39     <none>        80/TCP,443/TCP                                                        3m
-istio-ingress              LoadBalancer   10.0.2.194     13.76.0.92    80:32000/TCP,443:31892/TCP                                            3m
-istio-ingressgateway       LoadBalancer   10.0.148.253   13.76.6.179   80:31380/TCP,443:31390/TCP,31400:31400/TCP                            3m
-istio-pilot                ClusterIP      10.0.125.168   <none>        15003/TCP,15005/TCP,15007/TCP,15010/TCP,15011/TCP,8080/TCP,9093/TCP   3m
-istio-policy               ClusterIP      10.0.57.91     <none>        9091/TCP,15004/TCP,9093/TCP                                           3m
-istio-sidecar-injector     ClusterIP      10.0.24.240    <none>        443/TCP                                                               3m
-istio-statsd-prom-bridge   ClusterIP      10.0.115.60    <none>        9102/TCP,9125/UDP                                                     3m
-istio-telemetry            ClusterIP      10.0.86.182    <none>        9091/TCP,15004/TCP,9093/TCP,42422/TCP                                 3m
-prometheus                 ClusterIP      10.0.13.19     <none>        9090/TCP
+NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                                                                     AGE
+grafana                    ClusterIP      10.0.150.84    <none>         3000/TCP                                                                                                    6m
+istio-citadel              ClusterIP      10.0.9.108     <none>         8060/TCP,9093/TCP                                                                                           6m
+istio-egressgateway        ClusterIP      10.0.168.237   <none>         80/TCP,443/TCP                                                                                              6m
+istio-galley               ClusterIP      10.0.160.216   <none>         443/TCP,9093/TCP                                                                                            6m
+istio-ingress              LoadBalancer   10.0.55.174    x.x.x.x        80:32000/TCP,443:32728/TCP                                                                                  6m
+istio-ingressgateway       LoadBalancer   10.0.203.82    x.x.x.x        80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:31720/TCP,8060:31948/TCP,15030:32340/TCP,15031:31958/TCP   6m
+istio-pilot                ClusterIP      10.0.195.162   <none>         15010/TCP,15011/TCP,8080/TCP,9093/TCP                                                                       6m
+istio-policy               ClusterIP      10.0.14.130    <none>         9091/TCP,15004/TCP,9093/TCP                                                                                 6m
+istio-sidecar-injector     ClusterIP      10.0.160.50    <none>         443/TCP                                                                                                     6m
+istio-statsd-prom-bridge   ClusterIP      10.0.133.84    <none>         9102/TCP,9125/UDP                                                                                           6m
+istio-telemetry            ClusterIP      10.0.247.30    <none>         9091/TCP,15004/TCP,9093/TCP,42422/TCP                                                                       6m
+jaeger-agent               ClusterIP      None           <none>         5775/UDP,6831/UDP,6832/UDP                                                                                  6m
+jaeger-collector           ClusterIP      10.0.29.72     <none>         14267/TCP,14268/TCP                                                                                         6m
+jaeger-query               ClusterIP      10.0.19.250    <none>         16686/TCP                                                                                                   6m
+prometheus                 ClusterIP      10.0.19.53     <none>         9090/TCP                                                                                                    6m
+servicegraph               ClusterIP      10.0.251.76    <none>         8088/TCP                                                                                                    6m
+tracing                    ClusterIP      10.0.62.176    <none>         80/TCP                                                                                                      6m
+zipkin                     ClusterIP      10.0.158.231   <none>         9411/TCP                                                                                                    6m
 ```
 
 ## 网格扩展
