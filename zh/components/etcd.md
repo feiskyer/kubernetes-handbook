@@ -39,7 +39,7 @@ Etcd 是 CoreOS 基于 Raft 开发的分布式 key-value 存储，可用于服�
 
 Etcd 实现 raft 的时候，充分利用了 go 语言 CSP 并发模型和 chan 的魔法，想更进行一步了解的可以去看源码，这里只简单分析下它的 wal 日志。
 
-![etcdv3](http://jolestar.com/images/etcd/etcd-log.png)
+![etcdv3](images/etcd-log.png)
 
 wal 日志是二进制的，解析出来后是以上数据结构 LogEntry。其中第一个字段 type，只有两种，一种是 0 表示 Normal，1 表示 ConfChange（ConfChange 表示 Etcd 本身的配置变更同步，比如有新的节点加入等）。第二个字段是 term，每个 term 代表一个主节点的任期，每次主节点变更 term 就会变化。第三个字段是 index，这个序号是严格有序递增的，代表变更序号。第四个字段是二进制的 data，将 raft request 对象的 pb 结构整个保存下。Etcd 源码下有个 tools/etcd-dump-logs，可以将 wal 日志 dump 成文本查看，可以协助分析 raft 协议。
 
@@ -53,7 +53,7 @@ Etcd v2 和 v3 本质上是共享同一套 raft 协议代码的两个独立的�
 
 ## Etcd v2 存储，Watch 以及过期机制
 
-![etcdv2](http://jolestar.com/images/etcd/etcd-v2.png)
+![etcdv2](images/etcd-v2.png)
 
 Etcd v2 是个纯内存的实现，并未实时将数据写入到磁盘，持久化机制很简单，就是将 store 整合序列化成 json 写入文件。数据在内存中是一个简单的树结构。比如以下数据存储到 Etcd 中的结构就如图所示。
 
@@ -80,7 +80,7 @@ store 中有一个全局的 currentIndex，每次变更，index 会加 1. 然后
 
 ## Etcd v3 存储，Watch 以及过期机制
 
-![etcdv3](http://jolestar.com/images/etcd/etcd-v3.png)
+![etcdv3](images/etcd-v3.png)
 
 Etcd v3 将 watch 和 store 拆开实现，我们先分析下 store 的实现。
 
