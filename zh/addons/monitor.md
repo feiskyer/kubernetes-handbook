@@ -148,6 +148,24 @@ helm update
 helm install feisky/node-problem-detector --namespace kube-system --name npd
 ```
 
+## Node 重启守护进程
+
+Kubernetres 集群中的节点通常会开启自动安全更新，这样有助于尽可能避免因系统漏洞带来的损失。但一般来说，涉及到内核的更新需要重启系统才可生效。此时，就需要手动或自动的方法来重启节点。
+
+[Kured (KUbernetes REboot Daemon)](https://github.com/weaveworks/kured) 就是这样一个守护进程，它会
+
+- 监控 `/var/run/reboot-required` 信号后重启节点
+- 通过 DaemonSet Annotation 的方式每次仅重启一台节点
+- 重启前驱逐节点，重启后恢复调度
+- 根据 Prometheus 告警 (`--alert-filter-regexp=^(RebootRequired|AnotherBenignAlert|...$`) 取消重启
+- Slack 通知
+
+部署方法
+
+```sh
+kubectl apply -f https://github.com/weaveworks/kured/releases/download/1.0.0/kured-ds.yaml
+```
+
 ## 其他容器监控系统
 
 除了以上监控工具，还有很多其他的开源或商业系统可用来辅助监控，如
