@@ -63,7 +63,7 @@ Kubernetes 的稳定版本在发布后会继续支持 9 个月。每个版本的
 | v1.8.x             | September 2017 | June 2018         |
 | v1.9.x             | December 2017  | September 2018    |
 | v1.10.x            | March 2018     | December 2018     |
-| v1.11.x            | June 2018      | March 2018        |
+| v1.11.x            | June 2018      | March 2019        |
 
 ## 参考文档
 
