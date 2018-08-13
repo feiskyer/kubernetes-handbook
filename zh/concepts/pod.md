@@ -378,7 +378,7 @@ spec:
 
 注意，必须为 headless service 设置至少一个服务端口（`spec.ports`，即便它看起来并不需要），否则 Pod 与 Pod 之间依然无法通过完整域名来访问。
 
-## 设置 Pod 的 DNS 地址
+## 设置 Pod 的 DNS 选项
 
 从 v1.9 开始，可以在 kubelet 和 kube-apiserver 中设置 `--feature-gates=CustomPodDNS=true` 开启设置每个 Pod DNS 地址的功能。
 
@@ -405,6 +405,51 @@ spec:
       - name: ndots
         value: "2"
       - name: edns0
+```
+
+对于旧版本的集群，可以使用 ConfigMap 来自定义 Pod 的 `/etc/resolv.conf`，如
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: resolvconf
+  namespace: default
+data:
+  resolv.conf: |
+    search default.svc.cluster.local svc.cluster.local cluster.local
+    nameserver 10.0.0.10
+
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: dns-test
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: dns-test
+    spec:
+      containers:
+        - name: dns-test
+          image: alpine
+          stdin: true
+          tty: true
+          command: ["sh"]
+          volumeMounts:
+            - name: resolv-conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
+      volumes:
+        - name: resolv-conf
+          configMap:
+            name: resolvconf
+            items:
+            - key: resolv.conf
+              path: resolv.conf
 ```
 
 ## 资源限制
