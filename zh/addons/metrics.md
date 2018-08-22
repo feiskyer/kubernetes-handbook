@@ -6,6 +6,15 @@
 - Metrics API URI 为 `/apis/metrics.k8s.io/`，在 [k8s.io/metrics](https://github.com/kubernetes/metrics) 维护
 - 必须部署 `metrics-server` 才能使用该 API，metrics-server 通过调用 Kubelet Summary API 获取数据
 
+## Kubernetes 监控架构
+
+[Kubernetes 监控架构](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/monitoring_architecture.md)由以下两部分组成：
+
+- 核心度量流程（下图黑色部分）：这是 Kubernetes 正常工作所需要的核心度量，从 Kubelet、cAdvisor 等获取度量数据，再由 metrics-server 提供给 Dashboard、HPA 控制器等使用。
+- 监控流程（下图蓝色部分）：基于核心度量构建的监控流程，比如 Prometheus 可以从 metrics-server 获取核心度量，从其他数据源（如 Node Exporter 等）获取非核心度量，再基于它们构建监控告警系统。
+
+![](images/monitoring_architecture.png)
+
 ## 开启API Aggregation
 
 在部署 metrics-server 之前，需要在 kube-apiserver 中开启 API Aggregation，即增加以下配置
