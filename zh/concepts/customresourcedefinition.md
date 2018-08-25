@@ -255,13 +255,105 @@ crontabs/my-new-cron-object   3s
 
 ## CRD 控制器
 
-在使用 CRD 扩展 Kubernetes API 时，通常还需要实现一个新建资源的控制器，监听改资源的变化情况，并作进一步的处理。
+在使用 CRD 扩展 Kubernetes API 时，通常还需要实现一个新建资源的控制器，监听新资源的变化情况，并作进一步的处理。
 
 <https://github.com/kubernetes/sample-controller> 提供了一个 CRD 控制器的示例，包括
 
 - 如何注册资源 `Foo`
 - 如何创建、删除和查询 `Foo` 对象
 - 如何监听 `Foo` 资源对象的变化情况
+
+## Kubebuilder
+
+从上面的实例中可以看到从头构建一个 CRD 控制器并不容易，需要对 Kubernetes 的 API 有深入了解，并且RBAC 集成、镜像构建、持续集成和部署等都需要很大工作量。
+
+[kubebuilder](https://github.com/kubernetes-sigs/kubebuilder) 正是为解决这个问题而生，为 CRD 控制器提供了一个简单易用的框架，并可直接生成镜像构建、持续集成、持续部署等所需的资源文件。
+
+### 安装
+
+```sh
+# Install kubebuilder
+VERSION=1.0.1
+wget https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${VERSION}/kubebuilder_${VERSION}_linux_amd64.tar.gz
+tar zxvf kubebuilder_${VERSION}_linux_amd64.tar.gz
+sudo mv kubebuilder_${VERSION}_linux_amd64 /usr/local/kubebuilder
+export PATH=$PATH:/usr/local/kubebuilder/bin
+
+# Install dep kustomize
+go get -u github.com/golang/dep/cmd/dep
+go get github.com/kubernetes-sigs/kustomize
+```
+
+### 使用方法
+
+#### 初始化项目
+
+```sh
+mkdir -p $GOPATH/src/demo
+cd $GOPATH/src/demo
+kubebuilder init --domain k8s.io --license apache2 --owner "The Kubernetes Authors"
+```
+
+#### 创建 API
+
+```sh
+kubebuilder create api --group ships --version v1beta1 --kind Sloop
+```
+
+然后按照实际需要修改 `pkg/apis/ship/v1beta1/sloop_types.go` 和 `pkg/controller/sloop/sloop_controller.go` 增加业务逻辑。
+
+#### 本地运行测试
+
+```sh
+make install
+make run
+```
+
+> 如果碰到错误 ` ValidationError(CustomResourceDefinition.status): missing required field "storedVersions" in io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionStatus]`，可以手动修改 `config/crds/ships_v1beta1_sloop.yaml`:
+> ```yaml
+> status:
+>   acceptedNames:
+>     kind: ""
+>     plural: ""
+>   conditions: []
+>   storedVersions: []
+>
+> 然后运行 `kubectl apply -f config/crds` 创建 CRD。
+
+然后就可以用 `ships.k8s.io/v1beta1` 来创建 Kind 为 `Sloop` 的资源了，比如 
+
+```sh
+kubectl apply -f config/samples/ships_v1beta1_sloop.yaml
+```
+
+#### 构建镜像并部署控制器
+
+```sh
+# 替换 IMG 为你自己的
+export IMG=feisky/demo-crd:v1
+make docker-build
+make docker-push
+make deploy
+```
+
+> kustomize 已经不再支持通配符，因而上述 `make deploy` 可能会碰到 `Load from path ../rbac/*.yaml failed` 错误，解决方法是手动修改 `config/default/kustomization.yaml`:
+>
+> resources:
+> - ../rbac/rbac_role.yaml
+> - ../rbac/rbac_role_binding.yaml
+> - ../manager/manager.yaml
+>
+> 然后执行 `kustomize build config/default | kubectl apply -f -` 部署，默认部署到 `demo-system` namespace 中。
+
+#### 文档和测试
+
+```sh
+# run unit tests
+make test
+
+# generate docs
+kubebuilder docs
+```
 
 ## 参考文档
 
