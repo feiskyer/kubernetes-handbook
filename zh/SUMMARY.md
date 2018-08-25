@@ -138,7 +138,7 @@
   - [Operator](apps/operator.md)
   - [Service Mesh](apps/service-mesh.md)
   - [Linkerd](apps/linkerd.md)
-  - [Conduit](apps/conduit.md)
+  - [Linkerd2](apps/linkerd2.md)
 - [Istio](apps/istio.md)
   - [安装](apps/istio-deploy.md)
   - [流量管理](apps/istio-traffic-management.md)
