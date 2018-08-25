@@ -454,7 +454,7 @@ spec:
 
 ## 资源限制
 
-Kubernetes 通过 cgroups 限制容器的 CPU 和内存等计算资源，包括 requests（请求，** 调度器保证调度到资源充足的 Node 上，如果无法满足会调度失败 **）和 limits（上限）等：
+Kubernetes 通过 cgroups 限制容器的 CPU 和内存等计算资源，包括 requests（请求，**调度器保证调度到资源充足的 Node 上，如果无法满足会调度失败**）和 limits（上限）等：
 
 - `spec.containers[].resources.limits.cpu`：CPU 上限，可以短暂超过，容器也不会被停止
 - `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被终止或调度到其他资源充足的机器上
@@ -493,6 +493,7 @@ spec:
   - Azure 上的一个 vCore
   - 物理机上开启超线程时的一个超线程
 - 内存的单位则包括 `E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki` 等。
+- 从 v1.10 开始，可以设置 `kubelet ----cpu-manager-policy=static` 为 Guaranteed（即 requests.cpu 与 limits.cpu 相等）Pod 绑定 CPU（通过 cpuset cgroups）。
 
 ## 健康检查
 
