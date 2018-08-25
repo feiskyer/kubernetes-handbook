@@ -303,6 +303,8 @@ allowVolumeExpansion: true
 
 Kubernetes v1.9 新增了 Alpha 版的 Raw Block Volume，可通过设置 `volumeMode: Block`（可选项为 `Filesystem` 和 `Block`）来使用块存储。
 
+> 注意：使用前需要为 kube-apiserver、kube-controller-manager 和 kubelet 开启 `BlockVolume` 特性，即添加命令行选项 `--feature-gates=BlockVolume=true,...`。
+
 支持块存储的 PV 插件包括
 
 - Local Volume
@@ -352,12 +354,19 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pod-with-block-volume
+  annotations:
+    # apparmor should be unconfied for mounting the device inside container.
+    container.apparmor.security.beta.kubernetes.io/fc-container: unconfined
 spec:
   containers:
     - name: fc-container
       image: fedora:26
       command: ["/bin/sh", "-c"]
       args: ["tail -f /dev/null"]
+      securityContext:
+        capabilities:
+          # CAP_SYS_ADMIN is required for mount() syscall.
+          add: ["SYS_ADMIN"]
       volumeDevices:
         - name: data
           devicePath: /dev/xvda
