@@ -57,6 +57,8 @@ http://127.0.0.1:37737/api/v1/namespaces/linkerd/services/grafana:http/proxy/
 Opening Linkerd dashboard in the default browser
 ```
 
+![](images/linkerd2.png)
+
 ## 示例应用
 
 ```sh
