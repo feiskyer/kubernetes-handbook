@@ -7,8 +7,8 @@ Kubernetes 支持以许多种方式来贡献社区，包括汇报代码缺陷、
 Kubernetes 社区由三部分组成
 
 - [Steering committe](http://blog.kubernetes.io/2017/10/kubernetes-community-steering-committee-election-results.html)
-- [Special Interest Groups (SIG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-sig-list)
-- [Working Groups (WG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-working-group-list)
+- [Special Interest Groups (SIG)](https://contributor.kubernetes.io/sigs/)
+- [Working Groups (WG)](https://contributor.kubernetes.io/sigs/#master-working-group-list)
 
 ![](images/community.png)
 
@@ -54,6 +54,7 @@ hack/cherry_pick_pull.sh upstream/release-1.7 51870
 
 如果在社区贡献中碰到问题，可以参考以下指南
 
+- **[Kubernetes Contributor Community](https://contributor.kubernetes.io/)**
 - **[Kubernetes Contributor Guide](https://github.com/kubernetes/community/tree/master/contributors/guide)**
 - **[Kubernetes Developer Guide](https://github.com/kubernetes/community/tree/master/contributors/devel)**
 - [Special Interest Groups](https://github.com/kubernetes/community)

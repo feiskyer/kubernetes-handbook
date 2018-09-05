@@ -2,6 +2,7 @@
 
 - [Kubernetes官方网站](https://kubernetes.io/)
 - [Kubernetes文档](https://kubernetes.io/docs/home/)
+- [Kubernetes Contributor Community](https://contributor.kubernetes.io/)
 - [Kubernetes course](https://www.edx.org/course/introduction-kubernetes-linuxfoundationx-lfs158x)
 - [CNCF项目贡献统计](https://cncf.biterg.io)
 - [Kubernetes项目贡献统计](https://devstats.k8s.io)
