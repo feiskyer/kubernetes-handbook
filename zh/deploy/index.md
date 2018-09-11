@@ -25,7 +25,7 @@ sonobuoy delete
 
 Kubernetes v1.11 支持的外部组件版本为
 
-- Etcd: v3.2.18
+- Etcd: v3.2.18+ 或 v3.3.0+
 - Docker: 1.11.2 to 1.13.1 and 17.03.x
 - Go: 1.10.2
 - CNI: v0.6.0
