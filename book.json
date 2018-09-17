@@ -7,7 +7,7 @@
         "mermaid",
         "github",
         "editlink",
-        "anchor-navigation-ex-toc",
+        "page-toc",
         "-lunr",
         "-search",
         "search-plus",
@@ -19,20 +19,18 @@
         "fontSize": 11
     },
     "pluginsConfig": {
+        "page-toc": {
+          "selector": ".markdown-section h1, .markdown-section h2, .markdown-section h3",
+          "position": "before-first",
+          "showByDefault": true
+        },
         "github": {
             "url": "https://github.com/feiskyer/kubernetes-handbook"
         },
         "editlink": {
-            "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master/",
+            "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master",
             "label": "编辑本页"
         },
-	"anchor-navigation-ex-toc": {
-		"showLevel": false,
-		"mode": "float",
-		"float": {
-			"showLevelIcon": false
-		}
-	},
         "tbfed-pagefooter": {
           "copyright":"&copy Pengfei Ni",
           "modify_label": "Updated at",
