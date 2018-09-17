@@ -205,44 +205,52 @@ spec:
 
 [kube-bench](https://github.com/aquasecurity/kube-bench) 提供了一个简单的工具来检查 Kubernetes 的配置（包括 master 和 node）是否符合最佳的安全实践（基于 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)）。
 
+**推荐所有生产环境的 Kubernetes 集群定期运行 kube-bench，保证集群配置符合最佳的安全实践。**
+
 安装 `kube-bench`：
 
 ```sh
-docker run --rm -v `pwd`:/host aquasec/kube-bench:latest
+$ docker run --rm -v `pwd`:/host aquasec/kube-bench:latest install
+$ ./kube-bench <master|node>
 ```
 
-使用 `kube-bench`：
+当然，kube-bench 也可以直接在容器内运行，比如通常对 Master 和 Node 的检查命令分别为：
 
 ```sh
-# ./kube-bench
-This tool runs the CIS Kubernetes 1.6 Benchmark v1.0.0 checks.
+# Run master check
+$ kubectl run --rm -i -t kube-bench-master --image=aquasec/kube-bench:latest --restart=Never --overrides="{ \"apiVersion\": \"v1\", \"spec\": { \"hostPID\": true, \"nodeSelector\": { \"kubernetes.io/role\": \"master\" }, \"tolerations\": [ { \"key\": \"node-role.kubernetes.io/master\", \"operator\": \"Exists\", \"effect\": \"NoSchedule\" } ] } }" -- master --version 1.8
 
-Usage:
-  ./kube-bench [command]
-
-Available Commands:
-  federated   Run benchmark checks for a Kubernetes federated deployment.
-  help        Help about any command
-  master      Run benchmark checks for a Kubernetes master node.
-  node        Run benchmark checks for a Kubernetes node.
-
-Flags:
-      --alsologtostderr                  log to standard error as well as files
-  -c, --check string                     A comma-delimited list of checks to run as specified in CIS document. Example --check="1.1.1,1.1.2"
-      --config string                    config file (default is ./cfg/config.yaml)
-  -g, --group string                     Run all the checks under this comma-delimited list of groups. Example --group="1.1"
-  -h, --help                             help for ./kube-bench
-      --json                             Prints the results as JSON
-      --log_backtrace_at traceLocation   when logging hits line file:N, emit a stack trace (default :0)
-      --log_dir string                   If non-empty, write log files in this directory
-      --logtostderr                      log to standard error instead of files (default false)
-      --pgsql                            Save the results to PostgreSQL
-      --stderrthreshold severity         logs at or above this threshold go to stderr (default 2)
-  -v, --v Level                          log level for V logs
-      --vmodule moduleSpec               comma-separated list of pattern=N settings for file-filtered logging
-
-Use "./kube-bench [command] --help" for more information about a command.
+# Run node check
+kubectl run --rm -i -t kube-bench-node --image=aquasec/kube-bench:latest --restart=Never --overrides="{ \"apiVersion\": \"v1\", \"spec\": { \"hostPID\": true } }" -- node --version 1.8
 ```
+
+## 镜像安全
+
+[Clair](https://github.com/coreos/clair/) 是 CoreOS 开源的容器安全工具，用来静态分析镜像中潜在的安全问题。推荐将 Clair 集成到 Devops 流程中，自动对所有镜像进行安全扫描。
+
+安装 Clair 的方法为：
+
+```sh
+git clone https://github.com/coreos/clair
+cd clair/contrib/helm
+helm dependency update clair
+helm install clair
+```
+
+Clair 项目本身只提供了 API，在实际使用中还需要一个[客户端（或集成Clair的服务）](https://github.com/coreos/clair/blob/master/Documentation/integrations.md)配合使用。比如，使用 [reg](https://github.com/genuinetools/reg) 的方法为
+
+```sh
+# Install
+$ go get github.com/genuinetools/reg
+
+# Vulnerability Reports
+$ reg vulns --clair https://clair.j3ss.co r.j3ss.co/chrome
+
+# Generating Static Website for a Registry
+$ $ reg server --clair https://clair.j3ss.co
+```
+
+
 
 ## 参考文档
 

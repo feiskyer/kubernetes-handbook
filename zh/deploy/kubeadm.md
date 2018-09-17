@@ -23,7 +23,7 @@ export CONTAINER_CIDR="10.244.2.0/24"
 ./kubernetes/add-node.sh
 ```
 
-注意：** 国内用户需要在执行上述命令前设置使用国内镜像 `export USE_MIRROR=true`**。
+注意：**国内用户需要在执行上述命令前设置使用国内镜像 `export USE_MIRROR=true`**。
 
 以下是详细的 kubeadm 部署集群步骤。
 

@@ -10,15 +10,17 @@
 - 或者使用命令行工具
 
 ```sh
-go get -u -v github.com/heptio/sonobuoy
+# Install
+$ go get -u -v github.com/heptio/sonobuoy
 
-sonobuoy run
-sonobuoy status
-sonobuoy logs
-sonobuoy retrieve .
+# Run
+$ sonobuoy run
+$ sonobuoy status
+$ sonobuoy logs
+$ sonobuoy retrieve .
 
 # Cleanup
-sonobuoy delete
+$ sonobuoy delete
 ```
 
 ## 版本依赖
