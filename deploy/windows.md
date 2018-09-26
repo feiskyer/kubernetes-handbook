@@ -6,20 +6,19 @@ Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开�
 - 基于 Virtual Filtering Platform (VFP) Hyper-v Switch Extension 的内核负载均衡
 - 基于 Container Runtime Interface (CRI) 管理 Windows 容器
 - 支持 kubeadm 命令将 Windows 节点加入到已有集群中
-- 推荐使用 Windows Server Version 1709+ 和 Docker Version 17.06+
+- 推荐使用 Windows Server Version 1803+ 和 Docker Version 17.06+
 
 > 注意：
 >
-> 1. 控制平面的服务依然运行在 Linux 服务器中，而 Windows 节点上只运行 Kubelet、Kube-proxy 以及网络插件等服务。
+> 1. 控制平面的服务依然运行在 Linux 服务器中，而 Windows 节点上只运行 Kubelet、Kube-proxy、Docker 以及网络插件等服务。
 > 2. 推荐使用 Windows Server 1803（修复了 Windows 容器软链接的问题，从而 ServiceAccount 和 ConfigMap 可以正常使用）
-
 
 ## 下载
 
 可以从 <<https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
 
 ```sh
-wget https://dl.k8s.io/v1.10.2/kubernetes-node-windows-amd64.tar.gz
+wget https://dl.k8s.io/v1.11.2/kubernetes-node-windows-amd64.tar.gz
 ```
 
 或者从 Kubernetes 源码编译
@@ -47,7 +46,8 @@ Windows Server 中支持以下几种网络插件（注意 Windows 节点上的�
 4. [Open vSwitch (OVS) & Open Virtual Network (OVN) with Overlay](https://github.com/openvswitch/ovn-kubernetes/)
 5. Flannel v0.10.0+
 6. Calico v3.0.1+
-7. 未来还会支持 [win-l2bridge (host-gateway) 和 win-overlay (vxlan)](https://github.com/containernetworking/plugins/pull/85)
+7. [win-bridge](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-bridge)
+8. [win-overlay](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-overlay)
 
 ### L3 路由拓扑
 
@@ -57,50 +57,50 @@ wincni 网络插件配置示例
 
 ```json
 {
-	"cniVersion": "0.2.0",
-	"name": "l2bridge",
-	"type": "wincni.exe",
-	"master": "Ethernet",
-	"ipam": {
-		"environment": "azure",
-		"subnet": "10.10.187.64/26",
-		"routes": [{
-			"GW": "10.10.187.66"
-		}]
-	},
-	"dns": {
-		"Nameservers": [
-			"11.0.0.10"
-		]
-	},
-	"AdditionalArgs": [{
-			"Name": "EndpointPolicy",
-			"Value": {
-				"Type": "OutBoundNAT",
-				"ExceptionList": [
-					"11.0.0.0/8",
-					"10.10.0.0/16",
-					"10.127.132.128/25"
-				]
-			}
-		},
-		{
-			"Name": "EndpointPolicy",
-			"Value": {
-				"Type": "ROUTE",
-				"DestinationPrefix": "11.0.0.0/8",
-				"NeedEncap": true
-			}
-		},
-		{
-			"Name": "EndpointPolicy",
-			"Value": {
-				"Type": "ROUTE",
-				"DestinationPrefix": "10.127.132.213/32",
-				"NeedEncap": true
-			}
-		}
-	]
+  "cniVersion": "0.2.0",
+  "name": "l2bridge",
+  "type": "wincni.exe",
+  "master": "Ethernet",
+  "ipam": {
+    "environment": "azure",
+    "subnet": "10.10.187.64/26",
+    "routes": [{
+      "GW": "10.10.187.66"
+    }]
+  },
+  "dns": {
+    "Nameservers": [
+      "11.0.0.10"
+    ]
+  },
+  "AdditionalArgs": [{
+      "Name": "EndpointPolicy",
+      "Value": {
+        "Type": "OutBoundNAT",
+        "ExceptionList": [
+          "11.0.0.0/8",
+          "10.10.0.0/16",
+          "10.127.132.128/25"
+        ]
+      }
+    },
+    {
+      "Name": "EndpointPolicy",
+      "Value": {
+        "Type": "ROUTE",
+        "DestinationPrefix": "11.0.0.0/8",
+        "NeedEncap": true
+      }
+    },
+    {
+      "Name": "EndpointPolicy",
+      "Value": {
+        "Type": "ROUTE",
+        "DestinationPrefix": "10.127.132.213/32",
+        "NeedEncap": true
+      }
+    }
+  ]
 }
 ```
 
@@ -130,7 +130,7 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
     "properties": {
         "orchestratorProfile": {
             "orchestratorType": "Kubernetes",
-            "orchestratorVersion": "1.10.1",
+            "orchestratorVersion": "1.11.1",
             "kubernetesConfig": {
                 "networkPolicy": "none",
                 "enableAggregatedAPIs": true,
@@ -202,14 +202,22 @@ Restart-Computer -Force
 
 (3) 从 Master 节点上面拷贝 Node spec file (kube config)
 
-(4) 创建 HNS 网络，配置 CNI 网络插件
+(4) 配置 CNI 网络插件和基础镜像
 
-```sh
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 wget https://github.com/Microsoft/SDN/archive/master.zip -o master.zip
 Expand-Archive master.zip -DestinationPath master
 mkdir C:/k/
 mv master/SDN-master/Kubernetes/windows/* C:/k/
 rm -recurse -force master,master.zip
+```
+
+```powershell
+docker pull microsoft/windowsservercore:1709
+docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
+cd C:/k/
+docker build -t kubeletwin/pause .
 ```
 
 (5) 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
@@ -295,37 +303,7 @@ spec:
 
 ### Secrets 和 ConfigMaps 只能以环境变量的方式使用
 
-```yaml
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: example-config
-data:
-  example.property.1: hello
-  example.property.2: world
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-configmap-pod
-spec:
-  containers:
-  - name: my-configmap-pod
-    image: microsoft/windowsservercore:1709
-    env:
-      - name: EXAMPLE_PROPERTY_1
-        valueFrom:
-          configMapKeyRef:
-            name: example-config
-            key: example.property.1
-      - name: EXAMPLE_PROPERTY_2
-        valueFrom:
-          configMapKeyRef:
-            name: example-config
-            key: example.property.2
-  nodeSelector:
-    beta.kubernetes.io/os: windows
-```
+1709和更早版本有这个问题，升级到 1803 即可解决。
 
 ### Volume 支持情况
 
@@ -387,7 +365,7 @@ spec:
 - microsoft/windowsservercore:1709
 - microsoft/iis:windowsservercore-1709
 
-而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
+同样，在 `Windows Server version 1803` 中必须使用带有 1803 标签的镜像。而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
 
 ## 设置 CPU 和内存
 
@@ -441,7 +419,7 @@ spec:
         - containerPort: 80
 ```
 
-### v1.9.X 和 v1.10.X 版本已知问题
+### 其他已知问题
 
 - 仅  Windows Server 1709 或更新的版本才支持在 Pod 内运行多个容器（仅支持 Process 隔离）
 - 暂不支持 StatefulSet
