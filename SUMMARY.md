@@ -197,5 +197,6 @@
 
 - [生态圈](appendix/ecosystem.md)
 - [学习资源](appendix/tutorial.md)
+- [国内镜像](appendix/mirrors.md)
 - [如何贡献](CONTRIBUTING.md)
 - [参考文档](appendix/reference.md)

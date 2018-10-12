@@ -4,6 +4,8 @@
 
 其中 [Kubernetes-The-Hard-Way](kubernetes-the-hard-way/index.md) 介绍了在 GCE 的 Ubuntu 虚拟机中一步步部署一套 Kubernetes 高可用集群的详细步骤，这些步骤也同样适用于 CentOS 等其他系统以及 AWS、Azure 等其他公有云平台。
 
+在国内部署集群时，通常还会碰到镜像无法拉取或者拉取过慢的问题。对这类问题的解决方法就是使用国内的镜像，具体可以参考[国内镜像列表](../appendix/mirrors.md)。
+
 一般部署完成后，还需要运行一系列的测试来验证部署是成功的。[sonobuoy](https://github.com/heptio/sonobuoy) 可以简化这个验证的过程，它通过一系列的测试来验证集群的功能是否正常。其使用方法为
 
 - 通过 [Sonobuoy Scanner tool](https://scanner.heptio.com/) 在线使用（需要集群公网可访问）
