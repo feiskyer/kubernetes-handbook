@@ -57,7 +57,7 @@ Runtime: go1.6
 ### OS X
 
 ```sh
-curl -o kubectl https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/darwin/amd64/kubectl
+curl -o kubectl https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/darwin/amd64/kubectl
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 ```
@@ -65,14 +65,14 @@ sudo mv kubectl /usr/local/bin/
 ### Linux
 
 ```sh
-wget https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubectl
+wget https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 ```
 
 ### 验证
 
-验证 `kubectl` 的安装版本为 1.10.2 或是更高
+验证 `kubectl` 的安装版本为 1.12.0 或是更高
 
 ```sh
 kubectl version --client
@@ -81,7 +81,7 @@ kubectl version --client
 > 输出为
 
 ```sh
-Client Version: version.Info{Major:"1", Minor:"10", GitVersion:"v1.10.2", GitCommit:"81753b10df112992bf51bbc2c2f85208aad78335", GitTreeState:"clean", BuildDate:"2018-04-27T09:22:21Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"12", GitVersion:"v1.12.0", GitCommit:"0ed33881dc4355495f623c6f22e7dd0b7632b7c0", GitTreeState:"clean", BuildDate:"2018-09-27T17:05:32Z", GoVersion:"go1.10.4", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 下一步： [准备计算资源](03-compute-resources.md)

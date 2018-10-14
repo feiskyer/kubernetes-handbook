@@ -22,11 +22,12 @@ Kubernetes The Hard Way 的主要目的是学习, 也就是说它会花很多时
 
 Kubernetes The Hard Way 将引导你建立高可用的 Kubernetes 集群, 包括每个组件之间的加密以及 RBAC 认证
 
-* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.10.2
-* [Containerd Container Runtime](https://github.com/containerd/containerd) 1.1.0
+* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.12.0
+* [Containerd Container Runtime](https://github.com/containerd/containerd) 1.2.0-rc0
 * [CNI Container Networking](https://github.com/containernetworking/cni) 0.6.0
-* [gVisor](https://github.com/google/gvisor) 08879266fef3a67fac1a77f1ea133c3ac75759dd
-* [etcd](https://github.com/coreos/etcd) 3.3.5
+* [gVisor](https://github.com/google/gvisor) 50c283b9f56bb7200938d9e207355f05f79f0d17
+* [etcd](https://github.com/coreos/etcd) 3.3.9
+* [CoreDNS](https://github.com/coredns/coredns) v1.2.2
 
 ## 实验步骤
 

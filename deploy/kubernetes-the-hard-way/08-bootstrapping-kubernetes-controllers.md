@@ -24,10 +24,11 @@ sudo mkdir -p /etc/kubernetes/config
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kube-apiserver" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kube-controller-manager" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kube-scheduler" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubectl"
+  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-apiserver" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-controller-manager" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-scheduler" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl"
+
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 ```
@@ -35,8 +36,9 @@ sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local
 ### 配置 Kubernetes API Server
 
 ```sh
-sudo mkdir -p /var/lib/kubernetes/
-sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+  sudo mkdir -p /var/lib/kubernetes/
+
+  sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
     service-account-key.pem service-account.pem \
     encryption-config.yaml /var/lib/kubernetes/
 ```
@@ -165,9 +167,9 @@ EOF
 ### 启动控制器服务
 
 ```sh
-sudo systemctl daemon-reload
-sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
-sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
+  sudo systemctl daemon-reload
+  sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+  sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 ```
 
 > 请等待 10 秒以便 Kubernetes API Server 初始化。
@@ -195,8 +197,8 @@ EOF
 
 sudo mv kubernetes.default.svc.cluster.local \
     /etc/nginx/sites-available/kubernetes.default.svc.cluster.local
-
 sudo ln -s /etc/nginx/sites-available/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+
 sudo systemctl restart nginx
 sudo systemctl enable nginx
 ```
@@ -354,12 +356,12 @@ curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version
 ```json
 {
   "major": "1",
-  "minor": "10",
-  "gitVersion": "v1.10.2",
-  "gitCommit": "81753b10df112992bf51bbc2c2f85208aad78335",
+  "minor": "12",
+  "gitVersion": "v1.12.0",
+  "gitCommit": "0ed33881dc4355495f623c6f22e7dd0b7632b7c0",
   "gitTreeState": "clean",
-  "buildDate": "2018-04-27T09:10:24Z",
-  "goVersion": "go1.9.3",
+  "buildDate": "2018-09-27T16:55:41Z",
+  "goVersion": "go1.10.4",
   "compiler": "gc",
   "platform": "linux/amd64"
 }

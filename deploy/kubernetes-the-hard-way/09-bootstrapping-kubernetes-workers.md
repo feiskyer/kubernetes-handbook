@@ -1,12 +1,6 @@
 # 部署 Kubernetes Workers 节点
 
-本部分将会部署三个 Kubernetes Worker 节点。每个节点上将会安装以下服务：
-
-* [runc](https://github.com/opencontainers/runc)
-* [container networking plugins](https://github.com/containernetworking/cni)
-* [cri-containerd](https://github.com/kubernetes-incubator/cri-containerd)
-* [kubelet](https://kubernetes.io/docs/admin/kubelet)
-* [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)
+本部分将会部署三个 Kubernetes Worker 节点。每个节点上将会安装以下服务：[runc](https://github.com/opencontainers/runc), [gVisor](https://github.com/google/gvisor), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/admin/kubelet), 和 [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)。
 
 ## 事前准备
 
@@ -33,14 +27,14 @@ sudo apt-get -y install socat conntrack ipset
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.0.0-beta.0/crictl-v1.0.0-beta.0-linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-the-hard-way/runsc \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.12.0/crictl-v1.12.0-linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-the-hard-way/runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 \
   https://github.com/opencontainers/runc/releases/download/v1.0.0-rc5/runc.amd64 \
   https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz \
-  https://github.com/containerd/containerd/releases/download/v1.1.0/containerd-1.1.0.linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubelet
+  https://github.com/containerd/containerd/releases/download/v1.2.0-rc.0/containerd-1.2.0-rc.0.linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubelet
 ```
 
 创建安装目录：
@@ -58,12 +52,13 @@ sudo mkdir -p \
 安装 worker 二进制文件
 
 ```sh
-  chmod +x kubectl kube-proxy kubelet runc.amd64 runsc
+  sudo mv runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 runsc
   sudo mv runc.amd64 runc
+  chmod +x kubectl kube-proxy kubelet runc runsc
   sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
-  sudo tar -xvf crictl-v1.0.0-beta.0-linux-amd64.tar.gz -C /usr/local/bin/
+  sudo tar -xvf crictl-v1.12.0-linux-amd64.tar.gz -C /usr/local/bin/
   sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
-  sudo tar -xvf containerd-1.1.0.linux-amd64.tar.gz -C /
+  sudo tar -xvf containerd-1.2.0-rc.0.linux-amd64.tar.gz -C /
 ```
 
 ### 配置 CNI 网路
@@ -126,6 +121,10 @@ cat << EOF | sudo tee /etc/containerd/config.toml
       runtime_type = "io.containerd.runtime.v1.linux"
       runtime_engine = "/usr/local/bin/runsc"
       runtime_root = "/run/containerd/runsc"
+    [plugins.cri.containerd.gvisor]
+      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_engine = "/usr/local/bin/runsc"
+      runtime_root = "/run/containerd/runsc"
 EOF
 
 # Create the containerd.service systemd unit file
@@ -163,6 +162,8 @@ EOF
 生成 `kubelet.service` systemd 配置文件：
 
 ```sh
+# The resolvConf configuration is used to avoid loops
+# when using CoreDNS for service discovery on systems running systemd-resolved.
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -179,6 +180,7 @@ clusterDomain: "cluster.local"
 clusterDNS:
   - "10.32.0.10"
 podCIDR: "${POD_CIDR}"
+resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${HOSTNAME}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${HOSTNAME}-key.pem"
@@ -246,9 +248,9 @@ EOF
 ### 启动 worker 服务
 
 ```sh
-sudo systemctl daemon-reload
-sudo systemctl enable containerd kubelet kube-proxy
-sudo systemctl start containerd kubelet kube-proxy
+  sudo systemctl daemon-reload
+  sudo systemctl enable containerd kubelet kube-proxy
+  sudo systemctl start containerd kubelet kube-proxy
 ```
 
 > 记得在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。
@@ -265,10 +267,10 @@ gcloud compute ssh controller-0 \
 输出为
 
 ```sh
-NAME       STATUS    ROLES     AGE       VERSION
-worker-0   Ready     <none>    20s       v1.10.2
-worker-1   Ready     <none>    20s       v1.10.2
-worker-2   Ready     <none>    20s       v1.10.2
+NAME       STATUS   ROLES    AGE   VERSION
+worker-0   Ready    <none>   35s   v1.12.0
+worker-1   Ready    <none>   36s   v1.12.0
+worker-2   Ready    <none>   36s   v1.12.0
 ```
 
 下一步：[配置 Kubectl](10-configuring-kubectl.md)。

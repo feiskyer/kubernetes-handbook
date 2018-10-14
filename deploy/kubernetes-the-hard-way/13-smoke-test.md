@@ -210,9 +210,9 @@ ETag: "5a1437f4-264"
 Accept-Ranges: bytes
 ```
 
-## 非可信负载
+## 非可信应用
 
-非可信负载可以运行在 [gVisor](https://github.com/google/gvisor) 容器引擎之中。
+非可信应用可以运行在 [gVisor](https://github.com/google/gvisor) 容器引擎之中。
 
 ```sh
 cat <<EOF | kubectl apply -f -

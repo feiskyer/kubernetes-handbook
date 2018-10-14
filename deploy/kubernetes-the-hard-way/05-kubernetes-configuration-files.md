@@ -60,6 +60,7 @@ worker-2.kubeconfig
 为 kube-proxy 服务生成 kubeconfig 配置文件：
 
 ```sh
+{
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
     --embed-certs=true \
@@ -78,12 +79,14 @@ worker-2.kubeconfig
     --kubeconfig=kube-proxy.kubeconfig
 
   kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
+}
 ```
 
 ### kube-controller-manager 配置文件
 
 ```sh
-kubectl config set-cluster kubernetes-the-hard-way \
+{
+  kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
     --embed-certs=true \
     --server=https://127.0.0.1:6443 \
@@ -101,12 +104,14 @@ kubectl config set-cluster kubernetes-the-hard-way \
     --kubeconfig=kube-controller-manager.kubeconfig
 
   kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
+}
 ```
 
 ### kube-scheduler 配置文件
 
 ```sh
-kubectl config set-cluster kubernetes-the-hard-way \
+{
+  kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
     --embed-certs=true \
     --server=https://127.0.0.1:6443 \
@@ -124,12 +129,14 @@ kubectl config set-cluster kubernetes-the-hard-way \
     --kubeconfig=kube-scheduler.kubeconfig
 
   kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
+}
 ```
 
 ### Admin 配置文件
 
 ```sh
-kubectl config set-cluster kubernetes-the-hard-way \
+{
+  kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
     --embed-certs=true \
     --server=https://127.0.0.1:6443 \
@@ -147,6 +154,7 @@ kubectl config set-cluster kubernetes-the-hard-way \
     --kubeconfig=admin.kubeconfig
 
   kubectl config use-context default --kubeconfig=admin.kubeconfig
+}
 ```
 
 ### 分发配置文件

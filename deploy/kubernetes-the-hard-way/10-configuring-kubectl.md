@@ -12,8 +12,8 @@
 
 ```sh
 KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region) \
-  --format 'value(address)')
+    --region $(gcloud config get-value compute/region) \
+    --format 'value(address)')
 ```
 
 为 `admin` 用户生成 kubeconfig 文件：
@@ -63,10 +63,10 @@ kubectl get nodes
 输出为
 
 ```sh
-NAME       STATUS    ROLES     AGE       VERSION
-worker-0   Ready     <none>    1m        v1.10.2
-worker-1   Ready     <none>    1m        v1.10.2
-worker-2   Ready     <none>    1m        v1.10.2
+NAME       STATUS   ROLES    AGE    VERSION
+worker-0   Ready    <none>   117s   v1.12.0
+worker-1   Ready    <none>   118s   v1.12.0
+worker-2   Ready    <none>   118s   v1.12.0
 ```
 
 下一步：[配置 Pod 网络路由](11-pod-network-routes.md)。

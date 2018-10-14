@@ -22,21 +22,21 @@ gcloud compute ssh controller-0
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  "https://github.com/coreos/etcd/releases/download/v3.3.5/etcd-v3.3.5-linux-amd64.tar.gz"
+  "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
 ```
 
 解压缩并安装 `etcd` 服务与 `etcdctl` 命令行工具：
 
 ```sh
-tar -xvf etcd-v3.3.5-linux-amd64.tar.gz
-sudo mv etcd-v3.3.5-linux-amd64/etcd* /usr/local/bin/
+  tar -xvf etcd-v3.3.9-linux-amd64.tar.gz
+  sudo mv etcd-v3.3.9-linux-amd64/etcd* /usr/local/bin/
 ```
 
 ### 配置 etcd Server
 
 ```sh
-sudo mkdir -p /etc/etcd /var/lib/etcd
-sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
+  sudo mkdir -p /etc/etcd /var/lib/etcd
+  sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
 ```
 
 使用虚拟机的内网 IP 地址来作为 etcd 集群的服务地址。查询当前节点的内网 IP 地址：
@@ -90,7 +90,6 @@ EOF
 ### 启动 etcd Server
 
 ```sh
-sudo mv etcd.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable etcd
 sudo systemctl start etcd

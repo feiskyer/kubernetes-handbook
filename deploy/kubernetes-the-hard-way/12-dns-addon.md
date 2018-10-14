@@ -7,16 +7,18 @@
 部属 `kube-dns` 群集扩展:
 
 ```sh
-kubectl create -f https://storage.googleapis.com/kubernetes-the-hard-way/kube-dns.yaml
+kubectl apply -f https://storage.googleapis.com/kubernetes-the-hard-way/coredns.yaml
 ```
 
 输出为
 
 ```sh
-service "kube-dns" created
-serviceaccount "kube-dns" created
-configmap "kube-dns" created
-deployment.extensions "kube-dns" created
+serviceaccount/coredns created
+clusterrole.rbac.authorization.k8s.io/system:coredns created
+clusterrolebinding.rbac.authorization.k8s.io/system:coredns created
+configmap/coredns created
+deployment.extensions/coredns created
+service/kube-dns created
 ```
 
 列出 `kube-dns` 部署的 Pod 列表:
@@ -28,8 +30,9 @@ kubectl get pods -l k8s-app=kube-dns -n kube-system
 输出为
 
 ```sh
-NAME                        READY     STATUS    RESTARTS   AGE
-kube-dns-3097350089-gq015   3/3       Running   0          20s
+NAME                       READY   STATUS    RESTARTS   AGE
+coredns-699f8ddd77-94qv9   1/1     Running   0          20s
+coredns-699f8ddd77-gtcgb   1/1     Running   0          20s
 ```
 
 ## 验证
