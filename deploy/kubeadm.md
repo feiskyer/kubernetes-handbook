@@ -4,7 +4,7 @@
 
 ```sh
 # on master
-export USE_MIRROR=true
+export USE_MIRROR=true #国内用户必须使用MIRROR
 git clone https://github.com/feiskyer/ops
 cd ops
 kubernetes/install-kubernetes.sh
@@ -23,8 +23,6 @@ export CONTAINER_CIDR="10.244.2.0/24"
 ./kubernetes/add-node.sh
 ```
 
-注意：**国内用户需要在执行上述命令前设置使用国内镜像 `export USE_MIRROR=true`**。
-
 以下是详细的 kubeadm 部署集群步骤。
 
 ## 初始化系统
@@ -42,21 +40,13 @@ add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; e
 apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
 
 apt-get update && apt-get install -y apt-transport-https curl
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+    cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
 EOF
 apt-get update
 apt-get install -y kubelet kubeadm kubectl
 ```
-
-> 国内用户可以使用阿里云的镜像来安装
->
-> ```sh
-> cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-> deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
-> EOF
-> ```
 
 ### CentOS
 
@@ -67,34 +57,17 @@ systemctl enable docker && systemctl start docker
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
 setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 yum install -y kubelet kubeadm kubectl
 systemctl enable kubelet && systemctl start kubelet
-
-cat <<EOF >  /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
-sysctl --system
 ```
-
-> 国内用户可以使用阿里云的镜像来安装
->
-> ```sh
-> cat <<EOF> /etc/yum.repos.d/kubernetes.repo
-> [kubernetes]
-> name=Kubernetes
-> baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
-> enabled=1
-> gpgcheck=0
-> EOF
-> ```
 
 ## 安装 master
 
@@ -105,156 +78,101 @@ kubeadm init --pod-network-cidr 10.244.0.0/16 --kubernetes-version latest
 
 # enable schedule pods on the master
 export KUBECONFIG=/etc/kubernetes/admin.conf
-# for v1.5-, use kubectl taint nodes --all dedicated-
 kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule-
 ```
 
 如果需要修改 kubernetes 服务的配置选项，则需要创建一个 MasterConfiguration 配置文件，其格式为
 
 ```yaml
-apiVersion: kubeadm.k8s.io/v1alpha2
-kind: MasterConfiguration
-kubernetesVersion: v1.11.0
-api:
-  advertiseAddress: 192.168.0.102
-  bindPort: 6443
-  controlPlaneEndpoint: ""
-auditPolicy:
-  logDir: /var/log/kubernetes/audit
-  logMaxAge: 2
-  path: ""
+apiVersion: kubeadm.k8s.io/v1alpha3
+kind: InitConfiguration
 bootstrapTokens:
-- groups:
-  - system:bootstrappers:kubeadm:default-node-token
-  token: abcdef.0123456789abcdef
-  ttl: 24h0m0s
+- token: "9a08jv.c0izixklcxtmnze7"
+  description: "kubeadm bootstrap token"
+  ttl: "24h"
+- token: "783bde.3f89s0fje9f38fhf"
+  description: "another bootstrap token"
   usages:
   - signing
-  - authentication
-certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
-etcd:
-  local:
-    dataDir: /var/lib/etcd
-    image: ""
-imageRepository: k8s.gcr.io
-kubeProxy:
-  config:
-    bindAddress: 0.0.0.0
-    clientConnection:
-      acceptContentTypes: ""
-      burst: 10
-      contentType: application/vnd.kubernetes.protobuf
-      kubeconfig: /var/lib/kube-proxy/kubeconfig.conf
-      qps: 5
-    clusterCIDR: ""
-    configSyncPeriod: 15m0s
-    conntrack:
-      max: null
-      maxPerCore: 32768
-      min: 131072
-      tcpCloseWaitTimeout: 1h0m0s
-      tcpEstablishedTimeout: 24h0m0s
-    enableProfiling: false
-    healthzBindAddress: 0.0.0.0:10256
-    hostnameOverride: ""
-    iptables:
-      masqueradeAll: false
-      masqueradeBit: 14
-      minSyncPeriod: 0s
-      syncPeriod: 30s
-    ipvs:
-      ExcludeCIDRs: null
-      minSyncPeriod: 0s
-      scheduler: ""
-      syncPeriod: 30s
-    metricsBindAddress: 127.0.0.1:10249
-    mode: ""
-    nodePortAddresses: null
-    oomScoreAdj: -999
-    portRange: ""
-    resourceContainer: /kube-proxy
-    udpIdleTimeout: 250ms
-kubeletConfiguration:
-  baseConfig:
-    address: 0.0.0.0
-    authentication:
-      anonymous:
-        enabled: false
-      webhook:
-        cacheTTL: 2m0s
-        enabled: true
-      x509:
-        clientCAFile: /etc/kubernetes/pki/ca.crt
-    authorization:
-      mode: Webhook
-      webhook:
-        cacheAuthorizedTTL: 5m0s
-        cacheUnauthorizedTTL: 30s
-    cgroupDriver: cgroupfs
-    cgroupsPerQOS: true
-    clusterDNS:
-    - 10.96.0.10
-    clusterDomain: cluster.local
-    containerLogMaxFiles: 5
-    containerLogMaxSize: 10Mi
-    contentType: application/vnd.kubernetes.protobuf
-    cpuCFSQuota: true
-    cpuManagerPolicy: none
-    cpuManagerReconcilePeriod: 10s
-    enableControllerAttachDetach: true
-    enableDebuggingHandlers: true
-    enforceNodeAllocatable:
-    - pods
-    eventBurst: 10
-    eventRecordQPS: 5
-    evictionHard:
-      imagefs.available: 15%
-      memory.available: 100Mi
-      nodefs.available: 10%
-      nodefs.inodesFree: 5%
-    evictionPressureTransitionPeriod: 5m0s
-    failSwapOn: true
-    fileCheckFrequency: 20s
-    hairpinMode: promiscuous-bridge
-    healthzBindAddress: 127.0.0.1
-    healthzPort: 10248
-    httpCheckFrequency: 20s
-    imageGCHighThresholdPercent: 85
-    imageGCLowThresholdPercent: 80
-    imageMinimumGCAge: 2m0s
-    iptablesDropBit: 15
-    iptablesMasqueradeBit: 14
-    kubeAPIBurst: 10
-    kubeAPIQPS: 5
-    makeIPTablesUtilChains: true
-    maxOpenFiles: 1000000
-    maxPods: 110
-    nodeStatusUpdateFrequency: 10s
-    oomScoreAdj: -999
-    podPidsLimit: -1
-    port: 10250
-    registryBurst: 10
-    registryPullQPS: 5
-    resolvConf: /etc/resolv.conf
-    rotateCertificates: true
-    runtimeRequestTimeout: 2m0s
-    serializeImagePulls: true
-    staticPodPath: /etc/kubernetes/manifests
-    streamingConnectionIdleTimeout: 4h0m0s
-    syncFrequency: 1m0s
-    volumeStatsAggPeriod: 1m0s
-networking:
-  dnsDomain: cluster.local
-  podSubnet: ""
-  serviceSubnet: 10.96.0.0/12
+  groups:
+  - system:anonymous
 nodeRegistration:
-  criSocket: /var/run/dockershim.sock
-  name: your-host-name
+  name: "ec2-10-100-0-1"
+  criSocket: "/var/run/dockershim.sock"
   taints:
-  - effect: NoSchedule
-    key: node-role.kubernetes.io/master
-unifiedControlPlaneImage: ""
+  - key: "kubeadmNode"
+    value: "master"
+    effect: "NoSchedule"
+  kubeletExtraArgs:
+    cgroupDriver: "cgroupfs"
+apiEndpoint:
+  advertiseAddress: "10.100.0.1"
+  bindPort: 6443
+---
+apiVersion: kubeadm.k8s.io/v1alpha3
+kind: ClusterConfiguration
+etcd:
+  # one of local or external
+  local:
+    image: "k8s.gcr.io/etcd-amd64:3.2.18"
+    dataDir: "/var/lib/etcd"
+    extraArgs:
+      listen-client-urls: "http://10.100.0.1:2379"
+    serverCertSANs:
+    -  "ec2-10-100-0-1.compute-1.amazonaws.com"
+    peerCertSANs:
+    - "10.100.0.1"
+  external:
+    endpoints:
+    - "10.100.0.1:2379"
+    - "10.100.0.2:2379"
+    caFile: "/etcd/kubernetes/pki/etcd/etcd-ca.crt"
+    certFile: "/etcd/kubernetes/pki/etcd/etcd.crt"
+    certKey: "/etcd/kubernetes/pki/etcd/etcd.key"
+networking:
+  serviceSubnet: "10.96.0.0/12"
+  podSubnet: "10.100.0.1/24"
+  dnsDomain: "cluster.local"
+kubernetesVersion: "v1.12.0"
+controlPlaneEndpoint: "10.100.0.1:6443"
+apiServerExtraArgs:
+  authorization-mode: "Node,RBAC"
+controlManagerExtraArgs:
+  node-cidr-mask-size: 20
+schedulerExtraArgs:
+  address: "10.100.0.1"
+apiServerExtraVolumes:
+- name: "some-volume"
+  hostPath: "/etc/some-path"
+  mountPath: "/etc/some-pod-path"
+  writable: true
+  pathType: File
+controllerManagerExtraVolumes:
+- name: "some-volume"
+  hostPath: "/etc/some-path"
+  mountPath: "/etc/some-pod-path"
+  writable: true
+  pathType: File
+schedulerExtraVolumes:
+- name: "some-volume"
+  hostPath: "/etc/some-path"
+  mountPath: "/etc/some-pod-path"
+  writable: true
+  pathType: File
+apiServerCertSANs:
+- "10.100.1.1"
+- "ec2-10-100-0-1.compute-1.amazonaws.com"
+certificatesDir: "/etc/kubernetes/pki"
+imageRepository: "k8s.gcr.io"
+unifiedControlPlaneImage: "k8s.gcr.io/controlplane:v1.12.0"
+auditPolicy:
+  # https://kubernetes.io/docs/tasks/debug-application-cluster/audit/#audit-policy
+  path: "/var/log/audit/audit.json"
+  logDir: "/var/log/audit"
+  logMaxAge: 7 # in days
+featureGates:
+  selfhosting: false
+clusterName: "example-cluster"
 ```
 
 然后，在初始化 master 的时候指定 kubeadm.yml 的路径：
