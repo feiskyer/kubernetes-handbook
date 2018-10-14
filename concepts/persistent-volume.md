@@ -382,8 +382,169 @@ spec:
 
 当开启准入控制 StorageObjectInUseProtection（`--admission-control=StorageObjectInUseProtection`）时，删除使用中的 PV 和 PVC 后，它们会等待使用者删除后才删除（而不是之前的立即删除）。而在使用者删除之前，它们会一直处于 Terminating 状态。
 
+## 拓扑感知动态调度
+
+拓扑感知动态存储卷调度（topology-aware dynamic provisioning）是 v1.12 版本的一个 Beta 特性，用来支持在多可用区集群中动态创建和调度持久化存储卷。目前的实现支持以下几种存储：
+
+- AWS EBS
+- Azure Disk
+- GCE PD (including Regional PD)
+- CSI (alpha) - currently only the GCE PD CSI driver has implemented topology support
+
+使用示例
+
+```yaml
+# set WaitForFirstConsumer in storage class
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: topology-aware-standard
+provisioner: kubernetes.io/gce-pd
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: pd-standard
+
+# Refer storage class
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:   
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                - us-central1-a
+                - us-central1-f
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - nginx
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+      containers:
+      - name: nginx
+        image: gcr.io/google_containers/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+        - name: logs
+          mountPath: /logs
+ volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: topology-aware-standard
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: logs
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: topology-aware-standard
+      resources:
+        requests:
+          storage: 1Gi
+```
+
+然后查看 PV，可以发现它们创建在不同的可用区内
+
+```sh
+$ kubectl get pv -o=jsonpath='{range .items[*]}{.spec.claimRef.name}{"\t"}{.metadata.labels.failure\-domain\.beta\.kubernetes\.io/zone}{"\n"}{end}'
+www-web-0       us-central1-f
+logs-web-0      us-central1-f
+www-web-1       us-central1-a
+logs-web-1      us-central1-a
+```
+
+## 存储快照
+
+存储快照是 v1.12 新增的 Alpha 特性，用来支持给存储卷创建快照。支持的插件包括
+
+- [GCE Persistent Disk CSI Driver](https://github.com/kubernetes-sigs/gcp-compute-persistent-disk-csi-driver)
+- [OpenSDS CSI Driver](https://github.com/opensds/nbp/tree/master/csi/server)
+- [Ceph RBD CSI Driver](https://github.com/ceph/ceph-csi/tree/master/pkg/rbd)
+- [Portworx CSI Driver](https://github.com/libopenstorage/openstorage/tree/master/csi)
+
+![image-20181014215558480](assets/image-20181014215558480.png)
+
+在使用前需要开启特性开关 VolumeSnapshotDataSource。
+
+使用示例：
+
+```yaml
+# create snapshot
+apiVersion: snapshot.storage.k8s.io/v1alpha1
+kind: VolumeSnapshot
+metadata:
+  name: new-snapshot-demo
+  namespace: demo-namespace
+spec:
+  snapshotClassName: csi-snapclass
+  source:
+    name: mypvc
+    kind: PersistentVolumeClaim
+    
+# import from snapshot
+apiVersion: snapshot.storage.k8s.io/v1alpha1
+kind: VolumeSnapshotContent
+metadata:
+  name: static-snapshot-content
+spec:
+  csiVolumeSnapshotSource:
+    driver: com.example.csi-driver
+    snapshotHandle: snapshotcontent-example-id
+  volumeSnapshotRef:
+    kind: VolumeSnapshot
+    name: static-snapshot-demo
+    namespace: demo-namespace
+    
+# provision volume from snapshot
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-restore
+  Namespace: demo-namespace
+spec:
+  storageClassName: csi-storageclass
+  dataSource:
+    name: new-snapshot-demo
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+
 ## 参考文档
 
 - [Kubernetes Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 - [Kubernetes Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 - [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
+- [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
+- [Volume Snapshots Documentation](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)
+

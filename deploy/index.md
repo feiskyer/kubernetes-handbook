@@ -27,20 +27,29 @@ $ sonobuoy delete
 
 ## 版本依赖
 
-Kubernetes v1.11 支持的外部组件版本为
+Kubernetes v1.12 支持的外部组件版本为
 
-- Etcd: v3.2.18+ 或 v3.3.0+
-- Docker: 1.11.2 to 1.13.1 and 17.03.x
-- Go: 1.10.2
+- Etcd: v3.2.24+ 或 v3.3.0+（etcd2弃用）
+- Docker: 1.11.1 to 1.13.1, 17.03, 17.09, 18.06
+- Go: 1.10.4
 - CNI: v0.6.0
 - CSI: 0.3.0
 - Dashboard: v1.8.3
-- Heapster: v1.5.2
-- Cluster Autoscaler: v1.3.0
-- Kube-dns: v1.14.10
+- Heapster: v1.6.0-beta
+- Cluster Autoscaler: v1.12.0
+- Kube-dns: v1.14.13
+- Influxdb: v1.3.3
+- Grafana: v4.4.3
+- Kibana: v6.3.2
+- cAdvisor: v0.30.1
+- Fluentd: v1.2.4
 - Calico: v2.6.7
-- Crictl: v1.11.0
-- CoreDNS: v1.1.3
+- Crictl: v1.12.0
+- hcsshim: v0.11
+- CoreDNS: v1.2.2
+- Istio: v1.11
+- Metrics-server: v0.3.1
+- ip-masq-agent: v2.1.1
 
 ## 部署方法
 

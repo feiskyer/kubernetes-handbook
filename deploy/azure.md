@@ -62,8 +62,8 @@ az aks scale --resource-group=group1 --name=myK8SCluster --agent-count 5
 # 查询当前集群的版本以及可升级的版本
 az aks get-versions --name myK8sCluster --resource-group group1 --output table
 
-# 升级到 1.8.1 版本
-az aks upgrade --name myK8sCluster --resource-group group1 --kubernetes-version 1.8.1
+# 升级到 1.11.3 版本
+az aks upgrade --name myK8sCluster --resource-group group1 --kubernetes-version 1.11.3
 ```
 
 下图动态展示了一个部署 v1.7.7 版本集群并升级到 v1.8.1 的过程：
@@ -99,7 +99,7 @@ az group delete --name group1 --yes --no-wait
   "properties": {
     "orchestratorProfile": {
       "orchestratorType": "Kubernetes",
-      "orchestratorRelease": "1.8",
+      "orchestratorRelease": "1.12",
       "kubernetesConfig": {
         "networkPolicy": "",
         "enableRbac": true
@@ -173,7 +173,7 @@ acs-engine 基于 hyperkube 来部署 Kubernetes 服务，所以只需要使用�
 ```json
 {
 	"kubernetesConfig": {
-		"customHyperkubeImage": "docker.io/feisky/hyperkube-amd64:v1.9.0-dev"
+		"customHyperkubeImage": "docker.io/feisky/hyperkube-amd64:v1.12.1"
 	}
 }
 ```
@@ -186,12 +186,12 @@ bash build/run.sh make KUBE_FASTBUILD=true ARCH=amd64
 
 # Build docker image for hyperkube
 cd cluster/images/hyperkube
-make VERSION=v1.9.0-dev
+make VERSION=v1.12.x-dev
 cd ../../..
 
 # push docker image
-docker tag gcr.io/google-containers/hyperkube-amd64:v1.9.0-dev feisky/hyperkube-amd64:v1.9.0-dev
-docker push feisky/hyperkube-amd64:v1.9.0-dev
+docker tag gcr.io/google-containers/hyperkube-amd64:v1.12.x-dev feisky/hyperkube-amd64:v1.12.x-dev
+docker push feisky/hyperkube-amd64:v1.12.x-dev
 ```
 
 ### 添加 Windows 节点
@@ -280,7 +280,7 @@ Azure 容器实例（ACI）提供了在 Azure 中运行容器的最简捷方式�
 
 ```sh
 RELEASE_NAME=virtual-kubelet
-CHART_URL=https://github.com/virtual-kubelet/virtual-kubelet/raw/master/charts/virtual-kubelet-0.1.0.tgz
+CHART_URL=https://github.com/virtual-kubelet/virtual-kubelet/raw/master/charts/virtual-kubelet-0.4.0.tgz
 
 helm install "$CHART_URL" --name "$RELEASE_NAME" --namespace kube-system --set env.azureClientId=<YOUR-AZURECLIENTID-HERE>,env.azureClientKey=<YOUR-AZURECLIENTKEY-HERE>,env.azureTenantId=<YOUR-AZURETENANTID-HERE>,env.azureSubscriptionId=<YOUR-AZURESUBSCRIPTIONID-HERE>,env.aciResourceGroup=<YOUR-ACIRESOURCEGROUP-HERE>,env.nodeName=aci, env.nodeOsType=<Linux|Windows>,env.nodeTaint=azure.com/aci
 ```

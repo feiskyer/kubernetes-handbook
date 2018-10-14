@@ -8,7 +8,15 @@ Container Storage Interface (CSI) 是从 v1.9 引入的容器存储接口，用�
 | ---------- | -------- | ------ |
 | v1.9 | v0.1     | Alpha  |
 | v1.10      | v0.2     | Beta   |
-| v1.11      | v0.3     | Beta   |
+| v1.11-v1.12 | v0.3     | Beta   |
+
+Sidecar 容器版本
+
+| Container Name   | CSI spec | Latest Release Tag |
+| ---------------- | -------- | ------------------ |
+| csi-provisioner  | v0.3     | v0.3.1             |
+| csi-attacher     | v0.3     | v0.3.0             |
+| driver-registrar | v0.3     | v0.3.0             |
 
 ## 原理
 
@@ -59,23 +67,22 @@ Container Storage Interface (CSI) 是从 v1.9 引入的容器存储接口，用�
 
 Kubernetes 提供了几个 [CSI 示例](https://github.com/kubernetes-csi/drivers)，包括 NFS、ISCSI、HostPath、Cinder 以及 FlexAdapter 等。在实现 CSI 插件时，这些示例可以用作参考。
 
-| Name | Status   | More Information |
-| ------ | -------- | ----------- |
-| [Flexvolume](https://github.com/kubernetes-csi/drivers/tree/master/pkg/flexadapter) | Sample   |      |
-| [HostPath](https://github.com/kubernetes-csi/drivers/tree/master/pkg/hostpath) | v0.2.0   | Only use for a single node tests. See the [Example](https://kubernetes-csi.github.io/docs/Example.html) page for Kubernetes-specific instructions. |
-| [In-memory Sample Mock Driver](https://github.com/kubernetes-csi/csi-test/tree/master/mock/service) | v0.3.0   | The sample mock driver used for [csi-sanity](https://github.com/kubernetes-csi/csi-test/tree/master/cmd/csi-sanity) |
-| [NFS](https://github.com/kubernetes-csi/drivers/tree/master/pkg/nfs) | Sample   |      |
-| [VFS Driver](https://github.com/thecodeteam/csi-vfs)   | Released | A CSI plugin that provides a virtual file system.      |
-| [Cinder](https://github.com/kubernetes/cloud-provider-openstack/tree/master/pkg/csi/cinder) | v0.2.0   | A Container Storage Interface (CSI) Storage Plug-in for Cinder |
+| Name                                                         | Status         | More Information                                             |
+| ------------------------------------------------------------ | -------------- | ------------------------------------------------------------ |
+| [Cinder](https://github.com/kubernetes/cloud-provider-openstack/tree/master/pkg/csi/cinder) | v0.2.0         | A Container Storage Interface (CSI) Storage Plug-in for Cinder |
 | [DigitalOcean Block Storage](https://github.com/digitalocean/csi-digitalocean) | v0.0.1 (alpha) | A Container Storage Interface (CSI) Driver for DigitalOcean Block Storage |
-| [GCE Persistent Disk](https://github.com/kubernetes-sigs/gcp-compute-persistent-disk-csi-driver) | Alpha    | A Container Storage Interface (CSI) Storage Plugin for Google Compute Engine Persistent Disk |
-| [OpenSDS](https://www.opensds.io/)         | Beta     | For more information, please visit [releases](https://github.com/opensds/nbp/releases) and https://github.com/opensds/nbp/tree/master/csi |
-| [Portworx](https://portworx.com/)    | 0.2.0    | CSI implementation is available [here](https://github.com/libopenstorage/openstorage/tree/master/csi) which can be used as an example also. |
-| [RBD](https://github.com/ceph/ceph-csi)    | v0.2.0 | A Container Storage Interface (CSI) Storage RBD Plug-in for Ceph |
-| [CephFS](https://github.com/ceph/ceph-csi)       | v0.2.0   | A Container Storage Interface (CSI) Storage Plug-in for CephFS |
-| [ScaleIO](https://github.com/thecodeteam/csi-scaleio)  | v0.1.0   | A Container Storage Interface (CSI) Storage Plugin for DellEMC ScaleIO |
-| [vSphere](https://github.com/thecodeteam/csi-vsphere)  | v0.1.0   | A Container Storage Interface (CSI) Storage Plug-in for VMware vSphere |
-| [NetApp](https://github.com/NetApp/trident)      | v0.2.0 (alpha) | A Container Storage Interface (CSI) Storage Plug-in for NetApp's [Trident](https://netapp-trident.readthedocs.io/) container storage orchestrator |
+| [AWS Elastic Block Storage](https://github.com/kubernetes-sigs/aws-ebs-csi-driver) | v0.0.1(alpha)  | A Container Storage Interface (CSI) Driver for AWS Elastic Block Storage (EBS) |
+| [GCE Persistent Disk](https://github.com/kubernetes-sigs/gcp-compute-persistent-disk-csi-driver) | Alpha          | A Container Storage Interface (CSI) Storage Plugin for Google Compute Engine Persistent Disk |
+| [OpenSDS](https://www.opensds.io/)                           | Beta           | For more information, please visit [releases](https://github.com/opensds/nbp/releases) and https://github.com/opensds/nbp/tree/master/csi |
+| [Portworx](https://portworx.com/)                            | 0.2.0          | CSI implementation is available [here](https://github.com/libopenstorage/openstorage/tree/master/csi) which can be used as an example also. |
+| [RBD](https://github.com/ceph/ceph-csi)                      | v0.2.0         | A Container Storage Interface (CSI) Storage RBD Plug-in for Ceph |
+| [CephFS](https://github.com/ceph/ceph-csi)                   | v0.2.0         | A Container Storage Interface (CSI) Storage Plug-in for CephFS |
+| [ScaleIO](https://github.com/thecodeteam/csi-scaleio)        | v0.1.0         | A Container Storage Interface (CSI) Storage Plugin for DellEMC ScaleIO |
+| [vSphere](https://github.com/thecodeteam/csi-vsphere)        | v0.1.0         | A Container Storage Interface (CSI) Storage Plug-in for VMware vSphere |
+| [NetApp](https://github.com/NetApp/trident)                  | v0.2.0 (alpha) | A Container Storage Interface (CSI) Storage Plug-in for NetApp's [Trident](https://netapp-trident.readthedocs.io/) container storage orchestrator |
+| [Ember CSI](https://ember-csi.io/)                           | v0.2.0 (alpha) | Multi-vendor CSI plugin supporting over 80 storage drivers to provide block and mount storage to Container Orchestration systems. |
+| [Nutanix](https://portal.nutanix.com/#/page/docs/details?targetId=CSI-Volume-Driver:CSI-Volume-Driver) | beta           | A Container Storage Interface (CSI) Storage Driver for Nutanix |
+| [Quobyte](https://github.com/quobyte/quobyte-csi)            | v0.2.0         | A Container Storage Interface (CSI) Plugin for Quobyte       |
 
 下面以 NFS 为例来看一下 CSI 插件的使用方法。
 

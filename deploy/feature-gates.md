@@ -6,10 +6,11 @@
 | ----------------------------------------- | ------- | ---------- | ----- | ----- |
 | `Accelerators`                            | `false` | Alpha      | 1.6   | 1.10  |
 | `AdvancedAuditing`                        | `false` | Alpha      | 1.7   | 1.7   |
-| `AdvancedAuditing`                        | `true`  | Beta       | 1.8   |       |
+| `AdvancedAuditing`                        | `true`  | Beta       | 1.8   | 1.11  |
+| `AdvancedAuditing`                        | `true`  | GA         | 1.12  | -     |
 | `AffinityInAnnotations`                   | `false` | Alpha      | 1.6   | 1.7   |
 | `AllowExtTrafficLocalEndpoints`           | `false` | Beta       | 1.4   | 1.6   |
-| `AllowExtTrafficLocalEndpoints`           | `true`  | GA         | 1.7   |       |
+| `AllowExtTrafficLocalEndpoints`           | `true`  | GA         | 1.7   | -     |
 | `APIListChunking`                         | `false` | Alpha      | 1.8   | 1.8   |
 | `APIListChunking`                         | `true`  | Beta       | 1.9   |       |
 | `APIResponseCompression`                  | `false` | Alpha      | 1.7   |       |
@@ -33,9 +34,11 @@
 | `DevicePlugins`                           | `true`  | Beta       | 1.10  |       |
 | `DynamicKubeletConfig`                    | `false` | Alpha      | 1.4   | 1.10  |
 | `DynamicKubeletConfig`                    | `true`  | Beta       | 1.11  |       |
+| `DynamicProvisioningScheduling`           | `false` | Alpha      | 1.11  | 1.11  |
 | `DynamicVolumeProvisioning`               | `true`  | Alpha      | 1.3   | 1.7   |
 | `DynamicVolumeProvisioning`               | `true`  | GA         | 1.8   |       |
 | `EnableEquivalenceClassCache`             | `false` | Alpha      | 1.8   |       |
+| `ExpandInUsePersistentVolumes`            | `false` | Alpha      | 1.11  |       |
 | `ExpandPersistentVolumes`                 | `false` | Alpha      | 1.8   | 1.10  |
 | `ExpandPersistentVolumes`                 | `true`  | Beta       | 1.11  |       |
 | `ExperimentalCriticalPodAnnotation`       | `false` | Alpha      | 1.5   |       |
@@ -46,23 +49,29 @@
 | `HyperVContainer`                         | `false` | Alpha      | 1.10  |       |
 | `Initializers`                            | `false` | Alpha      | 1.7   |       |
 | `KubeletConfigFile`                       | `false` | Alpha      | 1.8   | 1.9   |
-| `KubeletPluginsWatcher`                   | `false` | Alpha      | 1.11  |       |
+| `KubeletPluginsWatcher`                   | `false` | Alpha      | 1.11  | 1.11  |
+| `KubeletPluginsWatcher`                   | `true`  | Beta       | 1.12  |       |
 | `LocalStorageCapacityIsolation`           | `false` | Alpha      | 1.7   | 1.9   |
 | `LocalStorageCapacityIsolation`           | `true`  | Beta       | 1.10  |       |
 | `MountContainers`                         | `false` | Alpha      | 1.9   |       |
 | `MountPropagation`                        | `false` | Alpha      | 1.8   | 1.9   |
-| `MountPropagation`                        | `true`  | Beta       | 1.10  |       |
+| `MountPropagation`                        | `true`  | Beta       | 1.10  | 1.11  |
+| `MountPropagation`                        | `true`  | GA         | 1.12  |       |
 | `PersistentLocalVolumes`                  | `false` | Alpha      | 1.7   | 1.9   |
 | `PersistentLocalVolumes`                  | `true`  | Beta       | 1.10  |       |
 | `PodPriority`                             | `false` | Alpha      | 1.8   |       |
 | `PodReadinessGates`                       | `false` | Alpha      | 1.11  |       |
+| `PodReadinessGates`                       | `true`  | Beta       | 1.12  |       |
 | `PodShareProcessNamespace`                | `false` | Alpha      | 1.10  |       |
+| `PodShareProcessNamespace`                | `true`  | Beta       | 1.12  |       |
 | `PVCProtection`                           | `false` | Alpha      | 1.9   | 1.9   |
 | `ReadOnlyAPIDataVolumes`                  | `true`  | Deprecated | 1.10  |       |
 | `ResourceLimitsPriorityFunction`          | `false` | Alpha      | 1.9   |       |
 | `RotateKubeletClientCertificate`          | `true`  | Beta       | 1.7   |       |
 | `RotateKubeletServerCertificate`          | `false` | Alpha      | 1.7   |       |
 | `RunAsGroup`                              | `false` | Alpha      | 1.10  |       |
+| `RuntimeClass`                            | `false` | Alpha      | 1.12  |       |
+| `SCTPSupport`                             | `false` | Alpha      | 1.12  |       |
 | `ServiceNodeExclusion`                    | `false` | Alpha      | 1.8   |       |
 | `StorageObjectInUseProtection`            | `true`  | Beta       | 1.10  | 1.10  |
 | `StorageObjectInUseProtection`            | `true`  | GA         | 1.11  |       |
@@ -75,12 +84,16 @@
 | `Sysctls`                                 | `true`  | Beta       | 1.11  |       |
 | `TaintBasedEvictions`                     | `false` | Alpha      | 1.6   |       |
 | `TaintNodesByCondition`                   | `false` | Alpha      | 1.8   |       |
-| `TokenRequest`                            | `false` | Alpha      | 1.10  |       |
-| `TokenRequestProjection`                  | `false` | Alpha      | 1.11  |       |
+| `TaintNodesByCondition`                   | `true`  | Beta       | 1.12  |       |
+| `TokenRequest`                            | `false` | Alpha      | 1.10  | 1.11  |
+| `TokenRequest`                            | `True`  | Beta       | 1.12  |       |
+| `TokenRequestProjection`                  | `false` | Alpha      | 1.11  | 1.11  |
+| `TokenRequestProjection`                  | `True`  | Beta       | 1.12  |       |
+| `TTLAfterFinished`                        | `false` | Alpha      | 1.12  |       |
 | `VolumeScheduling`                        | `false` | Alpha      | 1.9   | 1.9   |
 | `VolumeScheduling`                        | `true`  | Beta       | 1.10  |       |
 | `VolumeSubpathEnvExpansion`               | `false` | Alpha      | 1.11  |       |
-| `ScheduleDaemonSetPods`                   | `false` | Alpha      | 1.11  |       |
+| `ScheduleDaemonSetPods`                   | `true`  | Beta       | 1.12  |       |
 
 ## 参考文档
 

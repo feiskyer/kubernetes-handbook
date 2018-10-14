@@ -33,14 +33,16 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-addon-manager
-    image: k8s.gcr.io/kube-addon-manager:v8.6
+    # When updating version also bump it in:
+    # - test/kubemark/resources/manifests/kube-addon-manager.yaml
+    image: k8s.gcr.io/kube-addon-manager:v8.7
     command:
     - /bin/bash
     - -c
     - exec /opt/kube-addons.sh 1>>/var/log/kube-addon-manager.log 2>&1
     resources:
       requests:
-        cpu: 5m
+        cpu: 3m
         memory: 50Mi
     volumeMounts:
     - mountPath: /etc/kubernetes/
@@ -49,6 +51,9 @@ spec:
     - mountPath: /var/log
       name: varlog
       readOnly: false
+    env:
+    - name: KUBECTL_EXTRA_PRUNE_WHITELIST
+      value: {{kubectl_extra_prune_whitelist}}
   volumes:
   - hostPath:
       path: /etc/kubernetes/

@@ -75,6 +75,7 @@
   - [Metrics](addons/metrics.md)
   - [GPU](practice/gpu.md)
   - [Cluster Autoscaler](addons/cluster-autoscaler.md)
+  - [ip-masq-agent](addons/ip-masq-agent.md)
 - [Kubernetes-The-Hard-Way](deploy/kubernetes-the-hard-way/index.md)
   - [准备部署环境](deploy/kubernetes-the-hard-way/01-prerequisites.md)
   - [安装必要工具](deploy/kubernetes-the-hard-way/02-client-tools.md)

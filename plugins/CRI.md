@@ -10,7 +10,7 @@ CRI 最早从从 1.4 版就开始设计讨论和开发，在 v1.5 中发布第�
 
 CRI 基于 gRPC 定义了 RuntimeService 和 ImageService 等两个 gRPC 服务，分别用于容器运行时和镜像的管理。其定义在
 
-- v1.10-v1.11: [pkg/kubelet/apis/cri/runtime/v1alpha2](https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/apis/cri/runtime/v1alpha2)
+- v1.10-v1.12: [pkg/kubelet/apis/cri/runtime/v1alpha2](https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/apis/cri/runtime/v1alpha2)
 - v1.7-v1.9: [pkg/kubelet/apis/cri/v1alpha1/runtime](https://github.com/kubernetes/kubernetes/tree/release-1.9/pkg/kubelet/apis/cri/v1alpha1/runtime)
 - v1.6: [pkg/kubelet/api/v1alpha1/runtime](https://github.com/kubernetes/kubernetes/tree/release-1.6/pkg/kubelet/api/v1alpha1/runtime)
 
@@ -91,3 +91,46 @@ kubelet --container-runtime=remote --container-runtime-endpoint=unix:///var/run/
 Containerd 内置的 CRI 插件实现了 Kubelet CRI 接口中的 Image Service 和 Runtime Service，通过内部接口管理容器和镜像，并通过 CNI 插件给 Pod 配置网络。
 
 ![](images/containerd.png)
+
+## RuntimeClass
+
+RuntimeClass 是 v1.12 引入的新 API 对象，用来支持多容器运行时，比如
+
+* Kata Containers/gVisor + runc
+* Windows Process isolation + Hyper-V isolation containers
+
+RuntimeClass 表示一个运行时对象，在使用前需要开启特性开关 `RuntimeClass`，并创建 RuntimeClass CRD：
+
+```sh
+kubectl apply -f https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/runtimeclass/runtimeclass_crd.yaml
+```
+
+然后就可以定义 RuntimeClass 对象
+
+```yaml
+apiVersion: node.k8s.io/v1alpha1  # RuntimeClass is defined in the node.k8s.io API group
+kind: RuntimeClass
+metadata:
+  name: myclass  # The name the RuntimeClass will be referenced by
+  # RuntimeClass is a non-namespaced resource
+spec:
+  runtimeHandler: myconfiguration  # The name of the corresponding CRI configuration
+```
+
+而在 Pod 中定义使用哪个 RuntimeClass：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  runtimeClassName: myclass
+  # ...
+```
+
+## 参考文档
+
+- [Runtime Class Documentation](https://kubernetes.io/docs/concepts/containers/runtime-class/#runtime-class)
+- [Sandbox Isolation Level Decision](https://docs.google.com/document/d/1fe7lQUjYKR0cijRmSbH_y0_l3CYPkwtQa5ViywuNo8Q/preview)
+

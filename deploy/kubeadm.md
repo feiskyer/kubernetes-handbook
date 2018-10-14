@@ -81,7 +81,7 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule-
 ```
 
-如果需要修改 kubernetes 服务的配置选项，则需要创建一个 MasterConfiguration 配置文件，其格式为
+如果需要修改 kubernetes 服务的配置选项，则需要创建一个 kubeadm 配置文件，其格式为
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1alpha3
@@ -174,6 +174,8 @@ featureGates:
   selfhosting: false
 clusterName: "example-cluster"
 ```
+
+> 注意：JoinConfiguration 重命名自 v1alpha2 API 中的 NodeConfiguration，而 InitConfiguration 重命名自 v1alpha2 API 中的 MasterConfiguration。
 
 然后，在初始化 master 的时候指定 kubeadm.yml 的路径：
 

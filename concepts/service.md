@@ -90,6 +90,14 @@ spec:
     targetPort: 9377
 ```
 
+### 协议
+
+Service、Endpoints 和 Pod 支持三种类型的协议：
+
+- TCP（Transmission Control Protocol，传输控制协议）是一种面向连接的、可靠的、基于字节流的传输层通信协议。
+- UDP（User Datagram Protocol，用户数据报协议）是一种无连接的传输层协议，用于不可靠信息传送服务。
+- SCTP（Stream Control Transmission Protocol，流控制传输协议），用于通过IP网传输SCN（Signaling Communication Network，信令通信网）窄带信令消息。
+
 ### API 版本对照表
 
 | Kubernetes 版本 | Core API 版本 |

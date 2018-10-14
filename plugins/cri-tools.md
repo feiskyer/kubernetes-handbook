@@ -8,7 +8,7 @@
 
 除了 `crictl`，cri-tools 还提供了用于验证容器运行时是否实现 CRI 需要功能的验证测试工具 `critest`。`critest` 通过运行一系列的测试验证容器运行时在实现 CRI 时是否与 Kubelet 的需求一致，推荐所有的容器运行时在发布前都要通过其测试。一般情况下，`critest` 可以作为容器运行时集成测试的一部分，用以保证代码更新不会破坏 CRI 功能。
 
-cri-tools 已在 v1.11 版 GA，详细使用方法请参考 [kubernetes-incubator/cri-tools](https://github.com/kubernetes-incubator/cri-tools) 和 [Debugging Kubernetes nodes with crictl](https://kubernetes.io/docs/tasks/debug-application-cluster/crictl/)。
+cri-tools 已在 v1.11 版 GA，详细使用方法请参考 [kubernetes-sigs/cri-tools](https://github.com/kubernetes-sigs/cri-tools) 和 [Debugging Kubernetes nodes with crictl](https://kubernetes.io/docs/tasks/debug-application-cluster/crictl/)。
 
 ## crictl 示例
 
@@ -72,4 +72,4 @@ crictl logs 87d3992f84f74
 ## 参考文档
 
 - [Debugging Kubernetes nodes with crictl](https://kubernetes.io/docs/tasks/debug-application-cluster/crictl/)
-- [kubernetes-incubator/cri-tools](https://github.com/kubernetes-incubator/cri-tools)
+- <https://github.com/kubernetes-sigs/cri-tools>
