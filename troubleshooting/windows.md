@@ -49,12 +49,20 @@ rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 
 * Pause 镜像配置错误
 * 容器[镜像版本与 Windows 系统不兼容](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
-  * 在 Windows Server 1709 上面需要使用 1709 标签的镜像，比如
-    * `microsoft/aspnet:4.7.2-windowsservercore-1709`
+
+
+
+在 Windows Server 1709 上面需要使用 1709 标签的镜像，比如
+
+    * `microsoft/aspnet:4.7.2-windowsservercore-1709`
     * `microsoft/windowsservercore:1709`
     * `microsoft/iis:windowsservercore-1709`
-  * 在 Windows Server 1803 上面需要使用 1803 标签的镜像，比如
-    * `microsoft/aspnet:4.7.2-windowsservercore-1803`
+
+
+
+在 Windows Server 1803 上面需要使用 1803 标签的镜像，比如
+
+    * `microsoft/aspnet:4.7.2-windowsservercore-1803`
     * `microsoft/iis:windowsservercore-1803`
     * `microsoft/windowsservercore:1803`
 
@@ -144,6 +152,20 @@ Source        Description      HotFixID      InstalledBy          InstalledOn
 ## Windows Node 内无法访问 Service ClusterIP
 
 这是个当前 Windows 网络协议栈的已知问题，只有在 Pod 内才可以访问 Service ClusterIP。
+
+## Kubelet 无法启动
+
+使用 Docker 18.03 版本和 Kubelet v1.12.x 时，Kubelet 无法正常启动报错：
+
+```sh
+Error response from daemon: client version 1.38 is too new. Maximum supported API version is 1.37
+```
+
+解决方法是为 Windows 上面的 Docker 设置 API 版本的环境变量：
+
+```powershell
+[System.Environment]::SetEnvironmentVariable('DOCKER_API_VERSION', '1.37', [System.EnvironmentVariableTarget]::Machine)
+```
 
 ## 参考文档
 
