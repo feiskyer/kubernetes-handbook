@@ -2,6 +2,21 @@
 
 DNS 是 Kubernetes 的核心功能之一，通过 kube-dns 或 CoreDNS 作为集群的必备扩展来提供命名服务。
 
+## CoreDNS
+
+从 v1.11 开始可以使用 [CoreDNS](https://coredns.io/) 来提供命名服务，并从 v1.13 开始成为默认 DNS 服务。CoreDNS 的特点是效率更高，资源占用率更小，推荐使用 CoreDNS 替代 kube-dns 为集群提供 DNS 服务。
+
+从 kube-dns 升级为 CoreDNS 的步骤为：
+
+```sh
+$ git clone https://github.com/coredns/deployment
+$ cd deployment/kubernetes
+$ ./deploy.sh | kubectl apply -f -
+$ kubectl delete --namespace=kube-system deployment kube-dns
+```
+
+全新部署的话，可以点击[这里](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns) 查看 CoreDNS 扩展的配置方法。
+
 ## 支持的 DNS 格式
 
 - Service
@@ -49,11 +64,13 @@ data:
   upstreamNameservers: |
     [“8.8.8.8”, “8.8.4.4”]
 ```
-使用上述特定配置，查询请求首先会被发送到 kube-dns 的 DNS 缓存层 (Dnsmasq 服务器)。Dnsmasq 服务器会先检查请求的后缀，带有集群后缀（例如：”.cluster.local”）的请求会被发往 kube-dns，拥有存根域后缀的名称（例如：”.acme.local”）将会被发送到配置的私有 DNS 服务器[“1.2.3.4”]。最后，不满足任何这些后缀的请求将会被发送到上游 DNS [“8.8.8.8”, “8.8.4.4”] 里。
+使用上述特定配置，查询请求首先会被发送到 kube-dns 的 DNS 缓存层 (Dnsmasq 服务器)。Dnsmasq 服务器会先检查请求的后缀，带有集群后缀（例如：”.cluster.local”）的请求会被发往 kube-dns，拥有存根域后缀的名称（例如：”.acme.local”）将会被发送到配置的私有 DNS 服务器 [“1.2.3.4”]。最后，不满足任何这些后缀的请求将会被发送到上游 DNS [“8.8.8.8”, “8.8.4.4”] 里。
 
 ![](images/kube-dns-upstream.png)
 
-## 启动 kube-dns 示例
+## kube-dns
+
+### 启动 kube-dns 示例
 
 一般通过扩展的方式部署 DNS 服务，如把 [kube-dns.yaml](https://kubernetes.feisky.xyz/manifests/kubedns/kube-dns.yaml) 放到 Master 节点的 `/etc/kubernetes/addons` 目录中。当然也可以手动部署：
 
@@ -82,7 +99,7 @@ Kubernetes v1.10 也支持 Beta 版的 CoreDNS，其性能较 kube-dns 更好。
 kubectl apply -f https://kubernetes.feisky.xyz/manifests/kubedns/coredns.yaml
 ```
 
-## kube-dns 工作原理
+### kube-dns 工作原理
 
 如下图所示，kube-dns 由三个容器构成：
 
@@ -102,17 +119,25 @@ kube-dns 的代码已经从 kubernetes 里面分离出来，放到了 <https://g
 
 kube-dns、dnsmasq-nanny 和 sidecar 的代码均是从 `cmd/<cmd-name>/main.go` 开始，并分别调用 `pkg/dns`、`pkg/dnsmasq` 和 `pkg/sidecar` 完成相应的功能。而最核心的 DNS 解析则是直接引用了 `github.com/skynetservices/skydns/server` 的代码，具体实现见 [skynetservices/skydns](https://github.com/skynetservices/skydns/tree/master/server)。
 
-## CoreDNS
 
-从 v1.11 开始还可以使用 [CoreDNS](https://coredns.io/) 来提供命名服务，其效率更高，资源占用率更小。
 
-可以使用替换 kube-dns 的方式将其部署到 Kubernetes 集群中：
+## 常见问题
+
+**Ubuntu 18.04 中 DNS 无法解析的问题 **
+
+Ubuntu 18.04 中默认开启了 systemd-resolved，它会在系统的 /etc/resolv.conf 中写入 `nameserver 127.0.0.53`。由于这是一个本地地址，从而会导致 CoreDNS 或者 kube-dns 无法解析外网地址。
+
+解决方法是替换掉 systemd-resolved 生成的 resolv.conf 文件：
 
 ```sh
-$ git clone https://github.com/coredns/deployment
-$ cd deployment
-$ ./deploy.sh | kubectl apply -f -
-$ kubectl delete --namespace=kube-system deployment kube-dns
+sudo rm /etc/resolv.conf
+sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+```
+
+或者为 DNS 服务手动指定 resolv.conf 的路径：
+
+```sh
+--resolv-conf=/run/systemd/resolve/resolv.conf
 ```
 
 ## 参考文档
