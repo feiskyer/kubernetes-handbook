@@ -1,0 +1,8 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service-external
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: kubernetes.feisky.xyz

@@ -1,0 +1,2781 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-cn" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>设计理念 · Kubernetes Handbook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Pengfei Ni">
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-page-toc/page-toc.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search-plus/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../components/" />
+    
+    
+    <link rel="prev" href="architecture.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">基础入门</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../introduction/">
+            
+                <a href="../introduction/">
+            
+                    
+                    Kubernetes 简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../introduction/concepts.html">
+            
+                <a href="../introduction/concepts.html">
+            
+                    
+                    Kubernetes 基本概念
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../introduction/101.html">
+            
+                <a href="../introduction/101.html">
+            
+                    
+                    Kubernetes 101
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../introduction/201.html">
+            
+                <a href="../introduction/201.html">
+            
+                    
+                    Kubernetes 201
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../introduction/cluster.html">
+            
+                <a href="../introduction/cluster.html">
+            
+                    
+                    Kubernetes 集群
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">核心原理</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    核心原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="architecture.html">
+            
+                <a href="architecture.html">
+            
+                    
+                    架构原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="2.3" data-path="concepts.html">
+            
+                <a href="concepts.html">
+            
+                    
+                    设计理念
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4" data-path="../components/">
+            
+                <a href="../components/">
+            
+                    
+                    核心组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.4.1" data-path="../components/etcd.html">
+            
+                <a href="../components/etcd.html">
+            
+                    
+                    etcd
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.2" data-path="../components/apiserver.html">
+            
+                <a href="../components/apiserver.html">
+            
+                    
+                    kube-apiserver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.3" data-path="../components/scheduler.html">
+            
+                <a href="../components/scheduler.html">
+            
+                    
+                    kube-scheduler
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.4" data-path="../components/controller-manager.html">
+            
+                <a href="../components/controller-manager.html">
+            
+                    
+                    kube-controller-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.5" data-path="../components/kubelet.html">
+            
+                <a href="../components/kubelet.html">
+            
+                    
+                    kubelet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.6" data-path="../components/kube-proxy.html">
+            
+                <a href="../components/kube-proxy.html">
+            
+                    
+                    kube-proxy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.7" data-path="../components/kube-dns.html">
+            
+                <a href="../components/kube-dns.html">
+            
+                    
+                    kube-dns
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.8" data-path="../components/federation.html">
+            
+                <a href="../components/federation.html">
+            
+                    
+                    Federation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.9" data-path="../components/kubeadm.html">
+            
+                <a href="../components/kubeadm.html">
+            
+                    
+                    kubeadm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.10" data-path="../components/hyperkube.html">
+            
+                <a href="../components/hyperkube.html">
+            
+                    
+                    hyperkube
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.11" data-path="../components/kubectl.html">
+            
+                <a href="../components/kubectl.html">
+            
+                    
+                    kubectl
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5" data-path="../concepts/">
+            
+                <a href="../concepts/">
+            
+                    
+                    资源对象
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.5.1" data-path="../concepts/autoscaling.html">
+            
+                <a href="../concepts/autoscaling.html">
+            
+                    
+                    Autoscaling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.2" data-path="../concepts/configmap.html">
+            
+                <a href="../concepts/configmap.html">
+            
+                    
+                    ConfigMap
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.3" data-path="../concepts/cronjob.html">
+            
+                <a href="../concepts/cronjob.html">
+            
+                    
+                    CronJob
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.4" data-path="../concepts/customresourcedefinition.html">
+            
+                <a href="../concepts/customresourcedefinition.html">
+            
+                    
+                    CustomResourceDefinition
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.5" data-path="../concepts/daemonset.html">
+            
+                <a href="../concepts/daemonset.html">
+            
+                    
+                    DaemonSet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.6" data-path="../concepts/deployment.html">
+            
+                <a href="../concepts/deployment.html">
+            
+                    
+                    Deployment
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.7" data-path="../concepts/ingress.html">
+            
+                <a href="../concepts/ingress.html">
+            
+                    
+                    Ingress
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.8" data-path="../concepts/job.html">
+            
+                <a href="../concepts/job.html">
+            
+                    
+                    Job
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.9" data-path="../concepts/local-volume.html">
+            
+                <a href="../concepts/local-volume.html">
+            
+                    
+                    LocalVolume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.10" data-path="../concepts/namespace.html">
+            
+                <a href="../concepts/namespace.html">
+            
+                    
+                    Namespace
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.11" data-path="../concepts/network-policy.html">
+            
+                <a href="../concepts/network-policy.html">
+            
+                    
+                    NetworkPolicy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.12" data-path="../concepts/node.html">
+            
+                <a href="../concepts/node.html">
+            
+                    
+                    Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.13" data-path="../concepts/persistent-volume.html">
+            
+                <a href="../concepts/persistent-volume.html">
+            
+                    
+                    PersistentVolume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.14" data-path="../concepts/pod.html">
+            
+                <a href="../concepts/pod.html">
+            
+                    
+                    Pod
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.15" data-path="../concepts/podpreset.html">
+            
+                <a href="../concepts/podpreset.html">
+            
+                    
+                    PodPreset
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.16" data-path="../concepts/replicaset.html">
+            
+                <a href="../concepts/replicaset.html">
+            
+                    
+                    ReplicaSet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.17" data-path="../concepts/quota.html">
+            
+                <a href="../concepts/quota.html">
+            
+                    
+                    Resource Quota
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.18" data-path="../concepts/secret.html">
+            
+                <a href="../concepts/secret.html">
+            
+                    
+                    Secret
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.19" data-path="../concepts/security-context.html">
+            
+                <a href="../concepts/security-context.html">
+            
+                    
+                    SecurityContext
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.20" data-path="../concepts/service.html">
+            
+                <a href="../concepts/service.html">
+            
+                    
+                    Service
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.21" data-path="../concepts/serviceaccount.html">
+            
+                <a href="../concepts/serviceaccount.html">
+            
+                    
+                    ServiceAccount
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.22" data-path="../concepts/statefulset.html">
+            
+                <a href="../concepts/statefulset.html">
+            
+                    
+                    StatefulSet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
+            
+                <a href="../concepts/thirdpartyresources.html">
+            
+                    
+                    ThirdPartyResources
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+            
+                <a href="../concepts/volume.html">
+            
+                    
+                    Volume
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">部署配置</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../deploy/">
+            
+                <a href="../deploy/">
+            
+                    
+                    部署指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../deploy/kubectl.html">
+            
+                <a href="../deploy/kubectl.html">
+            
+                    
+                    kubectl 安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../deploy/single.html">
+            
+                <a href="../deploy/single.html">
+            
+                    
+                    单机部署
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../deploy/feature-gates.html">
+            
+                <a href="../deploy/feature-gates.html">
+            
+                    
+                    特性开关
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5" data-path="../deploy/kubernetes-configuration-best-practice.html">
+            
+                <a href="../deploy/kubernetes-configuration-best-practice.html">
+            
+                    
+                    最佳配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6" data-path="../deploy/cluster.html">
+            
+                <a href="../deploy/cluster.html">
+            
+                    
+                    集群部署
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.6.1" data-path="../deploy/kubeadm.html">
+            
+                <a href="../deploy/kubeadm.html">
+            
+                    
+                    kubeadm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.2" data-path="../deploy/kops.html">
+            
+                <a href="../deploy/kops.html">
+            
+                    
+                    kops
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.3" data-path="../deploy/kubespray.html">
+            
+                <a href="../deploy/kubespray.html">
+            
+                    
+                    Kubespray
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.4" data-path="../deploy/azure.html">
+            
+                <a href="../deploy/azure.html">
+            
+                    
+                    Azure
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.5" data-path="../deploy/windows.html">
+            
+                <a href="../deploy/windows.html">
+            
+                    
+                    Windows
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.6" data-path="../deploy/k8s-linuxkit.html">
+            
+                <a href="../deploy/k8s-linuxkit.html">
+            
+                    
+                    LinuxKit
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.7" >
+            
+                <a target="_blank" href="https://github.com/gjmzj/kubeasz">
+            
+                    
+                    kubeasz
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7" data-path="../addons/">
+            
+                <a href="../addons/">
+            
+                    
+                    附加组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.7.1" data-path="../addons/addon-manager.html">
+            
+                <a href="../addons/addon-manager.html">
+            
+                    
+                    Addon-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.2" data-path="../components/kube-dns.html">
+            
+                <a href="../components/kube-dns.html">
+            
+                    
+                    DNS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.3" data-path="../addons/dashboard.html">
+            
+                <a href="../addons/dashboard.html">
+            
+                    
+                    Dashboard
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.4" data-path="../addons/monitor.html">
+            
+                <a href="../addons/monitor.html">
+            
+                    
+                    监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.5" data-path="../addons/logging.html">
+            
+                <a href="../addons/logging.html">
+            
+                    
+                    日志
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.6" data-path="../addons/metrics.html">
+            
+                <a href="../addons/metrics.html">
+            
+                    
+                    Metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.7" data-path="../practice/gpu.html">
+            
+                <a href="../practice/gpu.html">
+            
+                    
+                    GPU
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.8" data-path="../addons/cluster-autoscaler.html">
+            
+                <a href="../addons/cluster-autoscaler.html">
+            
+                    
+                    Cluster Autoscaler
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.9" data-path="../addons/ip-masq-agent.html">
+            
+                <a href="../addons/ip-masq-agent.html">
+            
+                    
+                    ip-masq-agent
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="../deploy/kubernetes-the-hard-way/">
+            
+                <a href="../deploy/kubernetes-the-hard-way/">
+            
+                    
+                    Kubernetes-The-Hard-Way
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.8.1" data-path="../deploy/kubernetes-the-hard-way/01-prerequisites.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/01-prerequisites.html">
+            
+                    
+                    准备部署环境
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.2" data-path="../deploy/kubernetes-the-hard-way/02-client-tools.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/02-client-tools.html">
+            
+                    
+                    安装必要工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.3" data-path="../deploy/kubernetes-the-hard-way/03-compute-resources.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/03-compute-resources.html">
+            
+                    
+                    创建计算资源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.4" data-path="../deploy/kubernetes-the-hard-way/04-certificate-authority.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/04-certificate-authority.html">
+            
+                    
+                    配置创建证书
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.5" data-path="../deploy/kubernetes-the-hard-way/05-kubernetes-configuration-files.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/05-kubernetes-configuration-files.html">
+            
+                    
+                    配置生成配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.6" data-path="../deploy/kubernetes-the-hard-way/06-data-encryption-keys.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/06-data-encryption-keys.html">
+            
+                    
+                    配置生成密钥
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.7" data-path="../deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.html">
+            
+                    
+                    部署 Etcd 群集
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.8" data-path="../deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.html">
+            
+                    
+                    部署控制节点
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.9" data-path="../deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.html">
+            
+                    
+                    部署计算节点
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.10" data-path="../deploy/kubernetes-the-hard-way/10-configuring-kubectl.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/10-configuring-kubectl.html">
+            
+                    
+                    配置 Kubectl
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.11" data-path="../deploy/kubernetes-the-hard-way/11-pod-network-routes.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/11-pod-network-routes.html">
+            
+                    
+                    配置网络路由
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.12" data-path="../deploy/kubernetes-the-hard-way/12-dns-addon.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/12-dns-addon.html">
+            
+                    
+                    部署 DNS 扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.13" data-path="../deploy/kubernetes-the-hard-way/13-smoke-test.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/13-smoke-test.html">
+            
+                    
+                    烟雾测试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.14" data-path="../deploy/kubernetes-the-hard-way/14-cleanup.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/14-cleanup.html">
+            
+                    
+                    删除集群
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">插件扩展</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../plugins/api.html">
+            
+                <a href="../plugins/api.html">
+            
+                    
+                    API 扩展
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../plugins/aggregation.html">
+            
+                <a href="../plugins/aggregation.html">
+            
+                    
+                    Aggregation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="../concepts/customresourcedefinition.html">
+            
+                <a href="../concepts/customresourcedefinition.html">
+            
+                    
+                    CustomResourceDefinition
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="../plugins/auth.html">
+            
+                <a href="../plugins/auth.html">
+            
+                    
+                    访问控制
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.2.1" data-path="../plugins/authentication.html">
+            
+                <a href="../plugins/authentication.html">
+            
+                    
+                    认证
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2.2" data-path="../plugins/rbac.html">
+            
+                <a href="../plugins/rbac.html">
+            
+                    
+                    RBAC 授权
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2.3" data-path="../plugins/admission.html">
+            
+                <a href="../plugins/admission.html">
+            
+                    
+                    准入控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.3" data-path="../plugins/scheduler.html">
+            
+                <a href="../plugins/scheduler.html">
+            
+                    
+                    Scheduler 扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4" data-path="../network/network.html">
+            
+                <a href="../network/network.html">
+            
+                    
+                    网络插件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.4.1" data-path="../network/cni/">
+            
+                <a href="../network/cni/">
+            
+                    
+                    CNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.2" data-path="../network/flannel/">
+            
+                <a href="../network/flannel/">
+            
+                    
+                    Flannel
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.3" data-path="../network/calico/">
+            
+                <a href="../network/calico/">
+            
+                    
+                    Calico
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.4" data-path="../network/weave/">
+            
+                <a href="../network/weave/">
+            
+                    
+                    Weave
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.5" data-path="../network/cilium/">
+            
+                <a href="../network/cilium/">
+            
+                    
+                    Cilium
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.6" data-path="../network/ovn-kubernetes.html">
+            
+                <a href="../network/ovn-kubernetes.html">
+            
+                    
+                    OVN
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.7" data-path="../network/contiv/">
+            
+                <a href="../network/contiv/">
+            
+                    
+                    Contiv
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.8" data-path="../network/sriov/">
+            
+                <a href="../network/sriov/">
+            
+                    
+                    SR-IOV
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.9" data-path="../network/romana/">
+            
+                <a href="../network/romana/">
+            
+                    
+                    Romana
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.10" data-path="../network/opencontrail/">
+            
+                <a href="../network/opencontrail/">
+            
+                    
+                    OpenContrail
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.11" data-path="../network/kuryr/">
+            
+                <a href="../network/kuryr/">
+            
+                    
+                    Kuryr
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.5" data-path="../plugins/CRI.html">
+            
+                <a href="../plugins/CRI.html">
+            
+                    
+                    运行时插件 CRI
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.5.1" data-path="../plugins/cri-tools.html">
+            
+                <a href="../plugins/cri-tools.html">
+            
+                    
+                    CRI-tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.5.2" data-path="../deploy/frakti/">
+            
+                <a href="../deploy/frakti/">
+            
+                    
+                    Frakti
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.6" data-path="../plugins/volume.html">
+            
+                <a href="../plugins/volume.html">
+            
+                    
+                    存储插件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.6.1" data-path="../plugins/csi.html">
+            
+                <a href="../plugins/csi.html">
+            
+                    
+                    容器存储接口 CSI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.6.2" data-path="../plugins/flex-volume.html">
+            
+                <a href="../plugins/flex-volume.html">
+            
+                    
+                    FlexVolume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.6.3" data-path="../plugins/glusterfs.html">
+            
+                <a href="../plugins/glusterfs.html">
+            
+                    
+                    glusterfs
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.7" data-path="../plugins/network-policy.html">
+            
+                <a href="../plugins/network-policy.html">
+            
+                    
+                    网络策略
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8" data-path="../plugins/ingress.html">
+            
+                <a href="../plugins/ingress.html">
+            
+                    
+                    Ingress Controller
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.8.1" data-path="../practice/ingress_letsencrypt.html">
+            
+                <a href="../practice/ingress_letsencrypt.html">
+            
+                    
+                    Ingress + Letsencrypt
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8.2" data-path="../practice/minikube-ingress.html">
+            
+                <a href="../practice/minikube-ingress.html">
+            
+                    
+                    minikube Ingress
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8.3" data-path="../practice/service-discovery-lb/service-discovery-and-load-balancing.html">
+            
+                <a href="../practice/service-discovery-lb/service-discovery-and-load-balancing.html">
+            
+                    
+                    Traefik Ingress
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8.4" data-path="../plugins/keepalived-vip.html">
+            
+                <a href="../plugins/keepalived-vip.html">
+            
+                    
+                    Keepalived-VIP
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.9" data-path="../plugins/cloud-provider.html">
+            
+                <a href="../plugins/cloud-provider.html">
+            
+                    
+                    Cloud Provider 扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.10" data-path="../plugins/device.html">
+            
+                <a href="../plugins/device.html">
+            
+                    
+                    Device 插件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">服务治理</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" data-path="../apps/">
+            
+                <a href="../apps/">
+            
+                    
+                    服务治理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../apps/patterns.html">
+            
+                <a href="../apps/patterns.html">
+            
+                    
+                    一般准则
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../apps/service-rolling-update.html">
+            
+                <a href="../apps/service-rolling-update.html">
+            
+                    
+                    滚动升级
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.3" data-path="../apps/helm.html">
+            
+                <a href="../apps/helm.html">
+            
+                    
+                    Helm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.4" data-path="../apps/operator.html">
+            
+                <a href="../apps/operator.html">
+            
+                    
+                    Operator
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.5" data-path="../apps/service-mesh.html">
+            
+                <a href="../apps/service-mesh.html">
+            
+                    
+                    Service Mesh
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.6" data-path="../apps/linkerd.html">
+            
+                <a href="../apps/linkerd.html">
+            
+                    
+                    Linkerd
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.7" data-path="../apps/linkerd2.html">
+            
+                <a href="../apps/linkerd2.html">
+            
+                    
+                    Linkerd2
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="../apps/istio.html">
+            
+                <a href="../apps/istio.html">
+            
+                    
+                    Istio
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.2.1" data-path="../apps/istio-deploy.html">
+            
+                <a href="../apps/istio-deploy.html">
+            
+                    
+                    安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.2" data-path="../apps/istio-traffic-management.html">
+            
+                <a href="../apps/istio-traffic-management.html">
+            
+                    
+                    流量管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.3" data-path="../apps/istio-security.html">
+            
+                <a href="../apps/istio-security.html">
+            
+                    
+                    安全管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.4" data-path="../apps/istio-policy.html">
+            
+                <a href="../apps/istio-policy.html">
+            
+                    
+                    策略管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.5" data-path="../apps/istio-metrics.html">
+            
+                <a href="../apps/istio-metrics.html">
+            
+                    
+                    度量管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.6" data-path="../apps/istio-troubleshoot.html">
+            
+                <a href="../apps/istio-troubleshoot.html">
+            
+                    
+                    排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.7" data-path="../apps/istio-community.html">
+            
+                <a href="../apps/istio-community.html">
+            
+                    
+                    社区
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3" data-path="../apps/devops.html">
+            
+                <a href="../apps/devops.html">
+            
+                    
+                    Devops
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.3.1" data-path="../apps/draft.html">
+            
+                <a href="../apps/draft.html">
+            
+                    
+                    Draft
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.2" data-path="../apps/jenkinsx.html">
+            
+                <a href="../apps/jenkinsx.html">
+            
+                    
+                    Jenkins X
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.3" data-path="../apps/spinnaker.html">
+            
+                <a href="../apps/spinnaker.html">
+            
+                    
+                    Spinnaker
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.4" data-path="../apps/kompose.html">
+            
+                <a href="../apps/kompose.html">
+            
+                    
+                    Kompose
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.5" data-path="../apps/skaffold.html">
+            
+                <a href="../apps/skaffold.html">
+            
+                    
+                    Skaffold
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.6" data-path="../apps/argo.html">
+            
+                <a href="../apps/argo.html">
+            
+                    
+                    Argo
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.7" data-path="../apps/flux.html">
+            
+                <a href="../apps/flux.html">
+            
+                    
+                    Flux GitOps
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">实践案例</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" data-path="../practice/">
+            
+                <a href="../practice/">
+            
+                    
+                    实践案例
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+            
+                <a href="../practice/ha.html">
+            
+                    
+                    高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+            
+                <a href="../practice/debugging.html">
+            
+                    
+                    调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+            
+                <a href="../practice/portmap.html">
+            
+                    
+                    端口映射
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+            
+                <a href="../practice/portforward.html">
+            
+                    
+                    端口转发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+            
+                <a href="../practice/gpu.html">
+            
+                    
+                    GPU
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+            
+                <a href="../practice/hugepage.html">
+            
+                    
+                    HugePage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+            
+                <a href="../practice/security.html">
+            
+                    
+                    安全
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+            
+                <a href="../practice/audit.html">
+            
+                    
+                    审计
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.9" data-path="../practice/big-cluster.html">
+            
+                <a href="../practice/big-cluster.html">
+            
+                    
+                    大规模集群
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" data-path="../machine-learning/">
+            
+                <a href="../machine-learning/">
+            
+                    
+                    大数据与机器学习
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.2.1" data-path="../machine-learning/spark.html">
+            
+                <a href="../machine-learning/spark.html">
+            
+                    
+                    Spark
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.2" data-path="../machine-learning/tensorflow.html">
+            
+                <a href="../machine-learning/tensorflow.html">
+            
+                    
+                    Tensorflow
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3" data-path="../serverless/">
+            
+                <a href="../serverless/">
+            
+                    
+                    Serverless
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">排错指南</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" data-path="../troubleshooting/">
+            
+                <a href="../troubleshooting/">
+            
+                    
+                    排错概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2" data-path="../troubleshooting/cluster.html">
+            
+                <a href="../troubleshooting/cluster.html">
+            
+                    
+                    集群排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.3" data-path="../troubleshooting/pod.html">
+            
+                <a href="../troubleshooting/pod.html">
+            
+                    
+                    Pod 排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.4" data-path="../troubleshooting/network.html">
+            
+                <a href="../troubleshooting/network.html">
+            
+                    
+                    网络排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="../troubleshooting/pv.html">
+            
+                <a href="../troubleshooting/pv.html">
+            
+                    
+                    PV 排错
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.5.1" data-path="../troubleshooting/azuredisk.html">
+            
+                <a href="../troubleshooting/azuredisk.html">
+            
+                    
+                    AzureDisk
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5.2" data-path="../troubleshooting/azurefile.html">
+            
+                <a href="../troubleshooting/azurefile.html">
+            
+                    
+                    AzureFile
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="7.6" data-path="../troubleshooting/windows.html">
+            
+                <a href="../troubleshooting/windows.html">
+            
+                    
+                    Windows 排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.7" data-path="../troubleshooting/cloud.html">
+            
+                <a href="../troubleshooting/cloud.html">
+            
+                    
+                    云平台排错
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.7.1" data-path="../troubleshooting/azure.html">
+            
+                <a href="../troubleshooting/azure.html">
+            
+                    
+                    Azure
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="7.8" data-path="../troubleshooting/tools.html">
+            
+                <a href="../troubleshooting/tools.html">
+            
+                    
+                    排错工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">社区贡献</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" data-path="../devel/">
+            
+                <a href="../devel/">
+            
+                    
+                    开发指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" data-path="../devel/testing.html">
+            
+                <a href="../devel/testing.html">
+            
+                    
+                    单元测试和集成测试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" data-path="../devel/contribute.html">
+            
+                <a href="../devel/contribute.html">
+            
+                    
+                    社区贡献
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">附录</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" data-path="../appendix/ecosystem.html">
+            
+                <a href="../appendix/ecosystem.html">
+            
+                    
+                    生态圈
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.2" data-path="../appendix/tutorial.html">
+            
+                <a href="../appendix/tutorial.html">
+            
+                    
+                    学习资源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3" data-path="../appendix/mirrors.html">
+            
+                <a href="../appendix/mirrors.html">
+            
+                    
+                    国内镜像
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.4" data-path="../CONTRIBUTING.html">
+            
+                <a href="../CONTRIBUTING.html">
+            
+                    
+                    如何贡献
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.5" data-path="../appendix/reference.html">
+            
+                <a href="../appendix/reference.html">
+            
+                    
+                    参考文档
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本書使用 GitBook 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >设计理念</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div class="search-plus" id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="kubernetes&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;">Kubernetes&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;</h1>
+<h3 id="&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x4E0E;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;">&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x4E0E;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;</h3>
+<p>&#x5206;&#x6790;&#x548C;&#x7406;&#x89E3;Kubernetes&#x7684;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x53EF;&#x4EE5;&#x4F7F;&#x6211;&#x4EEC;&#x66F4;&#x6DF1;&#x5165;&#x5730;&#x4E86;&#x89E3;Kubernetes&#x7CFB;&#x7EDF;&#xFF0C;&#x66F4;&#x597D;&#x5730;&#x5229;&#x7528;&#x5B83;&#x7BA1;&#x7406;&#x5206;&#x5E03;&#x5F0F;&#x90E8;&#x7F72;&#x7684;&#x4E91;&#x539F;&#x751F;&#x5E94;&#x7528;&#xFF0C;&#x53E6;&#x4E00;&#x65B9;&#x9762;&#x4E5F;&#x53EF;&#x4EE5;&#x8BA9;&#x6211;&#x4EEC;&#x501F;&#x9274;&#x5176;&#x5728;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x65B9;&#x9762;&#x7684;&#x7ECF;&#x9A8C;&#x3002;</p>
+<h3 id="api&#x8BBE;&#x8BA1;&#x539F;&#x5219;">API&#x8BBE;&#x8BA1;&#x539F;&#x5219;</h3>
+<p>&#x5BF9;&#x4E8E;&#x4E91;&#x8BA1;&#x7B97;&#x7CFB;&#x7EDF;&#xFF0C;&#x7CFB;&#x7EDF;API&#x5B9E;&#x9645;&#x4E0A;&#x5904;&#x4E8E;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x7684;&#x7EDF;&#x9886;&#x5730;&#x4F4D;&#x3002;Kubernetes&#x96C6;&#x7FA4;&#x7CFB;&#x7EDF;&#x6BCF;&#x652F;&#x6301;&#x4E00;&#x9879;&#x65B0;&#x529F;&#x80FD;&#xFF0C;&#x5F15;&#x5165;&#x4E00;&#x9879;&#x65B0;&#x6280;&#x672F;&#xFF0C;&#x4E00;&#x5B9A;&#x4F1A;&#x65B0;&#x5F15;&#x5165;&#x5BF9;&#x5E94;&#x7684;API&#x5BF9;&#x8C61;&#xFF0C;&#x652F;&#x6301;&#x5BF9;&#x8BE5;&#x529F;&#x80FD;&#x7684;&#x7BA1;&#x7406;&#x64CD;&#x4F5C;&#x3002;&#x7406;&#x89E3;&#x638C;&#x63E1;&#x7684;API&#xFF0C;&#x5C31;&#x597D;&#x6BD4;&#x6293;&#x4F4F;&#x4E86;K8s&#x7CFB;&#x7EDF;&#x7684;&#x725B;&#x9F3B;&#x5B50;&#x3002;Kubernetes&#x7CFB;&#x7EDF;API&#x7684;&#x8BBE;&#x8BA1;&#x6709;&#x4EE5;&#x4E0B;&#x51E0;&#x6761;&#x539F;&#x5219;&#xFF1A;</p>
+<ol>
+<li><strong>&#x6240;&#x6709;API&#x5E94;&#x8BE5;&#x662F;&#x58F0;&#x660E;&#x5F0F;&#x7684;</strong>&#x3002;&#x58F0;&#x660E;&#x5F0F;&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x76F8;&#x5BF9;&#x4E8E;&#x547D;&#x4EE4;&#x5F0F;&#x64CD;&#x4F5C;&#xFF0C;&#x5BF9;&#x4E8E;&#x91CD;&#x590D;&#x64CD;&#x4F5C;&#x7684;&#x6548;&#x679C;&#x662F;&#x7A33;&#x5B9A;&#x7684;&#xFF0C;&#x8FD9;&#x5BF9;&#x4E8E;&#x5BB9;&#x6613;&#x51FA;&#x73B0;&#x6570;&#x636E;&#x4E22;&#x5931;&#x6216;&#x91CD;&#x590D;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x73AF;&#x5883;&#x6765;&#x8BF4;&#x662F;&#x5F88;&#x91CD;&#x8981;&#x7684;&#x3002;&#x53E6;&#x5916;&#xFF0C;&#x58F0;&#x660E;&#x5F0F;&#x64CD;&#x4F5C;&#x66F4;&#x5BB9;&#x6613;&#x88AB;&#x7528;&#x6237;&#x4F7F;&#x7528;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7CFB;&#x7EDF;&#x5411;&#x7528;&#x6237;&#x9690;&#x85CF;&#x5B9E;&#x73B0;&#x7684;&#x7EC6;&#x8282;&#xFF0C;&#x540C;&#x65F6;&#x4E5F;&#x4FDD;&#x7559;&#x4E86;&#x7CFB;&#x7EDF;&#x672A;&#x6765;&#x6301;&#x7EED;&#x4F18;&#x5316;&#x7684;&#x53EF;&#x80FD;&#x6027;&#x3002;&#x6B64;&#x5916;&#xFF0C;&#x58F0;&#x660E;&#x5F0F;&#x7684;API&#x8FD8;&#x9690;&#x542B;&#x4E86;&#x6240;&#x6709;&#x7684;API&#x5BF9;&#x8C61;&#x90FD;&#x662F;&#x540D;&#x8BCD;&#x6027;&#x8D28;&#x7684;&#xFF0C;&#x4F8B;&#x5982;Service&#x3001;Volume&#x8FD9;&#x4E9B;API&#x90FD;&#x662F;&#x540D;&#x8BCD;&#xFF0C;&#x8FD9;&#x4E9B;&#x540D;&#x8BCD;&#x63CF;&#x8FF0;&#x4E86;&#x7528;&#x6237;&#x6240;&#x671F;&#x671B;&#x5F97;&#x5230;&#x7684;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x5BF9;&#x8C61;&#x3002; </li>
+<li><strong>API&#x5BF9;&#x8C61;&#x662F;&#x5F7C;&#x6B64;&#x4E92;&#x8865;&#x800C;&#x4E14;&#x53EF;&#x7EC4;&#x5408;&#x7684;</strong>&#x3002;&#x8FD9;&#x5B9E;&#x9645;&#x4E0A;&#x9F13;&#x52B1;API&#x5BF9;&#x8C61;&#x5C3D;&#x91CF;&#x5B9E;&#x73B0;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x8BBE;&#x8BA1;&#x65F6;&#x7684;&#x8981;&#x6C42;&#xFF0C;&#x5373;&#x201C;&#x9AD8;&#x5185;&#x805A;&#xFF0C;&#x677E;&#x8026;&#x5408;&#x201D;&#xFF0C;&#x5BF9;&#x4E1A;&#x52A1;&#x76F8;&#x5173;&#x7684;&#x6982;&#x5FF5;&#x6709;&#x4E00;&#x4E2A;&#x5408;&#x9002;&#x7684;&#x5206;&#x89E3;&#xFF0C;&#x63D0;&#x9AD8;&#x5206;&#x89E3;&#x51FA;&#x6765;&#x7684;&#x5BF9;&#x8C61;&#x7684;&#x53EF;&#x91CD;&#x7528;&#x6027;&#x3002; </li>
+<li><strong>&#x9AD8;&#x5C42;API&#x4EE5;&#x64CD;&#x4F5C;&#x610F;&#x56FE;&#x4E3A;&#x57FA;&#x7840;&#x8BBE;&#x8BA1;</strong>&#x3002;&#x5982;&#x4F55;&#x80FD;&#x591F;&#x8BBE;&#x8BA1;&#x597D;API&#xFF0C;&#x8DDF;&#x5982;&#x4F55;&#x80FD;&#x7528;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x65B9;&#x6CD5;&#x8BBE;&#x8BA1;&#x597D;&#x5E94;&#x7528;&#x7CFB;&#x7EDF;&#x6709;&#x76F8;&#x901A;&#x7684;&#x5730;&#x65B9;&#xFF0C;&#x9AD8;&#x5C42;&#x8BBE;&#x8BA1;&#x4E00;&#x5B9A;&#x662F;&#x4ECE;&#x4E1A;&#x52A1;&#x51FA;&#x53D1;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x8FC7;&#x65E9;&#x7684;&#x4ECE;&#x6280;&#x672F;&#x5B9E;&#x73B0;&#x51FA;&#x53D1;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x9488;&#x5BF9;Kubernetes&#x7684;&#x9AD8;&#x5C42;API&#x8BBE;&#x8BA1;&#xFF0C;&#x4E00;&#x5B9A;&#x662F;&#x4EE5;K8s&#x7684;&#x4E1A;&#x52A1;&#x4E3A;&#x57FA;&#x7840;&#x51FA;&#x53D1;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x4EE5;&#x7CFB;&#x7EDF;&#x8C03;&#x5EA6;&#x7BA1;&#x7406;&#x5BB9;&#x5668;&#x7684;&#x64CD;&#x4F5C;&#x610F;&#x56FE;&#x4E3A;&#x57FA;&#x7840;&#x8BBE;&#x8BA1;&#x3002; </li>
+<li><strong>&#x4F4E;&#x5C42;API&#x6839;&#x636E;&#x9AD8;&#x5C42;API&#x7684;&#x63A7;&#x5236;&#x9700;&#x8981;&#x8BBE;&#x8BA1;</strong>&#x3002;&#x8BBE;&#x8BA1;&#x5B9E;&#x73B0;&#x4F4E;&#x5C42;API&#x7684;&#x76EE;&#x7684;&#xFF0C;&#x662F;&#x4E3A;&#x4E86;&#x88AB;&#x9AD8;&#x5C42;API&#x4F7F;&#x7528;&#xFF0C;&#x8003;&#x8651;&#x51CF;&#x5C11;&#x5197;&#x4F59;&#x3001;&#x63D0;&#x9AD8;&#x91CD;&#x7528;&#x6027;&#x7684;&#x76EE;&#x7684;&#xFF0C;&#x4F4E;&#x5C42;API&#x7684;&#x8BBE;&#x8BA1;&#x4E5F;&#x8981;&#x4EE5;&#x9700;&#x6C42;&#x4E3A;&#x57FA;&#x7840;&#xFF0C;&#x8981;&#x5C3D;&#x91CF;&#x62B5;&#x6297;&#x53D7;&#x6280;&#x672F;&#x5B9E;&#x73B0;&#x5F71;&#x54CD;&#x7684;&#x8BF1;&#x60D1;&#x3002; </li>
+<li><strong>&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x7B80;&#x5355;&#x5C01;&#x88C5;&#xFF0C;&#x4E0D;&#x8981;&#x6709;&#x5728;&#x5916;&#x90E8;API&#x65E0;&#x6CD5;&#x663E;&#x5F0F;&#x77E5;&#x9053;&#x7684;&#x5185;&#x90E8;&#x9690;&#x85CF;&#x7684;&#x673A;&#x5236;</strong>&#x3002;&#x7B80;&#x5355;&#x7684;&#x5C01;&#x88C5;&#xFF0C;&#x5B9E;&#x9645;&#x6CA1;&#x6709;&#x63D0;&#x4F9B;&#x65B0;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x53CD;&#x800C;&#x589E;&#x52A0;&#x4E86;&#x5BF9;&#x6240;&#x5C01;&#x88C5;API&#x7684;&#x4F9D;&#x8D56;&#x6027;&#x3002;&#x5185;&#x90E8;&#x9690;&#x85CF;&#x7684;&#x673A;&#x5236;&#x4E5F;&#x662F;&#x975E;&#x5E38;&#x4E0D;&#x5229;&#x4E8E;&#x7CFB;&#x7EDF;&#x7EF4;&#x62A4;&#x7684;&#x8BBE;&#x8BA1;&#x65B9;&#x5F0F;&#xFF0C;&#x4F8B;&#x5982;StatefulSet&#x548C;ReplicaSet&#xFF0C;&#x672C;&#x6765;&#x5C31;&#x662F;&#x4E24;&#x79CD;Pod&#x96C6;&#x5408;&#xFF0C;&#x90A3;&#x4E48;Kubernetes&#x5C31;&#x7528;&#x4E0D;&#x540C;API&#x5BF9;&#x8C61;&#x6765;&#x5B9A;&#x4E49;&#x5B83;&#x4EEC;&#xFF0C;&#x800C;&#x4E0D;&#x4F1A;&#x8BF4;&#x53EA;&#x7528;&#x540C;&#x4E00;&#x4E2A;ReplicaSet&#xFF0C;&#x5185;&#x90E8;&#x901A;&#x8FC7;&#x7279;&#x6B8A;&#x7684;&#x7B97;&#x6CD5;&#x518D;&#x6765;&#x533A;&#x5206;&#x8FD9;&#x4E2A;ReplicaSet&#x662F;&#x6709;&#x72B6;&#x6001;&#x7684;&#x8FD8;&#x662F;&#x65E0;&#x72B6;&#x6001;&#x3002; </li>
+<li><strong>API&#x64CD;&#x4F5C;&#x590D;&#x6742;&#x5EA6;&#x4E0E;&#x5BF9;&#x8C61;&#x6570;&#x91CF;&#x6210;&#x6B63;&#x6BD4;</strong>&#x3002;&#x8FD9;&#x4E00;&#x6761;&#x4E3B;&#x8981;&#x662F;&#x4ECE;&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x89D2;&#x5EA6;&#x8003;&#x8651;&#xFF0C;&#x8981;&#x4FDD;&#x8BC1;&#x6574;&#x4E2A;&#x7CFB;&#x7EDF;&#x968F;&#x7740;&#x7CFB;&#x7EDF;&#x89C4;&#x6A21;&#x7684;&#x6269;&#x5927;&#xFF0C;&#x6027;&#x80FD;&#x4E0D;&#x4F1A;&#x8FC5;&#x901F;&#x53D8;&#x6162;&#x5230;&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#xFF0C;&#x90A3;&#x4E48;&#x6700;&#x4F4E;&#x7684;&#x9650;&#x5B9A;&#x5C31;&#x662F;API&#x7684;&#x64CD;&#x4F5C;&#x590D;&#x6742;&#x5EA6;&#x4E0D;&#x80FD;&#x8D85;&#x8FC7;O(N)&#xFF0C;N&#x662F;&#x5BF9;&#x8C61;&#x7684;&#x6570;&#x91CF;&#xFF0C;&#x5426;&#x5219;&#x7CFB;&#x7EDF;&#x5C31;&#x4E0D;&#x5177;&#x5907;&#x6C34;&#x5E73;&#x4F38;&#x7F29;&#x6027;&#x4E86;&#x3002; </li>
+<li><strong>API&#x5BF9;&#x8C61;&#x72B6;&#x6001;&#x4E0D;&#x80FD;&#x4F9D;&#x8D56;&#x4E8E;&#x7F51;&#x7EDC;&#x8FDE;&#x63A5;&#x72B6;&#x6001;</strong>&#x3002;&#x7531;&#x4E8E;&#x4F17;&#x6240;&#x5468;&#x77E5;&#xFF0C;&#x5728;&#x5206;&#x5E03;&#x5F0F;&#x73AF;&#x5883;&#x4E0B;&#xFF0C;&#x7F51;&#x7EDC;&#x8FDE;&#x63A5;&#x65AD;&#x5F00;&#x662F;&#x7ECF;&#x5E38;&#x53D1;&#x751F;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x56E0;&#x6B64;&#x8981;&#x4FDD;&#x8BC1;API&#x5BF9;&#x8C61;&#x72B6;&#x6001;&#x80FD;&#x5E94;&#x5BF9;&#x7F51;&#x7EDC;&#x7684;&#x4E0D;&#x7A33;&#x5B9A;&#xFF0C;API&#x5BF9;&#x8C61;&#x7684;&#x72B6;&#x6001;&#x5C31;&#x4E0D;&#x80FD;&#x4F9D;&#x8D56;&#x4E8E;&#x7F51;&#x7EDC;&#x8FDE;&#x63A5;&#x72B6;&#x6001;&#x3002; </li>
+<li><strong>&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x8BA9;&#x64CD;&#x4F5C;&#x673A;&#x5236;&#x4F9D;&#x8D56;&#x4E8E;&#x5168;&#x5C40;&#x72B6;&#x6001;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x4E2D;&#x8981;&#x4FDD;&#x8BC1;&#x5168;&#x5C40;&#x72B6;&#x6001;&#x7684;&#x540C;&#x6B65;&#x662F;&#x975E;&#x5E38;&#x56F0;&#x96BE;&#x7684;</strong>&#x3002;</li>
+</ol>
+<h3 id="&#x63A7;&#x5236;&#x673A;&#x5236;&#x8BBE;&#x8BA1;&#x539F;&#x5219;">&#x63A7;&#x5236;&#x673A;&#x5236;&#x8BBE;&#x8BA1;&#x539F;&#x5219;</h3>
+<ul>
+<li><strong>&#x63A7;&#x5236;&#x903B;&#x8F91;&#x5E94;&#x8BE5;&#x53EA;&#x4F9D;&#x8D56;&#x4E8E;&#x5F53;&#x524D;&#x72B6;&#x6001;</strong>&#x3002;&#x8FD9;&#x662F;&#x4E3A;&#x4E86;&#x4FDD;&#x8BC1;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x7684;&#x7A33;&#x5B9A;&#x53EF;&#x9760;&#xFF0C;&#x5BF9;&#x4E8E;&#x7ECF;&#x5E38;&#x51FA;&#x73B0;&#x5C40;&#x90E8;&#x9519;&#x8BEF;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#xFF0C;&#x5982;&#x679C;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x53EA;&#x4F9D;&#x8D56;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x975E;&#x5E38;&#x5BB9;&#x6613;&#x5C06;&#x4E00;&#x4E2A;&#x6682;&#x65F6;&#x51FA;&#x73B0;&#x6545;&#x969C;&#x7684;&#x7CFB;&#x7EDF;&#x6062;&#x590D;&#x5230;&#x6B63;&#x5E38;&#x72B6;&#x6001;&#xFF0C;&#x56E0;&#x4E3A;&#x4F60;&#x53EA;&#x8981;&#x5C06;&#x8BE5;&#x7CFB;&#x7EDF;&#x91CD;&#x7F6E;&#x5230;&#x67D0;&#x4E2A;&#x7A33;&#x5B9A;&#x72B6;&#x6001;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x81EA;&#x4FE1;&#x7684;&#x77E5;&#x9053;&#x7CFB;&#x7EDF;&#x7684;&#x6240;&#x6709;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x4F1A;&#x5F00;&#x59CB;&#x6309;&#x7167;&#x6B63;&#x5E38;&#x65B9;&#x5F0F;&#x8FD0;&#x884C;&#x3002; </li>
+<li><strong>&#x5047;&#x8BBE;&#x4EFB;&#x4F55;&#x9519;&#x8BEF;&#x7684;&#x53EF;&#x80FD;&#xFF0C;&#x5E76;&#x505A;&#x5BB9;&#x9519;&#x5904;&#x7406;</strong>&#x3002;&#x5728;&#x4E00;&#x4E2A;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x4E2D;&#x51FA;&#x73B0;&#x5C40;&#x90E8;&#x548C;&#x4E34;&#x65F6;&#x9519;&#x8BEF;&#x662F;&#x5927;&#x6982;&#x7387;&#x4E8B;&#x4EF6;&#x3002;&#x9519;&#x8BEF;&#x53EF;&#x80FD;&#x6765;&#x81EA;&#x4E8E;&#x7269;&#x7406;&#x7CFB;&#x7EDF;&#x6545;&#x969C;&#xFF0C;&#x5916;&#x90E8;&#x7CFB;&#x7EDF;&#x6545;&#x969C;&#x4E5F;&#x53EF;&#x80FD;&#x6765;&#x81EA;&#x4E8E;&#x7CFB;&#x7EDF;&#x81EA;&#x8EAB;&#x7684;&#x4EE3;&#x7801;&#x9519;&#x8BEF;&#xFF0C;&#x4F9D;&#x9760;&#x81EA;&#x5DF1;&#x5B9E;&#x73B0;&#x7684;&#x4EE3;&#x7801;&#x4E0D;&#x4F1A;&#x51FA;&#x9519;&#x6765;&#x4FDD;&#x8BC1;&#x7CFB;&#x7EDF;&#x7A33;&#x5B9A;&#x5176;&#x5B9E;&#x4E5F;&#x662F;&#x96BE;&#x4EE5;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x8981;&#x8BBE;&#x8BA1;&#x5BF9;&#x4EFB;&#x4F55;&#x53EF;&#x80FD;&#x9519;&#x8BEF;&#x7684;&#x5BB9;&#x9519;&#x5904;&#x7406;&#x3002; </li>
+<li><strong>&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x590D;&#x6742;&#x72B6;&#x6001;&#x673A;&#xFF0C;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x4E0D;&#x8981;&#x4F9D;&#x8D56;&#x65E0;&#x6CD5;&#x76D1;&#x63A7;&#x7684;&#x5185;&#x90E8;&#x72B6;&#x6001;</strong>&#x3002;&#x56E0;&#x4E3A;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x5404;&#x4E2A;&#x5B50;&#x7CFB;&#x7EDF;&#x90FD;&#x662F;&#x4E0D;&#x80FD;&#x4E25;&#x683C;&#x901A;&#x8FC7;&#x7A0B;&#x5E8F;&#x5185;&#x90E8;&#x4FDD;&#x6301;&#x540C;&#x6B65;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x4E24;&#x4E2A;&#x5B50;&#x7CFB;&#x7EDF;&#x7684;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x5982;&#x679C;&#x4E92;&#x76F8;&#x6709;&#x5F71;&#x54CD;&#xFF0C;&#x90A3;&#x4E48;&#x5B50;&#x7CFB;&#x7EDF;&#x5C31;&#x4E00;&#x5B9A;&#x8981;&#x80FD;&#x4E92;&#x76F8;&#x8BBF;&#x95EE;&#x5230;&#x5F71;&#x54CD;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x5426;&#x5219;&#xFF0C;&#x5C31;&#x7B49;&#x540C;&#x4E8E;&#x7CFB;&#x7EDF;&#x91CC;&#x5B58;&#x5728;&#x4E0D;&#x786E;&#x5B9A;&#x7684;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x3002; </li>
+<li><strong>&#x5047;&#x8BBE;&#x4EFB;&#x4F55;&#x64CD;&#x4F5C;&#x90FD;&#x53EF;&#x80FD;&#x88AB;&#x4EFB;&#x4F55;&#x64CD;&#x4F5C;&#x5BF9;&#x8C61;&#x62D2;&#x7EDD;&#xFF0C;&#x751A;&#x81F3;&#x88AB;&#x9519;&#x8BEF;&#x89E3;&#x6790;</strong>&#x3002;&#x7531;&#x4E8E;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x7684;&#x590D;&#x6742;&#x6027;&#x4EE5;&#x53CA;&#x5404;&#x5B50;&#x7CFB;&#x7EDF;&#x7684;&#x76F8;&#x5BF9;&#x72EC;&#x7ACB;&#x6027;&#xFF0C;&#x4E0D;&#x540C;&#x5B50;&#x7CFB;&#x7EDF;&#x7ECF;&#x5E38;&#x6765;&#x81EA;&#x4E0D;&#x540C;&#x7684;&#x5F00;&#x53D1;&#x56E2;&#x961F;&#xFF0C;&#x6240;&#x4EE5;&#x4E0D;&#x80FD;&#x5962;&#x671B;&#x4EFB;&#x4F55;&#x64CD;&#x4F5C;&#x88AB;&#x53E6;&#x4E00;&#x4E2A;&#x5B50;&#x7CFB;&#x7EDF;&#x4EE5;&#x6B63;&#x786E;&#x7684;&#x65B9;&#x5F0F;&#x5904;&#x7406;&#xFF0C;&#x8981;&#x4FDD;&#x8BC1;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x64CD;&#x4F5C;&#x7EA7;&#x522B;&#x7684;&#x9519;&#x8BEF;&#x4E0D;&#x4F1A;&#x5F71;&#x54CD;&#x5230;&#x7CFB;&#x7EDF;&#x7A33;&#x5B9A;&#x6027;&#x3002; </li>
+<li><strong>&#x6BCF;&#x4E2A;&#x6A21;&#x5757;&#x90FD;&#x53EF;&#x4EE5;&#x5728;&#x51FA;&#x9519;&#x540E;&#x81EA;&#x52A8;&#x6062;&#x590D;</strong>&#x3002;&#x7531;&#x4E8E;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x4E2D;&#x65E0;&#x6CD5;&#x4FDD;&#x8BC1;&#x7CFB;&#x7EDF;&#x5404;&#x4E2A;&#x6A21;&#x5757;&#x662F;&#x59CB;&#x7EC8;&#x8FDE;&#x63A5;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x6BCF;&#x4E2A;&#x6A21;&#x5757;&#x8981;&#x6709;&#x81EA;&#x6211;&#x4FEE;&#x590D;&#x7684;&#x80FD;&#x529B;&#xFF0C;&#x4FDD;&#x8BC1;&#x4E0D;&#x4F1A;&#x56E0;&#x4E3A;&#x8FDE;&#x63A5;&#x4E0D;&#x5230;&#x5176;&#x4ED6;&#x6A21;&#x5757;&#x800C;&#x81EA;&#x6211;&#x5D29;&#x6E83;&#x3002; </li>
+<li><strong>&#x6BCF;&#x4E2A;&#x6A21;&#x5757;&#x90FD;&#x53EF;&#x4EE5;&#x5728;&#x5FC5;&#x8981;&#x65F6;&#x4F18;&#x96C5;&#x5730;&#x964D;&#x7EA7;&#x670D;&#x52A1;</strong>&#x3002;&#x6240;&#x8C13;&#x4F18;&#x96C5;&#x5730;&#x964D;&#x7EA7;&#x670D;&#x52A1;&#xFF0C;&#x662F;&#x5BF9;&#x7CFB;&#x7EDF;&#x9C81;&#x68D2;&#x6027;&#x7684;&#x8981;&#x6C42;&#xFF0C;&#x5373;&#x8981;&#x6C42;&#x5728;&#x8BBE;&#x8BA1;&#x5B9E;&#x73B0;&#x6A21;&#x5757;&#x65F6;&#x5212;&#x5206;&#x6E05;&#x695A;&#x57FA;&#x672C;&#x529F;&#x80FD;&#x548C;&#x9AD8;&#x7EA7;&#x529F;&#x80FD;&#xFF0C;&#x4FDD;&#x8BC1;&#x57FA;&#x672C;&#x529F;&#x80FD;&#x4E0D;&#x4F1A;&#x4F9D;&#x8D56;&#x9AD8;&#x7EA7;&#x529F;&#x80FD;&#xFF0C;&#x8FD9;&#x6837;&#x540C;&#x65F6;&#x5C31;&#x4FDD;&#x8BC1;&#x4E86;&#x4E0D;&#x4F1A;&#x56E0;&#x4E3A;&#x9AD8;&#x7EA7;&#x529F;&#x80FD;&#x51FA;&#x73B0;&#x6545;&#x969C;&#x800C;&#x5BFC;&#x81F4;&#x6574;&#x4E2A;&#x6A21;&#x5757;&#x5D29;&#x6E83;&#x3002;&#x6839;&#x636E;&#x8FD9;&#x79CD;&#x7406;&#x5FF5;&#x5B9E;&#x73B0;&#x7684;&#x7CFB;&#x7EDF;&#xFF0C;&#x4E5F;&#x66F4;&#x5BB9;&#x6613;&#x5FEB;&#x901F;&#x5730;&#x589E;&#x52A0;&#x65B0;&#x7684;&#x9AD8;&#x7EA7;&#x529F;&#x80FD;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x5FC5;&#x62C5;&#x5FC3;&#x5F15;&#x5165;&#x9AD8;&#x7EA7;&#x529F;&#x80FD;&#x5F71;&#x54CD;&#x539F;&#x6709;&#x7684;&#x57FA;&#x672C;&#x529F;&#x80FD;&#x3002;</li>
+</ul>
+<h3 id="&#x67B6;&#x6784;&#x8BBE;&#x8BA1;&#x539F;&#x5219;">&#x67B6;&#x6784;&#x8BBE;&#x8BA1;&#x539F;&#x5219;</h3>
+<ul>
+<li>&#x53EA;&#x6709;apiserver&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;etcd&#x5B58;&#x50A8;&#xFF0C;&#x5176;&#x4ED6;&#x670D;&#x52A1;&#x5FC5;&#x987B;&#x901A;&#x8FC7;Kubernetes API&#x6765;&#x8BBF;&#x95EE;&#x96C6;&#x7FA4;&#x72B6;&#x6001;</li>
+<li>&#x5355;&#x8282;&#x70B9;&#x6545;&#x969C;&#x4E0D;&#x5E94;&#x8BE5;&#x5F71;&#x54CD;&#x96C6;&#x7FA4;&#x7684;&#x72B6;&#x6001;</li>
+<li>&#x5728;&#x6CA1;&#x6709;&#x65B0;&#x8BF7;&#x6C42;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6240;&#x6709;&#x7EC4;&#x4EF6;&#x5E94;&#x8BE5;&#x5728;&#x6545;&#x969C;&#x6062;&#x590D;&#x540E;&#x7EE7;&#x7EED;&#x6267;&#x884C;&#x4E0A;&#x6B21;&#x6700;&#x540E;&#x6536;&#x5230;&#x7684;&#x8BF7;&#x6C42;&#xFF08;&#x6BD4;&#x5982;&#x7F51;&#x7EDC;&#x5206;&#x533A;&#x6216;&#x670D;&#x52A1;&#x91CD;&#x542F;&#x7B49;&#xFF09;</li>
+<li>&#x6240;&#x6709;&#x7EC4;&#x4EF6;&#x90FD;&#x5E94;&#x8BE5;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x4FDD;&#x6301;&#x6240;&#x9700;&#x8981;&#x7684;&#x72B6;&#x6001;&#xFF0C;apiserver&#x5C06;&#x72B6;&#x6001;&#x5199;&#x5165;etcd&#x5B58;&#x50A8;&#xFF0C;&#x800C;&#x5176;&#x4ED6;&#x7EC4;&#x4EF6;&#x5219;&#x901A;&#x8FC7;apiserver&#x66F4;&#x65B0;&#x5E76;&#x76D1;&#x542C;&#x6240;&#x6709;&#x7684;&#x53D8;&#x5316;</li>
+<li>&#x4F18;&#x5148;&#x4F7F;&#x7528;&#x4E8B;&#x4EF6;&#x76D1;&#x542C;&#x800C;&#x4E0D;&#x662F;&#x8F6E;&#x8BE2;</li>
+</ul>
+<h3 id="&#x5F15;&#x5BFC;&#xFF08;bootstrapping&#xFF09;&#x539F;&#x5219;">&#x5F15;&#x5BFC;&#xFF08;Bootstrapping&#xFF09;&#x539F;&#x5219;</h3>
+<ul>
+<li><a href="http://issue.k8s.io/246" target="_blank">Self-hosting</a> &#x662F;&#x76EE;&#x6807;</li>
+<li>&#x51CF;&#x5C11;&#x4F9D;&#x8D56;&#xFF0C;&#x7279;&#x522B;&#x662F;&#x7A33;&#x6001;&#x8FD0;&#x884C;&#x7684;&#x4F9D;&#x8D56;</li>
+<li>&#x901A;&#x8FC7;&#x5206;&#x5C42;&#x7684;&#x539F;&#x5219;&#x7BA1;&#x7406;&#x4F9D;&#x8D56;</li>
+<li>&#x5FAA;&#x73AF;&#x4F9D;&#x8D56;&#x95EE;&#x9898;&#x7684;&#x539F;&#x5219;<ul>
+<li>&#x540C;&#x65F6;&#x8FD8;&#x63A5;&#x53D7;&#x5176;&#x4ED6;&#x65B9;&#x5F0F;&#x7684;&#x6570;&#x636E;&#x8F93;&#x5165;&#xFF08;&#x6BD4;&#x5982;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x7B49;&#xFF09;&#xFF0C;&#x8FD9;&#x6837;&#x5728;&#x5176;&#x4ED6;&#x670D;&#x52A1;&#x4E0D;&#x53EF;&#x7528;&#x65F6;&#x8FD8;&#x53EF;&#x4EE5;&#x624B;&#x52A8;&#x914D;&#x7F6E;&#x5F15;&#x5BFC;&#x670D;&#x52A1;</li>
+<li>&#x72B6;&#x6001;&#x5E94;&#x8BE5;&#x662F;&#x53EF;&#x6062;&#x590D;&#x6216;&#x53EF;&#x91CD;&#x65B0;&#x53D1;&#x73B0;&#x7684;</li>
+<li>&#x652F;&#x6301;&#x7B80;&#x5355;&#x7684;&#x542F;&#x52A8;&#x4E34;&#x65F6;&#x5B9E;&#x4F8B;&#x6765;&#x521B;&#x5EFA;&#x7A33;&#x6001;&#x8FD0;&#x884C;&#x6240;&#x9700;&#x8981;&#x7684;&#x72B6;&#x6001;&#xFF1B;&#x4F7F;&#x7528;&#x5206;&#x5E03;&#x5F0F;&#x9501;&#x6216;&#x6587;&#x4EF6;&#x9501;&#x7B49;&#x6765;&#x534F;&#x8C03;&#x4E0D;&#x540C;&#x72B6;&#x6001;&#x7684;&#x5207;&#x6362;&#xFF08;&#x901A;&#x5E38;&#x79F0;&#x4E3A;<code>pivoting</code>&#x6280;&#x672F;&#xFF09;</li>
+<li>&#x81EA;&#x52A8;&#x91CD;&#x542F;&#x5F02;&#x5E38;&#x9000;&#x51FA;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x6BD4;&#x5982;&#x526F;&#x672C;&#x6216;&#x8005;&#x8FDB;&#x7A0B;&#x7BA1;&#x7406;&#x5668;&#x7B49;</li>
+</ul>
+</li>
+</ul>
+<h2 id="&#x6838;&#x5FC3;&#x6280;&#x672F;&#x6982;&#x5FF5;&#x548C;api&#x5BF9;&#x8C61;">&#x6838;&#x5FC3;&#x6280;&#x672F;&#x6982;&#x5FF5;&#x548C;API&#x5BF9;&#x8C61;</h2>
+<p>API&#x5BF9;&#x8C61;&#x662F;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x7BA1;&#x7406;&#x64CD;&#x4F5C;&#x5355;&#x5143;&#x3002;K8s&#x96C6;&#x7FA4;&#x7CFB;&#x7EDF;&#x6BCF;&#x652F;&#x6301;&#x4E00;&#x9879;&#x65B0;&#x529F;&#x80FD;&#xFF0C;&#x5F15;&#x5165;&#x4E00;&#x9879;&#x65B0;&#x6280;&#x672F;&#xFF0C;&#x4E00;&#x5B9A;&#x4F1A;&#x65B0;&#x5F15;&#x5165;&#x5BF9;&#x5E94;&#x7684;API&#x5BF9;&#x8C61;&#xFF0C;&#x652F;&#x6301;&#x5BF9;&#x8BE5;&#x529F;&#x80FD;&#x7684;&#x7BA1;&#x7406;&#x64CD;&#x4F5C;&#x3002;&#x4F8B;&#x5982;&#x526F;&#x672C;&#x96C6;Replica Set&#x5BF9;&#x5E94;&#x7684;API&#x5BF9;&#x8C61;&#x662F;RS&#x3002;</p>
+<p>&#x6BCF;&#x4E2A;API&#x5BF9;&#x8C61;&#x90FD;&#x6709;3&#x5927;&#x7C7B;&#x5C5E;&#x6027;&#xFF1A;&#x5143;&#x6570;&#x636E;metadata&#x3001;&#x89C4;&#x8303;spec&#x548C;&#x72B6;&#x6001;status&#x3002;&#x5143;&#x6570;&#x636E;&#x662F;&#x7528;&#x6765;&#x6807;&#x8BC6;API&#x5BF9;&#x8C61;&#x7684;&#xFF0C;&#x6BCF;&#x4E2A;&#x5BF9;&#x8C61;&#x90FD;&#x81F3;&#x5C11;&#x6709;3&#x4E2A;&#x5143;&#x6570;&#x636E;&#xFF1A;namespace&#xFF0C;name&#x548C;uid&#xFF1B;&#x9664;&#x6B64;&#x4EE5;&#x5916;&#x8FD8;&#x6709;&#x5404;&#x79CD;&#x5404;&#x6837;&#x7684;&#x6807;&#x7B7E;labels&#x7528;&#x6765;&#x6807;&#x8BC6;&#x548C;&#x5339;&#x914D;&#x4E0D;&#x540C;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x4F8B;&#x5982;&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x7528;&#x6807;&#x7B7E;env&#x6765;&#x6807;&#x8BC6;&#x533A;&#x5206;&#x4E0D;&#x540C;&#x7684;&#x670D;&#x52A1;&#x90E8;&#x7F72;&#x73AF;&#x5883;&#xFF0C;&#x5206;&#x522B;&#x7528;env=dev&#x3001;env=testing&#x3001;env=production&#x6765;&#x6807;&#x8BC6;&#x5F00;&#x53D1;&#x3001;&#x6D4B;&#x8BD5;&#x3001;&#x751F;&#x4EA7;&#x7684;&#x4E0D;&#x540C;&#x670D;&#x52A1;&#x3002;&#x89C4;&#x8303;&#x63CF;&#x8FF0;&#x4E86;&#x7528;&#x6237;&#x671F;&#x671B;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x8FBE;&#x5230;&#x7684;&#x7406;&#x60F3;&#x72B6;&#x6001;&#xFF08;Desired State&#xFF09;&#xFF0C;&#x4F8B;&#x5982;&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x590D;&#x5236;&#x63A7;&#x5236;&#x5668;Replication Controller&#x8BBE;&#x7F6E;&#x671F;&#x671B;&#x7684;Pod&#x526F;&#x672C;&#x6570;&#x4E3A;3&#xFF1B;status&#x63CF;&#x8FF0;&#x4E86;&#x7CFB;&#x7EDF;&#x5B9E;&#x9645;&#x5F53;&#x524D;&#x8FBE;&#x5230;&#x7684;&#x72B6;&#x6001;&#xFF08;Status&#xFF09;&#xFF0C;&#x4F8B;&#x5982;&#x7CFB;&#x7EDF;&#x5F53;&#x524D;&#x5B9E;&#x9645;&#x7684;Pod&#x526F;&#x672C;&#x6570;&#x4E3A;2&#xFF1B;&#x90A3;&#x4E48;&#x590D;&#x672C;&#x63A7;&#x5236;&#x5668;&#x5F53;&#x524D;&#x7684;&#x7A0B;&#x5E8F;&#x903B;&#x8F91;&#x5C31;&#x662F;&#x81EA;&#x52A8;&#x542F;&#x52A8;&#x65B0;&#x7684;Pod&#xFF0C;&#x4E89;&#x53D6;&#x8FBE;&#x5230;&#x526F;&#x672C;&#x6570;&#x4E3A;3&#x3002;</p>
+<p>K8s&#x4E2D;&#x6240;&#x6709;&#x7684;&#x914D;&#x7F6E;&#x90FD;&#x662F;&#x901A;&#x8FC7;API&#x5BF9;&#x8C61;&#x7684;spec&#x53BB;&#x8BBE;&#x7F6E;&#x7684;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x7528;&#x6237;&#x901A;&#x8FC7;&#x914D;&#x7F6E;&#x7CFB;&#x7EDF;&#x7684;&#x7406;&#x60F3;&#x72B6;&#x6001;&#x6765;&#x6539;&#x53D8;&#x7CFB;&#x7EDF;&#xFF0C;&#x8FD9;&#x662F;k8s&#x91CD;&#x8981;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x4E4B;&#x4E00;&#xFF0C;&#x5373;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#x90FD;&#x662F;&#x58F0;&#x660E;&#x5F0F;&#xFF08;Declarative&#xFF09;&#x7684;&#x800C;&#x4E0D;&#x662F;&#x547D;&#x4EE4;&#x5F0F;&#xFF08;Imperative&#xFF09;&#x7684;&#x3002;&#x58F0;&#x660E;&#x5F0F;&#x64CD;&#x4F5C;&#x5728;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x4E2D;&#x7684;&#x597D;&#x5904;&#x662F;&#x7A33;&#x5B9A;&#xFF0C;&#x4E0D;&#x6015;&#x4E22;&#x64CD;&#x4F5C;&#x6216;&#x8FD0;&#x884C;&#x591A;&#x6B21;&#xFF0C;&#x4F8B;&#x5982;&#x8BBE;&#x7F6E;&#x526F;&#x672C;&#x6570;&#x4E3A;3&#x7684;&#x64CD;&#x4F5C;&#x8FD0;&#x884C;&#x591A;&#x6B21;&#x4E5F;&#x8FD8;&#x662F;&#x4E00;&#x4E2A;&#x7ED3;&#x679C;&#xFF0C;&#x800C;&#x7ED9;&#x526F;&#x672C;&#x6570;&#x52A0;1&#x7684;&#x64CD;&#x4F5C;&#x5C31;&#x4E0D;&#x662F;&#x58F0;&#x660E;&#x5F0F;&#x7684;&#xFF0C;&#x8FD0;&#x884C;&#x591A;&#x6B21;&#x7ED3;&#x679C;&#x5C31;&#x9519;&#x4E86;&#x3002;</p>
+<h3 id="pod">Pod</h3>
+<p>K8s&#x6709;&#x5F88;&#x591A;&#x6280;&#x672F;&#x6982;&#x5FF5;&#xFF0C;&#x540C;&#x65F6;&#x5BF9;&#x5E94;&#x5F88;&#x591A;API&#x5BF9;&#x8C61;&#xFF0C;&#x6700;&#x91CD;&#x8981;&#x7684;&#x4E5F;&#x662F;&#x6700;&#x57FA;&#x7840;&#x7684;&#x662F;&#x5FAE;&#x670D;&#x52A1;Pod&#x3002;Pod&#x662F;&#x5728;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x8FD0;&#x884C;&#x90E8;&#x7F72;&#x5E94;&#x7528;&#x6216;&#x670D;&#x52A1;&#x7684;&#x6700;&#x5C0F;&#x5355;&#x5143;&#xFF0C;&#x5B83;&#x662F;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x591A;&#x5BB9;&#x5668;&#x7684;&#x3002;Pod&#x7684;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x662F;&#x652F;&#x6301;&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#x5728;&#x4E00;&#x4E2A;Pod&#x4E2D;&#x5171;&#x4EAB;&#x7F51;&#x7EDC;&#x5730;&#x5740;&#x548C;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8FDB;&#x7A0B;&#x95F4;&#x901A;&#x4FE1;&#x548C;&#x6587;&#x4EF6;&#x5171;&#x4EAB;&#x8FD9;&#x79CD;&#x7B80;&#x5355;&#x9AD8;&#x6548;&#x7684;&#x65B9;&#x5F0F;&#x7EC4;&#x5408;&#x5B8C;&#x6210;&#x670D;&#x52A1;&#x3002;Pod&#x5BF9;&#x591A;&#x5BB9;&#x5668;&#x7684;&#x652F;&#x6301;&#x662F;K8s&#x6700;&#x57FA;&#x7840;&#x7684;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x3002;&#x6BD4;&#x5982;&#x4F60;&#x8FD0;&#x884C;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x53D1;&#x884C;&#x7248;&#x7684;&#x8F6F;&#x4EF6;&#x4ED3;&#x5E93;&#xFF0C;&#x4E00;&#x4E2A;Nginx&#x5BB9;&#x5668;&#x7528;&#x6765;&#x53D1;&#x5E03;&#x8F6F;&#x4EF6;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#x4E13;&#x95E8;&#x7528;&#x6765;&#x4ECE;&#x6E90;&#x4ED3;&#x5E93;&#x505A;&#x540C;&#x6B65;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x5BB9;&#x5668;&#x7684;&#x955C;&#x50CF;&#x4E0D;&#x592A;&#x53EF;&#x80FD;&#x662F;&#x4E00;&#x4E2A;&#x56E2;&#x961F;&#x5F00;&#x53D1;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x4ED6;&#x4EEC;&#x4E00;&#x5757;&#x513F;&#x5DE5;&#x4F5C;&#x624D;&#x80FD;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x5FAE;&#x670D;&#x52A1;&#xFF1B;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E0D;&#x540C;&#x7684;&#x56E2;&#x961F;&#x5404;&#x81EA;&#x5F00;&#x53D1;&#x6784;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x5BB9;&#x5668;&#x955C;&#x50CF;&#xFF0C;&#x5728;&#x90E8;&#x7F72;&#x7684;&#x65F6;&#x5019;&#x7EC4;&#x5408;&#x6210;&#x4E00;&#x4E2A;&#x5FAE;&#x670D;&#x52A1;&#x5BF9;&#x5916;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3002;</p>
+<p>Pod&#x662F;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x6240;&#x6709;&#x4E1A;&#x52A1;&#x7C7B;&#x578B;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x4F5C;&#x8FD0;&#x884C;&#x5728;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x5C0F;&#x673A;&#x5668;&#x4EBA;&#xFF0C;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x7684;&#x4E1A;&#x52A1;&#x5C31;&#x9700;&#x8981;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x7684;&#x5C0F;&#x673A;&#x5668;&#x4EBA;&#x53BB;&#x6267;&#x884C;&#x3002;&#x76EE;&#x524D;K8s&#x4E2D;&#x7684;&#x4E1A;&#x52A1;&#x4E3B;&#x8981;&#x53EF;&#x4EE5;&#x5206;&#x4E3A;&#x957F;&#x671F;&#x4F3A;&#x670D;&#x578B;&#xFF08;long-running&#xFF09;&#x3001;&#x6279;&#x5904;&#x7406;&#x578B;&#xFF08;batch&#xFF09;&#x3001;&#x8282;&#x70B9;&#x540E;&#x53F0;&#x652F;&#x6491;&#x578B;&#xFF08;node-daemon&#xFF09;&#x548C;&#x6709;&#x72B6;&#x6001;&#x5E94;&#x7528;&#x578B;&#xFF08;stateful application&#xFF09;&#xFF1B;&#x5206;&#x522B;&#x5BF9;&#x5E94;&#x7684;&#x5C0F;&#x673A;&#x5668;&#x4EBA;&#x63A7;&#x5236;&#x5668;&#x4E3A;Deployment&#x3001;Job&#x3001;DaemonSet&#x548C;StatefulSet&#xFF0C;&#x672C;&#x6587;&#x540E;&#x9762;&#x4F1A;&#x4E00;&#x4E00;&#x4ECB;&#x7ECD;&#x3002;</p>
+<h3 id="&#x590D;&#x5236;&#x63A7;&#x5236;&#x5668;&#xFF08;replication-controller&#xFF0C;rc&#xFF09;">&#x590D;&#x5236;&#x63A7;&#x5236;&#x5668;&#xFF08;Replication Controller&#xFF0C;RC&#xFF09;</h3>
+<p>RC&#x662F;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x6700;&#x65E9;&#x7684;&#x4FDD;&#x8BC1;Pod&#x9AD8;&#x53EF;&#x7528;&#x7684;API&#x5BF9;&#x8C61;&#x3002;&#x901A;&#x8FC7;&#x76D1;&#x63A7;&#x8FD0;&#x884C;&#x4E2D;&#x7684;Pod&#x6765;&#x4FDD;&#x8BC1;&#x96C6;&#x7FA4;&#x4E2D;&#x8FD0;&#x884C;&#x6307;&#x5B9A;&#x6570;&#x76EE;&#x7684;Pod&#x526F;&#x672C;&#x3002;&#x6307;&#x5B9A;&#x7684;&#x6570;&#x76EE;&#x53EF;&#x4EE5;&#x662F;&#x591A;&#x4E2A;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;1&#x4E2A;&#xFF1B;&#x5C11;&#x4E8E;&#x6307;&#x5B9A;&#x6570;&#x76EE;&#xFF0C;RC&#x5C31;&#x4F1A;&#x542F;&#x52A8;&#x8FD0;&#x884C;&#x65B0;&#x7684;Pod&#x526F;&#x672C;&#xFF1B;&#x591A;&#x4E8E;&#x6307;&#x5B9A;&#x6570;&#x76EE;&#xFF0C;RC&#x5C31;&#x4F1A;&#x6740;&#x6B7B;&#x591A;&#x4F59;&#x7684;Pod&#x526F;&#x672C;&#x3002;&#x5373;&#x4F7F;&#x5728;&#x6307;&#x5B9A;&#x6570;&#x76EE;&#x4E3A;1&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x901A;&#x8FC7;RC&#x8FD0;&#x884C;Pod&#x4E5F;&#x6BD4;&#x76F4;&#x63A5;&#x8FD0;&#x884C;Pod&#x66F4;&#x660E;&#x667A;&#xFF0C;&#x56E0;&#x4E3A;RC&#x4E5F;&#x53EF;&#x4EE5;&#x53D1;&#x6325;&#x5B83;&#x9AD8;&#x53EF;&#x7528;&#x7684;&#x80FD;&#x529B;&#xFF0C;&#x4FDD;&#x8BC1;&#x6C38;&#x8FDC;&#x6709;1&#x4E2A;Pod&#x5728;&#x8FD0;&#x884C;&#x3002;RC&#x662F;K8s&#x8F83;&#x65E9;&#x671F;&#x7684;&#x6280;&#x672F;&#x6982;&#x5FF5;&#xFF0C;&#x53EA;&#x9002;&#x7528;&#x4E8E;&#x957F;&#x671F;&#x4F3A;&#x670D;&#x578B;&#x7684;&#x4E1A;&#x52A1;&#x7C7B;&#x578B;&#xFF0C;&#x6BD4;&#x5982;&#x63A7;&#x5236;&#x5C0F;&#x673A;&#x5668;&#x4EBA;&#x63D0;&#x4F9B;&#x9AD8;&#x53EF;&#x7528;&#x7684;Web&#x670D;&#x52A1;&#x3002;</p>
+<h3 id="&#x526F;&#x672C;&#x96C6;&#xFF08;replica-set&#xFF0C;rs&#xFF09;">&#x526F;&#x672C;&#x96C6;&#xFF08;Replica Set&#xFF0C;RS&#xFF09;</h3>
+<p>RS&#x662F;&#x65B0;&#x4E00;&#x4EE3;RC&#xFF0C;&#x63D0;&#x4F9B;&#x540C;&#x6837;&#x7684;&#x9AD8;&#x53EF;&#x7528;&#x80FD;&#x529B;&#xFF0C;&#x533A;&#x522B;&#x4E3B;&#x8981;&#x5728;&#x4E8E;RS&#x540E;&#x6765;&#x5C45;&#x4E0A;&#xFF0C;&#x80FD;&#x652F;&#x6301;&#x66F4;&#x591A;&#x79CD;&#x7C7B;&#x7684;&#x5339;&#x914D;&#x6A21;&#x5F0F;&#x3002;&#x526F;&#x672C;&#x96C6;&#x5BF9;&#x8C61;&#x4E00;&#x822C;&#x4E0D;&#x5355;&#x72EC;&#x4F7F;&#x7528;&#xFF0C;&#x800C;&#x662F;&#x4F5C;&#x4E3A;Deployment&#x7684;&#x7406;&#x60F3;&#x72B6;&#x6001;&#x53C2;&#x6570;&#x4F7F;&#x7528;&#x3002;</p>
+<h3 id="&#x90E8;&#x7F72;deployment">&#x90E8;&#x7F72;(Deployment)</h3>
+<p>&#x90E8;&#x7F72;&#x8868;&#x793A;&#x7528;&#x6237;&#x5BF9;K8s&#x96C6;&#x7FA4;&#x7684;&#x4E00;&#x6B21;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#x3002;&#x90E8;&#x7F72;&#x662F;&#x4E00;&#x4E2A;&#x6BD4;RS&#x5E94;&#x7528;&#x6A21;&#x5F0F;&#x66F4;&#x5E7F;&#x7684;API&#x5BF9;&#x8C61;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x66F4;&#x65B0;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x6EDA;&#x52A8;&#x5347;&#x7EA7;&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x3002;&#x6EDA;&#x52A8;&#x5347;&#x7EA7;&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#xFF0C;&#x5B9E;&#x9645;&#x662F;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;RS&#xFF0C;&#x7136;&#x540E;&#x9010;&#x6E10;&#x5C06;&#x65B0;RS&#x4E2D;&#x526F;&#x672C;&#x6570;&#x589E;&#x52A0;&#x5230;&#x7406;&#x60F3;&#x72B6;&#x6001;&#xFF0C;&#x5C06;&#x65E7;RS&#x4E2D;&#x7684;&#x526F;&#x672C;&#x6570;&#x51CF;&#x5C0F;&#x5230;0&#x7684;&#x590D;&#x5408;&#x64CD;&#x4F5C;&#xFF1B;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x590D;&#x5408;&#x64CD;&#x4F5C;&#x7528;&#x4E00;&#x4E2A;RS&#x662F;&#x4E0D;&#x592A;&#x597D;&#x63CF;&#x8FF0;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x7528;&#x4E00;&#x4E2A;&#x66F4;&#x901A;&#x7528;&#x7684;Deployment&#x6765;&#x63CF;&#x8FF0;&#x3002;&#x4EE5;K8s&#x7684;&#x53D1;&#x5C55;&#x65B9;&#x5411;&#xFF0C;&#x672A;&#x6765;&#x5BF9;&#x6240;&#x6709;&#x957F;&#x671F;&#x4F3A;&#x670D;&#x578B;&#x7684;&#x7684;&#x4E1A;&#x52A1;&#x7684;&#x7BA1;&#x7406;&#xFF0C;&#x90FD;&#x4F1A;&#x901A;&#x8FC7;Deployment&#x6765;&#x7BA1;&#x7406;&#x3002;</p>
+<h3 id="&#x670D;&#x52A1;&#xFF08;service&#xFF09;">&#x670D;&#x52A1;&#xFF08;Service&#xFF09;</h3>
+<p>RC&#x3001;RS&#x548C;Deployment&#x53EA;&#x662F;&#x4FDD;&#x8BC1;&#x4E86;&#x652F;&#x6491;&#x670D;&#x52A1;&#x7684;&#x5FAE;&#x670D;&#x52A1;Pod&#x7684;&#x6570;&#x91CF;&#xFF0C;&#x4F46;&#x662F;&#x6CA1;&#x6709;&#x89E3;&#x51B3;&#x5982;&#x4F55;&#x8BBF;&#x95EE;&#x8FD9;&#x4E9B;&#x670D;&#x52A1;&#x7684;&#x95EE;&#x9898;&#x3002;&#x4E00;&#x4E2A;Pod&#x53EA;&#x662F;&#x4E00;&#x4E2A;&#x8FD0;&#x884C;&#x670D;&#x52A1;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x968F;&#x65F6;&#x53EF;&#x80FD;&#x5728;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x505C;&#x6B62;&#xFF0C;&#x5728;&#x53E6;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#x4EE5;&#x4E00;&#x4E2A;&#x65B0;&#x7684;IP&#x542F;&#x52A8;&#x4E00;&#x4E2A;&#x65B0;&#x7684;Pod&#xFF0C;&#x56E0;&#x6B64;&#x4E0D;&#x80FD;&#x4EE5;&#x786E;&#x5B9A;&#x7684;IP&#x548C;&#x7AEF;&#x53E3;&#x53F7;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3002;&#x8981;&#x7A33;&#x5B9A;&#x5730;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x9700;&#x8981;&#x670D;&#x52A1;&#x53D1;&#x73B0;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x80FD;&#x529B;&#x3002;&#x670D;&#x52A1;&#x53D1;&#x73B0;&#x5B8C;&#x6210;&#x7684;&#x5DE5;&#x4F5C;&#xFF0C;&#x662F;&#x9488;&#x5BF9;&#x5BA2;&#x6237;&#x7AEF;&#x8BBF;&#x95EE;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x627E;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x7684;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x5B9E;&#x4F8B;&#x3002;&#x5728;K8s&#x96C6;&#x7FA4;&#x4E2D;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x7684;&#x670D;&#x52A1;&#x5C31;&#x662F;Service&#x5BF9;&#x8C61;&#x3002;&#x6BCF;&#x4E2A;Service&#x4F1A;&#x5BF9;&#x5E94;&#x4E00;&#x4E2A;&#x96C6;&#x7FA4;&#x5185;&#x90E8;&#x6709;&#x6548;&#x7684;&#x865A;&#x62DF;IP&#xFF0C;&#x96C6;&#x7FA4;&#x5185;&#x90E8;&#x901A;&#x8FC7;&#x865A;&#x62DF;IP&#x8BBF;&#x95EE;&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x3002;&#x5728;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x5FAE;&#x670D;&#x52A1;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x662F;&#x7531;Kube-proxy&#x5B9E;&#x73B0;&#x7684;&#x3002;Kube-proxy&#x662F;K8s&#x96C6;&#x7FA4;&#x5185;&#x90E8;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x3002;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x5206;&#x5E03;&#x5F0F;&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x5728;K8s&#x7684;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#xFF1B;&#x8FD9;&#x4E00;&#x8BBE;&#x8BA1;&#x4F53;&#x73B0;&#x4E86;&#x5B83;&#x7684;&#x4F38;&#x7F29;&#x6027;&#x4F18;&#x52BF;&#xFF0C;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x670D;&#x52A1;&#x7684;&#x8282;&#x70B9;&#x8D8A;&#x591A;&#xFF0C;&#x63D0;&#x4F9B;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x80FD;&#x529B;&#x7684;Kube-proxy&#x5C31;&#x8D8A;&#x591A;&#xFF0C;&#x9AD8;&#x53EF;&#x7528;&#x8282;&#x70B9;&#x4E5F;&#x968F;&#x4E4B;&#x589E;&#x591A;&#x3002;&#x4E0E;&#x4E4B;&#x76F8;&#x6BD4;&#xFF0C;&#x6211;&#x4EEC;&#x5E73;&#x65F6;&#x5728;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4F7F;&#x7528;&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x4F5C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#xFF0C;&#x8FD8;&#x8981;&#x8FDB;&#x4E00;&#x6B65;&#x89E3;&#x51B3;&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x9AD8;&#x53EF;&#x7528;&#x95EE;&#x9898;&#x3002;</p>
+<h3 id="&#x4EFB;&#x52A1;&#xFF08;job&#xFF09;">&#x4EFB;&#x52A1;&#xFF08;Job&#xFF09;</h3>
+<p>Job&#x662F;K8s&#x7528;&#x6765;&#x63A7;&#x5236;&#x6279;&#x5904;&#x7406;&#x578B;&#x4EFB;&#x52A1;&#x7684;API&#x5BF9;&#x8C61;&#x3002;&#x6279;&#x5904;&#x7406;&#x4E1A;&#x52A1;&#x4E0E;&#x957F;&#x671F;&#x4F3A;&#x670D;&#x4E1A;&#x52A1;&#x7684;&#x4E3B;&#x8981;&#x533A;&#x522B;&#x662F;&#x6279;&#x5904;&#x7406;&#x4E1A;&#x52A1;&#x7684;&#x8FD0;&#x884C;&#x6709;&#x5934;&#x6709;&#x5C3E;&#xFF0C;&#x800C;&#x957F;&#x671F;&#x4F3A;&#x670D;&#x4E1A;&#x52A1;&#x5728;&#x7528;&#x6237;&#x4E0D;&#x505C;&#x6B62;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x6C38;&#x8FDC;&#x8FD0;&#x884C;&#x3002;Job&#x7BA1;&#x7406;&#x7684;Pod&#x6839;&#x636E;&#x7528;&#x6237;&#x7684;&#x8BBE;&#x7F6E;&#x628A;&#x4EFB;&#x52A1;&#x6210;&#x529F;&#x5B8C;&#x6210;&#x5C31;&#x81EA;&#x52A8;&#x9000;&#x51FA;&#x4E86;&#x3002;&#x6210;&#x529F;&#x5B8C;&#x6210;&#x7684;&#x6807;&#x5FD7;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;spec.completions&#x7B56;&#x7565;&#x800C;&#x4E0D;&#x540C;&#xFF1A;&#x5355;Pod&#x578B;&#x4EFB;&#x52A1;&#x6709;&#x4E00;&#x4E2A;Pod&#x6210;&#x529F;&#x5C31;&#x6807;&#x5FD7;&#x5B8C;&#x6210;&#xFF1B;&#x5B9A;&#x6570;&#x6210;&#x529F;&#x578B;&#x4EFB;&#x52A1;&#x4FDD;&#x8BC1;&#x6709;N&#x4E2A;&#x4EFB;&#x52A1;&#x5168;&#x90E8;&#x6210;&#x529F;&#xFF1B;&#x5DE5;&#x4F5C;&#x961F;&#x5217;&#x578B;&#x4EFB;&#x52A1;&#x6839;&#x636E;&#x5E94;&#x7528;&#x786E;&#x8BA4;&#x7684;&#x5168;&#x5C40;&#x6210;&#x529F;&#x800C;&#x6807;&#x5FD7;&#x6210;&#x529F;&#x3002;</p>
+<h3 id="&#x540E;&#x53F0;&#x652F;&#x6491;&#x670D;&#x52A1;&#x96C6;&#xFF08;daemonset&#xFF09;">&#x540E;&#x53F0;&#x652F;&#x6491;&#x670D;&#x52A1;&#x96C6;&#xFF08;DaemonSet&#xFF09;</h3>
+<p>&#x957F;&#x671F;&#x4F3A;&#x670D;&#x578B;&#x548C;&#x6279;&#x5904;&#x7406;&#x578B;&#x670D;&#x52A1;&#x7684;&#x6838;&#x5FC3;&#x5728;&#x4E1A;&#x52A1;&#x5E94;&#x7528;&#xFF0C;&#x53EF;&#x80FD;&#x6709;&#x4E9B;&#x8282;&#x70B9;&#x8FD0;&#x884C;&#x591A;&#x4E2A;&#x540C;&#x7C7B;&#x4E1A;&#x52A1;&#x7684;Pod&#xFF0C;&#x6709;&#x4E9B;&#x8282;&#x70B9;&#x4E0A;&#x53C8;&#x6CA1;&#x6709;&#x8FD9;&#x7C7B;Pod&#x8FD0;&#x884C;&#xFF1B;&#x800C;&#x540E;&#x53F0;&#x652F;&#x6491;&#x578B;&#x670D;&#x52A1;&#x7684;&#x6838;&#x5FC3;&#x5173;&#x6CE8;&#x70B9;&#x5728;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x8282;&#x70B9;&#xFF08;&#x7269;&#x7406;&#x673A;&#x6216;&#x865A;&#x62DF;&#x673A;&#xFF09;&#xFF0C;&#x8981;&#x4FDD;&#x8BC1;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x6B64;&#x7C7B;Pod&#x8FD0;&#x884C;&#x3002;&#x8282;&#x70B9;&#x53EF;&#x80FD;&#x662F;&#x6240;&#x6709;&#x96C6;&#x7FA4;&#x8282;&#x70B9;&#x4E5F;&#x53EF;&#x80FD;&#x662F;&#x901A;&#x8FC7;nodeSelector&#x9009;&#x5B9A;&#x7684;&#x4E00;&#x4E9B;&#x7279;&#x5B9A;&#x8282;&#x70B9;&#x3002;&#x5178;&#x578B;&#x7684;&#x540E;&#x53F0;&#x652F;&#x6491;&#x578B;&#x670D;&#x52A1;&#x5305;&#x62EC;&#xFF0C;&#x5B58;&#x50A8;&#xFF0C;&#x65E5;&#x5FD7;&#x548C;&#x76D1;&#x63A7;&#x7B49;&#x5728;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x652F;&#x6491;K8s&#x96C6;&#x7FA4;&#x8FD0;&#x884C;&#x7684;&#x670D;&#x52A1;&#x3002;</p>
+<h3 id="&#x6709;&#x72B6;&#x6001;&#x670D;&#x52A1;&#x96C6;&#xFF08;statefulset&#xFF09;">&#x6709;&#x72B6;&#x6001;&#x670D;&#x52A1;&#x96C6;&#xFF08;StatefulSet&#xFF09;</h3>
+<p>K8s&#x5728;1.3&#x7248;&#x672C;&#x91CC;&#x53D1;&#x5E03;&#x4E86;Alpha&#x7248;&#x7684;PetSet&#x4EE5;&#x652F;&#x6301;&#x6709;&#x72B6;&#x6001;&#x670D;&#x52A1;&#xFF0C;&#x5E76;&#x4ECE;1.5&#x7248;&#x672C;&#x5F00;&#x59CB;&#x91CD;&#x547D;&#x540D;&#x4E3A;StatefulSet&#x3002;&#x5728;&#x4E91;&#x539F;&#x751F;&#x5E94;&#x7528;&#x7684;&#x4F53;&#x7CFB;&#x91CC;&#xFF0C;&#x6709;&#x4E0B;&#x9762;&#x4E24;&#x7EC4;&#x8FD1;&#x4E49;&#x8BCD;&#xFF1B;&#x7B2C;&#x4E00;&#x7EC4;&#x662F;&#x65E0;&#x72B6;&#x6001;&#xFF08;stateless&#xFF09;&#x3001;&#x7272;&#x755C;&#xFF08;cattle&#xFF09;&#x3001;&#x65E0;&#x540D;&#xFF08;nameless&#xFF09;&#x3001;&#x53EF;&#x4E22;&#x5F03;&#xFF08;disposable&#xFF09;&#xFF1B;&#x7B2C;&#x4E8C;&#x7EC4;&#x662F;&#x6709;&#x72B6;&#x6001;&#xFF08;stateful&#xFF09;&#x3001;&#x5BA0;&#x7269;&#xFF08;pet&#xFF09;&#x3001;&#x6709;&#x540D;&#xFF08;having name&#xFF09;&#x3001;&#x4E0D;&#x53EF;&#x4E22;&#x5F03;&#xFF08;non-disposable&#xFF09;&#x3002;RC&#x548C;RS&#x4E3B;&#x8981;&#x662F;&#x63A7;&#x5236;&#x63D0;&#x4F9B;&#x65E0;&#x72B6;&#x6001;&#x670D;&#x52A1;&#x7684;&#xFF0C;&#x5176;&#x6240;&#x63A7;&#x5236;&#x7684;Pod&#x7684;&#x540D;&#x5B57;&#x662F;&#x968F;&#x673A;&#x8BBE;&#x7F6E;&#x7684;&#xFF0C;&#x4E00;&#x4E2A;Pod&#x51FA;&#x6545;&#x969C;&#x4E86;&#x5C31;&#x88AB;&#x4E22;&#x5F03;&#x6389;&#xFF0C;&#x5728;&#x53E6;&#x4E00;&#x4E2A;&#x5730;&#x65B9;&#x91CD;&#x542F;&#x4E00;&#x4E2A;&#x65B0;&#x7684;Pod&#xFF0C;&#x540D;&#x5B57;&#x53D8;&#x4E86;&#x3001;&#x540D;&#x5B57;&#x548C;&#x542F;&#x52A8;&#x5728;&#x54EA;&#x513F;&#x90FD;&#x4E0D;&#x91CD;&#x8981;&#xFF0C;&#x91CD;&#x8981;&#x7684;&#x53EA;&#x662F;Pod&#x603B;&#x6570;&#xFF1B;&#x800C;StatefulSet&#x662F;&#x7528;&#x6765;&#x63A7;&#x5236;&#x6709;&#x72B6;&#x6001;&#x670D;&#x52A1;&#xFF0C;StatefulSet&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;Pod&#x7684;&#x540D;&#x5B57;&#x90FD;&#x662F;&#x4E8B;&#x5148;&#x786E;&#x5B9A;&#x7684;&#xFF0C;&#x4E0D;&#x80FD;&#x66F4;&#x6539;&#x3002;StatefulSet&#x4E2D;Pod&#x7684;&#x540D;&#x5B57;&#x7684;&#x4F5C;&#x7528;&#xFF0C;&#x5E76;&#x4E0D;&#x662F;&#x300A;&#x5343;&#x4E0E;&#x5343;&#x5BFB;&#x300B;&#x7684;&#x4EBA;&#x6027;&#x539F;&#x56E0;&#xFF0C;&#x800C;&#x662F;&#x5173;&#x8054;&#x4E0E;&#x8BE5;Pod&#x5BF9;&#x5E94;&#x7684;&#x72B6;&#x6001;&#x3002;</p>
+<p>&#x5BF9;&#x4E8E;RC&#x548C;RS&#x4E2D;&#x7684;Pod&#xFF0C;&#x4E00;&#x822C;&#x4E0D;&#x6302;&#x8F7D;&#x5B58;&#x50A8;&#x6216;&#x8005;&#x6302;&#x8F7D;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#xFF0C;&#x4FDD;&#x5B58;&#x7684;&#x662F;&#x6240;&#x6709;Pod&#x5171;&#x4EAB;&#x7684;&#x72B6;&#x6001;&#xFF0C;Pod&#x50CF;&#x7272;&#x755C;&#x4E00;&#x6837;&#x6CA1;&#x6709;&#x5206;&#x522B;&#xFF08;&#x8FD9;&#x4F3C;&#x4E4E;&#x4E5F;&#x786E;&#x5B9E;&#x610F;&#x5473;&#x7740;&#x5931;&#x53BB;&#x4E86;&#x4EBA;&#x6027;&#x7279;&#x5F81;&#xFF09;&#xFF1B;&#x5BF9;&#x4E8E;StatefulSet&#x4E2D;&#x7684;Pod&#xFF0C;&#x6BCF;&#x4E2A;Pod&#x6302;&#x8F7D;&#x81EA;&#x5DF1;&#x72EC;&#x7ACB;&#x7684;&#x5B58;&#x50A8;&#xFF0C;&#x5982;&#x679C;&#x4E00;&#x4E2A;Pod&#x51FA;&#x73B0;&#x6545;&#x969C;&#xFF0C;&#x4ECE;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x542F;&#x52A8;&#x4E00;&#x4E2A;&#x540C;&#x6837;&#x540D;&#x5B57;&#x7684;Pod&#xFF0C;&#x8981;&#x6302;&#x8F7D;&#x4E0A;&#x539F;&#x6765;Pod&#x7684;&#x5B58;&#x50A8;&#x7EE7;&#x7EED;&#x4EE5;&#x5B83;&#x7684;&#x72B6;&#x6001;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3002;</p>
+<p>&#x9002;&#x5408;&#x4E8E;StatefulSet&#x7684;&#x4E1A;&#x52A1;&#x5305;&#x62EC;&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;MySQL&#x548C;PostgreSQL&#xFF0C;&#x96C6;&#x7FA4;&#x5316;&#x7BA1;&#x7406;&#x670D;&#x52A1;Zookeeper&#x3001;etcd&#x7B49;&#x6709;&#x72B6;&#x6001;&#x670D;&#x52A1;&#x3002;StatefulSet&#x7684;&#x53E6;&#x4E00;&#x79CD;&#x5178;&#x578B;&#x5E94;&#x7528;&#x573A;&#x666F;&#x662F;&#x4F5C;&#x4E3A;&#x4E00;&#x79CD;&#x6BD4;&#x666E;&#x901A;&#x5BB9;&#x5668;&#x66F4;&#x7A33;&#x5B9A;&#x53EF;&#x9760;&#x7684;&#x6A21;&#x62DF;&#x865A;&#x62DF;&#x673A;&#x7684;&#x673A;&#x5236;&#x3002;&#x4F20;&#x7EDF;&#x7684;&#x865A;&#x62DF;&#x673A;&#x6B63;&#x662F;&#x4E00;&#x79CD;&#x6709;&#x72B6;&#x6001;&#x7684;&#x5BA0;&#x7269;&#xFF0C;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x9700;&#x8981;&#x4E0D;&#x65AD;&#x5730;&#x7EF4;&#x62A4;&#x5B83;&#xFF0C;&#x5BB9;&#x5668;&#x521A;&#x5F00;&#x59CB;&#x6D41;&#x884C;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x7528;&#x5BB9;&#x5668;&#x6765;&#x6A21;&#x62DF;&#x865A;&#x62DF;&#x673A;&#x4F7F;&#x7528;&#xFF0C;&#x6240;&#x6709;&#x72B6;&#x6001;&#x90FD;&#x4FDD;&#x5B58;&#x5728;&#x5BB9;&#x5668;&#x91CC;&#xFF0C;&#x800C;&#x8FD9;&#x5DF2;&#x88AB;&#x8BC1;&#x660E;&#x662F;&#x975E;&#x5E38;&#x4E0D;&#x5B89;&#x5168;&#x3001;&#x4E0D;&#x53EF;&#x9760;&#x7684;&#x3002;&#x4F7F;&#x7528;StatefulSet&#xFF0C;Pod&#x4ECD;&#x7136;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x6F02;&#x79FB;&#x5230;&#x4E0D;&#x540C;&#x8282;&#x70B9;&#x63D0;&#x4F9B;&#x9AD8;&#x53EF;&#x7528;&#xFF0C;&#x800C;&#x5B58;&#x50A8;&#x4E5F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5916;&#x6302;&#x7684;&#x5B58;&#x50A8;&#x6765;&#x63D0;&#x4F9B;&#x9AD8;&#x53EF;&#x9760;&#x6027;&#xFF0C;StatefulSet&#x505A;&#x7684;&#x53EA;&#x662F;&#x5C06;&#x786E;&#x5B9A;&#x7684;Pod&#x4E0E;&#x786E;&#x5B9A;&#x7684;&#x5B58;&#x50A8;&#x5173;&#x8054;&#x8D77;&#x6765;&#x4FDD;&#x8BC1;&#x72B6;&#x6001;&#x7684;&#x8FDE;&#x7EED;&#x6027;&#x3002;StatefulSet&#x8FD8;&#x53EA;&#x5728;Alpha&#x9636;&#x6BB5;&#xFF0C;&#x540E;&#x9762;&#x7684;&#x8BBE;&#x8BA1;&#x5982;&#x4F55;&#x6F14;&#x53D8;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x8981;&#x7EE7;&#x7EED;&#x89C2;&#x5BDF;&#x3002;</p>
+<h3 id="&#x96C6;&#x7FA4;&#x8054;&#x90A6;&#xFF08;federation&#xFF09;">&#x96C6;&#x7FA4;&#x8054;&#x90A6;&#xFF08;Federation&#xFF09;</h3>
+<p>K8s&#x5728;1.3&#x7248;&#x672C;&#x91CC;&#x53D1;&#x5E03;&#x4E86;beta&#x7248;&#x7684;Federation&#x529F;&#x80FD;&#x3002;&#x5728;&#x4E91;&#x8BA1;&#x7B97;&#x73AF;&#x5883;&#x4E2D;&#xFF0C;&#x670D;&#x52A1;&#x7684;&#x4F5C;&#x7528;&#x8DDD;&#x79BB;&#x8303;&#x56F4;&#x4ECE;&#x8FD1;&#x5230;&#x8FDC;&#x4E00;&#x822C;&#x53EF;&#x4EE5;&#x6709;&#xFF1A;&#x540C;&#x4E3B;&#x673A;&#xFF08;Host&#xFF0C;Node&#xFF09;&#x3001;&#x8DE8;&#x4E3B;&#x673A;&#x540C;&#x53EF;&#x7528;&#x533A;&#xFF08;Available Zone&#xFF09;&#x3001;&#x8DE8;&#x53EF;&#x7528;&#x533A;&#x540C;&#x5730;&#x533A;&#xFF08;Region&#xFF09;&#x3001;&#x8DE8;&#x5730;&#x533A;&#x540C;&#x670D;&#x52A1;&#x5546;&#xFF08;Cloud Service Provider&#xFF09;&#x3001;&#x8DE8;&#x4E91;&#x5E73;&#x53F0;&#x3002;K8s&#x7684;&#x8BBE;&#x8BA1;&#x5B9A;&#x4F4D;&#x662F;&#x5355;&#x4E00;&#x96C6;&#x7FA4;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x5730;&#x57DF;&#x5185;&#xFF0C;&#x56E0;&#x4E3A;&#x540C;&#x4E00;&#x4E2A;&#x5730;&#x533A;&#x7684;&#x7F51;&#x7EDC;&#x6027;&#x80FD;&#x624D;&#x80FD;&#x6EE1;&#x8DB3;K8s&#x7684;&#x8C03;&#x5EA6;&#x548C;&#x8BA1;&#x7B97;&#x5B58;&#x50A8;&#x8FDE;&#x63A5;&#x8981;&#x6C42;&#x3002;&#x800C;&#x8054;&#x5408;&#x96C6;&#x7FA4;&#x670D;&#x52A1;&#x5C31;&#x662F;&#x4E3A;&#x63D0;&#x4F9B;&#x8DE8;Region&#x8DE8;&#x670D;&#x52A1;&#x5546;K8s&#x96C6;&#x7FA4;&#x670D;&#x52A1;&#x800C;&#x8BBE;&#x8BA1;&#x7684;&#x3002;</p>
+<p>&#x6BCF;&#x4E2A;K8s Federation&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x3001;API Server&#x548C;Controller Manager&#x3002;&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;Federation&#x7684;API Server&#x6CE8;&#x518C;&#x8BE5;Federation&#x7684;&#x6210;&#x5458;K8s Cluster&#x3002;&#x5F53;&#x7528;&#x6237;&#x901A;&#x8FC7;Federation&#x7684;API Server&#x521B;&#x5EFA;&#x3001;&#x66F4;&#x6539;API&#x5BF9;&#x8C61;&#x65F6;&#xFF0C;Federation API Server&#x4F1A;&#x5728;&#x81EA;&#x5DF1;&#x6240;&#x6709;&#x6CE8;&#x518C;&#x7684;&#x5B50;K8s Cluster&#x90FD;&#x521B;&#x5EFA;&#x4E00;&#x4EFD;&#x5BF9;&#x5E94;&#x7684;API&#x5BF9;&#x8C61;&#x3002;&#x5728;&#x63D0;&#x4F9B;&#x4E1A;&#x52A1;&#x8BF7;&#x6C42;&#x670D;&#x52A1;&#x65F6;&#xFF0C;K8s Federation&#x4F1A;&#x5148;&#x5728;&#x81EA;&#x5DF1;&#x7684;&#x5404;&#x4E2A;&#x5B50;Cluster&#x4E4B;&#x95F4;&#x505A;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#xFF0C;&#x800C;&#x5BF9;&#x4E8E;&#x53D1;&#x9001;&#x5230;&#x67D0;&#x4E2A;&#x5177;&#x4F53;K8s Cluster&#x7684;&#x4E1A;&#x52A1;&#x8BF7;&#x6C42;&#xFF0C;&#x4F1A;&#x4F9D;&#x7167;&#x8FD9;&#x4E2A;K8s Cluster&#x72EC;&#x7ACB;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x65F6;&#x4E00;&#x6837;&#x7684;&#x8C03;&#x5EA6;&#x6A21;&#x5F0F;&#x53BB;&#x505A;K8s Cluster&#x5185;&#x90E8;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x3002;&#x800C;Cluster&#x4E4B;&#x95F4;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x662F;&#x901A;&#x8FC7;&#x57DF;&#x540D;&#x670D;&#x52A1;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x6765;&#x5B9E;&#x73B0;&#x7684;&#x3002;</p>
+<p>&#x6240;&#x6709;&#x7684;&#x8BBE;&#x8BA1;&#x90FD;&#x5C3D;&#x91CF;&#x4E0D;&#x5F71;&#x54CD;K8s Cluster&#x73B0;&#x6709;&#x7684;&#x5DE5;&#x4F5C;&#x673A;&#x5236;&#xFF0C;&#x8FD9;&#x6837;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x5B50;K8s&#x96C6;&#x7FA4;&#x6765;&#x8BF4;&#xFF0C;&#x5E76;&#x4E0D;&#x9700;&#x8981;&#x66F4;&#x5916;&#x5C42;&#x7684;&#x6709;&#x4E00;&#x4E2A;K8s Federation&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x610F;&#x5473;&#x7740;&#x6240;&#x6709;&#x73B0;&#x6709;&#x7684;K8s&#x4EE3;&#x7801;&#x548C;&#x673A;&#x5236;&#x4E0D;&#x9700;&#x8981;&#x56E0;&#x4E3A;Federation&#x529F;&#x80FD;&#x6709;&#x4EFB;&#x4F55;&#x53D8;&#x5316;&#x3002;</p>
+<h3 id="&#x5B58;&#x50A8;&#x5377;&#xFF08;volume&#xFF09;">&#x5B58;&#x50A8;&#x5377;&#xFF08;Volume&#xFF09;</h3>
+<p>K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x5B58;&#x50A8;&#x5377;&#x8DDF;Docker&#x7684;&#x5B58;&#x50A8;&#x5377;&#x6709;&#x4E9B;&#x7C7B;&#x4F3C;&#xFF0C;&#x53EA;&#x4E0D;&#x8FC7;Docker&#x7684;&#x5B58;&#x50A8;&#x5377;&#x4F5C;&#x7528;&#x8303;&#x56F4;&#x4E3A;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#xFF0C;&#x800C;K8s&#x7684;&#x5B58;&#x50A8;&#x5377;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x548C;&#x4F5C;&#x7528;&#x8303;&#x56F4;&#x662F;&#x4E00;&#x4E2A;Pod&#x3002;&#x6BCF;&#x4E2A;Pod&#x4E2D;&#x58F0;&#x660E;&#x7684;&#x5B58;&#x50A8;&#x5377;&#x7531;Pod&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5BB9;&#x5668;&#x5171;&#x4EAB;&#x3002;K8s&#x652F;&#x6301;&#x975E;&#x5E38;&#x591A;&#x7684;&#x5B58;&#x50A8;&#x5377;&#x7C7B;&#x578B;&#xFF0C;&#x7279;&#x522B;&#x7684;&#xFF0C;&#x652F;&#x6301;&#x591A;&#x79CD;&#x516C;&#x6709;&#x4E91;&#x5E73;&#x53F0;&#x7684;&#x5B58;&#x50A8;&#xFF0C;&#x5305;&#x62EC;AWS&#xFF0C;Google&#x548C;Azure&#x4E91;&#xFF1B;&#x652F;&#x6301;&#x591A;&#x79CD;&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x5305;&#x62EC;GlusterFS&#x548C;Ceph&#xFF1B;&#x4E5F;&#x652F;&#x6301;&#x8F83;&#x5BB9;&#x6613;&#x4F7F;&#x7528;&#x7684;&#x4E3B;&#x673A;&#x672C;&#x5730;&#x76EE;&#x5F55;hostPath&#x548C;NFS&#x3002;K8s&#x8FD8;&#x652F;&#x6301;&#x4F7F;&#x7528;Persistent Volume Claim&#x5373;PVC&#x8FD9;&#x79CD;&#x903B;&#x8F91;&#x5B58;&#x50A8;&#xFF0C;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x5B58;&#x50A8;&#xFF0C;&#x4F7F;&#x5F97;&#x5B58;&#x50A8;&#x7684;&#x4F7F;&#x7528;&#x8005;&#x53EF;&#x4EE5;&#x5FFD;&#x7565;&#x540E;&#x53F0;&#x7684;&#x5B9E;&#x9645;&#x5B58;&#x50A8;&#x6280;&#x672F;&#xFF08;&#x4F8B;&#x5982;AWS&#xFF0C;Google&#x6216;GlusterFS&#x548C;Ceph&#xFF09;&#xFF0C;&#x800C;&#x5C06;&#x6709;&#x5173;&#x5B58;&#x50A8;&#x5B9E;&#x9645;&#x6280;&#x672F;&#x7684;&#x914D;&#x7F6E;&#x4EA4;&#x7ED9;&#x5B58;&#x50A8;&#x7BA1;&#x7406;&#x5458;&#x901A;&#x8FC7;Persistent Volume&#x6765;&#x914D;&#x7F6E;&#x3002;</p>
+<h3 id="&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x5377;&#xFF08;persistent-volume&#xFF0C;pv&#xFF09;&#x548C;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x5377;&#x58F0;&#x660E;&#xFF08;persistent-volume-claim&#xFF0C;pvc&#xFF09;">&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x5377;&#xFF08;Persistent Volume&#xFF0C;PV&#xFF09;&#x548C;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x5377;&#x58F0;&#x660E;&#xFF08;Persistent Volume Claim&#xFF0C;PVC&#xFF09;</h3>
+<p>PV&#x548C;PVC&#x4F7F;&#x5F97;K8s&#x96C6;&#x7FA4;&#x5177;&#x5907;&#x4E86;&#x5B58;&#x50A8;&#x7684;&#x903B;&#x8F91;&#x62BD;&#x8C61;&#x80FD;&#x529B;&#xFF0C;&#x4F7F;&#x5F97;&#x5728;&#x914D;&#x7F6E;Pod&#x7684;&#x903B;&#x8F91;&#x91CC;&#x53EF;&#x4EE5;&#x5FFD;&#x7565;&#x5BF9;&#x5B9E;&#x9645;&#x540E;&#x53F0;&#x5B58;&#x50A8;&#x6280;&#x672F;&#x7684;&#x914D;&#x7F6E;&#xFF0C;&#x800C;&#x628A;&#x8FD9;&#x9879;&#x914D;&#x7F6E;&#x7684;&#x5DE5;&#x4F5C;&#x4EA4;&#x7ED9;PV&#x7684;&#x914D;&#x7F6E;&#x8005;&#xFF0C;&#x5373;&#x96C6;&#x7FA4;&#x7684;&#x7BA1;&#x7406;&#x8005;&#x3002;&#x5B58;&#x50A8;&#x7684;PV&#x548C;PVC&#x7684;&#x8FD9;&#x79CD;&#x5173;&#x7CFB;&#xFF0C;&#x8DDF;&#x8BA1;&#x7B97;&#x7684;Node&#x548C;Pod&#x7684;&#x5173;&#x7CFB;&#x662F;&#x975E;&#x5E38;&#x7C7B;&#x4F3C;&#x7684;&#xFF1B;PV&#x548C;Node&#x662F;&#x8D44;&#x6E90;&#x7684;&#x63D0;&#x4F9B;&#x8005;&#xFF0C;&#x6839;&#x636E;&#x96C6;&#x7FA4;&#x7684;&#x57FA;&#x7840;&#x8BBE;&#x65BD;&#x53D8;&#x5316;&#x800C;&#x53D8;&#x5316;&#xFF0C;&#x7531;K8s&#x96C6;&#x7FA4;&#x7BA1;&#x7406;&#x5458;&#x914D;&#x7F6E;&#xFF1B;&#x800C;PVC&#x548C;Pod&#x662F;&#x8D44;&#x6E90;&#x7684;&#x4F7F;&#x7528;&#x8005;&#xFF0C;&#x6839;&#x636E;&#x4E1A;&#x52A1;&#x670D;&#x52A1;&#x7684;&#x9700;&#x6C42;&#x53D8;&#x5316;&#x800C;&#x53D8;&#x5316;&#xFF0C;&#x7531;K8s&#x96C6;&#x7FA4;&#x7684;&#x4F7F;&#x7528;&#x8005;&#x5373;&#x670D;&#x52A1;&#x7684;&#x7BA1;&#x7406;&#x5458;&#x6765;&#x914D;&#x7F6E;&#x3002;</p>
+<h3 id="&#x8282;&#x70B9;&#xFF08;node&#xFF09;">&#x8282;&#x70B9;&#xFF08;Node&#xFF09;</h3>
+<p>K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x8BA1;&#x7B97;&#x80FD;&#x529B;&#x7531;Node&#x63D0;&#x4F9B;&#xFF0C;&#x6700;&#x521D;Node&#x79F0;&#x4E3A;&#x670D;&#x52A1;&#x8282;&#x70B9;Minion&#xFF0C;&#x540E;&#x6765;&#x6539;&#x540D;&#x4E3A;Node&#x3002;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;Node&#x4E5F;&#x5C31;&#x7B49;&#x540C;&#x4E8E;Mesos&#x96C6;&#x7FA4;&#x4E2D;&#x7684;Slave&#x8282;&#x70B9;&#xFF0C;&#x662F;&#x6240;&#x6709;Pod&#x8FD0;&#x884C;&#x6240;&#x5728;&#x7684;&#x5DE5;&#x4F5C;&#x4E3B;&#x673A;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;&#x7269;&#x7406;&#x673A;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x865A;&#x62DF;&#x673A;&#x3002;&#x4E0D;&#x8BBA;&#x662F;&#x7269;&#x7406;&#x673A;&#x8FD8;&#x662F;&#x865A;&#x62DF;&#x673A;&#xFF0C;&#x5DE5;&#x4F5C;&#x4E3B;&#x673A;&#x7684;&#x7EDF;&#x4E00;&#x7279;&#x5F81;&#x662F;&#x4E0A;&#x9762;&#x8981;&#x8FD0;&#x884C;kubelet&#x7BA1;&#x7406;&#x8282;&#x70B9;&#x4E0A;&#x8FD0;&#x884C;&#x7684;&#x5BB9;&#x5668;&#x3002;</p>
+<h3 id="&#x5BC6;&#x94A5;&#x5BF9;&#x8C61;&#xFF08;secret&#xFF09;">&#x5BC6;&#x94A5;&#x5BF9;&#x8C61;&#xFF08;Secret&#xFF09;</h3>
+<p>Secret&#x662F;&#x7528;&#x6765;&#x4FDD;&#x5B58;&#x548C;&#x4F20;&#x9012;&#x5BC6;&#x7801;&#x3001;&#x5BC6;&#x94A5;&#x3001;&#x8BA4;&#x8BC1;&#x51ED;&#x8BC1;&#x8FD9;&#x4E9B;&#x654F;&#x611F;&#x4FE1;&#x606F;&#x7684;&#x5BF9;&#x8C61;&#x3002;&#x4F7F;&#x7528;Secret&#x7684;&#x597D;&#x5904;&#x662F;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x628A;&#x654F;&#x611F;&#x4FE1;&#x606F;&#x660E;&#x6587;&#x5199;&#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x91CC;&#x3002;&#x5728;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x914D;&#x7F6E;&#x548C;&#x4F7F;&#x7528;&#x670D;&#x52A1;&#x4E0D;&#x53EF;&#x907F;&#x514D;&#x7684;&#x8981;&#x7528;&#x5230;&#x5404;&#x79CD;&#x654F;&#x611F;&#x4FE1;&#x606F;&#x5B9E;&#x73B0;&#x767B;&#x5F55;&#x3001;&#x8BA4;&#x8BC1;&#x7B49;&#x529F;&#x80FD;&#xFF0C;&#x4F8B;&#x5982;&#x8BBF;&#x95EE;AWS&#x5B58;&#x50A8;&#x7684;&#x7528;&#x6237;&#x540D;&#x5BC6;&#x7801;&#x3002;&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x5C06;&#x7C7B;&#x4F3C;&#x7684;&#x654F;&#x611F;&#x4FE1;&#x606F;&#x660E;&#x6587;&#x5199;&#x5728;&#x6240;&#x6709;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x5C06;&#x8FD9;&#x4E9B;&#x4FE1;&#x606F;&#x5B58;&#x5165;&#x4E00;&#x4E2A;Secret&#x5BF9;&#x8C61;&#xFF0C;&#x800C;&#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x901A;&#x8FC7;Secret&#x5BF9;&#x8C61;&#x5F15;&#x7528;&#x8FD9;&#x4E9B;&#x654F;&#x611F;&#x4FE1;&#x606F;&#x3002;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x7684;&#x597D;&#x5904;&#x5305;&#x62EC;&#xFF1A;&#x610F;&#x56FE;&#x660E;&#x786E;&#xFF0C;&#x907F;&#x514D;&#x91CD;&#x590D;&#xFF0C;&#x51CF;&#x5C11;&#x66B4;&#x9732;&#x673A;&#x4F1A;&#x3002;</p>
+<h3 id="&#x7528;&#x6237;&#x5E10;&#x6237;&#xFF08;user-account&#xFF09;&#x548C;&#x670D;&#x52A1;&#x5E10;&#x6237;&#xFF08;service-account&#xFF09;">&#x7528;&#x6237;&#x5E10;&#x6237;&#xFF08;User Account&#xFF09;&#x548C;&#x670D;&#x52A1;&#x5E10;&#x6237;&#xFF08;Service Account&#xFF09;</h3>
+<p>&#x987E;&#x540D;&#x601D;&#x4E49;&#xFF0C;&#x7528;&#x6237;&#x5E10;&#x6237;&#x4E3A;&#x4EBA;&#x63D0;&#x4F9B;&#x8D26;&#x6237;&#x6807;&#x8BC6;&#xFF0C;&#x800C;&#x670D;&#x52A1;&#x8D26;&#x6237;&#x4E3A;&#x8BA1;&#x7B97;&#x673A;&#x8FDB;&#x7A0B;&#x548C;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x8FD0;&#x884C;&#x7684;Pod&#x63D0;&#x4F9B;&#x8D26;&#x6237;&#x6807;&#x8BC6;&#x3002;&#x7528;&#x6237;&#x5E10;&#x6237;&#x548C;&#x670D;&#x52A1;&#x5E10;&#x6237;&#x7684;&#x4E00;&#x4E2A;&#x533A;&#x522B;&#x662F;&#x4F5C;&#x7528;&#x8303;&#x56F4;&#xFF1B;&#x7528;&#x6237;&#x5E10;&#x6237;&#x5BF9;&#x5E94;&#x7684;&#x662F;&#x4EBA;&#x7684;&#x8EAB;&#x4EFD;&#xFF0C;&#x4EBA;&#x7684;&#x8EAB;&#x4EFD;&#x4E0E;&#x670D;&#x52A1;&#x7684;namespace&#x65E0;&#x5173;&#xFF0C;&#x6240;&#x4EE5;&#x7528;&#x6237;&#x8D26;&#x6237;&#x662F;&#x8DE8;namespace&#x7684;&#xFF1B;&#x800C;&#x670D;&#x52A1;&#x5E10;&#x6237;&#x5BF9;&#x5E94;&#x7684;&#x662F;&#x4E00;&#x4E2A;&#x8FD0;&#x884C;&#x4E2D;&#x7A0B;&#x5E8F;&#x7684;&#x8EAB;&#x4EFD;&#xFF0C;&#x4E0E;&#x7279;&#x5B9A;namespace&#x662F;&#x76F8;&#x5173;&#x7684;&#x3002;</p>
+<h3 id="&#x540D;&#x5B57;&#x7A7A;&#x95F4;&#xFF08;namespace&#xFF09;">&#x540D;&#x5B57;&#x7A7A;&#x95F4;&#xFF08;Namespace&#xFF09;</h3>
+<p>&#x540D;&#x5B57;&#x7A7A;&#x95F4;&#x4E3A;K8s&#x96C6;&#x7FA4;&#x63D0;&#x4F9B;&#x865A;&#x62DF;&#x7684;&#x9694;&#x79BB;&#x4F5C;&#x7528;&#xFF0C;K8s&#x96C6;&#x7FA4;&#x521D;&#x59CB;&#x6709;&#x4E24;&#x4E2A;&#x540D;&#x5B57;&#x7A7A;&#x95F4;&#xFF0C;&#x5206;&#x522B;&#x662F;&#x9ED8;&#x8BA4;&#x540D;&#x5B57;&#x7A7A;&#x95F4;default&#x548C;&#x7CFB;&#x7EDF;&#x540D;&#x5B57;&#x7A7A;&#x95F4;kube-system&#xFF0C;&#x9664;&#x6B64;&#x4EE5;&#x5916;&#xFF0C;&#x7BA1;&#x7406;&#x5458;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x540D;&#x5B57;&#x7A7A;&#x95F4;&#x6EE1;&#x8DB3;&#x9700;&#x8981;&#x3002;</p>
+<h3 id="rbac&#x8BBF;&#x95EE;&#x6388;&#x6743;">RBAC&#x8BBF;&#x95EE;&#x6388;&#x6743;</h3>
+<p>K8s&#x5728;1.3&#x7248;&#x672C;&#x4E2D;&#x53D1;&#x5E03;&#x4E86;alpha&#x7248;&#x7684;&#x57FA;&#x4E8E;&#x89D2;&#x8272;&#x7684;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#xFF08;Role-based Access Control&#xFF0C;RBAC&#xFF09;&#x7684;&#x6388;&#x6743;&#x6A21;&#x5F0F;&#x3002;&#x76F8;&#x5BF9;&#x4E8E;&#x57FA;&#x4E8E;&#x5C5E;&#x6027;&#x7684;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#xFF08;Attribute-based Access Control&#xFF0C;ABAC&#xFF09;&#xFF0C;RBAC&#x4E3B;&#x8981;&#x662F;&#x5F15;&#x5165;&#x4E86;&#x89D2;&#x8272;&#xFF08;Role&#xFF09;&#x548C;&#x89D2;&#x8272;&#x7ED1;&#x5B9A;&#xFF08;RoleBinding&#xFF09;&#x7684;&#x62BD;&#x8C61;&#x6982;&#x5FF5;&#x3002;&#x5728;ABAC&#x4E2D;&#xFF0C;K8s&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x8BBF;&#x95EE;&#x7B56;&#x7565;&#x53EA;&#x80FD;&#x8DDF;&#x7528;&#x6237;&#x76F4;&#x63A5;&#x5173;&#x8054;&#xFF1B;&#x800C;&#x5728;RBAC&#x4E2D;&#xFF0C;&#x8BBF;&#x95EE;&#x7B56;&#x7565;&#x53EF;&#x4EE5;&#x8DDF;&#x67D0;&#x4E2A;&#x89D2;&#x8272;&#x5173;&#x8054;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x7528;&#x6237;&#x5728;&#x8DDF;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x89D2;&#x8272;&#x76F8;&#x5173;&#x8054;&#x3002;&#x663E;&#x7136;&#xFF0C;RBAC&#x50CF;&#x5176;&#x4ED6;&#x65B0;&#x529F;&#x80FD;&#x4E00;&#x6837;&#xFF0C;&#x6BCF;&#x6B21;&#x5F15;&#x5165;&#x65B0;&#x529F;&#x80FD;&#xFF0C;&#x90FD;&#x4F1A;&#x5F15;&#x5165;&#x65B0;&#x7684;API&#x5BF9;&#x8C61;&#xFF0C;&#x4ECE;&#x800C;&#x5F15;&#x5165;&#x65B0;&#x7684;&#x6982;&#x5FF5;&#x62BD;&#x8C61;&#xFF0C;&#x800C;&#x8FD9;&#x4E00;&#x65B0;&#x7684;&#x6982;&#x5FF5;&#x62BD;&#x8C61;&#x4E00;&#x5B9A;&#x4F1A;&#x4F7F;&#x96C6;&#x7FA4;&#x670D;&#x52A1;&#x7BA1;&#x7406;&#x548C;&#x4F7F;&#x7528;&#x66F4;&#x5BB9;&#x6613;&#x6269;&#x5C55;&#x548C;&#x91CD;&#x7528;&#x3002;</p>
+<h2 id="&#x603B;&#x7ED3;">&#x603B;&#x7ED3;</h2>
+<p>&#x4ECE;K8s&#x7684;&#x7CFB;&#x7EDF;&#x67B6;&#x6784;&#x3001;&#x6280;&#x672F;&#x6982;&#x5FF5;&#x548C;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;K8s&#x7CFB;&#x7EDF;&#x6700;&#x6838;&#x5FC3;&#x7684;&#x4E24;&#x4E2A;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF1A;&#x4E00;&#x4E2A;&#x662F;<strong>&#x5BB9;&#x9519;&#x6027;</strong>&#xFF0C;&#x4E00;&#x4E2A;&#x662F;<strong>&#x6613;&#x6269;&#x5C55;&#x6027;</strong>&#x3002;&#x5BB9;&#x9519;&#x6027;&#x5B9E;&#x9645;&#x662F;&#x4FDD;&#x8BC1;K8s&#x7CFB;&#x7EDF;&#x7A33;&#x5B9A;&#x6027;&#x548C;&#x5B89;&#x5168;&#x6027;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x6613;&#x6269;&#x5C55;&#x6027;&#x662F;&#x4FDD;&#x8BC1;K8s&#x5BF9;&#x53D8;&#x66F4;&#x53CB;&#x597D;&#xFF0C;&#x53EF;&#x4EE5;&#x5FEB;&#x901F;&#x8FED;&#x4EE3;&#x589E;&#x52A0;&#x65B0;&#x529F;&#x80FD;&#x7684;&#x57FA;&#x7840;&#x3002;</p>
+<h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
+<ul>
+<li><a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/architecture/principles.md" target="_blank">Kubernetes Design Principles</a></li>
+<li><a href="http://www.infoq.com/cn/articles/kubernetes-and-cloud-native-applications-part01" target="_blank">Kubernetes&#x4E0E;&#x4E91;&#x539F;&#x751F;&#x5E94;&#x7528;</a></li>
+</ul>
+<footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
+2018-12-14 07:12:56
+</span></footer>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="architecture.html" class="navigation navigation-prev " aria-label="Previous page: 架构原理">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../components/" class="navigation navigation-next " aria-label="Next page: 核心组件">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"设计理念","level":"2.3","depth":1,"next":{"title":"核心组件","level":"2.4","depth":1,"path":"components/index.md","ref":"components/index.md","articles":[{"title":"etcd","level":"2.4.1","depth":2,"path":"components/etcd.md","ref":"components/etcd.md","articles":[]},{"title":"kube-apiserver","level":"2.4.2","depth":2,"path":"components/apiserver.md","ref":"components/apiserver.md","articles":[]},{"title":"kube-scheduler","level":"2.4.3","depth":2,"path":"components/scheduler.md","ref":"components/scheduler.md","articles":[]},{"title":"kube-controller-manager","level":"2.4.4","depth":2,"path":"components/controller-manager.md","ref":"components/controller-manager.md","articles":[]},{"title":"kubelet","level":"2.4.5","depth":2,"path":"components/kubelet.md","ref":"components/kubelet.md","articles":[]},{"title":"kube-proxy","level":"2.4.6","depth":2,"path":"components/kube-proxy.md","ref":"components/kube-proxy.md","articles":[]},{"title":"kube-dns","level":"2.4.7","depth":2,"path":"components/kube-dns.md","ref":"components/kube-dns.md","articles":[]},{"title":"Federation","level":"2.4.8","depth":2,"path":"components/federation.md","ref":"components/federation.md","articles":[]},{"title":"kubeadm","level":"2.4.9","depth":2,"path":"components/kubeadm.md","ref":"components/kubeadm.md","articles":[]},{"title":"hyperkube","level":"2.4.10","depth":2,"path":"components/hyperkube.md","ref":"components/hyperkube.md","articles":[]},{"title":"kubectl","level":"2.4.11","depth":2,"path":"components/kubectl.md","ref":"components/kubectl.md","articles":[]}]},"previous":{"title":"架构原理","level":"2.2","depth":1,"path":"architecture/architecture.md","ref":"architecture/architecture.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"architecture/concepts.md","mtime":"2018-12-14T07:12:56.602Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-14T07:14:20.076Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-editlink/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-page-toc/anchor-3.1.1.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-page-toc/page-toc.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search-plus/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search-plus/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,41 @@
+{
+    "title": "Kubernetes Handbook",
+    "author": "Pengfei Ni",
+    "gitbook": ">= 3.2.2",
+    "language": "zh-cn",
+    "plugins": [
+        "mermaid",
+        "github",
+        "editlink",
+        "page-toc",
+        "-lunr",
+        "-search",
+        "search-plus",
+        "tbfed-pagefooter"
+    ],
+    "pdf": {
+        "toc": true,
+        "pageNumbers": true,
+        "fontSize": 11
+    },
+    "pluginsConfig": {
+        "page-toc": {
+          "selector": ".markdown-section h1, .markdown-section h2, .markdown-section h3",
+          "position": "before-first",
+          "showByDefault": true
+        },
+        "github": {
+            "url": "https://github.com/feiskyer/kubernetes-handbook"
+        },
+        "editlink": {
+            "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master/en",
+            "label": "Edit this page"
+        },
+        "tbfed-pagefooter": {
+          "copyright":"&copy Pengfei Ni",
+          "modify_label": "Updated at",
+          "modify_format": "YYYY-MM-DD HH:mm:ss"
+        }
+    },
+    "generator": "site"
+}

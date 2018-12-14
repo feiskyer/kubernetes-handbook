@@ -1,0 +1,31 @@
+@startuml
+
+skinparam handwritten true
+
+actor 老王 as Wang
+participant 奸商 as js
+participant 支付宝 as alipay
+participant 无良借款公司 as debit
+participant 土 as dust
+
+Wang -> js: 老板 来个iPhone2017
+note left: 手机摔了\n买个新的吧
+
+js -> Wang: 一口价 10000元
+note right: 生意上门了\n看起来是个肥猪
+
+alt 爷有钱
+    Wang -> alipay: 付款 10000 元
+    alipay -> js: 打款 10000 元
+    js -> Wang: 手机是你的了
+else 手头紧
+    Wang -> debit: 借款 10000 元
+    debit -> Wang: 月息 10% 的借款
+    Wang -> js: 老板 给你钱
+    js -> Wang: 手机是你的了
+    loop 持续半年
+        Wang -> dust: 吃土
+    end
+end
+
+@enduml

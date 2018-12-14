@@ -1,0 +1,25 @@
+.page-toc:before {
+    content: "Table of Contents";
+    font-weight: bold;
+}
+
+.page-toc {
+	float: right;
+    background: #f8f8f8;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 3px;
+    padding: 20px !important;
+	font-size: smaller;
+}
+
+.page-toc ul {
+    padding-left: 20px;
+}
+
+.page-toc > ul {
+	padding-left: 0;
+}
+
+.page-toc li {
+    list-style: none;
+}

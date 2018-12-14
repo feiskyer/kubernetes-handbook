@@ -1,0 +1,2955 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-cn" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>集群排错 · Kubernetes Handbook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Pengfei Ni">
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-page-toc/page-toc.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search-plus/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="pod.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">基础入门</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../introduction/">
+            
+                <a href="../introduction/">
+            
+                    
+                    Kubernetes 简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../introduction/concepts.html">
+            
+                <a href="../introduction/concepts.html">
+            
+                    
+                    Kubernetes 基本概念
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../introduction/101.html">
+            
+                <a href="../introduction/101.html">
+            
+                    
+                    Kubernetes 101
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../introduction/201.html">
+            
+                <a href="../introduction/201.html">
+            
+                    
+                    Kubernetes 201
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../introduction/cluster.html">
+            
+                <a href="../introduction/cluster.html">
+            
+                    
+                    Kubernetes 集群
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">核心原理</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../architecture/">
+            
+                <a href="../architecture/">
+            
+                    
+                    核心原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../architecture/architecture.html">
+            
+                <a href="../architecture/architecture.html">
+            
+                    
+                    架构原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../architecture/concepts.html">
+            
+                <a href="../architecture/concepts.html">
+            
+                    
+                    设计理念
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4" data-path="../components/">
+            
+                <a href="../components/">
+            
+                    
+                    核心组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.4.1" data-path="../components/etcd.html">
+            
+                <a href="../components/etcd.html">
+            
+                    
+                    etcd
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.2" data-path="../components/apiserver.html">
+            
+                <a href="../components/apiserver.html">
+            
+                    
+                    kube-apiserver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.3" data-path="../components/scheduler.html">
+            
+                <a href="../components/scheduler.html">
+            
+                    
+                    kube-scheduler
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.4" data-path="../components/controller-manager.html">
+            
+                <a href="../components/controller-manager.html">
+            
+                    
+                    kube-controller-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.5" data-path="../components/kubelet.html">
+            
+                <a href="../components/kubelet.html">
+            
+                    
+                    kubelet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.6" data-path="../components/kube-proxy.html">
+            
+                <a href="../components/kube-proxy.html">
+            
+                    
+                    kube-proxy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.7" data-path="../components/kube-dns.html">
+            
+                <a href="../components/kube-dns.html">
+            
+                    
+                    kube-dns
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.8" data-path="../components/federation.html">
+            
+                <a href="../components/federation.html">
+            
+                    
+                    Federation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.9" data-path="../components/kubeadm.html">
+            
+                <a href="../components/kubeadm.html">
+            
+                    
+                    kubeadm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.10" data-path="../components/hyperkube.html">
+            
+                <a href="../components/hyperkube.html">
+            
+                    
+                    hyperkube
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.11" data-path="../components/kubectl.html">
+            
+                <a href="../components/kubectl.html">
+            
+                    
+                    kubectl
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5" data-path="../concepts/">
+            
+                <a href="../concepts/">
+            
+                    
+                    资源对象
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.5.1" data-path="../concepts/autoscaling.html">
+            
+                <a href="../concepts/autoscaling.html">
+            
+                    
+                    Autoscaling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.2" data-path="../concepts/configmap.html">
+            
+                <a href="../concepts/configmap.html">
+            
+                    
+                    ConfigMap
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.3" data-path="../concepts/cronjob.html">
+            
+                <a href="../concepts/cronjob.html">
+            
+                    
+                    CronJob
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.4" data-path="../concepts/customresourcedefinition.html">
+            
+                <a href="../concepts/customresourcedefinition.html">
+            
+                    
+                    CustomResourceDefinition
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.5" data-path="../concepts/daemonset.html">
+            
+                <a href="../concepts/daemonset.html">
+            
+                    
+                    DaemonSet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.6" data-path="../concepts/deployment.html">
+            
+                <a href="../concepts/deployment.html">
+            
+                    
+                    Deployment
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.7" data-path="../concepts/ingress.html">
+            
+                <a href="../concepts/ingress.html">
+            
+                    
+                    Ingress
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.8" data-path="../concepts/job.html">
+            
+                <a href="../concepts/job.html">
+            
+                    
+                    Job
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.9" data-path="../concepts/local-volume.html">
+            
+                <a href="../concepts/local-volume.html">
+            
+                    
+                    LocalVolume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.10" data-path="../concepts/namespace.html">
+            
+                <a href="../concepts/namespace.html">
+            
+                    
+                    Namespace
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.11" data-path="../concepts/network-policy.html">
+            
+                <a href="../concepts/network-policy.html">
+            
+                    
+                    NetworkPolicy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.12" data-path="../concepts/node.html">
+            
+                <a href="../concepts/node.html">
+            
+                    
+                    Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.13" data-path="../concepts/persistent-volume.html">
+            
+                <a href="../concepts/persistent-volume.html">
+            
+                    
+                    PersistentVolume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.14" data-path="../concepts/pod.html">
+            
+                <a href="../concepts/pod.html">
+            
+                    
+                    Pod
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.15" data-path="../concepts/podpreset.html">
+            
+                <a href="../concepts/podpreset.html">
+            
+                    
+                    PodPreset
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.16" data-path="../concepts/replicaset.html">
+            
+                <a href="../concepts/replicaset.html">
+            
+                    
+                    ReplicaSet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.17" data-path="../concepts/quota.html">
+            
+                <a href="../concepts/quota.html">
+            
+                    
+                    Resource Quota
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.18" data-path="../concepts/secret.html">
+            
+                <a href="../concepts/secret.html">
+            
+                    
+                    Secret
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.19" data-path="../concepts/security-context.html">
+            
+                <a href="../concepts/security-context.html">
+            
+                    
+                    SecurityContext
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.20" data-path="../concepts/service.html">
+            
+                <a href="../concepts/service.html">
+            
+                    
+                    Service
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.21" data-path="../concepts/serviceaccount.html">
+            
+                <a href="../concepts/serviceaccount.html">
+            
+                    
+                    ServiceAccount
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.22" data-path="../concepts/statefulset.html">
+            
+                <a href="../concepts/statefulset.html">
+            
+                    
+                    StatefulSet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
+            
+                <a href="../concepts/thirdpartyresources.html">
+            
+                    
+                    ThirdPartyResources
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+            
+                <a href="../concepts/volume.html">
+            
+                    
+                    Volume
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">部署配置</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../deploy/">
+            
+                <a href="../deploy/">
+            
+                    
+                    部署指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../deploy/kubectl.html">
+            
+                <a href="../deploy/kubectl.html">
+            
+                    
+                    kubectl 安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../deploy/single.html">
+            
+                <a href="../deploy/single.html">
+            
+                    
+                    单机部署
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../deploy/feature-gates.html">
+            
+                <a href="../deploy/feature-gates.html">
+            
+                    
+                    特性开关
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5" data-path="../deploy/kubernetes-configuration-best-practice.html">
+            
+                <a href="../deploy/kubernetes-configuration-best-practice.html">
+            
+                    
+                    最佳配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6" data-path="../deploy/cluster.html">
+            
+                <a href="../deploy/cluster.html">
+            
+                    
+                    集群部署
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.6.1" data-path="../deploy/kubeadm.html">
+            
+                <a href="../deploy/kubeadm.html">
+            
+                    
+                    kubeadm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.2" data-path="../deploy/kops.html">
+            
+                <a href="../deploy/kops.html">
+            
+                    
+                    kops
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.3" data-path="../deploy/kubespray.html">
+            
+                <a href="../deploy/kubespray.html">
+            
+                    
+                    Kubespray
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.4" data-path="../deploy/azure.html">
+            
+                <a href="../deploy/azure.html">
+            
+                    
+                    Azure
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.5" data-path="../deploy/windows.html">
+            
+                <a href="../deploy/windows.html">
+            
+                    
+                    Windows
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.6" data-path="../deploy/k8s-linuxkit.html">
+            
+                <a href="../deploy/k8s-linuxkit.html">
+            
+                    
+                    LinuxKit
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6.7" >
+            
+                <a target="_blank" href="https://github.com/gjmzj/kubeasz">
+            
+                    
+                    kubeasz
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7" data-path="../addons/">
+            
+                <a href="../addons/">
+            
+                    
+                    附加组件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.7.1" data-path="../addons/addon-manager.html">
+            
+                <a href="../addons/addon-manager.html">
+            
+                    
+                    Addon-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.2" data-path="../components/kube-dns.html">
+            
+                <a href="../components/kube-dns.html">
+            
+                    
+                    DNS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.3" data-path="../addons/dashboard.html">
+            
+                <a href="../addons/dashboard.html">
+            
+                    
+                    Dashboard
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.4" data-path="../addons/monitor.html">
+            
+                <a href="../addons/monitor.html">
+            
+                    
+                    监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.5" data-path="../addons/logging.html">
+            
+                <a href="../addons/logging.html">
+            
+                    
+                    日志
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.6" data-path="../addons/metrics.html">
+            
+                <a href="../addons/metrics.html">
+            
+                    
+                    Metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.7" data-path="../practice/gpu.html">
+            
+                <a href="../practice/gpu.html">
+            
+                    
+                    GPU
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.8" data-path="../addons/cluster-autoscaler.html">
+            
+                <a href="../addons/cluster-autoscaler.html">
+            
+                    
+                    Cluster Autoscaler
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7.9" data-path="../addons/ip-masq-agent.html">
+            
+                <a href="../addons/ip-masq-agent.html">
+            
+                    
+                    ip-masq-agent
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="../deploy/kubernetes-the-hard-way/">
+            
+                <a href="../deploy/kubernetes-the-hard-way/">
+            
+                    
+                    Kubernetes-The-Hard-Way
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.8.1" data-path="../deploy/kubernetes-the-hard-way/01-prerequisites.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/01-prerequisites.html">
+            
+                    
+                    准备部署环境
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.2" data-path="../deploy/kubernetes-the-hard-way/02-client-tools.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/02-client-tools.html">
+            
+                    
+                    安装必要工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.3" data-path="../deploy/kubernetes-the-hard-way/03-compute-resources.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/03-compute-resources.html">
+            
+                    
+                    创建计算资源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.4" data-path="../deploy/kubernetes-the-hard-way/04-certificate-authority.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/04-certificate-authority.html">
+            
+                    
+                    配置创建证书
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.5" data-path="../deploy/kubernetes-the-hard-way/05-kubernetes-configuration-files.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/05-kubernetes-configuration-files.html">
+            
+                    
+                    配置生成配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.6" data-path="../deploy/kubernetes-the-hard-way/06-data-encryption-keys.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/06-data-encryption-keys.html">
+            
+                    
+                    配置生成密钥
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.7" data-path="../deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.html">
+            
+                    
+                    部署 Etcd 群集
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.8" data-path="../deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.html">
+            
+                    
+                    部署控制节点
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.9" data-path="../deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.html">
+            
+                    
+                    部署计算节点
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.10" data-path="../deploy/kubernetes-the-hard-way/10-configuring-kubectl.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/10-configuring-kubectl.html">
+            
+                    
+                    配置 Kubectl
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.11" data-path="../deploy/kubernetes-the-hard-way/11-pod-network-routes.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/11-pod-network-routes.html">
+            
+                    
+                    配置网络路由
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.12" data-path="../deploy/kubernetes-the-hard-way/12-dns-addon.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/12-dns-addon.html">
+            
+                    
+                    部署 DNS 扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.13" data-path="../deploy/kubernetes-the-hard-way/13-smoke-test.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/13-smoke-test.html">
+            
+                    
+                    烟雾测试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8.14" data-path="../deploy/kubernetes-the-hard-way/14-cleanup.html">
+            
+                <a href="../deploy/kubernetes-the-hard-way/14-cleanup.html">
+            
+                    
+                    删除集群
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">插件扩展</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../plugins/api.html">
+            
+                <a href="../plugins/api.html">
+            
+                    
+                    API 扩展
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../plugins/aggregation.html">
+            
+                <a href="../plugins/aggregation.html">
+            
+                    
+                    Aggregation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="../concepts/customresourcedefinition.html">
+            
+                <a href="../concepts/customresourcedefinition.html">
+            
+                    
+                    CustomResourceDefinition
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="../plugins/auth.html">
+            
+                <a href="../plugins/auth.html">
+            
+                    
+                    访问控制
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.2.1" data-path="../plugins/authentication.html">
+            
+                <a href="../plugins/authentication.html">
+            
+                    
+                    认证
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2.2" data-path="../plugins/rbac.html">
+            
+                <a href="../plugins/rbac.html">
+            
+                    
+                    RBAC 授权
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2.3" data-path="../plugins/admission.html">
+            
+                <a href="../plugins/admission.html">
+            
+                    
+                    准入控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.3" data-path="../plugins/scheduler.html">
+            
+                <a href="../plugins/scheduler.html">
+            
+                    
+                    Scheduler 扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4" data-path="../network/network.html">
+            
+                <a href="../network/network.html">
+            
+                    
+                    网络插件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.4.1" data-path="../network/cni/">
+            
+                <a href="../network/cni/">
+            
+                    
+                    CNI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.2" data-path="../network/flannel/">
+            
+                <a href="../network/flannel/">
+            
+                    
+                    Flannel
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.3" data-path="../network/calico/">
+            
+                <a href="../network/calico/">
+            
+                    
+                    Calico
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.4" data-path="../network/weave/">
+            
+                <a href="../network/weave/">
+            
+                    
+                    Weave
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.5" data-path="../network/cilium/">
+            
+                <a href="../network/cilium/">
+            
+                    
+                    Cilium
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.6" data-path="../network/ovn-kubernetes.html">
+            
+                <a href="../network/ovn-kubernetes.html">
+            
+                    
+                    OVN
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.7" data-path="../network/contiv/">
+            
+                <a href="../network/contiv/">
+            
+                    
+                    Contiv
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.8" data-path="../network/sriov/">
+            
+                <a href="../network/sriov/">
+            
+                    
+                    SR-IOV
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.9" data-path="../network/romana/">
+            
+                <a href="../network/romana/">
+            
+                    
+                    Romana
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.10" data-path="../network/opencontrail/">
+            
+                <a href="../network/opencontrail/">
+            
+                    
+                    OpenContrail
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4.11" data-path="../network/kuryr/">
+            
+                <a href="../network/kuryr/">
+            
+                    
+                    Kuryr
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.5" data-path="../plugins/CRI.html">
+            
+                <a href="../plugins/CRI.html">
+            
+                    
+                    运行时插件 CRI
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.5.1" data-path="../plugins/cri-tools.html">
+            
+                <a href="../plugins/cri-tools.html">
+            
+                    
+                    CRI-tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.5.2" data-path="../deploy/frakti/">
+            
+                <a href="../deploy/frakti/">
+            
+                    
+                    Frakti
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.6" data-path="../plugins/volume.html">
+            
+                <a href="../plugins/volume.html">
+            
+                    
+                    存储插件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.6.1" data-path="../plugins/csi.html">
+            
+                <a href="../plugins/csi.html">
+            
+                    
+                    容器存储接口 CSI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.6.2" data-path="../plugins/flex-volume.html">
+            
+                <a href="../plugins/flex-volume.html">
+            
+                    
+                    FlexVolume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.6.3" data-path="../plugins/glusterfs.html">
+            
+                <a href="../plugins/glusterfs.html">
+            
+                    
+                    glusterfs
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.7" data-path="../plugins/network-policy.html">
+            
+                <a href="../plugins/network-policy.html">
+            
+                    
+                    网络策略
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8" data-path="../plugins/ingress.html">
+            
+                <a href="../plugins/ingress.html">
+            
+                    
+                    Ingress Controller
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.8.1" data-path="../practice/ingress_letsencrypt.html">
+            
+                <a href="../practice/ingress_letsencrypt.html">
+            
+                    
+                    Ingress + Letsencrypt
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8.2" data-path="../practice/minikube-ingress.html">
+            
+                <a href="../practice/minikube-ingress.html">
+            
+                    
+                    minikube Ingress
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8.3" data-path="../practice/service-discovery-lb/service-discovery-and-load-balancing.html">
+            
+                <a href="../practice/service-discovery-lb/service-discovery-and-load-balancing.html">
+            
+                    
+                    Traefik Ingress
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.8.4" data-path="../plugins/keepalived-vip.html">
+            
+                <a href="../plugins/keepalived-vip.html">
+            
+                    
+                    Keepalived-VIP
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.9" data-path="../plugins/cloud-provider.html">
+            
+                <a href="../plugins/cloud-provider.html">
+            
+                    
+                    Cloud Provider 扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.10" data-path="../plugins/device.html">
+            
+                <a href="../plugins/device.html">
+            
+                    
+                    Device 插件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">服务治理</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" data-path="../apps/">
+            
+                <a href="../apps/">
+            
+                    
+                    服务治理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../apps/patterns.html">
+            
+                <a href="../apps/patterns.html">
+            
+                    
+                    一般准则
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../apps/service-rolling-update.html">
+            
+                <a href="../apps/service-rolling-update.html">
+            
+                    
+                    滚动升级
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.3" data-path="../apps/helm.html">
+            
+                <a href="../apps/helm.html">
+            
+                    
+                    Helm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.4" data-path="../apps/operator.html">
+            
+                <a href="../apps/operator.html">
+            
+                    
+                    Operator
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.5" data-path="../apps/service-mesh.html">
+            
+                <a href="../apps/service-mesh.html">
+            
+                    
+                    Service Mesh
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.6" data-path="../apps/linkerd.html">
+            
+                <a href="../apps/linkerd.html">
+            
+                    
+                    Linkerd
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.7" data-path="../apps/linkerd2.html">
+            
+                <a href="../apps/linkerd2.html">
+            
+                    
+                    Linkerd2
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="../apps/istio.html">
+            
+                <a href="../apps/istio.html">
+            
+                    
+                    Istio
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.2.1" data-path="../apps/istio-deploy.html">
+            
+                <a href="../apps/istio-deploy.html">
+            
+                    
+                    安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.2" data-path="../apps/istio-traffic-management.html">
+            
+                <a href="../apps/istio-traffic-management.html">
+            
+                    
+                    流量管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.3" data-path="../apps/istio-security.html">
+            
+                <a href="../apps/istio-security.html">
+            
+                    
+                    安全管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.4" data-path="../apps/istio-policy.html">
+            
+                <a href="../apps/istio-policy.html">
+            
+                    
+                    策略管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.5" data-path="../apps/istio-metrics.html">
+            
+                <a href="../apps/istio-metrics.html">
+            
+                    
+                    度量管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.6" data-path="../apps/istio-troubleshoot.html">
+            
+                <a href="../apps/istio-troubleshoot.html">
+            
+                    
+                    排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.7" data-path="../apps/istio-community.html">
+            
+                <a href="../apps/istio-community.html">
+            
+                    
+                    社区
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3" data-path="../apps/devops.html">
+            
+                <a href="../apps/devops.html">
+            
+                    
+                    Devops
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.3.1" data-path="../apps/draft.html">
+            
+                <a href="../apps/draft.html">
+            
+                    
+                    Draft
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.2" data-path="../apps/jenkinsx.html">
+            
+                <a href="../apps/jenkinsx.html">
+            
+                    
+                    Jenkins X
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.3" data-path="../apps/spinnaker.html">
+            
+                <a href="../apps/spinnaker.html">
+            
+                    
+                    Spinnaker
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.4" data-path="../apps/kompose.html">
+            
+                <a href="../apps/kompose.html">
+            
+                    
+                    Kompose
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.5" data-path="../apps/skaffold.html">
+            
+                <a href="../apps/skaffold.html">
+            
+                    
+                    Skaffold
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.6" data-path="../apps/argo.html">
+            
+                <a href="../apps/argo.html">
+            
+                    
+                    Argo
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.7" data-path="../apps/flux.html">
+            
+                <a href="../apps/flux.html">
+            
+                    
+                    Flux GitOps
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">实践案例</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" data-path="../practice/">
+            
+                <a href="../practice/">
+            
+                    
+                    实践案例
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+            
+                <a href="../practice/ha.html">
+            
+                    
+                    高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+            
+                <a href="../practice/debugging.html">
+            
+                    
+                    调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+            
+                <a href="../practice/portmap.html">
+            
+                    
+                    端口映射
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+            
+                <a href="../practice/portforward.html">
+            
+                    
+                    端口转发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+            
+                <a href="../practice/gpu.html">
+            
+                    
+                    GPU
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+            
+                <a href="../practice/hugepage.html">
+            
+                    
+                    HugePage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+            
+                <a href="../practice/security.html">
+            
+                    
+                    安全
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+            
+                <a href="../practice/audit.html">
+            
+                    
+                    审计
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.9" data-path="../practice/big-cluster.html">
+            
+                <a href="../practice/big-cluster.html">
+            
+                    
+                    大规模集群
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" data-path="../machine-learning/">
+            
+                <a href="../machine-learning/">
+            
+                    
+                    大数据与机器学习
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.2.1" data-path="../machine-learning/spark.html">
+            
+                <a href="../machine-learning/spark.html">
+            
+                    
+                    Spark
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.2" data-path="../machine-learning/tensorflow.html">
+            
+                <a href="../machine-learning/tensorflow.html">
+            
+                    
+                    Tensorflow
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3" data-path="../serverless/">
+            
+                <a href="../serverless/">
+            
+                    
+                    Serverless
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">排错指南</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    排错概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="7.2" data-path="cluster.html">
+            
+                <a href="cluster.html">
+            
+                    
+                    集群排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.3" data-path="pod.html">
+            
+                <a href="pod.html">
+            
+                    
+                    Pod 排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.4" data-path="network.html">
+            
+                <a href="network.html">
+            
+                    
+                    网络排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="pv.html">
+            
+                <a href="pv.html">
+            
+                    
+                    PV 排错
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.5.1" data-path="azuredisk.html">
+            
+                <a href="azuredisk.html">
+            
+                    
+                    AzureDisk
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5.2" data-path="azurefile.html">
+            
+                <a href="azurefile.html">
+            
+                    
+                    AzureFile
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="7.6" data-path="windows.html">
+            
+                <a href="windows.html">
+            
+                    
+                    Windows 排错
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.7" data-path="cloud.html">
+            
+                <a href="cloud.html">
+            
+                    
+                    云平台排错
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.7.1" data-path="azure.html">
+            
+                <a href="azure.html">
+            
+                    
+                    Azure
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="7.8" data-path="tools.html">
+            
+                <a href="tools.html">
+            
+                    
+                    排错工具
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">社区贡献</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" data-path="../devel/">
+            
+                <a href="../devel/">
+            
+                    
+                    开发指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" data-path="../devel/testing.html">
+            
+                <a href="../devel/testing.html">
+            
+                    
+                    单元测试和集成测试
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" data-path="../devel/contribute.html">
+            
+                <a href="../devel/contribute.html">
+            
+                    
+                    社区贡献
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">附录</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" data-path="../appendix/ecosystem.html">
+            
+                <a href="../appendix/ecosystem.html">
+            
+                    
+                    生态圈
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.2" data-path="../appendix/tutorial.html">
+            
+                <a href="../appendix/tutorial.html">
+            
+                    
+                    学习资源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3" data-path="../appendix/mirrors.html">
+            
+                <a href="../appendix/mirrors.html">
+            
+                    
+                    国内镜像
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.4" data-path="../CONTRIBUTING.html">
+            
+                <a href="../CONTRIBUTING.html">
+            
+                    
+                    如何贡献
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.5" data-path="../appendix/reference.html">
+            
+                <a href="../appendix/reference.html">
+            
+                    
+                    参考文档
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本書使用 GitBook 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >集群排错</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div class="search-plus" id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x5F02;&#x5E38;&#x6392;&#x9519;">&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x5F02;&#x5E38;&#x6392;&#x9519;</h1>
+<p>&#x672C;&#x7AE0;&#x4ECB;&#x7ECD;&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x5F02;&#x5E38;&#x7684;&#x6392;&#x9519;&#x65B9;&#x6CD5;&#xFF0C;&#x5305;&#x62EC; Kubernetes &#x4E3B;&#x8981;&#x7EC4;&#x4EF6;&#x4EE5;&#x53CA;&#x5FC5;&#x5907;&#x6269;&#x5C55;&#xFF08;&#x5982; kube-dns&#xFF09;&#x7B49;&#xFF0C;&#x800C;&#x6709;&#x5173;&#x7F51;&#x7EDC;&#x7684;&#x5F02;&#x5E38;&#x6392;&#x9519;&#x8BF7;&#x53C2;&#x8003;<a href="network.html">&#x7F51;&#x7EDC;&#x5F02;&#x5E38;&#x6392;&#x9519;&#x65B9;&#x6CD5;</a>&#x3002;</p>
+<h2 id="&#x6982;&#x8FF0;">&#x6982;&#x8FF0;</h2>
+<p>&#x6392;&#x67E5;&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x5F02;&#x5E38;&#x95EE;&#x9898;&#x901A;&#x5E38;&#x4ECE; Node &#x548C; Kubernetes &#x670D;&#x52A1; &#x7684;&#x72B6;&#x6001;&#x51FA;&#x53D1;&#xFF0C;&#x5B9A;&#x4F4D;&#x51FA;&#x5177;&#x4F53;&#x7684;&#x5F02;&#x5E38;&#x670D;&#x52A1;&#xFF0C;&#x518D;&#x8FDB;&#x800C;&#x5BFB;&#x627E;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x3002;&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x5F02;&#x5E38;&#x53EF;&#x80FD;&#x7684;&#x539F;&#x56E0;&#x6BD4;&#x8F83;&#x591A;&#xFF0C;&#x5E38;&#x89C1;&#x7684;&#x6709;</p>
+<ul>
+<li>&#x865A;&#x62DF;&#x673A;&#x6216;&#x7269;&#x7406;&#x673A;&#x5B95;&#x673A;</li>
+<li>&#x7F51;&#x7EDC;&#x5206;&#x533A;</li>
+<li>Kubernetes &#x670D;&#x52A1;&#x672A;&#x6B63;&#x5E38;&#x542F;&#x52A8;</li>
+<li>&#x6570;&#x636E;&#x4E22;&#x5931;&#x6216;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x4E0D;&#x53EF;&#x7528;&#xFF08;&#x4E00;&#x822C;&#x5728;&#x516C;&#x6709;&#x4E91;&#x6216;&#x79C1;&#x6709;&#x4E91;&#x5E73;&#x53F0;&#x4E2D;&#xFF09;</li>
+<li>&#x64CD;&#x4F5C;&#x5931;&#x8BEF;&#xFF08;&#x5982;&#x914D;&#x7F6E;&#x9519;&#x8BEF;&#xFF09;</li>
+</ul>
+<p>&#x6309;&#x7167;&#x4E0D;&#x540C;&#x7684;&#x7EC4;&#x4EF6;&#x6765;&#x8BF4;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x539F;&#x56E0;&#x53EF;&#x80FD;&#x5305;&#x62EC;</p>
+<ul>
+<li>kube-apiserver &#x65E0;&#x6CD5;&#x542F;&#x52A8;&#x4F1A;&#x5BFC;&#x81F4;<ul>
+<li>&#x96C6;&#x7FA4;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;</li>
+<li>&#x5DF2;&#x6709;&#x7684; Pod &#x548C;&#x670D;&#x52A1;&#x6B63;&#x5E38;&#x8FD0;&#x884C;&#xFF08;&#x4F9D;&#x8D56;&#x4E8E; Kubernetes API &#x7684;&#x9664;&#x5916;&#xFF09;</li>
+</ul>
+</li>
+<li>etcd &#x96C6;&#x7FA4;&#x5F02;&#x5E38;&#x4F1A;&#x5BFC;&#x81F4;<ul>
+<li>kube-apiserver &#x65E0;&#x6CD5;&#x6B63;&#x5E38;&#x8BFB;&#x5199;&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#xFF0C;&#x8FDB;&#x800C;&#x5BFC;&#x81F4; Kubernetes API &#x8BBF;&#x95EE;&#x51FA;&#x9519;</li>
+<li>kubelet &#x65E0;&#x6CD5;&#x5468;&#x671F;&#x6027;&#x66F4;&#x65B0;&#x72B6;&#x6001;</li>
+</ul>
+</li>
+<li>kube-controller-manager/kube-scheduler &#x5F02;&#x5E38;&#x4F1A;&#x5BFC;&#x81F4;<ul>
+<li>&#x590D;&#x5236;&#x63A7;&#x5236;&#x5668;&#x3001;&#x8282;&#x70B9;&#x63A7;&#x5236;&#x5668;&#x3001;&#x4E91;&#x670D;&#x52A1;&#x63A7;&#x5236;&#x5668;&#x7B49;&#x65E0;&#x6CD5;&#x5DE5;&#x4F5C;&#xFF0C;&#x4ECE;&#x800C;&#x5BFC;&#x81F4; Deployment&#x3001;Service &#x7B49;&#x65E0;&#x6CD5;&#x5DE5;&#x4F5C;&#xFF0C;&#x4E5F;&#x65E0;&#x6CD5;&#x6CE8;&#x518C;&#x65B0;&#x7684; Node &#x5230;&#x96C6;&#x7FA4;&#x4E2D;&#x6765;</li>
+<li>&#x65B0;&#x521B;&#x5EFA;&#x7684; Pod &#x65E0;&#x6CD5;&#x8C03;&#x5EA6;&#xFF08;&#x603B;&#x662F; Pending &#x72B6;&#x6001;&#xFF09;</li>
+</ul>
+</li>
+<li>Node &#x672C;&#x8EAB;&#x5B95;&#x673A;&#x6216;&#x8005; Kubelet &#x65E0;&#x6CD5;&#x542F;&#x52A8;&#x4F1A;&#x5BFC;&#x81F4;<ul>
+<li>Node &#x4E0A;&#x9762;&#x7684; Pod &#x65E0;&#x6CD5;&#x6B63;&#x5E38;&#x8FD0;&#x884C;</li>
+<li>&#x5DF2;&#x5728;&#x8FD0;&#x884C;&#x7684; Pod &#x65E0;&#x6CD5;&#x6B63;&#x5E38;&#x7EC8;&#x6B62;</li>
+</ul>
+</li>
+<li>&#x7F51;&#x7EDC;&#x5206;&#x533A;&#x4F1A;&#x5BFC;&#x81F4; Kubelet &#x7B49;&#x4E0E;&#x63A7;&#x5236;&#x5E73;&#x9762;&#x901A;&#x4FE1;&#x5F02;&#x5E38;&#x4EE5;&#x53CA; Pod &#x4E4B;&#x95F4;&#x901A;&#x4FE1;&#x5F02;&#x5E38;</li>
+</ul>
+<p>&#x4E3A;&#x4E86;&#x7EF4;&#x6301;&#x96C6;&#x7FA4;&#x7684;&#x5065;&#x5EB7;&#x72B6;&#x6001;&#xFF0C;&#x63A8;&#x8350;&#x5728;&#x90E8;&#x7F72;&#x96C6;&#x7FA4;&#x65F6;&#x5C31;&#x8003;&#x8651;&#x4EE5;&#x4E0B;</p>
+<ul>
+<li>&#x5728;&#x4E91;&#x5E73;&#x53F0;&#x4E0A;&#x5F00;&#x542F; VM &#x7684;&#x81EA;&#x52A8;&#x91CD;&#x542F;&#x529F;&#x80FD;</li>
+<li>&#x4E3A; Etcd &#x914D;&#x7F6E;&#x591A;&#x8282;&#x70B9;&#x9AD8;&#x53EF;&#x7528;&#x96C6;&#x7FA4;&#xFF0C;&#x4F7F;&#x7528;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#xFF08;&#x5982; AWS EBS &#x7B49;&#xFF09;&#xFF0C;&#x5B9A;&#x671F;&#x5907;&#x4EFD;&#x6570;&#x636E;</li>
+<li>&#x4E3A;&#x63A7;&#x5236;&#x5E73;&#x9762;&#x914D;&#x7F6E;&#x9AD8;&#x53EF;&#x7528;&#xFF0C;&#x6BD4;&#x5982;&#x591A; kube-apiserver &#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x4EE5;&#x53CA;&#x591A;&#x8282;&#x70B9;&#x8FD0;&#x884C; kube-controller-manager&#x3001;kube-scheduler &#x4EE5;&#x53CA; kube-dns &#x7B49;</li>
+<li>&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x590D;&#x5236;&#x63A7;&#x5236;&#x5668;&#x548C; Service&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x76F4;&#x63A5;&#x7BA1;&#x7406; Pod</li>
+<li>&#x8DE8;&#x5730;&#x57DF;&#x7684;&#x591A; Kubernetes &#x96C6;&#x7FA4;</li>
+</ul>
+<h2 id="&#x67E5;&#x770B;-node-&#x72B6;&#x6001;">&#x67E5;&#x770B; Node &#x72B6;&#x6001;</h2>
+<p>&#x4E00;&#x822C;&#x6765;&#x8BF4;&#xFF0C;&#x53EF;&#x4EE5;&#x9996;&#x5148;&#x67E5;&#x770B; Node &#x7684;&#x72B6;&#x6001;&#xFF0C;&#x786E;&#x8BA4; Node &#x672C;&#x8EAB;&#x662F;&#x4E0D;&#x662F; Ready &#x72B6;&#x6001;</p>
+<pre><code class="lang-sh">kubectl get nodes
+kubectl describe node &lt;node-name&gt;
+</code></pre>
+<p>&#x5982;&#x679C;&#x662F; NotReady &#x72B6;&#x6001;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x6267;&#x884C; <code>kubectl describe node &lt;node-name&gt;</code> &#x547D;&#x4EE4;&#x6765;&#x67E5;&#x770B;&#x5F53;&#x524D; Node &#x7684;&#x4E8B;&#x4EF6;&#x3002;&#x8FD9;&#x4E9B;&#x4E8B;&#x4EF6;&#x901A;&#x5E38;&#x90FD;&#x4F1A;&#x6709;&#x52A9;&#x4E8E;&#x6392;&#x67E5; Node &#x53D1;&#x751F;&#x7684;&#x95EE;&#x9898;&#x3002;</p>
+<h2 id="ssh-&#x767B;&#x5F55;-node">SSH &#x767B;&#x5F55; Node</h2>
+<p>&#x5728;&#x6392;&#x67E5; Kubernetes &#x95EE;&#x9898;&#x65F6;&#xFF0C;&#x901A;&#x5E38;&#x9700;&#x8981; SSH &#x767B;&#x5F55;&#x5230;&#x5177;&#x4F53;&#x7684; Node &#x4E0A;&#x9762;&#x67E5;&#x770B; kubelet&#x3001;docker&#x3001;iptables &#x7B49;&#x7684;&#x72B6;&#x6001;&#x548C;&#x65E5;&#x5FD7;&#x3002;&#x5728;&#x4F7F;&#x7528;&#x4E91;&#x5E73;&#x53F0;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x7ED9;&#x76F8;&#x5E94;&#x7684; VM &#x7ED1;&#x5B9A;&#x4E00;&#x4E2A;&#x516C;&#x7F51; IP&#xFF1B;&#x800C;&#x5728;&#x7269;&#x7406;&#x673A;&#x90E8;&#x7F72;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8DEF;&#x7531;&#x5668;&#x4E0A;&#x7684;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x6765;&#x8BBF;&#x95EE;&#x3002;&#x4F46;&#x66F4;&#x7B80;&#x5355;&#x7684;&#x65B9;&#x6CD5;&#x662F;&#x4F7F;&#x7528; SSH Pod &#xFF08;&#x4E0D;&#x8981;&#x5FD8;&#x8BB0;&#x66FF;&#x6362;&#x6210;&#x4F60;&#x81EA;&#x5DF1;&#x7684; nodeName&#xFF09;&#xFF1A;</p>
+<pre><code class="lang-yaml"><span class="hljs-comment"># cat ssh.yaml</span>
+<span class="hljs-attr">apiVersion:</span> v1
+<span class="hljs-attr">kind:</span> Service
+<span class="hljs-attr">metadata:</span>
+<span class="hljs-attr">  name:</span> ssh
+<span class="hljs-attr">spec:</span>
+<span class="hljs-attr">  selector:</span>
+<span class="hljs-attr">    app:</span> ssh
+<span class="hljs-attr">  type:</span> LoadBalancer
+<span class="hljs-attr">  ports:</span>
+<span class="hljs-attr">  - protocol:</span> TCP
+<span class="hljs-attr">    port:</span> <span class="hljs-number">22</span>
+<span class="hljs-attr">    targetPort:</span> <span class="hljs-number">22</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> extensions/v1beta1
+<span class="hljs-attr">kind:</span> Deployment
+<span class="hljs-attr">metadata:</span>
+<span class="hljs-attr">  name:</span> ssh
+<span class="hljs-attr">  labels:</span>
+<span class="hljs-attr">    app:</span> ssh
+<span class="hljs-attr">spec:</span>
+<span class="hljs-attr">  replicas:</span> <span class="hljs-number">1</span>
+<span class="hljs-attr">  selector:</span>
+<span class="hljs-attr">    matchLabels:</span>
+<span class="hljs-attr">      app:</span> ssh
+<span class="hljs-attr">  template:</span>
+<span class="hljs-attr">    metadata:</span>
+<span class="hljs-attr">      labels:</span>
+<span class="hljs-attr">        app:</span> ssh
+<span class="hljs-attr">    spec:</span>
+<span class="hljs-attr">      containers:</span>
+<span class="hljs-attr">      - name:</span> alpine
+<span class="hljs-attr">        image:</span> alpine
+<span class="hljs-attr">        ports:</span>
+<span class="hljs-attr">        - containerPort:</span> <span class="hljs-number">22</span>
+<span class="hljs-attr">        stdin:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">        tty:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">      hostNetwork:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">      nodeName:</span> &lt;node-name<span class="hljs-string">&gt;
+</span></code></pre>
+<pre><code class="lang-sh">$ kubectl create <span class="hljs-_">-f</span> ssh.yaml
+$ kubectl get svc ssh
+NAME      TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+ssh       LoadBalancer   10.0.99.149   52.52.52.52   22:32008/TCP   5m
+</code></pre>
+<p>&#x63A5;&#x7740;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; ssh &#x670D;&#x52A1;&#x7684;&#x5916;&#x7F51; IP &#x6765;&#x767B;&#x5F55; Node&#xFF0C;&#x5982; <code>ssh user@52.52.52.52</code>&#x3002;</p>
+<p>&#x5728;&#x4F7F;&#x7528;&#x5B8C;&#x540E;&#xFF0C; &#x4E0D;&#x8981;&#x5FD8;&#x8BB0;&#x5220;&#x9664; SSH &#x670D;&#x52A1; <code>kubectl delete -f ssh.yaml</code>&#x3002;</p>
+<h2 id="&#x67E5;&#x770B;&#x65E5;&#x5FD7;">&#x67E5;&#x770B;&#x65E5;&#x5FD7;</h2>
+<p>&#x4E00;&#x822C;&#x6765;&#x8BF4;&#xFF0C;Kubernetes &#x7684;&#x4E3B;&#x8981;&#x7EC4;&#x4EF6;&#x6709;&#x4E24;&#x79CD;&#x90E8;&#x7F72;&#x65B9;&#x6CD5;</p>
+<ul>
+<li>&#x76F4;&#x63A5;&#x4F7F;&#x7528; systemd &#x7B49;&#x542F;&#x52A8;&#x63A7;&#x5236;&#x8282;&#x70B9;&#x7684;&#x5404;&#x4E2A;&#x670D;&#x52A1;</li>
+<li>&#x4F7F;&#x7528; Static Pod &#x6765;&#x7BA1;&#x7406;&#x548C;&#x542F;&#x52A8;&#x63A7;&#x5236;&#x8282;&#x70B9;&#x7684;&#x5404;&#x4E2A;&#x670D;&#x52A1;</li>
+</ul>
+<p>&#x4F7F;&#x7528; systemd &#x7B49;&#x7BA1;&#x7406;&#x63A7;&#x5236;&#x8282;&#x70B9;&#x670D;&#x52A1;&#x65F6;&#xFF0C;&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x5FC5;&#x987B;&#x8981;&#x9996;&#x5148; SSH &#x767B;&#x5F55;&#x5230;&#x673A;&#x5668;&#x4E0A;&#xFF0C;&#x7136;&#x540E;&#x67E5;&#x770B;&#x5177;&#x4F53;&#x7684;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x3002;&#x5982;</p>
+<pre><code class="lang-sh">journalctl <span class="hljs-_">-l</span> -u kube-apiserver
+journalctl <span class="hljs-_">-l</span> -u kube-controller-manager
+journalctl <span class="hljs-_">-l</span> -u kube-scheduler
+journalctl <span class="hljs-_">-l</span> -u kubelet
+journalctl <span class="hljs-_">-l</span> -u kube-proxy
+</code></pre>
+<p>&#x6216;&#x8005;&#x76F4;&#x63A5;&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;</p>
+<ul>
+<li>/var/log/kube-apiserver.log</li>
+<li>/var/log/kube-scheduler.log</li>
+<li>/var/log/kube-controller-manager.log</li>
+<li>/var/log/kubelet.log</li>
+<li>/var/log/kube-proxy.log</li>
+</ul>
+<p>&#x800C;&#x5BF9;&#x4E8E;&#x4F7F;&#x7528; Static Pod &#x90E8;&#x7F72;&#x96C6;&#x7FA4;&#x63A7;&#x5236;&#x5E73;&#x9762;&#x670D;&#x52A1;&#x7684;&#x573A;&#x666F;&#xFF0C;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x4E0B;&#x9762;&#x8FD9;&#x4E9B;&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x7684;&#x65B9;&#x6CD5;&#x3002;</p>
+<h3 id="kube-apiserver-&#x65E5;&#x5FD7;">kube-apiserver &#x65E5;&#x5FD7;</h3>
+<pre><code class="lang-sh">PODNAME=$(kubectl -n kube-system get pod <span class="hljs-_">-l</span> component=kube-apiserver -o jsonpath=<span class="hljs-string">&apos;{.items[0].metadata.name}&apos;</span>)
+kubectl -n kube-system logs <span class="hljs-variable">$PODNAME</span> --tail 100
+</code></pre>
+<h3 id="kube-controller-manager-&#x65E5;&#x5FD7;">kube-controller-manager &#x65E5;&#x5FD7;</h3>
+<pre><code class="lang-sh">PODNAME=$(kubectl -n kube-system get pod <span class="hljs-_">-l</span> component=kube-controller-manager -o jsonpath=<span class="hljs-string">&apos;{.items[0].metadata.name}&apos;</span>)
+kubectl -n kube-system logs <span class="hljs-variable">$PODNAME</span> --tail 100
+</code></pre>
+<h3 id="kube-scheduler-&#x65E5;&#x5FD7;">kube-scheduler &#x65E5;&#x5FD7;</h3>
+<pre><code class="lang-sh">PODNAME=$(kubectl -n kube-system get pod <span class="hljs-_">-l</span> component=kube-scheduler -o jsonpath=<span class="hljs-string">&apos;{.items[0].metadata.name}&apos;</span>)
+kubectl -n kube-system logs <span class="hljs-variable">$PODNAME</span> --tail 100
+</code></pre>
+<h3 id="kube-dns-&#x65E5;&#x5FD7;">kube-dns &#x65E5;&#x5FD7;</h3>
+<pre><code class="lang-sh">PODNAME=$(kubectl -n kube-system get pod <span class="hljs-_">-l</span> k8s-app=kube-dns -o jsonpath=<span class="hljs-string">&apos;{.items[0].metadata.name}&apos;</span>)
+kubectl -n kube-system logs <span class="hljs-variable">$PODNAME</span> -c kubedns
+</code></pre>
+<h3 id="kubelet-&#x65E5;&#x5FD7;">Kubelet &#x65E5;&#x5FD7;</h3>
+<p>&#x67E5;&#x770B; Kubelet &#x65E5;&#x5FD7;&#x9700;&#x8981;&#x9996;&#x5148; SSH &#x767B;&#x5F55;&#x5230; Node &#x4E0A;&#x3002;</p>
+<pre><code class="lang-sh">journalctl <span class="hljs-_">-l</span> -u kubelet
+</code></pre>
+<h3 id="kube-proxy-&#x65E5;&#x5FD7;">Kube-proxy &#x65E5;&#x5FD7;</h3>
+<p>Kube-proxy &#x901A;&#x5E38;&#x4EE5; DaemonSet &#x7684;&#x65B9;&#x5F0F;&#x90E8;&#x7F72;</p>
+<pre><code class="lang-sh">$ kubectl -n kube-system get pod <span class="hljs-_">-l</span> component=kube-proxy
+NAME               READY     STATUS    RESTARTS   AGE
+kube-proxy-42zpn   1/1       Running   0          1d
+kube-proxy-7gd4p   1/1       Running   0          3d
+kube-proxy-87dbs   1/1       Running   0          4d
+$ kubectl -n kube-system logs kube-proxy-42zpn
+</code></pre>
+<h2 id="kube-dnsdashboard-crashloopbackoff">Kube-dns/Dashboard CrashLoopBackOff</h2>
+<p>&#x7531;&#x4E8E; Dashboard &#x4F9D;&#x8D56;&#x4E8E; kube-dns&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x4E00;&#x822C;&#x662F;&#x7531;&#x4E8E; kube-dns &#x65E0;&#x6CD5;&#x6B63;&#x5E38;&#x542F;&#x52A8;&#x5BFC;&#x81F4;&#x7684;&#x3002;&#x67E5;&#x770B; kube-dns &#x7684;&#x65E5;&#x5FD7;</p>
+<pre><code class="lang-sh">$ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system <span class="hljs-_">-l</span> k8s-app=kube-dns -o name) -c kubedns
+$ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system <span class="hljs-_">-l</span> k8s-app=kube-dns -o name) -c dnsmasq
+$ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system <span class="hljs-_">-l</span> k8s-app=kube-dns -o name) -c sidecar
+</code></pre>
+<p>&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#x5982;&#x4E0B;&#x7684;&#x9519;&#x8BEF;&#x65E5;&#x5FD7;</p>
+<pre><code class="lang-sh">Waiting <span class="hljs-keyword">for</span> services and endpoints to be initialized from apiserver...
+skydns: failure to forward request <span class="hljs-string">&quot;read udp 10.240.0.18:47848-&gt;168.63.129.16:53: i/o timeout&quot;</span>
+Timeout waiting <span class="hljs-keyword">for</span> initialization
+</code></pre>
+<p>&#x8FD9;&#x8BF4;&#x660E; kube-dns pod &#x65E0;&#x6CD5;&#x8F6C;&#x53D1; DNS &#x8BF7;&#x6C42;&#x5230;&#x4E0A;&#x6E38; DNS &#x670D;&#x52A1;&#x5668;&#x3002;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x4E3A;</p>
+<ul>
+<li>&#x5982;&#x679C;&#x4F7F;&#x7528;&#x7684; Docker &#x7248;&#x672C;&#x5927;&#x4E8E; 1.12&#xFF0C;&#x5219;&#x5728;&#x6BCF;&#x4E2A; Node &#x4E0A;&#x9762;&#x8FD0;&#x884C; <code>iptables -P FORWARD ACCEPT</code> &#x5F00;&#x542F; Docker &#x5BB9;&#x5668;&#x7684; IP &#x8F6C;&#x53D1;</li>
+<li>&#x7B49;&#x5F85;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#xFF0C;&#x5982;&#x679C;&#x8FD8;&#x672A;&#x6062;&#x590D;&#xFF0C;&#x5219;&#x68C0;&#x67E5; Node &#x7F51;&#x7EDC;&#x662F;&#x5426;&#x6B63;&#x786E;&#x914D;&#x7F6E;&#xFF0C;&#x6BD4;&#x5982;&#x662F;&#x5426;&#x53EF;&#x4EE5;&#x6B63;&#x5E38;&#x8BF7;&#x6C42;&#x4E0A;&#x6E38;DNS&#x670D;&#x52A1;&#x5668;&#x3001;&#x662F;&#x5426;&#x5F00;&#x542F;&#x4E86; IP &#x8F6C;&#x53D1;&#xFF08;&#x5305;&#x62EC; Node &#x5185;&#x90E8;&#x548C;&#x516C;&#x6709;&#x4E91;&#x4E0A;&#x865A;&#x62DF;&#x7F51;&#x5361;&#x7B49;&#xFF09;&#x3001;&#x662F;&#x5426;&#x6709;&#x5B89;&#x5168;&#x7EC4;&#x7981;&#x6B62;&#x4E86; DNS &#x8BF7;&#x6C42;&#x7B49;</li>
+</ul>
+<p>&#x5982;&#x679C;&#x9519;&#x8BEF;&#x65E5;&#x5FD7;&#x4E2D;&#x4E0D;&#x662F;&#x8F6C;&#x53D1; DNS &#x8BF7;&#x6C42;&#x8D85;&#x65F6;&#xFF0C;&#x800C;&#x662F;&#x8BBF;&#x95EE; kube-apiserver &#x8D85;&#x65F6;&#xFF0C;&#x6BD4;&#x5982;</p>
+<pre><code class="lang-sh">E0122 06:56:04.774977       1 reflector.go:199] k8s.io/dns/vendor/k8s.io/client-go/tools/cache/reflector.go:94: Failed to list *v1.Endpoints: Get https://10.0.0.1:443/api/v1/endpoints?resourceVersion=0: dial tcp 10.0.0.1:443: i/o timeout
+I0122 06:56:04.775358       1 dns.go:174] Waiting <span class="hljs-keyword">for</span> services and endpoints to be initialized from apiserver...
+E0122 06:56:04.775574       1 reflector.go:199] k8s.io/dns/vendor/k8s.io/client-go/tools/cache/reflector.go:94: Failed to list *v1.Service: Get https://10.0.0.1:443/api/v1/services?resourceVersion=0: dial tcp 10.0.0.1:443: i/o timeout
+I0122 06:56:05.275295       1 dns.go:174] Waiting <span class="hljs-keyword">for</span> services and endpoints to be initialized from apiserver...
+I0122 06:56:05.775182       1 dns.go:174] Waiting <span class="hljs-keyword">for</span> services and endpoints to be initialized from apiserver...
+I0122 06:56:06.275288       1 dns.go:174] Waiting <span class="hljs-keyword">for</span> services and endpoints to be initialized from apiserver...
+</code></pre>
+<p>&#x8FD9;&#x8BF4;&#x660E; Pod &#x7F51;&#x7EDC;&#xFF08;&#x4E00;&#x822C;&#x662F;&#x591A;&#x4E3B;&#x673A;&#x4E4B;&#x95F4;&#xFF09;&#x8BBF;&#x95EE;&#x5F02;&#x5E38;&#xFF0C;&#x5305;&#x62EC; Pod-&gt;Node&#x3001;Node-&gt;Pod &#x4EE5;&#x53CA; Node-Node &#x7B49;&#x4E4B;&#x95F4;&#x7684;&#x5F80;&#x6765;&#x901A;&#x4FE1;&#x5F02;&#x5E38;&#x3002;&#x53EF;&#x80FD;&#x7684;&#x539F;&#x56E0;&#x6BD4;&#x8F83;&#x591A;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x6392;&#x9519;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x53C2;&#x8003;<a href="network.html">&#x7F51;&#x7EDC;&#x5F02;&#x5E38;&#x6392;&#x9519;&#x6307;&#x5357;</a>&#x3002;</p>
+<h2 id="kubelet-failed-to-initialize-top-level-qos-containers">Kubelet: failed to initialize top level QOS containers</h2>
+<p>&#x91CD;&#x542F; kubelet &#x65F6;&#x62A5;&#x9519; <code>Failed to start ContainerManager failed to initialise top level QOS containers</code>&#xFF08;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/kubernetes/issues/43856" target="_blank">#43856</a>&#xFF09;&#xFF0C;&#x4E34;&#x65F6;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x662F;&#xFF1A;</p>
+<ol>
+<li>&#x5728; docker.service &#x914D;&#x7F6E;&#x4E2D;&#x589E;&#x52A0; <code>--exec-opt native.cgroupdriver=systemd</code> &#x9009;&#x9879;&#x3002;</li>
+<li>&#x91CD;&#x542F;&#x4E3B;&#x673A;</li>
+</ol>
+<p>&#x8BE5;&#x95EE;&#x9898;&#x5DF2;&#x4E8E;2017&#x5E74;4&#x6708;27&#x65E5;&#x4FEE;&#x590D;&#xFF08;v1.7.0+&#xFF0C; <a href="https://github.com/kubernetes/kubernetes/pull/44940" target="_blank">#44940</a>&#xFF09;&#x3002;&#x66F4;&#x65B0;&#x96C6;&#x7FA4;&#x5230;&#x65B0;&#x7248;&#x672C;&#x5373;&#x53EF;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x3002;</p>
+<h2 id="kubelet-&#x4E00;&#x76F4;&#x62A5;-failednodeallocatableenforcement-&#x4E8B;&#x4EF6;">Kubelet &#x4E00;&#x76F4;&#x62A5; FailedNodeAllocatableEnforcement &#x4E8B;&#x4EF6;</h2>
+<p>&#x5F53; NodeAllocatable &#x7279;&#x6027;&#x672A;&#x5F00;&#x542F;&#x65F6;&#xFF08;&#x5373; kubelet &#x8BBE;&#x7F6E;&#x4E86; <code>--cgroups-per-qos=false</code> &#xFF09;&#xFF0C;&#x67E5;&#x770B; node &#x7684;&#x4E8B;&#x4EF6;&#x4F1A;&#x53D1;&#x73B0;&#x6BCF;&#x5206;&#x949F;&#x90FD;&#x4F1A;&#x6709; <code>Failed to update Node Allocatable Limits</code> &#x7684;&#x8B66;&#x544A;&#x4FE1;&#x606F;&#xFF1A;</p>
+<pre><code class="lang-sh">$ kubectl describe node node1
+Events:
+  Type     Reason                            Age                  From                               Message
+  ----     ------                            ----                 ----                               -------
+  Warning  FailedNodeAllocatableEnforcement  2m (x1001 over 16h)  kubelet, aks-agentpool-22604214-0  Failed to update Node Allocatable Limits <span class="hljs-string">&quot;&quot;</span>: failed to <span class="hljs-built_in">set</span> supported cgroup subsystems <span class="hljs-keyword">for</span> cgroup : Failed to <span class="hljs-built_in">set</span> config <span class="hljs-keyword">for</span> supported subsystems : failed to write 7285047296 to memory.limit_<span class="hljs-keyword">in</span>_bytes: write /var/lib/docker/overlay2/5650a1aadf9c758946073fefa1558446ab582148ddd3ee7e7cb9d269fab20f72/merged/sys/fs/cgroup/memory/memory.limit_<span class="hljs-keyword">in</span>_bytes: invalid argument
+</code></pre>
+<p>&#x5982;&#x679C; NodeAllocatable &#x7279;&#x6027;&#x786E;&#x5B9E;&#x4E0D;&#x9700;&#x8981;&#xFF0C;&#x90A3;&#x4E48;&#x8BE5;&#x8B66;&#x544A;&#x4E8B;&#x4EF6;&#x53EF;&#x4EE5;&#x5FFD;&#x7565;&#x3002;&#x4F46;&#x6839;&#x636E; Kubernetes &#x6587;&#x6863; <a href="https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/" target="_blank">Reserve Compute Resources for System Daemons</a>&#xFF0C;&#x6700;&#x597D;&#x5F00;&#x542F;&#x8BE5;&#x7279;&#x6027;&#xFF1A;</p>
+<blockquote>
+<p>Kubernetes nodes can be scheduled to <code>Capacity</code>. Pods can consume all the available capacity on a node by default. This is an issue because nodes typically run quite a few system daemons that power the OS and Kubernetes itself. Unless resources are set aside for these system daemons, pods and system daemons compete for resources and lead to resource starvation issues on the node.</p>
+<p>The <code>kubelet</code> exposes a feature named <code>Node Allocatable</code> that helps to reserve compute resources for system daemons. Kubernetes recommends cluster administrators to configure <code>Node Allocatable</code> based on their workload density on each node.</p>
+<pre><code class="lang-sh">      Node Capacity
+---------------------------
+|     kube-reserved       |
+|-------------------------|
+|     system-reserved     |
+|-------------------------|
+|    eviction-threshold   |
+|-------------------------|
+|                         |
+|      allocatable        |
+|   (available <span class="hljs-keyword">for</span> pods)  |
+|                         |
+|                         |
+---------------------------
+</code></pre>
+</blockquote>
+<p>&#x5F00;&#x542F;&#x65B9;&#x6CD5;&#x4E3A;&#xFF1A;</p>
+<pre><code class="lang-sh">kubelet --cgroups-per-qos=<span class="hljs-literal">true</span> --enforce-node-allocatable=pods ...
+</code></pre>
+<h2 id="kube-proxy-error-looking-for-path-of-conntrack">Kube-proxy: error looking for path of conntrack</h2>
+<p>kube-proxy &#x62A5;&#x9519;&#xFF0C;&#x5E76;&#x4E14; service &#x7684; DNS &#x89E3;&#x6790;&#x5F02;&#x5E38;</p>
+<pre><code class="lang-sh">kube-proxy[2241]: E0502 15:55:13.889842    2241 conntrack.go:42] conntrack returned error: error looking <span class="hljs-keyword">for</span> path of conntrack: <span class="hljs-built_in">exec</span>: <span class="hljs-string">&quot;conntrack&quot;</span>: executable file not found <span class="hljs-keyword">in</span> <span class="hljs-variable">$PATH</span>
+</code></pre>
+<p>&#x89E3;&#x51B3;&#x65B9;&#x5F0F;&#x662F;&#x5B89;&#x88C5; <code>conntrack-tools</code> &#x5305;&#x540E;&#x91CD;&#x542F; kube-proxy &#x5373;&#x53EF;&#x3002;</p>
+<h2 id="dashboard-&#x4E2D;&#x65E0;&#x8D44;&#x6E90;&#x4F7F;&#x7528;&#x56FE;&#x8868;">Dashboard &#x4E2D;&#x65E0;&#x8D44;&#x6E90;&#x4F7F;&#x7528;&#x56FE;&#x8868;</h2>
+<p>&#x6B63;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;Dashboard &#x9996;&#x9875;&#x5E94;&#x8BE5;&#x4F1A;&#x663E;&#x793A;&#x8D44;&#x6E90;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#x7684;&#x56FE;&#x8868;&#xFF0C;&#x5982;</p>
+<p><img src="images/dashboard-ui.png" alt=""></p>
+<p>&#x5982;&#x679C;&#x6CA1;&#x6709;&#x8FD9;&#x4E9B;&#x56FE;&#x8868;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x9996;&#x5148;&#x68C0;&#x67E5; Heapster &#x662F;&#x5426;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#xFF08;&#x56E0;&#x4E3A;Dashboard &#x9700;&#x8981;&#x8BBF;&#x95EE; Heapster &#x6765;&#x67E5;&#x8BE2;&#x8D44;&#x6E90;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#xFF09;&#xFF1A;</p>
+<pre><code class="lang-sh">kubectl -n kube-system get pods <span class="hljs-_">-l</span> k8s-app=heapster
+NAME                        READY     STATUS    RESTARTS   AGE
+heapster-86b59f68f6-h4vt6   2/2       Running   0          5d
+</code></pre>
+<p>&#x5982;&#x679C;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;&#x4E3A;&#x7A7A;&#xFF0C;&#x8BF4;&#x660E; Heapster &#x8FD8;&#x672A;&#x90E8;&#x7F72;&#xFF0C;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/heapster" target="_blank">https://github.com/kubernetes/heapster</a> &#x6765;&#x90E8;&#x7F72;&#x3002;</p>
+<p>&#x4F46;&#x5982;&#x679C; Heapster &#x5904;&#x4E8E;&#x6B63;&#x5E38;&#x72B6;&#x6001;&#xFF0C;&#x90A3;&#x4E48;&#x9700;&#x8981;&#x67E5;&#x770B; dashboard &#x7684;&#x65E5;&#x5FD7;&#xFF0C;&#x786E;&#x8BA4;&#x662F;&#x5426;&#x8FD8;&#x6709;&#x5176;&#x4ED6;&#x95EE;&#x9898;</p>
+<pre><code class="lang-sh">$ kubectl -n kube-system get pods <span class="hljs-_">-l</span> k8s-app=kubernetes-dashboard
+NAME                                   READY     STATUS    RESTARTS   AGE
+kubernetes-dashboard-665b4f7df-dsjpn   1/1       Running   0          5d
+
+$ kubectl -n kube-system logs kubernetes-dashboard-665b4f7df-dsjpn
+</code></pre>
+<h2 id="hpa-&#x4E0D;&#x81EA;&#x52A8;&#x6269;&#x5C55;-pod">HPA &#x4E0D;&#x81EA;&#x52A8;&#x6269;&#x5C55; Pod</h2>
+<p>&#x67E5;&#x770B; HPA &#x7684;&#x4E8B;&#x4EF6;&#xFF0C;&#x53D1;&#x73B0;</p>
+<pre><code class="lang-sh">$ kubectl describe hpa php-apache
+Name:                                                  php-apache
+Namespace:                                             default
+Labels:                                                &lt;none&gt;
+Annotations:                                           &lt;none&gt;
+CreationTimestamp:                                     Wed, 27 Dec 2017 14:36:38 +0800
+Reference:                                             Deployment/php-apache
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  &lt;unknown&gt; / 50%
+M<span class="hljs-keyword">in</span> replicas:                                          1
+Max replicas:                                          10
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target<span class="hljs-string">&apos;s current scale
+  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
+Events:
+  Type     Reason                   Age                  From                       Message
+  ----     ------                   ----                 ----                       -------
+  Warning  FailedGetResourceMetric  3m (x2231 over 18h)  horizontal-pod-autoscaler  unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
+</span></code></pre>
+<p>&#x8FD9;&#x8BF4;&#x660E; <a href="../addons/metrics.html">metrics-server</a> &#x672A;&#x90E8;&#x7F72;&#xFF0C;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="../addons/metrics.html">&#x8FD9;&#x91CC;</a> &#x90E8;&#x7F72;&#x3002;</p>
+<h2 id="node-&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;">Node &#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;</h2>
+<p>Node &#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;&#x4E00;&#x822C;&#x662F;&#x5BB9;&#x5668;&#x955C;&#x50CF;&#x672A;&#x53CA;&#x65F6;&#x6E05;&#x7406;&#x5BFC;&#x81F4;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x77ED;&#x65F6;&#x95F4;&#x5185;&#x8FD0;&#x884C;&#x4E86;&#x5F88;&#x591A;&#x4F7F;&#x7528;&#x8F83;&#x5927;&#x955C;&#x50CF;&#x7684;&#x5BB9;&#x5668;&#x7B49;&#x3002;Kubelet &#x4F1A;&#x81EA;&#x52A8;&#x6E05;&#x7406;&#x672A;&#x4F7F;&#x7528;&#x7684;&#x955C;&#x50CF;&#xFF0C;&#x4F46;&#x5982;&#x679C;&#x60F3;&#x8981;&#x7ACB;&#x5373;&#x6E05;&#x7406;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <a href="https://github.com/spotify/docker-gc" target="_blank">spotify/docker-gc</a>&#xFF1A;</p>
+<pre><code class="lang-sh">sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
+</code></pre>
+<h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/" target="_blank">Troubleshoot Clusters</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/aks/aks-ssh#configure-ssh-access" target="_blank">SSH into Azure Container Service (AKS) cluster nodes</a></li>
+<li><a href="https://github.com/kubernetes/dashboard/wiki/FAQ" target="_blank">Kubernetes dashboard FAQ</a></li>
+</ul>
+<footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
+2018-12-14 07:12:56
+</span></footer>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 排错概览">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="pod.html" class="navigation navigation-next " aria-label="Next page: Pod 排错">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"集群排错","level":"7.2","depth":1,"next":{"title":"Pod 排错","level":"7.3","depth":1,"path":"troubleshooting/pod.md","ref":"troubleshooting/pod.md","articles":[]},"previous":{"title":"排错概览","level":"7.1","depth":1,"path":"troubleshooting/index.md","ref":"troubleshooting/index.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/cluster.md","mtime":"2018-12-14T07:12:56.862Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-14T07:14:20.076Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-editlink/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-page-toc/anchor-3.1.1.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-page-toc/page-toc.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search-plus/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search-plus/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+  namespace: default
+spec:
+  containers:
+  - args:
+    - bash
+    image: centos
+    name: sh
+    stdin: true
+    tty: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+    # note: netns volume must be mount as shared.
+    - mountPath: /var/run/netns:shared
+      name: netns
+  dnsPolicy: ClusterFirst
+  hostNetwork: true
+  hostIPC: true
+  hostPID: true
+  restartPolicy: Always
+  volumes:
+  - hostPath:
+      path: /var/run/netns
+    name: netns
