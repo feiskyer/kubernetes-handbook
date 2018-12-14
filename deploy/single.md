@@ -11,23 +11,30 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 chmod +x kubectl
 ```
 
-安装 minikube
+安装 minikube（以 MacOS 为例）
 
 ```sh
 # install minikube
 $ brew cask install minikube
-$ brew install docker-machine-driver-xhyve
-# docker-machine-driver-xhyve need root owner and suid
-$ sudo chown root:wheel $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
-$ sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+$ curl -LO https://storage.googleapis.com/minikube/releases/latest/docker-machine-driver-hyperkit
+$ sudo install -o root -g wheel -m 4755 docker-machine-driver-hyperkit /usr/local/bin/
 ```
+
+在 Windows 上面
+
+```sh
+choco install minikube
+choco install kubernetes-cli
+```
+
+
 
 最后启动 minikube
 
 ```sh
 # start minikube.
 # http proxy is required in China
-$ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port --docker-env HTTPS_PROXY=http://proxy-ip:port --vm-driver=xhyve
+$ minikube start --docker-env HTTP_PROXY=http://proxy-ip:port --docker-env HTTPS_PROXY=http://proxy-ip:port --vm-driver=hyperkit
 ```
 
 ### 使用 calico
@@ -78,6 +85,20 @@ export KUBECONFIG=/var/run/kubernetes/admin.kubeconfig
 cluster/kubectl.sh
 ```
 
+或者，使用 [kind](https://github.com/kubernetes-sigs/kind)，以 Docker 容器的方式运行 Kubernetes 集群：
+
+```sh
+$ go get sigs.k8s.io/kind
+# ensure that Kubernetes is cloned in $(go env GOPATH)/src/k8s.io/kubernetes
+# build a node image
+$ kind build node-image
+# create a cluster with kind build node-image
+$ kind create cluster --image kindest/node:latest
+```
+
+
+
 ## 参考文档
 
 - [Running Kubernetes Locally via Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/)
+- <https://github.com/kubernetes-sigs/kind>
