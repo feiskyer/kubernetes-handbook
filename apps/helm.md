@@ -371,6 +371,7 @@ kubeapps dashboard
 
 官方 repository:
 
+* https://hub.helm.sh/
 * https://github.com/kubernetes/charts
 
 第三方 repository:
