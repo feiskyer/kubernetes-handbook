@@ -107,3 +107,7 @@ spec:
           serviceName: kubernetes-dashboard
           servicePort: 443
 ```
+
+## 参考文档
+
+- [Nginx Ingress Controller Documentation](https://kubernetes.github.io/ingress-nginx/)
