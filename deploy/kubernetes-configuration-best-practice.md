@@ -32,7 +32,7 @@
 - 使用 [labels](https://kubernetes.io/docs/user-guide/labels/) 来指定应用或 Deployment 的语义属性。这样可以让你能够选择合适于场景的对象组，比如 `app: myapp, tire: frontend, phase: test, deployment: v3`。
 - 一个 service 可以被配置成跨越多个 deployment，只需要在它的 label selector 中简单的省略发布相关的 label。
 - 注意 [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 对象不需要再管理 replication controller 的版本名。Deployment 中描述了对象的期望状态，如果对 spec 的更改被应用了话，Deployment controller 会以控制的速率来更改实际状态到期望状态。
-- 利用 label 做调试。因为 Kubernetes replication controller 和 service 使用 label 来匹配 pods，这允许你通过移除 pod 的方式将其从一个 controller 或者 service 中移除，而 controller 会创建一个新的 pod 来取代移除的 pod。这是一个很有用的方式，帮你在一个隔离的环境中调试之前的 “活着的” pod。
+- 利用 label 做调试。因为 Kubernetes replication controller 和 service 使用 label 来匹配 pods，这允许你通过移除 pod 的相关label的方式将其从一个 controller 或者 service 中移除，而 controller 会创建一个新的 pod 来取代移除的 pod。这是一个很有用的方式，帮你在一个隔离的环境中调试之前的 “活着的” pod。
 
 ## 容器镜像
 
