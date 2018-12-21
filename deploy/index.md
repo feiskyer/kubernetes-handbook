@@ -27,29 +27,33 @@ $ sonobuoy delete
 
 ## 版本依赖
 
-Kubernetes v1.12 支持的外部组件版本为
-
-- Etcd: v3.2.24+ 或 v3.3.0+（etcd2弃用）
-- Docker: 1.11.1 to 1.13.1, 17.03, 17.09, 18.06
-- Go: 1.10.4
-- CNI: v0.6.0
-- CSI: 0.3.0
-- Dashboard: v1.8.3
-- Heapster: v1.6.0-beta
-- Cluster Autoscaler: v1.12.0
-- Kube-dns: v1.14.13
-- Influxdb: v1.3.3
-- Grafana: v4.4.3
-- Kibana: v6.3.2
-- cAdvisor: v0.30.1
-- Fluentd: v1.2.4
-- Calico: v2.6.7
-- Crictl: v1.12.0
-- hcsshim: v0.11
-- CoreDNS: v1.2.2
-- Istio: v1.11
-- Metrics-server: v0.3.1
-- ip-masq-agent: v2.1.1
+| 依赖组件           | v1.13                                              | v1.12                                              |
+| ------------------ | -------------------------------------------------- | -------------------------------------------------- |
+| Etcd               | v3.2.24+或v3.3.0+                                  | v3.2.24+ 或 v3.3.0+ etcd2弃用                      |
+| Docker             | 1.11.1, 1.12.1, 1.13.1, 17.03, 17.06, 17.09, 18.06 | 1.11.1, 1.12.1, 1.13.1, 17.03, 17.06, 17.09, 18.06 |
+| Go                 | 1.11.2                                             | 1.10.4                                             |
+| CNI                | v0.6.0                                             | v0.6.0                                             |
+| CSI                | 1.0.0                                              | 0.3.0                                              |
+| Dashboard          | v1.10.0                                            | v1.8.3                                             |
+| Heapster           | Remains v1.6.0-beta but retired                    | v1.6.0-beta                                        |
+| Cluster Autoscaler | v1.13.0                                            | v1.12.0                                            |
+| kube-dns           | v1.14.13                                           | v1.14.13                                           |
+| Influxdb           | v1.3.3                                             | v1.3.3                                             |
+| Grafana            | v4.4.3                                             | v4.4.3                                             |
+| Kibana             | v6.3.2                                             | v6.3.2                                             |
+| cAdvisor           | v0.32.0                                            | v0.30.1                                            |
+| Fluentd            | v1.2.4                                             | v1.2.4                                             |
+| Elasticsearch      | v6.3.2                                             | v6.3.2                                             |
+| go-oidc            | v2.0.0                                             | v2.0.0                                             |
+| calico             | v3.3.1                                             | v2.6.7                                             |
+| crictl             | v1.12.0                                            | v1.12.0                                            |
+| CoreDNS            | v1.2.6                                             | v1.2.2                                             |
+| event-exporter     | v0.2.3                                             | v0.2.3                                             |
+| metrics-server     | v0.3.1                                             | v0.3.1                                             |
+| ingress-gce        | v1.2.3                                             | v1.2.3                                             |
+| ingress-nginx      | v0.21.0                                            | v0.21.0                                            |
+| ip-masq-agent      | v2.1.1                                             | v2.1.1                                             |
+| hcsshim            | v0.6.11                                            | v0.6.11                                            |
 
 ## 部署方法
 
