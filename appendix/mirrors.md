@@ -14,14 +14,12 @@ docker pull registry.docker-cn.com/library/nginx
 ## GCR（Google Container Registry）镜像
 
 - 开源社镜像：https://gcr.akscn.io/google_containers
-- 阿里云镜像：https://dev.aliyun.com/list.html?namePrefix=google-containers
 
 示例
 
 ```sh
 docker pull gcr.akscn.io/google_containers/hyperkube:v1.12.1
 docker pull gcr.akscn.io/google_containers/pause-amd64:3.1
-docker pull registry.cn-hangzhou.aliyuncs.com/google-containers/kubernetes-dashboard-amd64:v1.7.1
 ```
 
 ## Kubernetes RPM/DEB镜像
