@@ -1,6 +1,8 @@
 # Kubernetes The Hard Way
 
-本部分翻译自 [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way)，译者 [@kweisamx](https://github.com/kweisamx) 和 [@feiskyer](https://github.com/feiskyer)。该教程指引用户在 [Google Cloud Platform](https://cloud.google.com) 上面一步步搭建一个高可用的 Kubernetes 集群。
+翻译注：本部分翻译自 [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way)，译者 [@kweisamx](https://github.com/kweisamx) 和 [@feiskyer](https://github.com/feiskyer)。该教程指引用户在 [Google Cloud Platform](https://cloud.google.com) 上面一步步搭建一个高可用的 Kubernetes 集群。
+
+如果你正在使用 [Microsoft Azure](https://azure.microsoft.com)，那么请参考 [kubernetes-the-hard-way-on-azure](https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure) 在 Azure 上面搭建 Kubernetes 集群。
 
 如有翻译不好的地方或文字上的错误, 欢迎提出 [Issue](https://github.com/feiskyer/kubernetes-handbook) 或是 [PR](https://github.com/feiskyer/kubernetes-handbook)。
 
