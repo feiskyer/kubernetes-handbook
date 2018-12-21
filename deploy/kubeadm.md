@@ -177,7 +177,7 @@ clusterName: "example-cluster"
 
 > 注意：JoinConfiguration 重命名自 v1alpha2 API 中的 NodeConfiguration，而 InitConfiguration 重命名自 v1alpha2 API 中的 MasterConfiguration。
 
-然后，在初始化 master 的时候指定 kubeadm.yml 的路径：
+然后，在初始化 master 的时候指定 kubeadm.yaml 的路径：
 
 ```sh
 kubeadm init --config ./kubeadm.yaml
