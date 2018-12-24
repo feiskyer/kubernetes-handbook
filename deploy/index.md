@@ -90,3 +90,4 @@ $ sonobuoy delete
   - [Metrics](../addons/metrics.md)
   - [Cluster AutoScaler](../addons/cluster-autoscaler.md)
 - [6. 推荐配置](kubernetes-configuration-best-practice.md)
+- [7. 版本支持](upgrade.md)

@@ -58,6 +58,7 @@
 - [单机部署](deploy/single.md)
 - [特性开关](deploy/feature-gates.md)
 - [最佳配置](deploy/kubernetes-configuration-best-practice.md)
+- [版本支持](deploy/upgrade.md)
 - [集群部署](deploy/cluster.md)
   - [kubeadm](deploy/kubeadm.md)
   - [kops](deploy/kops.md)
