@@ -104,7 +104,7 @@ fetch = +refs/pull/*:refs/remotes/origin/pull/*
 ## 其他参考
 
 - 编译 release 版：`make quick-release`
-- 机器人命令：[命令列表](https://github.com/kubernetes/test-infra/blob/master/commands.md) 和 [使用文档](https://prow.k8s.io/plugin-help.html)。
+- 机器人命令：[命令列表](https://prow.k8s.io/command-help) 和 [使用文档](https://prow.k8s.io/plugins)。
 - [Kubernetes TestGrid](https://k8s-testgrid.appspot.com/)，包含所有的测试历史
 - [Kuberentes Submit Queue Status](https://submit-queue.k8s.io/#/queue)，包含所有的 Pull Request 状态以及合并队列
 - [Node Performance Dashboard](http://node-perf-dash.k8s.io/#/builds)，包含 Node 组性能测试报告
