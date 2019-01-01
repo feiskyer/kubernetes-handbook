@@ -71,7 +71,7 @@ To connect to your database:
     $ mysql -h quieting-warthog-mysql -p
 ```
 
-更多命令的使用方法可以参考 [Helm 命令参考](helm.md)。
+更多命令的使用方法可以参考下面的 "Helm 命令参考" 部分。
 
 ## Helm 工作原理
 
@@ -93,7 +93,7 @@ Helm 包括两个部分，`helm` 客户端和 `tiller` 服务端。
 
 helm 客户端是一个命令行工具，负责管理 charts、repository 和 release。它通过 gPRC API（使用 `kubectl port-forward` 将 tiller 的端口映射到本地，然后再通过映射后的端口跟 tiller 通信）向 tiller 发送请求，并由 tiller 来管理对应的 Kubernetes 资源。
 
-Helm 客户端的使用方法参见 [Helm 命令](helm.html)。
+`helm` 命令的使用方法可以参考下面的 "Helm 命令参考" 部分。
 
 #### tiller 服务端
 
