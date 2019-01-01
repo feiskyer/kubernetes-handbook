@@ -27,7 +27,7 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 
 ### 本书版本更新记录
 
-如无特殊说明，本指南所有文档仅适用于 Kubernetes v1.6 及以上版本。详细更新记录见 [CHANGELOG](https://github.com/feiskyer/kubernetes-handbook/blob/master/zh/CHANGELOG.md)。
+如无特殊说明，本指南所有文档仅适用于 Kubernetes v1.6 及以上版本。详细更新记录见 [CHANGELOG](https://github.com/feiskyer/kubernetes-handbook/blob/master/CHANGELOG.md)。
 
 ## 微信公众号
 
