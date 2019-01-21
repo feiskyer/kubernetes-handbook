@@ -63,7 +63,7 @@ Now we know "cni0" bridge has been configured an unexpected IP address. A simple
 
 ```sh
 $ ip link set cni0 down
-$ brctl delbr cni0
+$ brctl delbr cni0        #ip link delete cni0 type bridge(in case if you can't bring down the bridge)
 ```
 
 Above is an example of network configuration issue. There are also many other things may go wrong. An incomplete list of them includes
