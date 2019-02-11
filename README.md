@@ -1,5 +1,7 @@
 # Kubernetes 指南
 
+[![star this repo](http://githubbadges.com/star.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook)[![fork this repo](http://githubbadges.com/fork.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook/fork)[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/feiskyer/kubernetes-handbook/issues)
+
 Kubernetes 是谷歌开源的容器集群管理系统，是 Google 多年大规模容器管理技术 Borg 的开源版本，也是 CNCF 最重要的项目之一，主要功能包括：
 
 - 基于容器的应用部署、维护和滚动升级
@@ -15,10 +17,10 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 ## 在线阅读
 
 - 中文：
-  - Gitbook: https://kubernetes.feisky.xyz/ 或者 https://feisky.xyz/kubernetes-handbook/
-  - Github: https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md
-  - InfoQ: http://www.infoq.com/cn/minibooks/Kubernetes-handbook
-- English：https://github.com/feiskyer/kubernetes-handbook/blob/master/en/SUMMARY.md
+  - Gitbook: https://kubernetes.feisky.xyz/（或者 [这里](https://feisky.xyz/kubernetes-handbook/)）
+  - [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
+  - [InfoQ](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)
+- [English](https://github.com/feiskyer/kubernetes-handbook/blob/master/en/SUMMARY.md)
 - PDF 电子书：点击 [这里](https://legacy.gitbook.com/download/pdf/book/feisky/kubernetes) 下载
 
 ## 项目源码
@@ -38,3 +40,9 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 ## 贡献者
 
 欢迎参与贡献和完善内容，贡献方法参考 [CONTRIBUTING](https://github.com/feiskyer/kubernetes-handbook/blob/master/CONTRIBUTING.md)。感谢所有的贡献者，贡献者列表见 [contributors](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)。
+
+## LICENSE
+
+![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+
+[署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)。
