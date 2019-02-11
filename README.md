@@ -1,6 +1,6 @@
 # Kubernetes 指南
 
-[![star this repo](http://githubbadges.com/star.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook)[![fork this repo](http://githubbadges.com/fork.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook/fork)[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/feiskyer/kubernetes-handbook/issues)
+[![star this repo](http://githubbadges.com/star.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook) [![fork this repo](http://githubbadges.com/fork.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook/fork) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/feiskyer/kubernetes-handbook/issues)
 
 Kubernetes 是谷歌开源的容器集群管理系统，是 Google 多年大规模容器管理技术 Borg 的开源版本，也是 CNCF 最重要的项目之一，主要功能包括：
 
@@ -17,7 +17,7 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 ## 在线阅读
 
 - 中文：
-  - Gitbook: https://kubernetes.feisky.xyz/（或者 [这里](https://feisky.xyz/kubernetes-handbook/)）
+  - Gitbook: <https://kubernetes.feisky.xyz/>（或者 [这里](https://feisky.xyz/kubernetes-handbook/)）
   - [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
   - [InfoQ](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)
 - [English](https://github.com/feiskyer/kubernetes-handbook/blob/master/en/SUMMARY.md)
