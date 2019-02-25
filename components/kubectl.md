@@ -270,6 +270,8 @@ $ kubectl plugin hello
 Hello plugins!
 ```
 
+你也可以使用 [krew](../deploy/kubectl.md) 来管理 kubectl 插件。
+
 ## 原始 URI
 
 kubectl 也可以用来直接访问原始 URI，比如要访问 [Metrics API](https://github.com/kubernetes-incubator/metrics-server) 可以
