@@ -340,6 +340,14 @@ Node 存储空间不足一般是容器镜像未及时清理导致的，比如短
 sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
 ```
 
+## no space left on /sys/fs/cgroup
+
+很多发行版默认的 fs.inotify.max_user_watches 太小，只有 8192，可以通过增大该配置解决。比如
+
+```sh
+$ sudo sysctl fs.inotify.max_user_watches=524288
+```
+
 ## 参考文档
 
 * [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
