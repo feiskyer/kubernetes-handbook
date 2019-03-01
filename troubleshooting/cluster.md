@@ -217,6 +217,16 @@ I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to 
 
 这说明 Pod 网络（一般是多主机之间）访问异常，包括 Pod->Node、Node->Pod 以及 Node-Node 等之间的往来通信异常。可能的原因比较多，具体的排错方法可以参考[网络异常排错指南](network.md)。
 
+## Node NotReady
+
+Node 处于 NotReady 状态，社区 issue [#45419](https://github.com/kubernetes/kubernetes/issues/45419)。
+
+NotReady 的原因比较多，在排查时最重要的就是执行 `kubectl describe node <node name>` 并查看 Kubelet 日志中的错误信息。常见问题的修复方法为：
+
+* CNI 网络插件未部署：部署 CNI 插件。
+* Docker 僵死（API 不响应）：重启 Docker。
+* 磁盘空间不足：清理磁盘空间，比如镜像、临时文件等。
+
 ## Kubelet: failed to initialize top level QOS containers
 
 重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），临时解决方法是：
@@ -340,13 +350,83 @@ Node 存储空间不足一般是容器镜像未及时清理导致的，比如短
 sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
 ```
 
-## no space left on /sys/fs/cgroup
+## /sys/fs/cgroup 空间不足
 
 很多发行版默认的 fs.inotify.max_user_watches 太小，只有 8192，可以通过增大该配置解决。比如
 
 ```sh
 $ sudo sysctl fs.inotify.max_user_watches=524288
 ```
+
+## 大量 ConfigMap/Secret 导致Kubernetes缓慢
+
+这是从 Kubernetes 1.12 开始才有的问题，Kubernetes issue: [#74412](https://github.com/kubernetes/kubernetes/issues/74412)。
+
+> This worked well on version 1.11 of Kubernetes. After upgrading to 1.12 or 1.13, I've noticed that doing this will cause the cluster to significantly slow down; up to the point where nodes are being marked as NotReady and no new work is being scheduled.
+>
+> For example, consider a scenario in which I schedule 400 jobs, each with its own ConfigMap, which print "Hello World" on a single-node cluster would.
+>
+> - On v1.11, it takes about 10 minutes for the cluster to process all jobs. New jobs can be scheduled.
+>
+> - On v1.12 and v1.13, it takes about 60 minutes for the cluster to process all jobs. After this, no new jobs can be scheduled.
+
+> This is related to max concurrent http2 streams and the change of configmap manager of kubelet. By default, max concurrent http2 stream of http2 server in kube-apiserver is 250, and every configmap will consume one stream to watch in kubelet at least from version 1.13.x. Kubelet will stuck to communicate to kube-apiserver and then become NotReady if too many pods with configmap scheduled to it. A work around is to change the config http2-max-streams-per-connection of kube-apiserver to a bigger value.
+
+临时解决方法：为 Kubelet 设置 `configMapAndSecretChangeDetectionStrategy: Cache` （参考 [这里](https://github.com/kubernetes/kubernetes/pull/74755) ）。
+
+修复方法：升级 Go 版本到 1.12 后重新构建 Kubernetes（社区正在进行中）。修复后，Kubelet 可以 watch 的 configmap 可以从之前的 236 提高到至少 10000。
+
+## Kubelet 内存泄漏
+
+这是从 1.12 版本开始有的问题（只在使用 hyperkube 启动 kubelet 时才有问题），社区 issue 为 [#73587](https://github.com/kubernetes/kubernetes/issues/73587)。
+
+```
+(pprof) root@ip-172-31-10-50:~# go tool pprof  http://localhost:10248/debug/pprof/heap
+Fetching profile from http://localhost:10248/debug/pprof/heap
+Saved profile in /root/pprof/pprof.hyperkube.localhost:10248.alloc_objects.alloc_space.inuse_objects.inuse_space.002.pb.gz
+Entering interactive mode (type "help" for commands)
+(pprof) top
+2406.93MB of 2451.55MB total (98.18%)
+Dropped 2863 nodes (cum <= 12.26MB)
+Showing top 10 nodes out of 34 (cum >= 2411.39MB)
+      flat  flat%   sum%        cum   cum%
+ 2082.07MB 84.93% 84.93%  2082.07MB 84.93%  k8s.io/kubernetes/vendor/github.com/beorn7/perks/quantile.newStream (inline)
+  311.65MB 12.71% 97.64%  2398.72MB 97.84%  k8s.io/kubernetes/vendor/github.com/prometheus/client_golang/prometheus.newSummary
+   10.71MB  0.44% 98.08%  2414.43MB 98.49%  k8s.io/kubernetes/vendor/github.com/prometheus/client_golang/prometheus.(*MetricVec).getOrCreateMetricWithLabelValues
+    2.50MB   0.1% 98.18%  2084.57MB 85.03%  k8s.io/kubernetes/vendor/github.com/beorn7/perks/quantile.NewTargeted
+         0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/cmd/kubelet/app.startKubelet.func1
+         0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/pkg/kubelet.(*Kubelet).HandlePodAdditions
+         0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/pkg/kubelet.(*Kubelet).Run
+```
+
+```sh
+curl -s localhost:10255/metrics | sed 's/{.*//' | sort | uniq -c | sort -nr
+  25749 reflector_watch_duration_seconds
+  25749 reflector_list_duration_seconds
+  25749 reflector_items_per_watch
+  25749 reflector_items_per_list
+   8583 reflector_watches_total
+   8583 reflector_watch_duration_seconds_sum
+   8583 reflector_watch_duration_seconds_count
+   8583 reflector_short_watches_total
+   8583 reflector_lists_total
+   8583 reflector_list_duration_seconds_sum
+   8583 reflector_list_duration_seconds_count
+   8583 reflector_last_resource_version
+   8583 reflector_items_per_watch_sum
+   8583 reflector_items_per_watch_count
+   8583 reflector_items_per_list_sum
+   8583 reflector_items_per_list_count
+    165 storage_operation_duration_seconds_bucket
+     51 kubelet_runtime_operations_latency_microseconds
+     44 rest_client_request_latency_seconds_bucket
+     33 kubelet_docker_operations_latency_microseconds
+     17 kubelet_runtime_operations_latency_microseconds_sum
+     17 kubelet_runtime_operations_latency_microseconds_count
+     17 kubelet_runtime_operations
+```
+
+修复方法：禁止 [Reflector metrics](https://github.com/kubernetes/kubernetes/issues/73587)。
 
 ## 参考文档
 
