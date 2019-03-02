@@ -2783,6 +2783,14 @@ I0122 06:56:05.775182       1 dns.go:174] Waiting <span class="hljs-keyword">for
 I0122 06:56:06.275288       1 dns.go:174] Waiting <span class="hljs-keyword">for</span> services and endpoints to be initialized from apiserver...
 </code></pre>
 <p>&#x8FD9;&#x8BF4;&#x660E; Pod &#x7F51;&#x7EDC;&#xFF08;&#x4E00;&#x822C;&#x662F;&#x591A;&#x4E3B;&#x673A;&#x4E4B;&#x95F4;&#xFF09;&#x8BBF;&#x95EE;&#x5F02;&#x5E38;&#xFF0C;&#x5305;&#x62EC; Pod-&gt;Node&#x3001;Node-&gt;Pod &#x4EE5;&#x53CA; Node-Node &#x7B49;&#x4E4B;&#x95F4;&#x7684;&#x5F80;&#x6765;&#x901A;&#x4FE1;&#x5F02;&#x5E38;&#x3002;&#x53EF;&#x80FD;&#x7684;&#x539F;&#x56E0;&#x6BD4;&#x8F83;&#x591A;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x6392;&#x9519;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x53C2;&#x8003;<a href="network.html">&#x7F51;&#x7EDC;&#x5F02;&#x5E38;&#x6392;&#x9519;&#x6307;&#x5357;</a>&#x3002;</p>
+<h2 id="node-notready">Node NotReady</h2>
+<p>Node &#x5904;&#x4E8E; NotReady &#x72B6;&#x6001;&#xFF0C;&#x793E;&#x533A; issue <a href="https://github.com/kubernetes/kubernetes/issues/45419" target="_blank">#45419</a>&#x3002;</p>
+<p>NotReady &#x7684;&#x539F;&#x56E0;&#x6BD4;&#x8F83;&#x591A;&#xFF0C;&#x5728;&#x6392;&#x67E5;&#x65F6;&#x6700;&#x91CD;&#x8981;&#x7684;&#x5C31;&#x662F;&#x6267;&#x884C; <code>kubectl describe node &lt;node name&gt;</code> &#x5E76;&#x67E5;&#x770B; Kubelet &#x65E5;&#x5FD7;&#x4E2D;&#x7684;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#x3002;&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x7684;&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#x4E3A;&#xFF1A;</p>
+<ul>
+<li>CNI &#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#x672A;&#x90E8;&#x7F72;&#xFF1A;&#x90E8;&#x7F72; CNI &#x63D2;&#x4EF6;&#x3002;</li>
+<li>Docker &#x50F5;&#x6B7B;&#xFF08;API &#x4E0D;&#x54CD;&#x5E94;&#xFF09;&#xFF1A;&#x91CD;&#x542F; Docker&#x3002;</li>
+<li>&#x78C1;&#x76D8;&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;&#xFF1A;&#x6E05;&#x7406;&#x78C1;&#x76D8;&#x7A7A;&#x95F4;&#xFF0C;&#x6BD4;&#x5982;&#x955C;&#x50CF;&#x3001;&#x4E34;&#x65F6;&#x6587;&#x4EF6;&#x7B49;&#x3002;</li>
+</ul>
 <h2 id="kubelet-failed-to-initialize-top-level-qos-containers">Kubelet: failed to initialize top level QOS containers</h2>
 <p>&#x91CD;&#x542F; kubelet &#x65F6;&#x62A5;&#x9519; <code>Failed to start ContainerManager failed to initialise top level QOS containers</code>&#xFF08;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/kubernetes/issues/43856" target="_blank">#43856</a>&#xFF09;&#xFF0C;&#x4E34;&#x65F6;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x662F;&#xFF1A;</p>
 <ol>
@@ -2870,6 +2878,69 @@ Events:
 <p>Node &#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;&#x4E00;&#x822C;&#x662F;&#x5BB9;&#x5668;&#x955C;&#x50CF;&#x672A;&#x53CA;&#x65F6;&#x6E05;&#x7406;&#x5BFC;&#x81F4;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x77ED;&#x65F6;&#x95F4;&#x5185;&#x8FD0;&#x884C;&#x4E86;&#x5F88;&#x591A;&#x4F7F;&#x7528;&#x8F83;&#x5927;&#x955C;&#x50CF;&#x7684;&#x5BB9;&#x5668;&#x7B49;&#x3002;Kubelet &#x4F1A;&#x81EA;&#x52A8;&#x6E05;&#x7406;&#x672A;&#x4F7F;&#x7528;&#x7684;&#x955C;&#x50CF;&#xFF0C;&#x4F46;&#x5982;&#x679C;&#x60F3;&#x8981;&#x7ACB;&#x5373;&#x6E05;&#x7406;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <a href="https://github.com/spotify/docker-gc" target="_blank">spotify/docker-gc</a>&#xFF1A;</p>
 <pre><code class="lang-sh">sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
 </code></pre>
+<h2 id="sysfscgroup-&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;">/sys/fs/cgroup &#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;</h2>
+<p>&#x5F88;&#x591A;&#x53D1;&#x884C;&#x7248;&#x9ED8;&#x8BA4;&#x7684; fs.inotify.max_user_watches &#x592A;&#x5C0F;&#xFF0C;&#x53EA;&#x6709; 8192&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x589E;&#x5927;&#x8BE5;&#x914D;&#x7F6E;&#x89E3;&#x51B3;&#x3002;&#x6BD4;&#x5982;</p>
+<pre><code class="lang-sh">$ sudo sysctl fs.inotify.max_user_watches=524288
+</code></pre>
+<h2 id="&#x5927;&#x91CF;-configmapsecret-&#x5BFC;&#x81F4;kubernetes&#x7F13;&#x6162;">&#x5927;&#x91CF; ConfigMap/Secret &#x5BFC;&#x81F4;Kubernetes&#x7F13;&#x6162;</h2>
+<p>&#x8FD9;&#x662F;&#x4ECE; Kubernetes 1.12 &#x5F00;&#x59CB;&#x624D;&#x6709;&#x7684;&#x95EE;&#x9898;&#xFF0C;Kubernetes issue: <a href="https://github.com/kubernetes/kubernetes/issues/74412" target="_blank">#74412</a>&#x3002;</p>
+<blockquote>
+<p>This worked well on version 1.11 of Kubernetes. After upgrading to 1.12 or 1.13, I&apos;ve noticed that doing this will cause the cluster to significantly slow down; up to the point where nodes are being marked as NotReady and no new work is being scheduled.</p>
+<p>For example, consider a scenario in which I schedule 400 jobs, each with its own ConfigMap, which print &quot;Hello World&quot; on a single-node cluster would.</p>
+<ul>
+<li><p>On v1.11, it takes about 10 minutes for the cluster to process all jobs. New jobs can be scheduled.</p>
+</li>
+<li><p>On v1.12 and v1.13, it takes about 60 minutes for the cluster to process all jobs. After this, no new jobs can be scheduled.</p>
+</li>
+</ul>
+<p>This is related to max concurrent http2 streams and the change of configmap manager of kubelet. By default, max concurrent http2 stream of http2 server in kube-apiserver is 250, and every configmap will consume one stream to watch in kubelet at least from version 1.13.x. Kubelet will stuck to communicate to kube-apiserver and then become NotReady if too many pods with configmap scheduled to it. A work around is to change the config http2-max-streams-per-connection of kube-apiserver to a bigger value.</p>
+</blockquote>
+<p>&#x4E34;&#x65F6;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#xFF1A;&#x4E3A; Kubelet &#x8BBE;&#x7F6E; <code>configMapAndSecretChangeDetectionStrategy: Cache</code> &#xFF08;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/kubernetes/pull/74755" target="_blank">&#x8FD9;&#x91CC;</a> &#xFF09;&#x3002;</p>
+<p>&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#xFF1A;&#x5347;&#x7EA7; Go &#x7248;&#x672C;&#x5230; 1.12 &#x540E;&#x91CD;&#x65B0;&#x6784;&#x5EFA; Kubernetes&#xFF08;&#x793E;&#x533A;&#x6B63;&#x5728;&#x8FDB;&#x884C;&#x4E2D;&#xFF09;&#x3002;&#x4FEE;&#x590D;&#x540E;&#xFF0C;Kubelet &#x53EF;&#x4EE5; watch &#x7684; configmap &#x53EF;&#x4EE5;&#x4ECE;&#x4E4B;&#x524D;&#x7684; 236 &#x63D0;&#x9AD8;&#x5230;&#x81F3;&#x5C11; 10000&#x3002;</p>
+<h2 id="kubelet-&#x5185;&#x5B58;&#x6CC4;&#x6F0F;">Kubelet &#x5185;&#x5B58;&#x6CC4;&#x6F0F;</h2>
+<p>&#x8FD9;&#x662F;&#x4ECE; 1.12 &#x7248;&#x672C;&#x5F00;&#x59CB;&#x6709;&#x7684;&#x95EE;&#x9898;&#xFF08;&#x53EA;&#x5728;&#x4F7F;&#x7528; hyperkube &#x542F;&#x52A8; kubelet &#x65F6;&#x624D;&#x6709;&#x95EE;&#x9898;&#xFF09;&#xFF0C;&#x793E;&#x533A; issue &#x4E3A; <a href="https://github.com/kubernetes/kubernetes/issues/73587" target="_blank">#73587</a>&#x3002;</p>
+<pre><code>(pprof) root@ip-172-31-10-50:~# go tool pprof  http://localhost:10248/debug/pprof/heap
+Fetching profile from http://localhost:10248/debug/pprof/heap
+Saved profile in /root/pprof/pprof.hyperkube.localhost:10248.alloc_objects.alloc_space.inuse_objects.inuse_space.002.pb.gz
+Entering interactive mode (type &quot;help&quot; for commands)
+(pprof) top
+2406.93MB of 2451.55MB total (98.18%)
+Dropped 2863 nodes (cum &lt;= 12.26MB)
+Showing top 10 nodes out of 34 (cum &gt;= 2411.39MB)
+      flat  flat%   sum%        cum   cum%
+ 2082.07MB 84.93% 84.93%  2082.07MB 84.93%  k8s.io/kubernetes/vendor/github.com/beorn7/perks/quantile.newStream (inline)
+  311.65MB 12.71% 97.64%  2398.72MB 97.84%  k8s.io/kubernetes/vendor/github.com/prometheus/client_golang/prometheus.newSummary
+   10.71MB  0.44% 98.08%  2414.43MB 98.49%  k8s.io/kubernetes/vendor/github.com/prometheus/client_golang/prometheus.(*MetricVec).getOrCreateMetricWithLabelValues
+    2.50MB   0.1% 98.18%  2084.57MB 85.03%  k8s.io/kubernetes/vendor/github.com/beorn7/perks/quantile.NewTargeted
+         0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/cmd/kubelet/app.startKubelet.func1
+         0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/pkg/kubelet.(*Kubelet).HandlePodAdditions
+         0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/pkg/kubelet.(*Kubelet).Run
+</code></pre><pre><code class="lang-sh">curl <span class="hljs-_">-s</span> localhost:10255/metrics | sed <span class="hljs-string">&apos;s/{.*//&apos;</span> | sort | uniq -c | sort -nr
+  25749 reflector_watch_duration_seconds
+  25749 reflector_list_duration_seconds
+  25749 reflector_items_per_watch
+  25749 reflector_items_per_list
+   8583 reflector_watches_total
+   8583 reflector_watch_duration_seconds_sum
+   8583 reflector_watch_duration_seconds_count
+   8583 reflector_short_watches_total
+   8583 reflector_lists_total
+   8583 reflector_list_duration_seconds_sum
+   8583 reflector_list_duration_seconds_count
+   8583 reflector_last_resource_version
+   8583 reflector_items_per_watch_sum
+   8583 reflector_items_per_watch_count
+   8583 reflector_items_per_list_sum
+   8583 reflector_items_per_list_count
+    165 storage_operation_duration_seconds_bucket
+     51 kubelet_runtime_operations_latency_microseconds
+     44 rest_client_request_latency_seconds_bucket
+     33 kubelet_docker_operations_latency_microseconds
+     17 kubelet_runtime_operations_latency_microseconds_sum
+     17 kubelet_runtime_operations_latency_microseconds_count
+     17 kubelet_runtime_operations
+</code></pre>
+<p>&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#xFF1A;&#x7981;&#x6B62; <a href="https://github.com/kubernetes/kubernetes/issues/73587" target="_blank">Reflector metrics</a>&#x3002;</p>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/" target="_blank">Troubleshoot Clusters</a></li>
@@ -2877,7 +2948,7 @@ Events:
 <li><a href="https://github.com/kubernetes/dashboard/wiki/FAQ" target="_blank">Kubernetes dashboard FAQ</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-02-13 07:54:27
+2019-03-02 04:46:17
 </span></footer>
                                 
                                 </section>
@@ -2921,7 +2992,7 @@ Events:
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"集群排错","level":"7.2","depth":1,"next":{"title":"Pod 排错","level":"7.3","depth":1,"path":"troubleshooting/pod.md","ref":"troubleshooting/pod.md","articles":[]},"previous":{"title":"排错概览","level":"7.1","depth":1,"path":"troubleshooting/index.md","ref":"troubleshooting/index.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/cluster.md","mtime":"2019-02-13T07:54:27.243Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-02-13T07:56:01.785Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"集群排错","level":"7.2","depth":1,"next":{"title":"Pod 排错","level":"7.3","depth":1,"path":"troubleshooting/pod.md","ref":"troubleshooting/pod.md","articles":[]},"previous":{"title":"排错概览","level":"7.1","depth":1,"path":"troubleshooting/index.md","ref":"troubleshooting/index.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/cluster.md","mtime":"2019-03-02T04:46:17.600Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
