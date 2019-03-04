@@ -2,6 +2,8 @@
 
 Operator 是 CoreOS 推出的旨在简化复杂有状态应用管理的框架，它是一个感知应用状态的控制器，通过扩展 Kubernetes API 来自动创建、管理和配置应用实例。
 
+你可以在 [OperatorHub.io](https://www.operatorhub.io/) 上查看 Kubernetes 社区推荐的一些 Operator 范例。
+
 ## Operator 原理
 
 Operator 基于 Third Party Resources 扩展了新的应用资源，并通过控制器来保证应用处于预期状态。比如 etcd operator 通过下面的三个步骤模拟了管理 etcd 集群的行为：
@@ -22,6 +24,42 @@ Operator 是一个感知应用状态的控制器，所以实现一个 Operator �
 - Operator 应该向后兼容，并且在 Operator 自身退出或删除时不影响应用的状态
 - Operator 应该支持应用版本更新
 - Operator 应该测试 Pod 失效、配置错误、网络错误等异常情况
+
+要创建一个新的 Operator，最简单的方法使用 [Operator Framework](https://github.com/operator-framework)。比如，要创建一个最简单的 Operator，需要以下几个步骤:
+
+（1）安装 operator-sdk 工具：
+
+```sh
+$ mkdir -p $GOPATH/src/github.com/operator-framework
+$ cd $GOPATH/src/github.com/operator-framework
+$ git clone https://github.com/operator-framework/operator-sdk
+$ cd operator-sdk
+$ git checkout master
+$ make dep
+$ make install
+```
+
+（2）初始化项目：
+
+```sh
+$ mkdir -p $GOPATH/src/github.com/example-inc/
+$ cd $GOPATH/src/github.com/example-inc/
+$ operator-sdk new memcached-operator
+$ cd memcached-operator
+```
+
+（3）添加 CRD 定义和控制器：
+
+```sh
+$ operator-sdk add api --api-version=cache.example.com/v1alpha1 --kind=Memcached
+$ operator-sdk add controller --api-version=cache.example.com/v1alpha1 --kind=Memcached
+```
+
+（4）实现 Controller、Reconciler 等控制逻辑。
+
+（5）部署 Operator 到 Kubernetes 集群中，并通过自定义的 CRD 创建资源。
+
+完整的示例可以参考 [这里](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md)。
 
 ## 如何使用 Operator
 
@@ -154,3 +192,5 @@ example-etcd-cluster-0004       1/1       Running   0          4h
 ## 参考资料
 
 - [Kubernetes Operators](https://coreos.com/operators)
+- [Operator Framework](https://github.com/operator-framework)
+- [OperatorHub.io](https://www.operatorhub.io/)

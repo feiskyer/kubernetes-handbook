@@ -22,3 +22,5 @@
 - [Designing Distributed Systems](https://cloudblogs.microsoft.com/opensource/2018/03/26/new-oreilly-e-book-on-designing-distributed-systems-available-for-free-download/)
 - [Awesome Kubernetes](https://github.com/ramitsurana/awesome-kubernetes)
 - [Awesome Docker](https://github.com/veggiemonk/awesome-docker)
+- [OperatorHub.io](https://www.operatorhub.io/)
+
