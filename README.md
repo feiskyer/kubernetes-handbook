@@ -1,6 +1,7 @@
 # Kubernetes 指南
 
 [![star this repo](https://githubbadges.com/star.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook) [![fork this repo](https://githubbadges.com/fork.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook/fork) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/feiskyer/kubernetes-handbook/issues)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffeiskyer%2Fkubernetes-handbook.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffeiskyer%2Fkubernetes-handbook?ref=badge_shield)
 
 Kubernetes 是谷歌开源的容器集群管理系统，是 Google 多年大规模容器管理技术 Borg 的开源版本，也是 CNCF 最重要的项目之一，主要功能包括：
 
@@ -46,3 +47,6 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 ![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
 
 [署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)。
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffeiskyer%2Fkubernetes-handbook.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffeiskyer%2Fkubernetes-handbook?ref=badge_large)
