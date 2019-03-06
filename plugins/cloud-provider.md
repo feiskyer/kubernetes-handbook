@@ -47,7 +47,7 @@ Kubenretes 内置的 Cloud Provider 包括
   - Volume 控制器向云提供商创建和删除持久化存储卷，并按需要挂载或卸载到指定的 VM 上。
   - Route 控制器给所有已注册的 Nodes 配置云路由。
   - Service 控制器给 LoadBalancer 类型的服务创建负载均衡器并更新服务的外网 IP。
-  - PersistentVolumeLable 准入控制负责 PV 标签
+  - PersistentVolumeLabel 准入控制负责 PV 标签
   - PersistentVolumeClainResize 准入控制动态扩展 PV 大小
 
 ## 如何开发 Cloud Provider 扩展
