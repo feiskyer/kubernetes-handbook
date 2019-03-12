@@ -58,7 +58,7 @@ etcd_request_cache_get_latencies_summary_count 0
 ## kube-controller-manager 启动示例
 
 ```sh
-ube-controller-manager \
+kube-controller-manager \
   --enable-dynamic-provisioning=true \
   --feature-gates=AllAlpha=true \
   --horizontal-pod-autoscaler-sync-period=10s \
