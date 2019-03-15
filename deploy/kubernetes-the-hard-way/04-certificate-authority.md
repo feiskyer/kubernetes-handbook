@@ -332,7 +332,7 @@ kubernetes.pem
 ### Service Account 证书
 
 ```sh
-at > service-account-csr.json <<EOF
+cat > service-account-csr.json <<EOF
 {
   "CN": "service-accounts",
   "key": {
