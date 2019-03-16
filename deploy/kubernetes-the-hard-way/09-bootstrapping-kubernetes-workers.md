@@ -52,13 +52,13 @@ sudo mkdir -p \
 安装 worker 二进制文件
 
 ```sh
-  sudo mv runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 runsc
-  sudo mv runc.amd64 runc
-  chmod +x kubectl kube-proxy kubelet runc runsc
-  sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
-  sudo tar -xvf crictl-v1.12.0-linux-amd64.tar.gz -C /usr/local/bin/
-  sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
-  sudo tar -xvf containerd-1.2.0-rc.0.linux-amd64.tar.gz -C /
+sudo mv runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 runsc
+sudo mv runc.amd64 runc
+chmod +x kubectl kube-proxy kubelet runc runsc
+sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
+sudo tar -xvf crictl-v1.12.0-linux-amd64.tar.gz -C /usr/local/bin/
+sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
+sudo tar -xvf containerd-1.2.0-rc.0.linux-amd64.tar.gz -C /
 ```
 
 ### 配置 CNI 网路
@@ -154,9 +154,9 @@ EOF
 ### 配置 Kubelet
 
 ```sh
-  sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-  sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-  sudo mv ca.pem /var/lib/kubernetes/
+sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
+sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+sudo mv ca.pem /var/lib/kubernetes/
 ```
 
 生成 `kubelet.service` systemd 配置文件：
@@ -248,9 +248,9 @@ EOF
 ### 启动 worker 服务
 
 ```sh
-  sudo systemctl daemon-reload
-  sudo systemctl enable containerd kubelet kube-proxy
-  sudo systemctl start containerd kubelet kube-proxy
+sudo systemctl daemon-reload
+sudo systemctl enable containerd kubelet kube-proxy
+sudo systemctl start containerd kubelet kube-proxy
 ```
 
 > 记得在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。

@@ -48,7 +48,6 @@
   - [Service](concepts/service.md)
   - [ServiceAccount](concepts/serviceaccount.md)
   - [StatefulSet](concepts/statefulset.md)
-  - [ThirdPartyResources](concepts/thirdpartyresources.md)
   - [Volume](concepts/volume.md)
 
 ## 部署配置
