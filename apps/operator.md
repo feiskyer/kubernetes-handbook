@@ -171,7 +171,7 @@ example-etcd-cluster-0004       1/1       Running   0          4h
 ## 其他示例
 
 - [Prometheus Operator](https://coreos.com/operators/prometheus/docs/latest)
-- [Rook Operator](https://github.com/rook/rook)
+- [Rook Operator](https://github.com/rook/rook): cloud-native storage orchestrator
 - [Tectonic Operators](https://coreos.com/tectonic)
 - https://github.com/sapcc/kubernetes-operators
 - https://github.com/kbst/memcached
