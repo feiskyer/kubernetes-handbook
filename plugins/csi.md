@@ -1,22 +1,26 @@
 # Container Storage Interface
 
-Container Storage Interface (CSI) 是从 v1.9 引入的容器存储接口，用于扩展 Kubernetes 的存储生态。实际上，CSI 是整个容器生态的标准存储接口，同样适用于 Mesos、Cloud Foundry 等其他的容器集群调度系统。
+Container Storage Interface (CSI) 是从 v1.9 引入的容器存储接口，并于 v1.13 版本正式 GA。实际上，CSI 是整个容器生态的标准存储接口，同样适用于 Mesos、Cloud Foundry 等其他的容器集群调度系统。
 
 **版本信息**
 
 | Kubernetes | CSI Spec | Status |
 | ---------- | -------- | ------ |
-| v1.9 | v0.1     | Alpha  |
-| v1.10      | v0.2     | Beta   |
-| v1.11-v1.12 | v0.3     | Beta   |
+| v1.9 | v0.1.0   | Alpha  |
+| v1.10      | v0.2.0   | Beta   |
+| v1.11-v1.12 | v0.3.0   | Beta   |
+| v1.13 | [v0.3.0](https://github.com/container-storage-interface/spec/releases/tag/v0.3.0), [v1.0.0](https://github.com/container-storage-interface/spec/releases/tag/v1.0.0) | GA |
 
 Sidecar 容器版本
 
-| Container Name   | CSI spec | Latest Release Tag |
-| ---------------- | -------- | ------------------ |
-| csi-provisioner  | v0.3     | v0.3.1             |
-| csi-attacher     | v0.3     | v0.3.0             |
-| driver-registrar | v0.3     | v0.3.0             |
+| Container Name           | Description                                                  | CSI spec | Latest Release Tag |
+| ------------------------ | ------------------------------------------------------------ | -------- | ------------------ |
+| external-provisioner     | Watch PVC and create PV                                      | v1.0.0   | v1.0.1             |
+| external-attacher        | Operate VolumeAttachment                                     | v1.0.0   | v1.0.1             |
+| external-snapshotter     | Operate VolumeSnapshot                                       | v1.0.0   | v1.0.1             |
+| node-driver-registrar    | Register kubelet plugin                                      | v1.0.0   | v1.0.2             |
+| cluster-driver-registrar | Register [CSIDriver Object](https://kubernetes-csi.github.io/docs/csi-driver-object.html) | v1.0.0   | v1.0.1             |
+| livenessprobe            | Monitors health of CSI driver                                | v1.0.0   | v1.0.2             |
 
 ## 原理
 
@@ -28,7 +32,7 @@ Sidecar 容器版本
 
 由于 CSI 监听在 unix socket 文件上， kube-controller-manager 并不能直接调用 CSI 插件。为了协调 Volume 生命周期的管理，并方便开发者实现 CSI 插件，Kubernetes 提供了几个 sidecar 容器并推荐使用下述方法来部署 CSI 插件：
 
-![](images/container-storage-interface_diagram1.png)
+![Recommended CSI Deployment Diagram](assets/container-storage-interface_diagram1.png)
 
 该部署方法包括：
 

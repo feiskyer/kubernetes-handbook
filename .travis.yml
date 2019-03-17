@@ -1,0 +1,18 @@
+sudo: required
+
+language: go
+
+go:
+  - 1.11.x
+
+
+before_script:
+  - go get -u github.com/client9/misspell/cmd/misspell
+  - go version
+
+
+jobs:
+  include:
+    - stage: Verify
+      script: make spell
+

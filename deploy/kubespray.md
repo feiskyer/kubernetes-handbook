@@ -108,7 +108,7 @@ node1                      : ok=305  changed=73   unreachable=0    failed=0
 node2                      : ok=276  changed=62   unreachable=0    failed=0
 node3                      : ok=276  changed=62   unreachable=0    failed=0
 
-Kubernetes deployed successfuly
+Kubernetes deployed successfully
 ```
 > 其中 `-n` 为部署的网络插件类型，目前支持 calico、flannel、weave 与 canal。
 

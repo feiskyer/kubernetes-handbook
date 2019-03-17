@@ -2,6 +2,8 @@
 
 FlexVolume 是 Kubernetes v1.8+ 支持的一种存储插件扩展方式。类似于 CNI 插件，它需要外部插件将二进制文件放到预先配置的路径中（如 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`），并需要在系统中安装好所有需要的依赖。
 
+> 对于新的存储插件，推荐基于 [CSI](csi.md) 构建。
+
 ## FlexVolume 接口
 
 实现一个 FlexVolume 包括两个步骤
@@ -69,5 +71,5 @@ spec:
 
 注意：
 
-- 在 v1.7 版本，部署新的 FlevVolume 插件后需要重启 kubelet 和 kube-controller-manager；而从 v1.8 开始不需要重启它们了。
-- FlexVolume 不支持 [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)，以 PVC 方式使用前需要管理员预先创建好对应的 PV。
+- 在 v1.7 版本，部署新的 FlevVolume 插件后需要重启 kubelet 和 kube-controller-manager；
+- 而从 v1.8 开始不需要重启它们了。

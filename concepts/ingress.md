@@ -20,13 +20,7 @@
 
 而 Ingress 就是为进入集群的请求提供路由规则的集合，如下图所示
 
-```
-    internet
-        |
-   [Ingress]
-   --|-----|--
-   [Services]
-```
+![image-20190316184154726](assets/image-20190316184154726.png)
 
 Ingress 可以给 service 提供集群外部访问的 URL、负载均衡、SSL 终止、HTTP 路由等。为了配置这些 Ingress 规则，集群管理员需要部署一个 [Ingress controller](../plugins/ingress.md)，它监听 Ingress 和 service 的变化，并根据规则配置负载均衡并提供访问入口。
 
@@ -53,7 +47,7 @@ spec:
 
 | Kubernetes 版本 | Extension 版本     |
 | --------------- | ------------------ |
-| v1.5-v1.9       | extensions/v1beta1 |
+| v1.5+           | extensions/v1beta1 |
 
 ## Ingress 类型
 

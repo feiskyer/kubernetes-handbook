@@ -60,10 +60,17 @@ Cluster AutoScaler 也会定期（默认间隔 10s）自动监测 Node 的资源
 ## 最佳实践
 
 - Cluster AutoScaler 可以和 Horizontal Pod Autoscaler（HPA）配合使用
+
+  ![image-20190316184848223](assets/image-20190316184848223.png)
+
 - 不要手动修改 Node 配置，保证集群内的所有 Node 有相同的配置并属于同一个 Node 组
+
 - 运行 Pod 时指定资源请求
+
 - 必要时使用 PodDisruptionBudgets 阻止 Pod 被误删除
+
 - 确保云服务商的配额充足
+
 - Cluster AutoScaler **与云服务商提供的 Node 自动扩展功能以及基于 CPU 利用率的 Node 自动扩展机制冲突，不要同时启用**
 
 ## 参考文档

@@ -75,7 +75,7 @@ Kubernetes 设计理念和功能其实就是一个类似 Linux 的分层架构�
 
 
 
-关于分层架构，可以关注下 Kubernetes 社区正在推进的 [Kubernetes architectual roadmap](https://github.com/kubernetes/community/tree/master/sig-architecture)。
+关于分层架构，可以关注下 Kubernetes 社区正在推进的 [Kubernetes architectural roadmap](https://github.com/kubernetes/community/tree/master/sig-architecture)。
 
 ## 参考文档
 

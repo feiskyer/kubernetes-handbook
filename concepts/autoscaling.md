@@ -142,7 +142,7 @@ Conditions:
   ----                  ------  ------                  -------
   AbleToScale           True    ReadyForNewScale        the last scale time was sufficiently old as to warrant a new scale
   ScalingActive         True    ValidMetricFound        the HPA was able to successfully calculate a replica count from pods metric http_requests
-  ScalingLimited        False   DesiredWithinRange      the desired replica count is within the acceptible range
+  ScalingLimited        False   DesiredWithinRange      the desired replica count is within the acceptable range
 Events:
 ```
 

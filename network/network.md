@@ -41,6 +41,16 @@ kubenet 是一个基于 CNI bridge 的网络插件，它为每个容器建立一
 
 - Traffic shaping，支持通过 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 等 Annotation 设置 Pod 网络带宽限制
 
+下图是一个 Kubernetes on Azure 多节点的 Pod 之间相互通信的原理：
+
+![image-20190316183639488](assets/image-20190316183639488.png)
+
+跨节点 Pod 之间相互通信时，会通过云平台或者交换机配置的路由转发到正确的节点中：
+
+![image-20190316183650404](assets/image-20190316183650404.png)
+
+
+
 未来 kubenet 插件会迁移到标准的 CNI 插件（如 ptp），具体计划见 [这里](https://docs.google.com/document/d/1glJLMHrE2eqwRrAN4fdsz4Vg3R1Iqt6bm5GJQ4GdjlQ/edit#)。
 
 ## CNI plugin

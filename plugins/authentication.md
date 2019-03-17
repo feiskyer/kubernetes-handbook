@@ -4,8 +4,7 @@
 
 > **Kubernetes 不直接管理用户**
 >
-> 虽然 Kubernetes 认证和授权用到了 username，但 Kubernetes 并不直接管理用户，不能创建 `user` 对象，
-> 也不存储 username。但是 Kubernetes 提供了 Service Account，用来与 API 交互。
+> 虽然 Kubernetes 认证和授权用到了 user 和 group，但 Kubernetes 并不直接管理用户，不能创建 `user` 对象，也不存储 user。
 
 目前，Kubernetes 支持以下认证插件：
 
@@ -21,12 +20,31 @@
 
 ## X509 证书
 
-使用 X509 客户端证书只需要 API Server 启动时配置 `--client-ca-file=SOMEFILE`。在证书认证时，其 CN 域用作用户名，而组织机构域则用作 group 名。
+使用 X509 客户端证书只需要 API Server 启动时配置 `--client-ca-file=SOMEFILE`。在证书认证时，其 Common Name（CN）域用作用户名，而 Organization（O）域则用作 group 名。
 
 创建一个客户端证书的方法为：
 
 ```sh
-openssl req -new -key jbeda.pem -out jbeda-csr.pem -subj "/CN=jbeda/O=app1/O=app2"
+# Create private key
+openssl genrsa -out username.key 2048
+# Create CSR (certificate signing request)
+openssl req -new -key username.key -out username.csr -subj "/CN=username/O=group"
+# Create certificate from CSR using the cluster authority 
+openssl x509 -req -in username.csr -CA $CA_LOCATION/ca.crt -CAkey $CA_LOCATION/ca.key -CAcreateserial -out username.crt -days 500
+```
+
+接着，就可以使用 username.key 和 username.crt 来访问集群：
+
+```sh
+# Config cluster
+kubectl config set-cluster my-cluster --certificate-authority=ca.pem --embed-certs=true --server=https://<APISERVER_IP>:6443
+# Config credentials
+kubectl config set-credentials username --client-certificate=username.crt --client-key=username.key --embed-certs=true
+# Config context
+kubectl config set-context username --cluster=my-cluster --user=username
+# Config RBAC if it's enabled
+# Finally, switch to new context
+kubectl config use-context username
 ```
 
 ## 静态 Token 文件

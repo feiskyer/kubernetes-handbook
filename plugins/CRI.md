@@ -6,6 +6,10 @@
 
 CRI 最早从从 1.4 版就开始设计讨论和开发，在 v1.5 中发布第一个测试版。在 v1.6 时已经有了很多外部容器运行时，如 frakti 和 cri-o 等。v1.7 中又新增了 cri-containerd 支持用 Containerd 来管理容器。
 
+采用 CRI 后，Kubelet 的架构如下图所示：
+
+![image-20190316183052101](assets/image-20190316183052101.png)
+
 ## CRI 接口
 
 CRI 基于 gRPC 定义了 RuntimeService 和 ImageService 等两个 gRPC 服务，分别用于容器运行时和镜像的管理。其定义在
@@ -52,6 +56,8 @@ func main() {
 
 对于 Streaming API（Exec、PortForward 和 Attach），CRI 要求容器运行时返回一个 streaming server 的 URL 以便 Kubelet 重定向 API Server 发送过来的请求。在 v1.10 及更早版本中，容器运行时必需返回一个 API Server 可直接访问的 URL（通常跟 Kubelet 使用相同的监听地址）；而从 v1.11 开始，Kubelet 新增了 `--redirect-container-streaming`（默认为 false），默认不再转发而是代理 Streaming 请求，这样运行时可以返回一个 localhost 的 URL（当然也不再需要配置 TLS）。
 
+![image-20190316183005314](assets/image-20190316183005314.png)
+
 详细的实现方法可以参考 [dockershim](https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/dockershim) 或者 [cri-o](https://github.com/kubernetes-incubator/cri-o)。
 
 ### Kubelet 配置
@@ -63,6 +69,16 @@ kubelet --container-runtime=remote --container-runtime-endpoint=unix:///var/run/
 ```
 
 ## 容器运行时
+
+| **CRI** **容器运行时** | **维护者** | **主要特性**                 | **容器引擎**               |
+| ---------------------- | ---------- | ---------------------------- | -------------------------- |
+| **Dockershim**         | Kubernetes | 内置实现、特性最新           | docker                     |
+| **cri-o**              | Kubernetes | OCI标准不需要Docker          | OCI（runc、kata、gVisor…） |
+| **cri-containerd**     | Containerd | 基于 containerd 不需要Docker | OCI（runc、kata、gVisor…） |
+| **Frakti**             | Kubernetes | 虚拟化容器                   | hyperd、docker             |
+| **rktlet**             | Kubernetes | 支持rkt                      | rkt                        |
+| **PouchContainer**     | Alibaba    | 富容器                       | OCI（runc、kata…）         |
+| **Virtlet**            | Mirantis   | 虚拟机和QCOW2镜像            | Libvirt（KVM）             |
 
 目前基于 CRI 容器引擎已经比较丰富了，包括
 

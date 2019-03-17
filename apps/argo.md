@@ -7,7 +7,7 @@ Argo 是一个基于 Kubernetes 的工作流引擎，同时也支持 CI、CD 等
 ### 使用 argo install
 
 ```sh
-# Downlaod Argo.
+# Download Argo.
 curl -sSL -o argo https://github.com/argoproj/argo/releases/download/v2.1.0/argo-linux-amd64
 chmod +x argo
 sudo mv argo /usr/local/bin/argo
@@ -67,7 +67,7 @@ $ kubectl edit configmap workflow-controller-configmap -n argo
 > 注意：当前 Helm Charts 使用的 Minio 版本较老，部署有可能会失败。
 
 ```sh
-# Downlaod Argo.
+# Download Argo.
 curl -sSL -o /usr/local/bin/argo https://github.com/argoproj/argo/releases/download/v2.0.0/argo-linux-amd64
 chmod +x /usr/local/bin/argo
 

@@ -9,6 +9,10 @@ kube-apiserver 是 Kubernetes 最重要的核心组件之一，主要提供以�
 
 kube-apiserver 支持同时提供 https（默认监听在 6443 端口）和 http API（默认监听在 127.0.0.1 的 8080 端口），其中 http API 是非安全接口，不做任何认证授权机制，不建议生产环境启用。两个接口提供的 REST API 格式相同，参考 [Kubernetes API Reference](https://kubernetes.io/docs/api-reference/v1.8/) 查看所有 API 的调用格式。
 
+![img](assets/API-server-space.png)
+
+（图片来自 [OpenShift Blog](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/)）
+
 在实际使用中，通常通过 [kubectl](https://kubernetes.io/docs/user-guide/kubectl-overview/) 来访问 apiserver，也可以通过 Kubernetes 各个语言的 client 库来访问 apiserver。在使用 kubectl 时，打开调试日志也可以看到每个 API 调用的格式，比如
 
 ```sh
@@ -138,6 +142,16 @@ kube-apiserver 提供了 Kubernetes 的 REST API，实现了认证、授权、�
 
 ![](images/kube-apiserver.png)
 
+以 `/apis/batch/v2alpha1/jobs` 为例，GET 请求的处理过程如下图所示：
+
+![img](assets/API-server-flow.png)
+
+POST 请求的处理过程为：
+
+![img](assets/API-server-storage-flow.png)
+
+（图片来自 [OpenShift Blog](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/)）
+
 ## API 访问
 
 有多种方式可以访问 Kubernetes 提供的 REST API：
@@ -215,9 +229,8 @@ $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 
 ## API 参考文档
 
-最近 4 个稳定版本的 API 参考文档为：
+最近 3 个稳定版本的 API 参考文档为：
 
+- [v1.13 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/)
+- [v1.12 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/)
 - [v1.11 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/)
-- [v1.10 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
-- [v1.9 API Reference](https://kubernetes.io/docs/api-reference/v1.9/)
-- [v1.8 API Reference](https://kubernetes.io/docs/api-reference/v1.8/)
