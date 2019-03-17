@@ -685,20 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
-            
-                <a href="../concepts/thirdpartyresources.html">
-            
-                    
-                    ThirdPartyResources
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/volume.html">
             
                 <a href="../concepts/volume.html">
             
@@ -2610,7 +2597,7 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="container-storage-interface">Container Storage Interface</h1>
-<p>Container Storage Interface (CSI) &#x662F;&#x4ECE; v1.9 &#x5F15;&#x5165;&#x7684;&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x63A5;&#x53E3;&#xFF0C;&#x7528;&#x4E8E;&#x6269;&#x5C55; Kubernetes &#x7684;&#x5B58;&#x50A8;&#x751F;&#x6001;&#x3002;&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;CSI &#x662F;&#x6574;&#x4E2A;&#x5BB9;&#x5668;&#x751F;&#x6001;&#x7684;&#x6807;&#x51C6;&#x5B58;&#x50A8;&#x63A5;&#x53E3;&#xFF0C;&#x540C;&#x6837;&#x9002;&#x7528;&#x4E8E; Mesos&#x3001;Cloud Foundry &#x7B49;&#x5176;&#x4ED6;&#x7684;&#x5BB9;&#x5668;&#x96C6;&#x7FA4;&#x8C03;&#x5EA6;&#x7CFB;&#x7EDF;&#x3002;</p>
+<p>Container Storage Interface (CSI) &#x662F;&#x4ECE; v1.9 &#x5F15;&#x5165;&#x7684;&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x63A5;&#x53E3;&#xFF0C;&#x5E76;&#x4E8E; v1.13 &#x7248;&#x672C;&#x6B63;&#x5F0F; GA&#x3002;&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;CSI &#x662F;&#x6574;&#x4E2A;&#x5BB9;&#x5668;&#x751F;&#x6001;&#x7684;&#x6807;&#x51C6;&#x5B58;&#x50A8;&#x63A5;&#x53E3;&#xFF0C;&#x540C;&#x6837;&#x9002;&#x7528;&#x4E8E; Mesos&#x3001;Cloud Foundry &#x7B49;&#x5176;&#x4ED6;&#x7684;&#x5BB9;&#x5668;&#x96C6;&#x7FA4;&#x8C03;&#x5EA6;&#x7CFB;&#x7EDF;&#x3002;</p>
 <p><strong>&#x7248;&#x672C;&#x4FE1;&#x606F;</strong></p>
 <table>
 <thead>
@@ -2623,18 +2610,23 @@
 <tbody>
 <tr>
 <td>v1.9</td>
-<td>v0.1</td>
+<td>v0.1.0</td>
 <td>Alpha</td>
 </tr>
 <tr>
 <td>v1.10</td>
-<td>v0.2</td>
+<td>v0.2.0</td>
 <td>Beta</td>
 </tr>
 <tr>
 <td>v1.11-v1.12</td>
-<td>v0.3</td>
+<td>v0.3.0</td>
 <td>Beta</td>
+</tr>
+<tr>
+<td>v1.13</td>
+<td><a href="https://github.com/container-storage-interface/spec/releases/tag/v0.3.0" target="_blank">v0.3.0</a>, <a href="https://github.com/container-storage-interface/spec/releases/tag/v1.0.0" target="_blank">v1.0.0</a></td>
+<td>GA</td>
 </tr>
 </tbody>
 </table>
@@ -2643,25 +2635,47 @@
 <thead>
 <tr>
 <th>Container Name</th>
+<th>Description</th>
 <th>CSI spec</th>
 <th>Latest Release Tag</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>csi-provisioner</td>
-<td>v0.3</td>
-<td>v0.3.1</td>
+<td>external-provisioner</td>
+<td>Watch PVC and create PV</td>
+<td>v1.0.0</td>
+<td>v1.0.1</td>
 </tr>
 <tr>
-<td>csi-attacher</td>
-<td>v0.3</td>
-<td>v0.3.0</td>
+<td>external-attacher</td>
+<td>Operate VolumeAttachment</td>
+<td>v1.0.0</td>
+<td>v1.0.1</td>
 </tr>
 <tr>
-<td>driver-registrar</td>
-<td>v0.3</td>
-<td>v0.3.0</td>
+<td>external-snapshotter</td>
+<td>Operate VolumeSnapshot</td>
+<td>v1.0.0</td>
+<td>v1.0.1</td>
+</tr>
+<tr>
+<td>node-driver-registrar</td>
+<td>Register kubelet plugin</td>
+<td>v1.0.0</td>
+<td>v1.0.2</td>
+</tr>
+<tr>
+<td>cluster-driver-registrar</td>
+<td>Register <a href="https://kubernetes-csi.github.io/docs/csi-driver-object.html" target="_blank">CSIDriver Object</a></td>
+<td>v1.0.0</td>
+<td>v1.0.1</td>
+</tr>
+<tr>
+<td>livenessprobe</td>
+<td>Monitors health of CSI driver</td>
+<td>v1.0.0</td>
+<td>v1.0.2</td>
 </tr>
 </tbody>
 </table>
@@ -2673,7 +2687,7 @@
 <li><strong>Node Service</strong>&#xFF1A;&#x7528;&#x4E8E;&#x5C06; Volume &#x5B58;&#x50A8;&#x5377;&#x6302;&#x8F7D;&#x5230;&#x6307;&#x5B9A;&#x7684;&#x76EE;&#x5F55;&#x4E2D;&#x4EE5;&#x4FBF; Kubelet &#x521B;&#x5EFA;&#x5BB9;&#x5668;&#x65F6;&#x4F7F;&#x7528;&#xFF08;&#x9700;&#x8981;&#x76D1;&#x542C;&#x5728; <code>/var/lib/kubelet/plugins/[SanitizedCSIDriverName]/csi.sock</code>&#xFF09;</li>
 </ul>
 <p>&#x7531;&#x4E8E; CSI &#x76D1;&#x542C;&#x5728; unix socket &#x6587;&#x4EF6;&#x4E0A;&#xFF0C; kube-controller-manager &#x5E76;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x8C03;&#x7528; CSI &#x63D2;&#x4EF6;&#x3002;&#x4E3A;&#x4E86;&#x534F;&#x8C03; Volume &#x751F;&#x547D;&#x5468;&#x671F;&#x7684;&#x7BA1;&#x7406;&#xFF0C;&#x5E76;&#x65B9;&#x4FBF;&#x5F00;&#x53D1;&#x8005;&#x5B9E;&#x73B0; CSI &#x63D2;&#x4EF6;&#xFF0C;Kubernetes &#x63D0;&#x4F9B;&#x4E86;&#x51E0;&#x4E2A; sidecar &#x5BB9;&#x5668;&#x5E76;&#x63A8;&#x8350;&#x4F7F;&#x7528;&#x4E0B;&#x8FF0;&#x65B9;&#x6CD5;&#x6765;&#x90E8;&#x7F72; CSI &#x63D2;&#x4EF6;&#xFF1A;</p>
-<p><img src="images/container-storage-interface_diagram1.png" alt=""></p>
+<p><img src="assets/container-storage-interface_diagram1.png" alt="Recommended CSI Deployment Diagram"></p>
 <p>&#x8BE5;&#x90E8;&#x7F72;&#x65B9;&#x6CD5;&#x5305;&#x62EC;&#xFF1A;</p>
 <ul>
 <li>StatefuelSet&#xFF1A;&#x526F;&#x672C;&#x6570;&#x4E3A; 1 &#x4FDD;&#x8BC1;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5B9E;&#x4F8B;&#x8FD0;&#x884C;&#xFF0C;&#x5B83;&#x5305;&#x542B;&#x4E09;&#x4E2A;&#x5BB9;&#x5668;<ul>
@@ -2860,7 +2874,7 @@ kubectl create <span class="hljs-_">-f</span> deploy/kubernetes
 <li><a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes" target="_blank">CSI Volume Plugins in Kubernetes Design Doc</a> </li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-03-02 04:46:17
+2019-03-17 02:59:02
 </span></footer>
                                 
                                 </section>
@@ -2904,7 +2918,7 @@ kubectl create <span class="hljs-_">-f</span> deploy/kubernetes
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"容器存储接口 CSI","level":"4.6.1","depth":2,"next":{"title":"FlexVolume","level":"4.6.2","depth":2,"path":"plugins/flex-volume.md","ref":"plugins/flex-volume.md","articles":[]},"previous":{"title":"存储插件","level":"4.6","depth":1,"path":"plugins/volume.md","ref":"plugins/volume.md","articles":[{"title":"容器存储接口 CSI","level":"4.6.1","depth":2,"path":"plugins/csi.md","ref":"plugins/csi.md","articles":[]},{"title":"FlexVolume","level":"4.6.2","depth":2,"path":"plugins/flex-volume.md","ref":"plugins/flex-volume.md","articles":[]},{"title":"glusterfs","level":"4.6.3","depth":2,"path":"plugins/glusterfs.md","ref":"plugins/glusterfs.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/csi.md","mtime":"2019-03-02T04:46:17.576Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"容器存储接口 CSI","level":"4.6.1","depth":2,"next":{"title":"FlexVolume","level":"4.6.2","depth":2,"path":"plugins/flex-volume.md","ref":"plugins/flex-volume.md","articles":[]},"previous":{"title":"存储插件","level":"4.6","depth":1,"path":"plugins/volume.md","ref":"plugins/volume.md","articles":[{"title":"容器存储接口 CSI","level":"4.6.1","depth":2,"path":"plugins/csi.md","ref":"plugins/csi.md","articles":[]},{"title":"FlexVolume","level":"4.6.2","depth":2,"path":"plugins/flex-volume.md","ref":"plugins/flex-volume.md","articles":[]},{"title":"glusterfs","level":"4.6.3","depth":2,"path":"plugins/glusterfs.md","ref":"plugins/glusterfs.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/csi.md","mtime":"2019-03-17T02:59:02.454Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-17T03:00:34.022Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

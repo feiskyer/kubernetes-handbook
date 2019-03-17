@@ -685,20 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
-            
-                <a href="../concepts/thirdpartyresources.html">
-            
-                    
-                    ThirdPartyResources
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/volume.html">
             
                 <a href="../concepts/volume.html">
             
@@ -2613,8 +2600,7 @@
 <p>&#x5F00;&#x542F; TLS &#x65F6;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x8BF7;&#x6C42;&#x90FD;&#x9700;&#x8981;&#x9996;&#x5148;&#x8BA4;&#x8BC1;&#x3002;Kubernetes &#x652F;&#x6301;&#x591A;&#x79CD;&#x8BA4;&#x8BC1;&#x673A;&#x5236;&#xFF0C;&#x5E76;&#x652F;&#x6301;&#x540C;&#x65F6;&#x5F00;&#x542F;&#x591A;&#x4E2A;&#x8BA4;&#x8BC1;&#x63D2;&#x4EF6;&#xFF08;&#x53EA;&#x8981;&#x6709;&#x4E00;&#x4E2A;&#x8BA4;&#x8BC1;&#x901A;&#x8FC7;&#x5373;&#x53EF;&#xFF09;&#x3002;&#x5982;&#x679C;&#x8BA4;&#x8BC1;&#x6210;&#x529F;&#xFF0C;&#x5219;&#x7528;&#x6237;&#x7684; <code>username</code> &#x4F1A;&#x4F20;&#x5165;&#x6388;&#x6743;&#x6A21;&#x5757;&#x505A;&#x8FDB;&#x4E00;&#x6B65;&#x6388;&#x6743;&#x9A8C;&#x8BC1;&#xFF1B;&#x800C;&#x5BF9;&#x4E8E;&#x8BA4;&#x8BC1;&#x5931;&#x8D25;&#x7684;&#x8BF7;&#x6C42;&#x5219;&#x8FD4;&#x56DE; HTTP 401&#x3002;</p>
 <blockquote>
 <p><strong>Kubernetes &#x4E0D;&#x76F4;&#x63A5;&#x7BA1;&#x7406;&#x7528;&#x6237;</strong></p>
-<p>&#x867D;&#x7136; Kubernetes &#x8BA4;&#x8BC1;&#x548C;&#x6388;&#x6743;&#x7528;&#x5230;&#x4E86; username&#xFF0C;&#x4F46; Kubernetes &#x5E76;&#x4E0D;&#x76F4;&#x63A5;&#x7BA1;&#x7406;&#x7528;&#x6237;&#xFF0C;&#x4E0D;&#x80FD;&#x521B;&#x5EFA; <code>user</code> &#x5BF9;&#x8C61;&#xFF0C;
-&#x4E5F;&#x4E0D;&#x5B58;&#x50A8; username&#x3002;&#x4F46;&#x662F; Kubernetes &#x63D0;&#x4F9B;&#x4E86; Service Account&#xFF0C;&#x7528;&#x6765;&#x4E0E; API &#x4EA4;&#x4E92;&#x3002;</p>
+<p>&#x867D;&#x7136; Kubernetes &#x8BA4;&#x8BC1;&#x548C;&#x6388;&#x6743;&#x7528;&#x5230;&#x4E86; user &#x548C; group&#xFF0C;&#x4F46; Kubernetes &#x5E76;&#x4E0D;&#x76F4;&#x63A5;&#x7BA1;&#x7406;&#x7528;&#x6237;&#xFF0C;&#x4E0D;&#x80FD;&#x521B;&#x5EFA; <code>user</code> &#x5BF9;&#x8C61;&#xFF0C;&#x4E5F;&#x4E0D;&#x5B58;&#x50A8; user&#x3002;</p>
 </blockquote>
 <p>&#x76EE;&#x524D;&#xFF0C;Kubernetes &#x652F;&#x6301;&#x4EE5;&#x4E0B;&#x8BA4;&#x8BC1;&#x63D2;&#x4EF6;&#xFF1A;</p>
 <ul>
@@ -2629,9 +2615,25 @@
 <li>OpenStack Keystone &#x5BC6;&#x7801;</li>
 </ul>
 <h2 id="x509-&#x8BC1;&#x4E66;">X509 &#x8BC1;&#x4E66;</h2>
-<p>&#x4F7F;&#x7528; X509 &#x5BA2;&#x6237;&#x7AEF;&#x8BC1;&#x4E66;&#x53EA;&#x9700;&#x8981; API Server &#x542F;&#x52A8;&#x65F6;&#x914D;&#x7F6E; <code>--client-ca-file=SOMEFILE</code>&#x3002;&#x5728;&#x8BC1;&#x4E66;&#x8BA4;&#x8BC1;&#x65F6;&#xFF0C;&#x5176; CN &#x57DF;&#x7528;&#x4F5C;&#x7528;&#x6237;&#x540D;&#xFF0C;&#x800C;&#x7EC4;&#x7EC7;&#x673A;&#x6784;&#x57DF;&#x5219;&#x7528;&#x4F5C; group &#x540D;&#x3002;</p>
+<p>&#x4F7F;&#x7528; X509 &#x5BA2;&#x6237;&#x7AEF;&#x8BC1;&#x4E66;&#x53EA;&#x9700;&#x8981; API Server &#x542F;&#x52A8;&#x65F6;&#x914D;&#x7F6E; <code>--client-ca-file=SOMEFILE</code>&#x3002;&#x5728;&#x8BC1;&#x4E66;&#x8BA4;&#x8BC1;&#x65F6;&#xFF0C;&#x5176; Common Name&#xFF08;CN&#xFF09;&#x57DF;&#x7528;&#x4F5C;&#x7528;&#x6237;&#x540D;&#xFF0C;&#x800C; Organization&#xFF08;O&#xFF09;&#x57DF;&#x5219;&#x7528;&#x4F5C; group &#x540D;&#x3002;</p>
 <p>&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x8BC1;&#x4E66;&#x7684;&#x65B9;&#x6CD5;&#x4E3A;&#xFF1A;</p>
-<pre><code class="lang-sh">openssl req -new -key jbeda.pem -out jbeda-csr.pem -subj <span class="hljs-string">&quot;/CN=jbeda/O=app1/O=app2&quot;</span>
+<pre><code class="lang-sh"><span class="hljs-comment"># Create private key</span>
+openssl genrsa -out username.key 2048
+<span class="hljs-comment"># Create CSR (certificate signing request)</span>
+openssl req -new -key username.key -out username.csr -subj <span class="hljs-string">&quot;/CN=username/O=group&quot;</span>
+<span class="hljs-comment"># Create certificate from CSR using the cluster authority </span>
+openssl x509 -req -in username.csr -CA <span class="hljs-variable">$CA_LOCATION</span>/ca.crt -CAkey <span class="hljs-variable">$CA_LOCATION</span>/ca.key -CAcreateserial -out username.crt -days 500
+</code></pre>
+<p>&#x63A5;&#x7740;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; username.key &#x548C; username.crt &#x6765;&#x8BBF;&#x95EE;&#x96C6;&#x7FA4;&#xFF1A;</p>
+<pre><code class="lang-sh"><span class="hljs-comment"># Config cluster</span>
+kubectl config <span class="hljs-built_in">set</span>-cluster my-cluster --certificate-authority=ca.pem --embed-certs=<span class="hljs-literal">true</span> --server=https://&lt;APISERVER_IP&gt;:6443
+<span class="hljs-comment"># Config credentials</span>
+kubectl config <span class="hljs-built_in">set</span>-credentials username --client-certificate=username.crt --client-key=username.key --embed-certs=<span class="hljs-literal">true</span>
+<span class="hljs-comment"># Config context</span>
+kubectl config <span class="hljs-built_in">set</span>-context username --cluster=my-cluster --user=username
+<span class="hljs-comment"># Config RBAC if it&apos;s enabled</span>
+<span class="hljs-comment"># Finally, switch to new context</span>
+kubectl config use-context username
 </code></pre>
 <h2 id="&#x9759;&#x6001;-token-&#x6587;&#x4EF6;">&#x9759;&#x6001; Token &#x6587;&#x4EF6;</h2>
 <p>&#x4F7F;&#x7528;&#x9759;&#x6001; Token &#x6587;&#x4EF6;&#x8BA4;&#x8BC1;&#x53EA;&#x9700;&#x8981; API Server &#x542F;&#x52A8;&#x65F6;&#x914D;&#x7F6E; <code>--token-auth-file=SOMEFILE</code>&#x3002;&#x8BE5;&#x6587;&#x4EF6;&#x4E3A; csv &#x683C;&#x5F0F;&#xFF0C;&#x6BCF;&#x884C;&#x81F3;&#x5C11;&#x5305;&#x62EC;&#x4E09;&#x5217; <code>token,username,user id</code>&#xFF0C;&#x540E;&#x9762;&#x662F;&#x53EF;&#x9009;&#x7684; group &#x540D;&#xFF0C;&#x6BD4;&#x5982;</p>
@@ -2767,7 +2769,7 @@
 </code></pre>
 <p>&#x5177;&#x4F53;&#x7684;&#x63D2;&#x4EF6;&#x5F00;&#x53D1;&#x53CA;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x8BF7;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/client-go/tree/master/plugin/pkg/client/auth" target="_blank">kubernetes/client-go</a>&#x3002;</p>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-03-02 04:46:17
+2019-03-17 02:59:02
 </span></footer>
                                 
                                 </section>
@@ -2811,7 +2813,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"认证","level":"4.2.1","depth":2,"next":{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},"previous":{"title":"访问控制","level":"4.2","depth":1,"path":"plugins/auth.md","ref":"plugins/auth.md","articles":[{"title":"认证","level":"4.2.1","depth":2,"path":"plugins/authentication.md","ref":"plugins/authentication.md","articles":[]},{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},{"title":"准入控制","level":"4.2.3","depth":2,"path":"plugins/admission.md","ref":"plugins/admission.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/authentication.md","mtime":"2019-03-02T04:46:17.576Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"认证","level":"4.2.1","depth":2,"next":{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},"previous":{"title":"访问控制","level":"4.2","depth":1,"path":"plugins/auth.md","ref":"plugins/auth.md","articles":[{"title":"认证","level":"4.2.1","depth":2,"path":"plugins/authentication.md","ref":"plugins/authentication.md","articles":[]},{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},{"title":"准入控制","level":"4.2.3","depth":2,"path":"plugins/admission.md","ref":"plugins/admission.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/authentication.md","mtime":"2019-03-17T02:59:02.454Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-17T03:00:34.022Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

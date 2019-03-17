@@ -30,6 +30,11 @@ install:
 clean:
 	rm -rf $(BOOK_OUTPUT)
 
+.PHONY: spell
+spell:
+	go get github.com/client9/misspell/cmd/misspell
+	git ls-files | xargs misspell -error -o stderr	
+
 .PHONY: help
 help:
 	@echo "Help for make"
@@ -39,4 +44,5 @@ help:
 	@echo "make install  - Install gitbook and plugins"
 	@echo "make epub     - Build epub book"
 	@echo "make pdf      - Build pdf book"
+	@echo "make spell    - Check splling"
 	@echo "make clean    - Remove generated files"

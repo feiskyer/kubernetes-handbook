@@ -685,20 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
-            
-                <a href="../concepts/thirdpartyresources.html">
-            
-                    
-                    ThirdPartyResources
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/volume.html">
             
                 <a href="../concepts/volume.html">
             
@@ -2628,7 +2615,7 @@ modprobe -- ip_vs_sh
 modprobe -- nf_conntrack_ipv4
 
 <span class="hljs-comment"># to check loaded modules, use</span>
-lsmod | grep <span class="hljs-_">-e</span> ipvs <span class="hljs-_">-e</span> nf_conntrack_ipv4
+lsmod | grep <span class="hljs-_">-e</span> ip_vs <span class="hljs-_">-e</span> nf_conntrack_ipv4
 <span class="hljs-comment"># or</span>
 cut <span class="hljs-_">-f</span>1 <span class="hljs-_">-d</span> <span class="hljs-string">&quot; &quot;</span>  /proc/modules | grep <span class="hljs-_">-e</span> ip_vs <span class="hljs-_">-e</span> nf_conntrack_ipv4
 </code></pre>
@@ -2764,7 +2751,7 @@ UDP  10.0.0.10:53 rr
 <h2 id="kube-proxy-&#x4E0D;&#x8DB3;">kube-proxy &#x4E0D;&#x8DB3;</h2>
 <p>kube-proxy &#x76EE;&#x524D;&#x4EC5;&#x652F;&#x6301; TCP &#x548C; UDP&#xFF0C;&#x4E0D;&#x652F;&#x6301; HTTP &#x8DEF;&#x7531;&#xFF0C;&#x5E76;&#x4E14;&#x4E5F;&#x6CA1;&#x6709;&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x673A;&#x5236;&#x3002;&#x8FD9;&#x4E9B;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x81EA;&#x5B9A;&#x4E49; <a href="../plugins/ingress.html">Ingress Controller</a> &#x7684;&#x65B9;&#x6CD5;&#x6765;&#x89E3;&#x51B3;&#x3002;</p>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-03-02 04:46:17
+2019-03-17 02:59:02
 </span></footer>
                                 
                                 </section>
@@ -2808,7 +2795,7 @@ UDP  10.0.0.10:53 rr
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"kube-proxy","level":"2.4.6","depth":2,"next":{"title":"kube-dns","level":"2.4.7","depth":2,"path":"components/kube-dns.md","ref":"components/kube-dns.md","articles":[]},"previous":{"title":"kubelet","level":"2.4.5","depth":2,"path":"components/kubelet.md","ref":"components/kubelet.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kube-proxy.md","mtime":"2019-03-02T04:46:17.444Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"kube-proxy","level":"2.4.6","depth":2,"next":{"title":"kube-dns","level":"2.4.7","depth":2,"path":"components/kube-dns.md","ref":"components/kube-dns.md","articles":[]},"previous":{"title":"kubelet","level":"2.4.5","depth":2,"path":"components/kubelet.md","ref":"components/kubelet.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kube-proxy.md","mtime":"2019-03-17T02:59:02.326Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-17T03:00:34.022Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

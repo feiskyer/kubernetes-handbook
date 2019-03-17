@@ -685,20 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
-            
-                <a href="../concepts/thirdpartyresources.html">
-            
-                    
-                    ThirdPartyResources
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/volume.html">
             
                 <a href="../concepts/volume.html">
             
@@ -2611,6 +2598,7 @@
                                 
                                 <h1 id="operator">Operator</h1>
 <p>Operator &#x662F; CoreOS &#x63A8;&#x51FA;&#x7684;&#x65E8;&#x5728;&#x7B80;&#x5316;&#x590D;&#x6742;&#x6709;&#x72B6;&#x6001;&#x5E94;&#x7528;&#x7BA1;&#x7406;&#x7684;&#x6846;&#x67B6;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x611F;&#x77E5;&#x5E94;&#x7528;&#x72B6;&#x6001;&#x7684;&#x63A7;&#x5236;&#x5668;&#xFF0C;&#x901A;&#x8FC7;&#x6269;&#x5C55; Kubernetes API &#x6765;&#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x3001;&#x7BA1;&#x7406;&#x548C;&#x914D;&#x7F6E;&#x5E94;&#x7528;&#x5B9E;&#x4F8B;&#x3002;</p>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x5728; <a href="https://www.operatorhub.io/" target="_blank">OperatorHub.io</a> &#x4E0A;&#x67E5;&#x770B; Kubernetes &#x793E;&#x533A;&#x63A8;&#x8350;&#x7684;&#x4E00;&#x4E9B; Operator &#x8303;&#x4F8B;&#x3002;</p>
 <h2 id="operator-&#x539F;&#x7406;">Operator &#x539F;&#x7406;</h2>
 <p>Operator &#x57FA;&#x4E8E; Third Party Resources &#x6269;&#x5C55;&#x4E86;&#x65B0;&#x7684;&#x5E94;&#x7528;&#x8D44;&#x6E90;&#xFF0C;&#x5E76;&#x901A;&#x8FC7;&#x63A7;&#x5236;&#x5668;&#x6765;&#x4FDD;&#x8BC1;&#x5E94;&#x7528;&#x5904;&#x4E8E;&#x9884;&#x671F;&#x72B6;&#x6001;&#x3002;&#x6BD4;&#x5982; etcd operator &#x901A;&#x8FC7;&#x4E0B;&#x9762;&#x7684;&#x4E09;&#x4E2A;&#x6B65;&#x9AA4;&#x6A21;&#x62DF;&#x4E86;&#x7BA1;&#x7406; etcd &#x96C6;&#x7FA4;&#x7684;&#x884C;&#x4E3A;&#xFF1A;</p>
 <ol>
@@ -2629,6 +2617,29 @@
 <li>Operator &#x5E94;&#x8BE5;&#x652F;&#x6301;&#x5E94;&#x7528;&#x7248;&#x672C;&#x66F4;&#x65B0;</li>
 <li>Operator &#x5E94;&#x8BE5;&#x6D4B;&#x8BD5; Pod &#x5931;&#x6548;&#x3001;&#x914D;&#x7F6E;&#x9519;&#x8BEF;&#x3001;&#x7F51;&#x7EDC;&#x9519;&#x8BEF;&#x7B49;&#x5F02;&#x5E38;&#x60C5;&#x51B5;</li>
 </ul>
+<p>&#x8981;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684; Operator&#xFF0C;&#x6700;&#x7B80;&#x5355;&#x7684;&#x65B9;&#x6CD5;&#x4F7F;&#x7528; <a href="https://github.com/operator-framework" target="_blank">Operator Framework</a>&#x3002;&#x6BD4;&#x5982;&#xFF0C;&#x8981;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x6700;&#x7B80;&#x5355;&#x7684; Operator&#xFF0C;&#x9700;&#x8981;&#x4EE5;&#x4E0B;&#x51E0;&#x4E2A;&#x6B65;&#x9AA4;:</p>
+<p>&#xFF08;1&#xFF09;&#x5B89;&#x88C5; operator-sdk &#x5DE5;&#x5177;&#xFF1A;</p>
+<pre><code class="lang-sh">$ mkdir -p <span class="hljs-variable">$GOPATH</span>/src/github.com/operator-framework
+$ <span class="hljs-built_in">cd</span> <span class="hljs-variable">$GOPATH</span>/src/github.com/operator-framework
+$ git <span class="hljs-built_in">clone</span> https://github.com/operator-framework/operator-sdk
+$ <span class="hljs-built_in">cd</span> operator-sdk
+$ git checkout master
+$ make dep
+$ make install
+</code></pre>
+<p>&#xFF08;2&#xFF09;&#x521D;&#x59CB;&#x5316;&#x9879;&#x76EE;&#xFF1A;</p>
+<pre><code class="lang-sh">$ mkdir -p <span class="hljs-variable">$GOPATH</span>/src/github.com/example-inc/
+$ <span class="hljs-built_in">cd</span> <span class="hljs-variable">$GOPATH</span>/src/github.com/example-inc/
+$ operator-sdk new memcached-operator
+$ <span class="hljs-built_in">cd</span> memcached-operator
+</code></pre>
+<p>&#xFF08;3&#xFF09;&#x6DFB;&#x52A0; CRD &#x5B9A;&#x4E49;&#x548C;&#x63A7;&#x5236;&#x5668;&#xFF1A;</p>
+<pre><code class="lang-sh">$ operator-sdk add api --api-version=cache.example.com/v1alpha1 --kind=Memcached
+$ operator-sdk add controller --api-version=cache.example.com/v1alpha1 --kind=Memcached
+</code></pre>
+<p>&#xFF08;4&#xFF09;&#x5B9E;&#x73B0; Controller&#x3001;Reconciler &#x7B49;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x3002;</p>
+<p>&#xFF08;5&#xFF09;&#x90E8;&#x7F72; Operator &#x5230; Kubernetes &#x96C6;&#x7FA4;&#x4E2D;&#xFF0C;&#x5E76;&#x901A;&#x8FC7;&#x81EA;&#x5B9A;&#x4E49;&#x7684; CRD &#x521B;&#x5EFA;&#x8D44;&#x6E90;&#x3002;</p>
+<p>&#x5B8C;&#x6574;&#x7684;&#x793A;&#x4F8B;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md" target="_blank">&#x8FD9;&#x91CC;</a>&#x3002;</p>
 <h2 id="&#x5982;&#x4F55;&#x4F7F;&#x7528;-operator">&#x5982;&#x4F55;&#x4F7F;&#x7528; Operator</h2>
 <p>&#x4E3A;&#x4E86;&#x65B9;&#x4FBF;&#x63CF;&#x8FF0;&#xFF0C;&#x4EE5; Etcd Operator &#x4E3A;&#x4F8B;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x94FE;&#x63A5;&#x53EF;&#x4EE5;&#x53C2;&#x8003; -<a href="https://coreos.com/operators/etcd/docs/latest" target="_blank">Etcd Operator</a>&#x3002;</p>
 <p>&#x5728; Kubernetes &#x90E8;&#x7F72; Operator&#xFF1A;
@@ -2723,7 +2734,7 @@ example-etcd-cluster-0004       1/1       Running   0          4h
 <h2 id="&#x5176;&#x4ED6;&#x793A;&#x4F8B;">&#x5176;&#x4ED6;&#x793A;&#x4F8B;</h2>
 <ul>
 <li><a href="https://coreos.com/operators/prometheus/docs/latest" target="_blank">Prometheus Operator</a></li>
-<li><a href="https://github.com/rook/rook" target="_blank">Rook Operator</a></li>
+<li><a href="https://github.com/rook/rook" target="_blank">Rook Operator</a>: cloud-native storage orchestrator</li>
 <li><a href="https://coreos.com/tectonic" target="_blank">Tectonic Operators</a></li>
 <li><a href="https://github.com/sapcc/kubernetes-operators" target="_blank">https://github.com/sapcc/kubernetes-operators</a></li>
 <li><a href="https://github.com/kbst/memcached" target="_blank">https://github.com/kbst/memcached</a></li>
@@ -2744,9 +2755,11 @@ example-etcd-cluster-0004       1/1       Running   0          4h
 <h2 id="&#x53C2;&#x8003;&#x8D44;&#x6599;">&#x53C2;&#x8003;&#x8D44;&#x6599;</h2>
 <ul>
 <li><a href="https://coreos.com/operators" target="_blank">Kubernetes Operators</a></li>
+<li><a href="https://github.com/operator-framework" target="_blank">Operator Framework</a></li>
+<li><a href="https://www.operatorhub.io/" target="_blank">OperatorHub.io</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-03-02 04:46:17
+2019-03-17 02:59:02
 </span></footer>
                                 
                                 </section>
@@ -2790,7 +2803,7 @@ example-etcd-cluster-0004       1/1       Running   0          4h
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Operator","level":"5.1.4","depth":2,"next":{"title":"Service Mesh","level":"5.1.5","depth":2,"path":"apps/service-mesh.md","ref":"apps/service-mesh.md","articles":[]},"previous":{"title":"Helm","level":"5.1.3","depth":2,"path":"apps/helm.md","ref":"apps/helm.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"apps/operator.md","mtime":"2019-03-02T04:46:17.416Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Operator","level":"5.1.4","depth":2,"next":{"title":"Service Mesh","level":"5.1.5","depth":2,"path":"apps/service-mesh.md","ref":"apps/service-mesh.md","articles":[]},"previous":{"title":"Helm","level":"5.1.3","depth":2,"path":"apps/helm.md","ref":"apps/helm.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"apps/operator.md","mtime":"2019-03-17T02:59:02.294Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-17T03:00:34.022Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

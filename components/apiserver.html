@@ -685,20 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
-            
-                <a href="../concepts/thirdpartyresources.html">
-            
-                    
-                    ThirdPartyResources
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/volume.html">
             
                 <a href="../concepts/volume.html">
             
@@ -2617,6 +2604,8 @@
 </ul>
 <h2 id="rest-api">REST API</h2>
 <p>kube-apiserver &#x652F;&#x6301;&#x540C;&#x65F6;&#x63D0;&#x4F9B; https&#xFF08;&#x9ED8;&#x8BA4;&#x76D1;&#x542C;&#x5728; 6443 &#x7AEF;&#x53E3;&#xFF09;&#x548C; http API&#xFF08;&#x9ED8;&#x8BA4;&#x76D1;&#x542C;&#x5728; 127.0.0.1 &#x7684; 8080 &#x7AEF;&#x53E3;&#xFF09;&#xFF0C;&#x5176;&#x4E2D; http API &#x662F;&#x975E;&#x5B89;&#x5168;&#x63A5;&#x53E3;&#xFF0C;&#x4E0D;&#x505A;&#x4EFB;&#x4F55;&#x8BA4;&#x8BC1;&#x6388;&#x6743;&#x673A;&#x5236;&#xFF0C;&#x4E0D;&#x5EFA;&#x8BAE;&#x751F;&#x4EA7;&#x73AF;&#x5883;&#x542F;&#x7528;&#x3002;&#x4E24;&#x4E2A;&#x63A5;&#x53E3;&#x63D0;&#x4F9B;&#x7684; REST API &#x683C;&#x5F0F;&#x76F8;&#x540C;&#xFF0C;&#x53C2;&#x8003; <a href="https://kubernetes.io/docs/api-reference/v1.8/" target="_blank">Kubernetes API Reference</a> &#x67E5;&#x770B;&#x6240;&#x6709; API &#x7684;&#x8C03;&#x7528;&#x683C;&#x5F0F;&#x3002;</p>
+<p><img src="assets/API-server-space.png" alt="img"></p>
+<p>&#xFF08;&#x56FE;&#x7247;&#x6765;&#x81EA; <a href="https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/" target="_blank">OpenShift Blog</a>&#xFF09;</p>
 <p>&#x5728;&#x5B9E;&#x9645;&#x4F7F;&#x7528;&#x4E2D;&#xFF0C;&#x901A;&#x5E38;&#x901A;&#x8FC7; <a href="https://kubernetes.io/docs/user-guide/kubectl-overview/" target="_blank">kubectl</a> &#x6765;&#x8BBF;&#x95EE; apiserver&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; Kubernetes &#x5404;&#x4E2A;&#x8BED;&#x8A00;&#x7684; client &#x5E93;&#x6765;&#x8BBF;&#x95EE; apiserver&#x3002;&#x5728;&#x4F7F;&#x7528; kubectl &#x65F6;&#xFF0C;&#x6253;&#x5F00;&#x8C03;&#x8BD5;&#x65E5;&#x5FD7;&#x4E5F;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x6BCF;&#x4E2A; API &#x8C03;&#x7528;&#x7684;&#x683C;&#x5F0F;&#xFF0C;&#x6BD4;&#x5982;</p>
 <pre><code class="lang-sh">$ kubectl --v=8 get pods
 </code></pre>
@@ -2716,6 +2705,11 @@ EOF
 <h2 id="&#x5DE5;&#x4F5C;&#x539F;&#x7406;">&#x5DE5;&#x4F5C;&#x539F;&#x7406;</h2>
 <p>kube-apiserver &#x63D0;&#x4F9B;&#x4E86; Kubernetes &#x7684; REST API&#xFF0C;&#x5B9E;&#x73B0;&#x4E86;&#x8BA4;&#x8BC1;&#x3001;&#x6388;&#x6743;&#x3001;&#x51C6;&#x5165;&#x63A7;&#x5236;&#x7B49;&#x5B89;&#x5168;&#x6821;&#x9A8C;&#x529F;&#x80FD;&#xFF0C;&#x540C;&#x65F6;&#x4E5F;&#x8D1F;&#x8D23;&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x7684;&#x5B58;&#x50A8;&#x64CD;&#x4F5C;&#xFF08;&#x901A;&#x8FC7; etcd&#xFF09;&#x3002;</p>
 <p><img src="images/kube-apiserver.png" alt=""></p>
+<p>&#x4EE5; <code>/apis/batch/v2alpha1/jobs</code> &#x4E3A;&#x4F8B;&#xFF0C;GET &#x8BF7;&#x6C42;&#x7684;&#x5904;&#x7406;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="assets/API-server-flow.png" alt="img"></p>
+<p>POST &#x8BF7;&#x6C42;&#x7684;&#x5904;&#x7406;&#x8FC7;&#x7A0B;&#x4E3A;&#xFF1A;</p>
+<p><img src="assets/API-server-storage-flow.png" alt="img"></p>
+<p>&#xFF08;&#x56FE;&#x7247;&#x6765;&#x81EA; <a href="https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/" target="_blank">OpenShift Blog</a>&#xFF09;</p>
 <h2 id="api-&#x8BBF;&#x95EE;">API &#x8BBF;&#x95EE;</h2>
 <p>&#x6709;&#x591A;&#x79CD;&#x65B9;&#x5F0F;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE; Kubernetes &#x63D0;&#x4F9B;&#x7684; REST API&#xFF1A;</p>
 <ul>
@@ -2781,15 +2775,14 @@ $ curl <span class="hljs-variable">$APISERVER</span>/api --header <span class="h
 }
 </code></pre>
 <h2 id="api-&#x53C2;&#x8003;&#x6587;&#x6863;">API &#x53C2;&#x8003;&#x6587;&#x6863;</h2>
-<p>&#x6700;&#x8FD1; 4 &#x4E2A;&#x7A33;&#x5B9A;&#x7248;&#x672C;&#x7684; API &#x53C2;&#x8003;&#x6587;&#x6863;&#x4E3A;&#xFF1A;</p>
+<p>&#x6700;&#x8FD1; 3 &#x4E2A;&#x7A33;&#x5B9A;&#x7248;&#x672C;&#x7684; API &#x53C2;&#x8003;&#x6587;&#x6863;&#x4E3A;&#xFF1A;</p>
 <ul>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/" target="_blank">v1.13 API Reference</a></li>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/" target="_blank">v1.12 API Reference</a></li>
 <li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/" target="_blank">v1.11 API Reference</a></li>
-<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/" target="_blank">v1.10 API Reference</a></li>
-<li><a href="https://kubernetes.io/docs/api-reference/v1.9/" target="_blank">v1.9 API Reference</a></li>
-<li><a href="https://kubernetes.io/docs/api-reference/v1.8/" target="_blank">v1.8 API Reference</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-03-02 04:46:17
+2019-03-17 02:59:02
 </span></footer>
                                 
                                 </section>
@@ -2833,7 +2826,7 @@ $ curl <span class="hljs-variable">$APISERVER</span>/api --header <span class="h
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"kube-apiserver","level":"2.4.2","depth":2,"next":{"title":"kube-scheduler","level":"2.4.3","depth":2,"path":"components/scheduler.md","ref":"components/scheduler.md","articles":[]},"previous":{"title":"etcd","level":"2.4.1","depth":2,"path":"components/etcd.md","ref":"components/etcd.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/apiserver.md","mtime":"2019-03-02T04:46:17.428Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"kube-apiserver","level":"2.4.2","depth":2,"next":{"title":"kube-scheduler","level":"2.4.3","depth":2,"path":"components/scheduler.md","ref":"components/scheduler.md","articles":[]},"previous":{"title":"etcd","level":"2.4.1","depth":2,"path":"components/etcd.md","ref":"components/etcd.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/apiserver.md","mtime":"2019-03-17T02:59:02.306Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-17T03:00:34.022Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

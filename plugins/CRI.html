@@ -685,20 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.5.23" data-path="../concepts/thirdpartyresources.html">
-            
-                <a href="../concepts/thirdpartyresources.html">
-            
-                    
-                    ThirdPartyResources
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.5.24" data-path="../concepts/volume.html">
+        <li class="chapter " data-level="2.5.23" data-path="../concepts/volume.html">
             
                 <a href="../concepts/volume.html">
             
@@ -2613,6 +2600,8 @@
 <p>&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x63D2;&#x4EF6;&#xFF08;Container Runtime Interface&#xFF0C;&#x7B80;&#x79F0; CRI&#xFF09;&#x662F; Kubernetes v1.5 &#x5F15;&#x5165;&#x7684;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x63A5;&#x53E3;&#xFF0C;&#x5B83;&#x5C06; Kubelet &#x4E0E;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x89E3;&#x8026;&#xFF0C;&#x5C06;&#x539F;&#x6765;&#x5B8C;&#x5168;&#x9762;&#x5411; Pod &#x7EA7;&#x522B;&#x7684;&#x5185;&#x90E8;&#x63A5;&#x53E3;&#x62C6;&#x5206;&#x6210;&#x9762;&#x5411; Sandbox &#x548C; Container &#x7684; gRPC &#x63A5;&#x53E3;&#xFF0C;&#x5E76;&#x5C06;&#x955C;&#x50CF;&#x7BA1;&#x7406;&#x548C;&#x5BB9;&#x5668;&#x7BA1;&#x7406;&#x5206;&#x79BB;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x670D;&#x52A1;&#x3002;</p>
 <p><img src="images/cri.png" alt=""></p>
 <p>CRI &#x6700;&#x65E9;&#x4ECE;&#x4ECE; 1.4 &#x7248;&#x5C31;&#x5F00;&#x59CB;&#x8BBE;&#x8BA1;&#x8BA8;&#x8BBA;&#x548C;&#x5F00;&#x53D1;&#xFF0C;&#x5728; v1.5 &#x4E2D;&#x53D1;&#x5E03;&#x7B2C;&#x4E00;&#x4E2A;&#x6D4B;&#x8BD5;&#x7248;&#x3002;&#x5728; v1.6 &#x65F6;&#x5DF2;&#x7ECF;&#x6709;&#x4E86;&#x5F88;&#x591A;&#x5916;&#x90E8;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#xFF0C;&#x5982; frakti &#x548C; cri-o &#x7B49;&#x3002;v1.7 &#x4E2D;&#x53C8;&#x65B0;&#x589E;&#x4E86; cri-containerd &#x652F;&#x6301;&#x7528; Containerd &#x6765;&#x7BA1;&#x7406;&#x5BB9;&#x5668;&#x3002;</p>
+<p>&#x91C7;&#x7528; CRI &#x540E;&#xFF0C;Kubelet &#x7684;&#x67B6;&#x6784;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="assets/image-20190316183052101.png" alt="image-20190316183052101"></p>
 <h2 id="cri-&#x63A5;&#x53E3;">CRI &#x63A5;&#x53E3;</h2>
 <p>CRI &#x57FA;&#x4E8E; gRPC &#x5B9A;&#x4E49;&#x4E86; RuntimeService &#x548C; ImageService &#x7B49;&#x4E24;&#x4E2A; gRPC &#x670D;&#x52A1;&#xFF0C;&#x5206;&#x522B;&#x7528;&#x4E8E;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x548C;&#x955C;&#x50CF;&#x7684;&#x7BA1;&#x7406;&#x3002;&#x5176;&#x5B9A;&#x4E49;&#x5728;</p>
 <ul>
@@ -2651,12 +2640,67 @@
 }
 </code></pre>
 <p>&#x5BF9;&#x4E8E; Streaming API&#xFF08;Exec&#x3001;PortForward &#x548C; Attach&#xFF09;&#xFF0C;CRI &#x8981;&#x6C42;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A; streaming server &#x7684; URL &#x4EE5;&#x4FBF; Kubelet &#x91CD;&#x5B9A;&#x5411; API Server &#x53D1;&#x9001;&#x8FC7;&#x6765;&#x7684;&#x8BF7;&#x6C42;&#x3002;&#x5728; v1.10 &#x53CA;&#x66F4;&#x65E9;&#x7248;&#x672C;&#x4E2D;&#xFF0C;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x5FC5;&#x9700;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A; API Server &#x53EF;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x7684; URL&#xFF08;&#x901A;&#x5E38;&#x8DDF; Kubelet &#x4F7F;&#x7528;&#x76F8;&#x540C;&#x7684;&#x76D1;&#x542C;&#x5730;&#x5740;&#xFF09;&#xFF1B;&#x800C;&#x4ECE; v1.11 &#x5F00;&#x59CB;&#xFF0C;Kubelet &#x65B0;&#x589E;&#x4E86; <code>--redirect-container-streaming</code>&#xFF08;&#x9ED8;&#x8BA4;&#x4E3A; false&#xFF09;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E0D;&#x518D;&#x8F6C;&#x53D1;&#x800C;&#x662F;&#x4EE3;&#x7406; Streaming &#x8BF7;&#x6C42;&#xFF0C;&#x8FD9;&#x6837;&#x8FD0;&#x884C;&#x65F6;&#x53EF;&#x4EE5;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A; localhost &#x7684; URL&#xFF08;&#x5F53;&#x7136;&#x4E5F;&#x4E0D;&#x518D;&#x9700;&#x8981;&#x914D;&#x7F6E; TLS&#xFF09;&#x3002;</p>
+<p><img src="assets/image-20190316183005314.png" alt="image-20190316183005314"></p>
 <p>&#x8BE6;&#x7EC6;&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/dockershim" target="_blank">dockershim</a> &#x6216;&#x8005; <a href="https://github.com/kubernetes-incubator/cri-o" target="_blank">cri-o</a>&#x3002;</p>
 <h3 id="kubelet-&#x914D;&#x7F6E;">Kubelet &#x914D;&#x7F6E;</h3>
 <p>&#x5728;&#x542F;&#x52A8; kubelet &#x65F6;&#x4F20;&#x5165;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x76D1;&#x542C;&#x7684; Unix Socket &#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#xFF0C;&#x6BD4;&#x5982;</p>
 <pre><code class="lang-sh">kubelet --container-runtime=remote --container-runtime-endpoint=unix:///var/run/runtime.sock --image-service-endpoint=unix:///var/run/runtime.sock
 </code></pre>
 <h2 id="&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;">&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;</h2>
+<table>
+<thead>
+<tr>
+<th><strong>CRI</strong> <strong>&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;</strong></th>
+<th><strong>&#x7EF4;&#x62A4;&#x8005;</strong></th>
+<th><strong>&#x4E3B;&#x8981;&#x7279;&#x6027;</strong></th>
+<th><strong>&#x5BB9;&#x5668;&#x5F15;&#x64CE;</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dockershim</strong></td>
+<td>Kubernetes</td>
+<td>&#x5185;&#x7F6E;&#x5B9E;&#x73B0;&#x3001;&#x7279;&#x6027;&#x6700;&#x65B0;</td>
+<td>docker</td>
+</tr>
+<tr>
+<td><strong>cri-o</strong></td>
+<td>Kubernetes</td>
+<td>OCI&#x6807;&#x51C6;&#x4E0D;&#x9700;&#x8981;Docker</td>
+<td>OCI&#xFF08;runc&#x3001;kata&#x3001;gVisor&#x2026;&#xFF09;</td>
+</tr>
+<tr>
+<td><strong>cri-containerd</strong></td>
+<td>Containerd</td>
+<td>&#x57FA;&#x4E8E; containerd &#x4E0D;&#x9700;&#x8981;Docker</td>
+<td>OCI&#xFF08;runc&#x3001;kata&#x3001;gVisor&#x2026;&#xFF09;</td>
+</tr>
+<tr>
+<td><strong>Frakti</strong></td>
+<td>Kubernetes</td>
+<td>&#x865A;&#x62DF;&#x5316;&#x5BB9;&#x5668;</td>
+<td>hyperd&#x3001;docker</td>
+</tr>
+<tr>
+<td><strong>rktlet</strong></td>
+<td>Kubernetes</td>
+<td>&#x652F;&#x6301;rkt</td>
+<td>rkt</td>
+</tr>
+<tr>
+<td><strong>PouchContainer</strong></td>
+<td>Alibaba</td>
+<td>&#x5BCC;&#x5BB9;&#x5668;</td>
+<td>OCI&#xFF08;runc&#x3001;kata&#x2026;&#xFF09;</td>
+</tr>
+<tr>
+<td><strong>Virtlet</strong></td>
+<td>Mirantis</td>
+<td>&#x865A;&#x62DF;&#x673A;&#x548C;QCOW2&#x955C;&#x50CF;</td>
+<td>Libvirt&#xFF08;KVM&#xFF09;</td>
+</tr>
+</tbody>
+</table>
 <p>&#x76EE;&#x524D;&#x57FA;&#x4E8E; CRI &#x5BB9;&#x5668;&#x5F15;&#x64CE;&#x5DF2;&#x7ECF;&#x6BD4;&#x8F83;&#x4E30;&#x5BCC;&#x4E86;&#xFF0C;&#x5305;&#x62EC;</p>
 <ul>
 <li>Docker: &#x6838;&#x5FC3;&#x4EE3;&#x7801;&#x4F9D;&#x7136;&#x4FDD;&#x7559;&#x5728; kubelet &#x5185;&#x90E8;&#xFF08;<a href="https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/dockershim" target="_blank">pkg/kubelet/dockershim</a>&#xFF09;&#xFF0C;&#x662F;&#x6700;&#x7A33;&#x5B9A;&#x548C;&#x7279;&#x6027;&#x652F;&#x6301;&#x6700;&#x597D;&#x7684;&#x8FD0;&#x884C;&#x65F6;</li>
@@ -2719,7 +2763,7 @@
 <li><a href="https://docs.google.com/document/d/1fe7lQUjYKR0cijRmSbH_y0_l3CYPkwtQa5ViywuNo8Q/preview" target="_blank">Sandbox Isolation Level Decision</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-03-02 04:46:17
+2019-03-17 02:59:02
 </span></footer>
                                 
                                 </section>
@@ -2763,7 +2807,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"运行时插件 CRI","level":"4.5","depth":1,"next":{"title":"CRI-tools","level":"4.5.1","depth":2,"path":"plugins/cri-tools.md","ref":"plugins/cri-tools.md","articles":[]},"previous":{"title":"Kuryr","level":"4.4.11","depth":2,"path":"network/kuryr/index.md","ref":"network/kuryr/index.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/CRI.md","mtime":"2019-03-02T04:46:17.576Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-02T04:47:53.359Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"运行时插件 CRI","level":"4.5","depth":1,"next":{"title":"CRI-tools","level":"4.5.1","depth":2,"path":"plugins/cri-tools.md","ref":"plugins/cri-tools.md","articles":[]},"previous":{"title":"Kuryr","level":"4.4.11","depth":2,"path":"network/kuryr/index.md","ref":"network/kuryr/index.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/CRI.md","mtime":"2019-03-17T02:59:02.454Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-17T03:00:34.022Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
