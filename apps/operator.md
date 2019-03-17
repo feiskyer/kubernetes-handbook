@@ -194,3 +194,5 @@ example-etcd-cluster-0004       1/1       Running   0          4h
 - [Kubernetes Operators](https://coreos.com/operators)
 - [Operator Framework](https://github.com/operator-framework)
 - [OperatorHub.io](https://www.operatorhub.io/)
+- [KubeDB: Run production-grade databases easily on Kubernetes](https://kubedb.com/)
+
