@@ -114,7 +114,9 @@ systemctl restart docker
 
 如果使用了 flannel/weave 网络插件，更新为最新版本也可以解决这个问题。
 
-DNS 无法解析也有可能是 kube-dns 服务异常导致的，可以通过下面的命令来检查 kube-dns 是否处于正常运行状态
+除此之外，还有很多其他原因导致 DNS 无法解析：
+
+（1）DNS 无法解析也有可能是 kube-dns 服务异常导致的，可以通过下面的命令来检查 kube-dns 是否处于正常运行状态
 
 ```sh
 $ kubectl get pods --namespace=kube-system -l k8s-app=kube-dns
@@ -126,7 +128,7 @@ kube-dns-v19-ezo1y      3/3       Running   0           1h
 
 如果 kube-dns 处于 CrashLoopBackOff 状态，那么可以参考 [Kube-dns/Dashboard CrashLoopBackOff 排错](cluster.md) 来查看具体排错方法。
 
-如果 kube-dns Pod 处于正常 Running 状态，则需要进一步检查是否正确配置了 kube-dns 服务：
+（2）如果 kube-dns Pod 处于正常 Running 状态，则需要进一步检查是否正确配置了 kube-dns 服务：
 
 ```sh
 $ kubectl get svc kube-dns --namespace=kube-system
@@ -162,6 +164,8 @@ spec:
     port: 53
     protocol: TCP
 ```
+
+（3）如果 kube-dns Pod 和 Service 都正常，那么就需要检查 kube-proxy 是否正确为 kube-dns 配置了负载均衡的 iptables 规则。具体排查方法可以参考下面的 Service 无法访问部分。
 
 ## DNS解析缓慢
 
