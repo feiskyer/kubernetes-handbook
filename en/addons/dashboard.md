@@ -3,7 +3,7 @@
 Kubernetes Dashboard 的部署非常简单，只需要运行
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 ```
 
 稍等一会，dashborad 就会创建好

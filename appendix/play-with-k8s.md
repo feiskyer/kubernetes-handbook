@@ -73,7 +73,7 @@ kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$
 ## 创建Dashboard
 
 ```sh
-curl -L -s https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml  | sed 's/targetPort: 9090/targetPort: 9090\n  type: LoadBalancer/' | kubectl apply -f -
+curl -L -s https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml  | sed 's/targetPort: 9090/targetPort: 9090\n  type: LoadBalancer/' | kubectl apply -f -
 ```
 
 稍等一会，在页面上方会显示Dashborad服务的端口号，点击端口号就可以访问Dashboard页面。
