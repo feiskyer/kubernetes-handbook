@@ -217,11 +217,23 @@ $ ./kube-bench <master|node>
 当然，kube-bench 也可以直接在容器内运行，比如通常对 Master 和 Node 的检查命令分别为：
 
 ```sh
-# Run master check
-$ kubectl run --rm -i -t kube-bench-master --image=aquasec/kube-bench:latest --restart=Never --overrides="{ \"apiVersion\": \"v1\", \"spec\": { \"hostPID\": true, \"nodeSelector\": { \"kubernetes.io/role\": \"master\" }, \"tolerations\": [ { \"key\": \"node-role.kubernetes.io/master\", \"operator\": \"Exists\", \"effect\": \"NoSchedule\" } ] } }" -- master --version 1.8
+$ kubectl apply -f https://github.com/feiskyer/kubernetes-handbook/raw/master/examples/job-master.yaml
+job.batch/kube-bench-master created
 
-# Run node check
-kubectl run --rm -i -t kube-bench-node --image=aquasec/kube-bench:latest --restart=Never --overrides="{ \"apiVersion\": \"v1\", \"spec\": { \"hostPID\": true } }" -- node --version 1.8
+$ kubectl apply -f https://github.com/feiskyer/kubernetes-handbook/raw/master/examples/job-node.yaml
+job.batch/kube-bench-node created
+
+# Wait for a few seconds for the job to complete
+$ kubectl get pods
+NAME                      READY   STATUS      RESTARTS   AGE
+kube-bench-master-k7jdd   0/1     Completed   0          2m15s
+kube-bench-node-p9sl9     0/1     Completed   0          2m15s
+
+# The results are held in the pod's logs
+$ kubectl logs kube-bench-master-k7jdd
+[INFO] 1 Master Node Security Configuration
+[INFO] 1.1 API Server
+...
 ```
 
 ## 镜像安全
