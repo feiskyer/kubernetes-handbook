@@ -132,7 +132,7 @@ cloud-controller-manager 在 Kubernetes 启用 Cloud Provider 的时候才需要
 
 从 Kubernetes 1.7 开始，所有需要监控资源变化情况的调用均推荐使用 [Informer](https://github.com/kubernetes/client-go/blob/master/tools/cache/shared_informer.go)。Informer 提供了基于事件通知的只读缓存机制，可以注册资源变化的回调函数，并可以极大减少 API 的调用。
 
-Informer 的使用方法可以参考 [这里](https://github.com/feiskyer/kubernetes-handbook/tree/master/zh/examples/client/informer)。
+Informer 的使用方法可以参考 [这里](https://github.com/feiskyer/kubernetes-handbook/tree/master/examples/client/informer)。
 
 ## Node Eviction
 
