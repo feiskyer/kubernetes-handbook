@@ -2817,7 +2817,8 @@ CLIENT_ID=$(az ad sp show --id http://<span class="hljs-variable">$SERVICE_PRINC
 <span class="hljs-comment"># Create secret</span>
 kubectl create secret docker-registry acr-auth --docker-server <span class="hljs-variable">$ACR_LOGIN_SERVER</span> --docker-username <span class="hljs-variable">$CLIENT_ID</span> --docker-password <span class="hljs-variable">$SP_PASSWD</span> --docker-email <span class="hljs-built_in">local</span>@local.domain
 </code></pre>
-<p>&#x5BB9;&#x5668;&#x4E2D;&#x5F15;&#x7528;&#x8BE5; secret&#xFF1A;</p>
+<p>&#x5728;&#x5F15;&#x7528; docker registry secret &#x65F6;&#xFF0C;&#x6709;&#x4E24;&#x79CD;&#x53EF;&#x9009;&#x7684;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<p>&#x7B2C;&#x4E00;&#x79CD;&#x662F;&#x76F4;&#x63A5;&#x5728; Pod &#x63CF;&#x8FF0;&#x6587;&#x4EF6;&#x4E2D;&#x5F15;&#x7528;&#x8BE5; secret&#xFF1A;</p>
 <pre><code class="lang-yaml"><span class="hljs-attr">apiVersion:</span> v1
 <span class="hljs-attr">kind:</span> Pod
 <span class="hljs-attr">metadata:</span>
@@ -2828,6 +2829,23 @@ kubectl create secret docker-registry acr-auth --docker-server <span class="hljs
 <span class="hljs-attr">      image:</span> dregistry.azurecr.io/acr-auth-example
 <span class="hljs-attr">  imagePullSecrets:</span>
 <span class="hljs-attr">    - name:</span> acr-auth
+</code></pre>
+<p>&#x7B2C;&#x4E8C;&#x79CD;&#x662F;&#x628A; secret &#x6DFB;&#x52A0;&#x5230; service account &#x4E2D;&#xFF0C;&#x518D;&#x901A;&#x8FC7; service account &#x5F15;&#x7528;&#xFF08;&#x4E00;&#x822C;&#x662F;&#x67D0;&#x4E2A; namespace &#x7684; default service account&#xFF09;&#xFF1A;</p>
+<pre><code class="lang-sh">$ kubectl get secrets myregistrykey
+$ kubectl patch serviceaccount default -p <span class="hljs-string">&apos;{&quot;imagePullSecrets&quot;: [{&quot;name&quot;: &quot;myregistrykey&quot;}]}&apos;</span>
+$ kubectl get serviceaccounts default -o yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: 2015-08-07T22:02:39Z
+  name: default
+  namespace: default
+  selfLink: /api/v1/namespaces/default/serviceaccounts/default
+  uid: 052fb0f4-3d50-11e5-b066-42010af0d7b6
+secrets:
+- name: default-token-uudge
+imagePullSecrets:
+- name: myregistrykey
 </code></pre>
 <h2 id="restartpolicy">RestartPolicy</h2>
 <p>&#x652F;&#x6301;&#x4E09;&#x79CD; RestartPolicy</p>
@@ -3520,7 +3538,7 @@ fe00::2    ip6-allrouters
 <li><a href="https://github.com/kubernetes/kubernetes/issues/30039" target="_blank">Document supported docker image (Dockerfile) features</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-04-28 07:18:07
+2019-05-13 14:10:33
 </span></footer>
                                 
                                 </section>
@@ -3564,7 +3582,7 @@ fe00::2    ip6-allrouters
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Pod","level":"2.5.14","depth":2,"next":{"title":"PodPreset","level":"2.5.15","depth":2,"path":"concepts/podpreset.md","ref":"concepts/podpreset.md","articles":[]},"previous":{"title":"PersistentVolume","level":"2.5.13","depth":2,"path":"concepts/persistent-volume.md","ref":"concepts/persistent-volume.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"concepts/pod.md","mtime":"2019-04-28T07:18:07.364Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-28T07:19:44.510Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Pod","level":"2.5.14","depth":2,"next":{"title":"PodPreset","level":"2.5.15","depth":2,"path":"concepts/podpreset.md","ref":"concepts/podpreset.md","articles":[]},"previous":{"title":"PersistentVolume","level":"2.5.13","depth":2,"path":"concepts/persistent-volume.md","ref":"concepts/persistent-volume.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"concepts/pod.md","mtime":"2019-05-13T14:10:33.385Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-13T14:12:15.685Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
