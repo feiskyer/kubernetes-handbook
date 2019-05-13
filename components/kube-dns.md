@@ -72,13 +72,11 @@ data:
 
 ### 启动 kube-dns 示例
 
-一般通过扩展的方式部署 DNS 服务，如把 [kube-dns.yaml](https://kubernetes.feisky.xyz/manifests/kubedns/kube-dns.yaml) 放到 Master 节点的 `/etc/kubernetes/addons` 目录中。当然也可以手动部署：
+一般通过扩展的方式部署 DNS 服务，如把 [kube-dns.yaml](https://github.com/feiskyer/kubernetes-handbook/raw/master/manifests/kubedns/kube-dns.yaml) 放到 Master 节点的 `/etc/kubernetes/addons` 目录中。当然也可以手动部署：
 
 ```sh
-kubectl apply -f https://kubernetes.feisky.xyz/manifests/kubedns/kube-dns.yaml
+kubectl apply -f https://github.com/feiskyer/kubernetes-handbook/raw/master/manifests/kubedns/kube-dns.yaml
 ```
-
-
 
 这会在 Kubernetes 中启动一个包含三个容器的 Pod，运行着 DNS 相关的三个服务：
 
