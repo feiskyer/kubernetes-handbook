@@ -159,7 +159,9 @@ CLIENT_ID=$(az ad sp show --id http://$SERVICE_PRINCIPAL_NAME --query appId --ou
 kubectl create secret docker-registry acr-auth --docker-server $ACR_LOGIN_SERVER --docker-username $CLIENT_ID --docker-password $SP_PASSWD --docker-email local@local.domain
 ```
 
-容器中引用该 secret：
+在引用 docker registry secret 时，有两种可选的方法：
+
+第一种是直接在 Pod 描述文件中引用该 secret：
 
 ```yaml
 apiVersion: v1
@@ -172,6 +174,26 @@ spec:
       image: dregistry.azurecr.io/acr-auth-example
   imagePullSecrets:
     - name: acr-auth
+```
+
+第二种是把 secret 添加到 service account 中，再通过 service account 引用（一般是某个 namespace 的 default service account）：
+
+```sh
+$ kubectl get secrets myregistrykey
+$ kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "myregistrykey"}]}'
+$ kubectl get serviceaccounts default -o yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: 2015-08-07T22:02:39Z
+  name: default
+  namespace: default
+  selfLink: /api/v1/namespaces/default/serviceaccounts/default
+  uid: 052fb0f4-3d50-11e5-b066-42010af0d7b6
+secrets:
+- name: default-token-uudge
+imagePullSecrets:
+- name: myregistrykey
 ```
 
 ## RestartPolicy
