@@ -22,6 +22,15 @@ docker pull gcr.akscn.io/google_containers/hyperkube:v1.12.1
 docker pull gcr.akscn.io/google_containers/pause-amd64:3.1
 ```
 
+- Azure中国镜像：gcr.azk8s.cn/google_containers
+
+示例
+
+```sh
+docker pull gcr.azk8s.cn/google_containers/pause-amd64:3.0
+docker pull gcr.azk8s.cn/google_containers/kubedns-amd64:1.7
+```
+
 ## Kubernetes RPM/DEB镜像
 
 - [开源社镜像](http://mirror.azure.cn/kubernetes/packages/)
