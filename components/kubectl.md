@@ -244,6 +244,21 @@ kubectl drain NODE [Options]
   kubectl auth reconcile -f my-rbac-rules.yaml
 ```
 
+## 模拟其他用户
+
+kubectl 支持模拟其他用户或者组来进行集群管理操作，比如
+
+```sh
+kubectl drain mynode --as=superman --as-group=system:masters
+```
+
+这实际上就是在请求 Kubernetes API 时添加了如下的 HTTP HEADER：
+
+```sh
+Impersonate-User: superman
+Impersonate-Group: system:masters
+```
+
 ## kubectl 插件
 
 kubectl 插件提供了一种扩展 kubectl 的机制，比如添加新的子命令。插件可以以任何语言编写，只需要满足以下条件即可

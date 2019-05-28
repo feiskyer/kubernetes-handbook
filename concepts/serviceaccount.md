@@ -19,6 +19,8 @@ namespace
 token
 ```
 
+> 注：你可以使用 <https://jwt.io/> 来查看 token 的详细信息（如 PAYLOAD、SIGNATURE 等）。
+
 ## 创建 Service Account
 
 ```sh

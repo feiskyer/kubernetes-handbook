@@ -233,3 +233,31 @@ current-context: my-cluster
 ```
 
 具体的插件开发及使用方法请参考 [kubernetes/client-go](https://github.com/kubernetes/client-go/tree/master/plugin/pkg/client/auth)。
+
+## 开源工具
+
+如下的开源工具可以帮你简化认证和授权的配置：
+
+- [Keycloak](https://www.keycloak.org/)
+- [coreos/dex](https://github.com/coreos/dex)
+- [heptio/authenticator](https://github.com/heptio/authenticator)
+- [hashicorp/vault-plugin-auth-kubernetes](https://github.com/hashicorp/vault-plugin-auth-kubernetes)
+- [appscode/guard](https://github.com/appscode/guard)
+- [cyberark/conjur](https://github.com/cyberark/conjur)
+- [liggitt/audit2rbac](https://github.com/liggitt/audit2rbac)
+- [reactiveops/rbac-manager](https://github.com/reactiveops/rbac-manager)
+- [jtblin/kube2iam](https://github.com/jtblin/kube2iam)
+
+## 参考资料
+
+- <https://kubernetes-security.info>
+- [Protect Kubernetes External Endpoints with OAuth2 Proxy](https://akomljen.com/protect-kubernetes-external-endpoints-with-oauth2-proxy/) by Alen Komljen
+- [Single Sign-On for Internal Apps in Kubernetes using Google Oauth / SSO](https://medium.com/@while1eq1/single-sign-on-for-internal-apps-in-kubernetes-using-google-oauth-sso-2386a34bc433) by William Broach
+- [Single Sign-On for Kubernetes: An Introduction](https://thenewstack.io/kubernetes-single-sign-one-less-identity/) by Joel Speed
+- [Let’s Encrypt, OAuth 2, and Kubernetes Ingress](https://eng.fromatob.com/post/2017/02/lets-encrypt-oauth-2-and-kubernetes-ingress/) by Ian Chiles
+- [Comparing Kubernetes Authentication Methods](https://medium.com/@etienne_24233/comparing-kubernetes-authentication-methods-6f538d834ca7by) by Etienne Dilocker
+- [K8s auth proxy example](http://uptoknow.blogspot.com/2017/06/kubernetes-authentication-proxy-example.html)
+- [K8s authentication with Conjur](https://blog.conjur.org/kubernetes-authentication)
+- [Effective RBAC](https://www.youtube.com/watch?v=Nw1ymxcLIDI) by Jordan Liggitt
+- [Configure RBAC In Your Kubernetes Cluster](https://docs.bitnami.com/kubernetes/how-to/configure-rbac-in-your-kubernetes-cluster/) via Bitnami
+- [Using RBAC, Generally Available in Kubernetes v1.8](https://kubernetes.io/blog/2017/10/using-rbac-generally-available-18/) by Eric Chiang

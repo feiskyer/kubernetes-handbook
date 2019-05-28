@@ -215,6 +215,18 @@ kubectl create clusterrolebinding permissive-binding \
   --group=system:serviceaccounts
 ```
 
+## 推荐配置
+
+- 针对 namespace 内资源的访问权限，使用 Role 和 RoleBinding
+- 针对集群级别的资源或者所有 namespace 的特定资源访问，使用 ClustetRole 和 ClusterRoleBinding
+- 针对多个有限 namespace 的特定资源访问，使用 ClusterRole 和 RoleBinding
+
+## 开源工具
+
+- [liggitt/audit2rbac](https://github.com/liggitt/audit2rbac)
+- [reactiveops/rbac-manager](https://github.com/reactiveops/rbac-manager)
+- [jtblin/kube2iam](https://github.com/jtblin/kube2iam)
+
 ## 参考文档
 
 - [RBAC documentation](https://kubernetes.io/docs/admin/authorization/rbac/)
