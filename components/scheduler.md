@@ -365,7 +365,7 @@ priorities 策略
 
 > ** 代码入口路径 **
 >
-> 与 Kubernetes 其他组件的入口不同 (其他都是位于 `cmd/` 目录)，kube-schedular 的入口在 `plugin/cmd/kube-scheduler`。
+> 在release-1.9及之前的代码入口在plugin/cmd/kube-scheduler，从release-1.10起，kube-scheduler的核心代码迁移到pkg/scheduler目录下面，入口也迁移到cmd/kube-scheduler
 >
 
 ## 参考文档
