@@ -16,7 +16,7 @@
 - Network Policies：精细控制容器应用和集群中的网络访问；
 - Seccomp：Secure computing mode 的缩写，限制容器应用可执行的系统调用。
 
-除此之外，推荐尽量使用较新版本的 Kubernetes，因为它们通常会包含常见安全问题的修复。你可以参考 [kubernetes-announce](https://groups.google.com/forum/#!forum/kubernetes-announce) 来查询最新的 Kubernetes 发布情况，也可以参考 [cvedetails.com](https://www.cvedetails.com/version-list/15867/34016/1/Kubernetes-Kubernetes.html) 查询所有 Kubernetes 发布版本的 CVE (Common Vulnerabilities and Exposures) 列表。
+除此之外，推荐尽量使用较新版本的 Kubernetes，因为它们通常会包含常见安全问题的修复。你可以参考 [kubernetes-announce](https://groups.google.com/forum/#!forum/kubernetes-announce) 来查询最新的 Kubernetes 发布情况，也可以参考 [cvedetails.com](https://www.cvedetails.com/version-list/15867/34016/1/Kubernetes-Kubernetes.html) 查询 Kubernetes 各个版本的 CVE (Common Vulnerabilities and Exposures) 列表。
 
 ## 集群安全
 
