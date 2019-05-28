@@ -28,3 +28,4 @@
 
 - [Designing Distributed Systems](https://open.microsoft.com/2018/03/26/new-oreilly-e-book-on-designing-distributed-systems-available-for-free-download/)
 - [Kubernetes Handbook (Kubernetes 指南)](https://github.com/feiskyer/kubernetes-handbook)
+- [Kubernetes Security - How to Build and Operate Applications Securely on Kubernetes](https://kubernetes-security.info/)

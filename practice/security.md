@@ -329,3 +329,4 @@ $ $ reg server --clair https://clair.j3ss.co
 - [Securing a Kubernetes cluster](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/)
 - [kube-bench](https://github.com/aquasecurity/kube-bench)
 - [Kubernetes Security - Operating Kubernetes Clusters and Applications Safely](https://kubernetes-security.info)
+- [Kubernetes Security - Best Practice Guide](https://github.com/freach/kubernetes-security-best-practice)
