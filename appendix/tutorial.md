@@ -8,12 +8,14 @@
 
 ## 在线课程
 
+- [Kubernetes Basics - Brendan Burns](http://aka.ms/k8sbasics)
 - [edX: Introduction to Kubernetes](http://www.edx.org/course/introduction-kubernetes-linuxfoundationx-lfs158x)
 - [Udacity: Scalable Microservices with Kubernetes](http://in.udacity.com/course/scalable-microservices-with-kubernetes--ud615)
 - [edX: Fundamentals of Containers, Kubernetes, and Red Hat OpenShift](https://www.edx.org/course/fundamentals-containers-kubernetes-red-hat-do081x)
 
 ## 在线指导
 
+- [Kubernetes Learning Path - 50 days from zero to hero with Kubernetes](http://aka.ms/learnkubernetes)
 - [Kubernetes the hard way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
 - [AWS Workshop for Kubernetes](https://github.com/aws-samples/aws-workshop-for-kubernetes)
 - [Learn Kubernetes using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/kubernetes)
