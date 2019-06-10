@@ -168,6 +168,7 @@
   - [HugePage](practice/hugepage.md)
   - [安全](practice/security.md)
   - [审计](practice/audit.md)
+  - [备份恢复](practice/backup.md)
   - [大规模集群](practice/big-cluster.md)
 - [大数据与机器学习](machine-learning/index.md)
   - [Spark](machine-learning/spark.md)

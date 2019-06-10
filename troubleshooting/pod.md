@@ -245,6 +245,13 @@ kubectl get pod mypod -o yaml
 
 Kubelet 使用 inotify 机制检测 `/etc/kubernetes/manifests` 目录（可通过 Kubelet 的 `--pod-manifest-path` 选项指定）中静态 Pod 的变化，并在文件发生变化后重新创建相应的 Pod。但有时也会发生修改静态 Pod 的 Manifest 后未自动创建新 Pod 的情景，此时一个简单的修复方法是重启 Kubelet。
 
+## Nginx 启动失败
+
+Nginx 启动失败，错误消息是 `nginx: [emerg] socket() [::]:8000 failed (97: Address family not supported by protocol)`。这是由于服务器未开启 IPv6 导致的，解决方法有两种：
+
+- 第一种方法，服务器开启 IPv6；
+- 或者，第二种方法，删除或者注释掉 `/etc/nginx/conf.d/default.conf` 文件中的 ` listen       [::]:80 default_server;`。
+
 ### 参考文档
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)
