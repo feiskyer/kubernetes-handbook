@@ -2195,7 +2195,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="big-cluster.html">
+        <li class="chapter " data-level="6.1.9" data-path="backup.html">
+            
+                <a href="backup.html">
+            
+                    
+                    备份恢复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.10" data-path="big-cluster.html">
             
                 <a href="big-cluster.html">
             
@@ -2597,13 +2610,30 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="&#x5BB9;&#x5668;&#x5B89;&#x5168;">&#x5BB9;&#x5668;&#x5B89;&#x5168;</h1>
-<p>Kubernetes &#x63D0;&#x4F9B;&#x4E86;&#x591A;&#x79CD;&#x673A;&#x5236;&#x6765;&#x9650;&#x5236;&#x5BB9;&#x5668;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x51CF;&#x5C11;&#x5BB9;&#x5668;&#x653B;&#x51FB;&#x9762;&#xFF0C;&#x4FDD;&#x8BC1;&#x7CFB;&#x7EDF;&#x5B89;&#x5168;&#x6027;&#x3002;</p>
+<p>&#x4ECE;&#x5B89;&#x5168;&#x7684;&#x89D2;&#x5EA6;&#x6765;&#x770B;&#xFF0C;Kubernetes &#x4E2D;&#x5305;&#x542B;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#x7684;&#x6F5C;&#x5728;&#x653B;&#x51FB;&#x9762;&#xFF1A;</p>
+<p><img src="images/attach-vectors.png" alt=""></p>
+<p>&#xFF08;&#x56FE;&#x7247;&#x6765;&#x81EA;&#x300A;Kubernetes Security - Operating Kubernetes Clusters and Applications Safely&#x300B;&#xFF09;</p>
+<p>&#x4E3A;&#x4E86;&#x4FDD;&#x8BC1;&#x96C6;&#x7FA4;&#x4EE5;&#x53CA;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x7684;&#x5B89;&#x5168;&#xFF0C;Kubernetes &#x63D0;&#x4F9B;&#x4E86;&#x591A;&#x79CD;&#x5B89;&#x5168;&#x673A;&#x5236;&#xFF0C;&#x9650;&#x5236;&#x5BB9;&#x5668;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x51CF;&#x5C11;&#x5BB9;&#x5668;&#x548C;&#x96C6;&#x7FA4;&#x7684;&#x653B;&#x51FB;&#x9762;&#xFF0C;&#x4FDD;&#x8BC1;&#x6574;&#x4E2A;&#x7CFB;&#x7EDF;&#x7684;&#x5B89;&#x5168;&#x6027;&#x3002;</p>
 <ul>
-<li>Security Context&#xFF1A;&#x9650;&#x5236;&#x5BB9;&#x5668;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x5305;&#x62EC; Capabilities&#x3001;ReadOnlyRootFilesystem&#x3001;Privileged&#x3001;RunAsNonRoot&#x3001;RunAsUser &#x4EE5;&#x53CA; SELinuxOptions &#x7B49;</li>
-<li>Pod Security Policy&#xFF1A;&#x96C6;&#x7FA4;&#x7EA7;&#x7684; Pod &#x5B89;&#x5168;&#x7B56;&#x7565;&#xFF0C;&#x81EA;&#x52A8;&#x4E3A;&#x96C6;&#x7FA4;&#x5185;&#x7684; Pod &#x548C; Volume &#x8BBE;&#x7F6E; Security Context</li>
-<li>Sysctls&#xFF1A;&#x5141;&#x8BB8;&#x5BB9;&#x5668;&#x8BBE;&#x7F6E;&#x5185;&#x6838;&#x53C2;&#x6570;&#xFF0C;&#x5206;&#x4E3A;&#x5B89;&#x5168; Sysctls &#x548C;&#x975E;&#x5B89;&#x5168; Sysctls</li>
-<li>AppArmor&#xFF1A;&#x9650;&#x5236;&#x5E94;&#x7528;&#x7684;&#x8BBF;&#x95EE;&#x6743;&#x9650;</li>
-<li>Seccomp&#xFF1A;Secure computing mode &#x7684;&#x7F29;&#x5199;&#xFF0C;&#x9650;&#x5236;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x53EF;&#x6267;&#x884C;&#x7684;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;</li>
+<li>&#x96C6;&#x7FA4;&#x5B89;&#x5168;&#xFF0C;&#x6BD4;&#x5982;&#x7EC4;&#x4EF6;&#xFF08;&#x5982; kube-apiserver&#x3001;etcd&#x3001;kubelet &#x7B49;&#xFF09;&#x53EA;&#x5F00;&#x653E;&#x5B89;&#x5168; API&#x5E76;&#x5F00;&#x542F; TLS &#x8BA4;&#x8BC1;&#x3001;&#x5F00;&#x542F; RBAC &#x7B49;&#xFF1B;</li>
+<li>Security Context&#xFF1A;&#x9650;&#x5236;&#x5BB9;&#x5668;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x5305;&#x62EC; Capabilities&#x3001;ReadOnlyRootFilesystem&#x3001;Privileged&#x3001;RunAsNonRoot&#x3001;RunAsUser &#x4EE5;&#x53CA; SELinuxOptions &#x7B49;&#xFF1B;</li>
+<li>Pod Security Policy&#xFF1A;&#x96C6;&#x7FA4;&#x7EA7;&#x7684; Pod &#x5B89;&#x5168;&#x7B56;&#x7565;&#xFF0C;&#x81EA;&#x52A8;&#x4E3A;&#x96C6;&#x7FA4;&#x5185;&#x7684; Pod &#x548C; Volume &#x8BBE;&#x7F6E; Security Context&#xFF1B;</li>
+<li>Sysctls&#xFF1A;&#x5141;&#x8BB8;&#x5BB9;&#x5668;&#x8BBE;&#x7F6E;&#x5185;&#x6838;&#x53C2;&#x6570;&#xFF0C;&#x5206;&#x4E3A;&#x5B89;&#x5168; Sysctls &#x548C;&#x975E;&#x5B89;&#x5168; Sysctls&#xFF1B;</li>
+<li>AppArmor&#xFF1A;&#x9650;&#x5236;&#x5E94;&#x7528;&#x7684;&#x8BBF;&#x95EE;&#x6743;&#x9650;&#xFF1B;</li>
+<li>Network Policies&#xFF1A;&#x7CBE;&#x7EC6;&#x63A7;&#x5236;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x548C;&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x7F51;&#x7EDC;&#x8BBF;&#x95EE;&#xFF1B;</li>
+<li>Seccomp&#xFF1A;Secure computing mode &#x7684;&#x7F29;&#x5199;&#xFF0C;&#x9650;&#x5236;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x53EF;&#x6267;&#x884C;&#x7684;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#x3002;</li>
+</ul>
+<p>&#x9664;&#x6B64;&#x4E4B;&#x5916;&#xFF0C;&#x63A8;&#x8350;&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x8F83;&#x65B0;&#x7248;&#x672C;&#x7684; Kubernetes&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4EEC;&#x901A;&#x5E38;&#x4F1A;&#x5305;&#x542B;&#x5E38;&#x89C1;&#x5B89;&#x5168;&#x95EE;&#x9898;&#x7684;&#x4FEE;&#x590D;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://groups.google.com/forum/#!forum/kubernetes-announce" target="_blank">kubernetes-announce</a> &#x6765;&#x67E5;&#x8BE2;&#x6700;&#x65B0;&#x7684; Kubernetes &#x53D1;&#x5E03;&#x60C5;&#x51B5;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://www.cvedetails.com/version-list/15867/34016/1/Kubernetes-Kubernetes.html" target="_blank">cvedetails.com</a> &#x67E5;&#x8BE2; Kubernetes &#x5404;&#x4E2A;&#x7248;&#x672C;&#x7684; CVE (Common Vulnerabilities and Exposures) &#x5217;&#x8868;&#x3002;</p>
+<h2 id="&#x96C6;&#x7FA4;&#x5B89;&#x5168;">&#x96C6;&#x7FA4;&#x5B89;&#x5168;</h2>
+<ul>
+<li>Kubernetes &#x7EC4;&#x4EF6;&#xFF08;&#x5982; kube-apiserver&#x3001;etcd&#x3001;kubelet &#x7B49;&#xFF09;&#x53EA;&#x5F00;&#x653E;&#x5B89;&#x5168; API &#x5E76;&#x5F00;&#x542F; TLS &#x8BA4;&#x8BC1;&#x3002;</li>
+<li>&#x5F00;&#x542F; RBAC &#x6388;&#x6743;&#xFF0C;&#x8D4B;&#x4E88;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x6700;&#x5C0F;&#x6743;&#x9650;&#xFF0C;&#x5E76;&#x5F00;&#x542F; NodeRestriction &#x51C6;&#x5165;&#x63A7;&#x5236;&#xFF08;&#x9650;&#x5236; Kubelet &#x6743;&#x9650;&#xFF09;&#x3002;</li>
+<li>&#x5F00;&#x542F; Secret &#x52A0;&#x5BC6;&#x5B58;&#x50A8;&#xFF08;Secret Encryption&#xFF09;&#xFF0C;&#x5E76;&#x914D;&#x7F6E; etcd &#x7684; TLS &#x8BA4;&#x8BC1;&#xFF1B;</li>
+<li>&#x7981;&#x6B62; Kubelet &#x7684;&#x533F;&#x540D;&#x8BBF;&#x95EE;&#x548C;&#x53EA;&#x8BFB;&#x7AEF;&#x53E3;&#xFF0C;&#x5F00;&#x542F; Kubelet &#x7684;&#x8BC1;&#x4E66;&#x8F6E;&#x66FF;&#x66F4;&#x65B0;&#xFF08;Certificate Rotation&#xFF09;&#x3002;</li>
+<li>&#x7981;&#x6B62;&#x9ED8;&#x8BA4; ServiceAccount &#x7684; automountServiceAccountToken&#xFF0C;&#x5E76;&#x5728;&#x9700;&#x8981;&#x65F6;&#x521B;&#x5EFA;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x7684;&#x4E13;&#x7528; ServiceAccount&#x3002;</li>
+<li>&#x7981;&#x6B62; Dashboard &#x7684;&#x533F;&#x540D;&#x8BBF;&#x95EE;&#xFF0C;&#x901A;&#x8FC7; RBAC &#x9650;&#x5236; Dashboard &#x7684;&#x8BBF;&#x95EE;&#x6743;&#x9650;&#xFF0C;&#x5E76;&#x786E;&#x4FDD; Dashboard &#x4EC5;&#x53EF;&#x5728;&#x5185;&#x7F51;&#x8BBF;&#x95EE;&#xFF08;&#x901A;&#x8FC7; kubectl proxy&#xFF09;&#x3002;</li>
+<li>&#x5B9A;&#x671F;&#x8FD0;&#x884C; <a href="https://www.cisecurity.org/benchmark/kubernetes/" target="_blank">CIS Kubernetes Benchmark</a>&#xFF0C;&#x786E;&#x4FDD;&#x96C6;&#x7FA4;&#x7684;&#x914D;&#x7F6E;&#x6216;&#x66F4;&#x65B0;&#x7B26;&#x5408;&#x6700;&#x4F73;&#x7684;&#x5B89;&#x5168;&#x5B9E;&#x8DF5;&#xFF08;&#x4F7F;&#x7528; <a href="https://github.com/aquasecurity/kube-bench" target="_blank">kube-bench</a> &#x548C; <a href="https://github.com/aquasecurity/kube-hunter" target="_blank">kube-hunter</a>&#xFF09;&#x3002;</li>
+<li>&#x5728;&#x591A;&#x79DF;&#x6237;&#x573A;&#x666F;&#x4E2D;&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; Kata Containers&#x3001;gVisor &#x7B49;&#x5BF9;&#x5BB9;&#x5668;&#x8FDB;&#x7A0B;&#x8FDB;&#x884C;&#x5F3A;&#x9694;&#x79BB;&#xFF0C;&#x6216;&#x8005;&#x4F7F;&#x7528; Istio&#x3001;Linkerd &#x7B49;&#x5BF9;&#x5BB9;&#x5668;&#x5E94;&#x7528;&#x4E4B;&#x95F4;&#x7684;&#x901A;&#x4FE1;&#x4E5F;&#x8FDB;&#x884C;&#x81EA;&#x52A8;&#x52A0;&#x5BC6;&#x3002;</li>
 </ul>
 <h2 id="security-context-&#x548C;-pod-security-policy">Security Context &#x548C; Pod Security Policy</h2>
 <pre><code class="lang-yaml"><span class="hljs-attr">apiVersion:</span> extensions/v1beta1
@@ -2821,26 +2851,55 @@ $ reg vulns --clair https://clair.j3ss.co r.j3ss.co/chrome
 <span class="hljs-comment"># Generating Static Website for a Registry</span>
 $ $ reg server --clair https://clair.j3ss.co
 </code></pre>
+<p>&#x5176;&#x4ED6;&#x955C;&#x50CF;&#x5B89;&#x5168;&#x626B;&#x63CF;&#x5DE5;&#x5177;&#x8FD8;&#x6709;&#xFF1A;</p>
+<ul>
+<li><a href="https://nvd.nist.gov/" target="_blank">National Vulnerability Database</a></li>
+<li><a href="https://www.open-scap.org/tools/" target="_blank">OpenSCAP tools</a></li>
+<li><a href="https://github.com/coreos/clair" target="_blank">coreos/clair</a></li>
+<li><a href="https://github.com/aquasecurity/microscanner" target="_blank">aquasecurity/microscanner</a></li>
+<li><a href="https://docs.docker.com/registry/deploying/" target="_blank">Docker Registry Server</a></li>
+<li><a href="https://docs.gitlab.com/ee/user/project/container_registry.html" target="_blank">GitLab Container Registry</a></li>
+<li><a href="https://www.openshift.com/products/quay" target="_blank">Red Hat Quay container registry</a></li>
+<li><a href="https://aws.amazon.com/ecr/" target="_blank">Amazon Elastic Container Registry</a></li>
+<li><a href="https://github.com/theupdateframework/notary" target="_blank">theupdateframework/notary</a></li>
+<li><a href="https://github.com/weaveworks/flux" target="_blank">weaveworks/flux</a></li>
+<li><a href="https://github.com/IBM/portieris" target="_blank">IBM/portieris</a></li>
+<li><a href="https://grafeas.io/" target="_blank">Grafeas</a></li>
+<li><a href="https://in-toto.github.io/" target="_blank">in-toto</a></li>
+</ul>
 <h2 id="&#x5176;&#x4ED6;&#x5B89;&#x5168;&#x5DE5;&#x5177;">&#x5176;&#x4ED6;&#x5B89;&#x5168;&#x5DE5;&#x5177;</h2>
 <p>&#x5F00;&#x6E90;&#x4EA7;&#x54C1;&#xFF1A;</p>
 <ul>
 <li><a href="https://github.com/falcosecurity/falco" target="_blank">falco</a>&#xFF1A;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x5B89;&#x5168;&#x884C;&#x4E3A;&#x76D1;&#x63A7;&#x5DE5;&#x5177;&#x3002;</li>
 <li><a href="https://github.com/docker/docker-bench-security" target="_blank">docker-bench-security</a>&#xFF1A;Docker &#x73AF;&#x5883;&#x5B89;&#x5168;&#x68C0;&#x67E5;&#x5DE5;&#x5177;&#x3002;</li>
 <li><a href="https://github.com/aquasecurity/kube-hunter" target="_blank">kube-hunter</a>&#xFF1A;Kubernetes &#x96C6;&#x7FA4;&#x6E17;&#x900F;&#x6D4B;&#x8BD5;&#x5DE5;&#x5177;&#x3002;</li>
+<li><a href="https://github.com/shyiko/kubesec" target="_blank">https://github.com/shyiko/kubesec</a></li>
+<li><a href="https://istio.io/" target="_blank">Istio</a></li>
+<li><a href="https://linkerd.io/" target="_blank">Linkerd</a></li>
+<li><a href="https://oval.mitre.org/index.html" target="_blank">Open Vulnerability and Assessment Language</a></li>
+<li><a href="https://github.com/aporeto-inc/trireme-kubernetes" target="_blank">aporeto-inc/trireme-kubernetes</a></li>
+<li><a href="https://github.com/jetstack/cert-manager/" target="_blank">jetstack/cert-manager</a></li>
+<li><a href="https://katacontainers.io/" target="_blank">Kata Containers</a></li>
+<li><a href="https://github.com/google/gvisor" target="_blank">google/gvisor</a></li>
+<li><a href="https://spiffe.io/" target="_blank">SPIFFE</a></li>
+<li><a href="https://www.openpolicyagent.org/" target="_blank">Open Policy Agent</a></li>
 </ul>
 <p>&#x5546;&#x4E1A;&#x4EA7;&#x54C1;</p>
 <ul>
 <li><a href="https://www.twistlock.com/" target="_blank">Twistlock</a></li>
 <li><a href="https://www.aquasec.com/" target="_blank">Aqua Container Security Platform</a></li>
 <li><a href="https://sysdig.com/products/secure/" target="_blank">Sysdig Secure</a></li>
+<li><a href="https://neuvector.com/" target="_blank">Neuvector</a></li>
 </ul>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/" target="_blank">Securing a Kubernetes cluster</a></li>
 <li><a href="https://github.com/aquasecurity/kube-bench" target="_blank">kube-bench</a></li>
+<li><a href="https://kubernetes-security.info" target="_blank">Kubernetes Security - Operating Kubernetes Clusters and Applications Safely</a></li>
+<li><a href="https://github.com/freach/kubernetes-security-best-practice" target="_blank">Kubernetes Security - Best Practice Guide</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-05-13 14:10:33
+2019-06-16 02:00:53
 </span></footer>
                                 
                                 </section>
@@ -2884,7 +2943,7 @@ $ $ reg server --clair https://clair.j3ss.co
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"安全","level":"6.1.7","depth":2,"next":{"title":"审计","level":"6.1.8","depth":2,"path":"practice/audit.md","ref":"practice/audit.md","articles":[]},"previous":{"title":"HugePage","level":"6.1.6","depth":2,"path":"practice/hugepage.md","ref":"practice/hugepage.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/security.md","mtime":"2019-05-13T14:10:33.529Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-13T14:12:15.685Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"安全","level":"6.1.7","depth":2,"next":{"title":"审计","level":"6.1.8","depth":2,"path":"practice/audit.md","ref":"practice/audit.md","articles":[]},"previous":{"title":"HugePage","level":"6.1.6","depth":2,"path":"practice/hugepage.md","ref":"practice/hugepage.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/security.md","mtime":"2019-06-16T02:00:53.536Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -2195,7 +2195,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+            
+                <a href="../practice/backup.html">
+            
+                    
+                    备份恢复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2786,12 +2799,18 @@ kubectl create --validate <span class="hljs-_">-f</span> mypod.yaml
 </code></pre>
 <h2 id="&#x4FEE;&#x6539;&#x9759;&#x6001;-pod-&#x7684;-manifest-&#x540E;&#x672A;&#x81EA;&#x52A8;&#x91CD;&#x5EFA;">&#x4FEE;&#x6539;&#x9759;&#x6001; Pod &#x7684; Manifest &#x540E;&#x672A;&#x81EA;&#x52A8;&#x91CD;&#x5EFA;</h2>
 <p>Kubelet &#x4F7F;&#x7528; inotify &#x673A;&#x5236;&#x68C0;&#x6D4B; <code>/etc/kubernetes/manifests</code> &#x76EE;&#x5F55;&#xFF08;&#x53EF;&#x901A;&#x8FC7; Kubelet &#x7684; <code>--pod-manifest-path</code> &#x9009;&#x9879;&#x6307;&#x5B9A;&#xFF09;&#x4E2D;&#x9759;&#x6001; Pod &#x7684;&#x53D8;&#x5316;&#xFF0C;&#x5E76;&#x5728;&#x6587;&#x4EF6;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x540E;&#x91CD;&#x65B0;&#x521B;&#x5EFA;&#x76F8;&#x5E94;&#x7684; Pod&#x3002;&#x4F46;&#x6709;&#x65F6;&#x4E5F;&#x4F1A;&#x53D1;&#x751F;&#x4FEE;&#x6539;&#x9759;&#x6001; Pod &#x7684; Manifest &#x540E;&#x672A;&#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x65B0; Pod &#x7684;&#x60C5;&#x666F;&#xFF0C;&#x6B64;&#x65F6;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#x662F;&#x91CD;&#x542F; Kubelet&#x3002;</p>
+<h2 id="nginx-&#x542F;&#x52A8;&#x5931;&#x8D25;">Nginx &#x542F;&#x52A8;&#x5931;&#x8D25;</h2>
+<p>Nginx &#x542F;&#x52A8;&#x5931;&#x8D25;&#xFF0C;&#x9519;&#x8BEF;&#x6D88;&#x606F;&#x662F; <code>nginx: [emerg] socket() [::]:8000 failed (97: Address family not supported by protocol)</code>&#x3002;&#x8FD9;&#x662F;&#x7531;&#x4E8E;&#x670D;&#x52A1;&#x5668;&#x672A;&#x5F00;&#x542F; IPv6 &#x5BFC;&#x81F4;&#x7684;&#xFF0C;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x6709;&#x4E24;&#x79CD;&#xFF1A;</p>
+<ul>
+<li>&#x7B2C;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x5F00;&#x542F; IPv6&#xFF1B;</li>
+<li>&#x6216;&#x8005;&#xFF0C;&#x7B2C;&#x4E8C;&#x79CD;&#x65B9;&#x6CD5;&#xFF0C;&#x5220;&#x9664;&#x6216;&#x8005;&#x6CE8;&#x91CA;&#x6389; <code>/etc/nginx/conf.d/default.conf</code> &#x6587;&#x4EF6;&#x4E2D;&#x7684; <code>listen       [::]:80 default_server;</code>&#x3002;</li>
+</ul>
 <h3 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h3>
 <ul>
 <li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/" target="_blank">Troubleshoot Applications</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-05-13 14:10:33
+2019-06-16 02:00:53
 </span></footer>
                                 
                                 </section>
@@ -2835,7 +2854,7 @@ kubectl create --validate <span class="hljs-_">-f</span> mypod.yaml
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Pod 排错","level":"7.3","depth":1,"next":{"title":"网络排错","level":"7.4","depth":1,"path":"troubleshooting/network.md","ref":"troubleshooting/network.md","articles":[]},"previous":{"title":"集群排错","level":"7.2","depth":1,"path":"troubleshooting/cluster.md","ref":"troubleshooting/cluster.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/pod.md","mtime":"2019-05-13T14:10:33.553Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-13T14:12:15.685Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Pod 排错","level":"7.3","depth":1,"next":{"title":"网络排错","level":"7.4","depth":1,"path":"troubleshooting/network.md","ref":"troubleshooting/network.md","articles":[]},"previous":{"title":"集群排错","level":"7.2","depth":1,"path":"troubleshooting/cluster.md","ref":"troubleshooting/cluster.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/pod.md","mtime":"2019-06-16T02:00:53.556Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

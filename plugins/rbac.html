@@ -2195,7 +2195,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+            
+                <a href="../practice/backup.html">
+            
+                    
+                    备份恢复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2762,6 +2775,18 @@ $ curl -ik \
   --user=kubelet \
   --group=system:serviceaccounts
 </code></pre>
+<h2 id="&#x63A8;&#x8350;&#x914D;&#x7F6E;">&#x63A8;&#x8350;&#x914D;&#x7F6E;</h2>
+<ul>
+<li>&#x9488;&#x5BF9; namespace &#x5185;&#x8D44;&#x6E90;&#x7684;&#x8BBF;&#x95EE;&#x6743;&#x9650;&#xFF0C;&#x4F7F;&#x7528; Role &#x548C; RoleBinding</li>
+<li>&#x9488;&#x5BF9;&#x96C6;&#x7FA4;&#x7EA7;&#x522B;&#x7684;&#x8D44;&#x6E90;&#x6216;&#x8005;&#x6240;&#x6709; namespace &#x7684;&#x7279;&#x5B9A;&#x8D44;&#x6E90;&#x8BBF;&#x95EE;&#xFF0C;&#x4F7F;&#x7528; ClustetRole &#x548C; ClusterRoleBinding</li>
+<li>&#x9488;&#x5BF9;&#x591A;&#x4E2A;&#x6709;&#x9650; namespace &#x7684;&#x7279;&#x5B9A;&#x8D44;&#x6E90;&#x8BBF;&#x95EE;&#xFF0C;&#x4F7F;&#x7528; ClusterRole &#x548C; RoleBinding</li>
+</ul>
+<h2 id="&#x5F00;&#x6E90;&#x5DE5;&#x5177;">&#x5F00;&#x6E90;&#x5DE5;&#x5177;</h2>
+<ul>
+<li><a href="https://github.com/liggitt/audit2rbac" target="_blank">liggitt/audit2rbac</a></li>
+<li><a href="https://github.com/reactiveops/rbac-manager" target="_blank">reactiveops/rbac-manager</a></li>
+<li><a href="https://github.com/jtblin/kube2iam" target="_blank">jtblin/kube2iam</a></li>
+</ul>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/admin/authorization/rbac/" target="_blank">RBAC documentation</a></li>
@@ -2771,7 +2796,7 @@ $ curl -ik \
 <li>&#x90E8;&#x5206;&#x7FFB;&#x8BD1;&#x81EA; <a href="http://blog.kubernetes.io/2017/04/rbac-support-in-kubernetes.html" target="_blank">RBAC Support in Kubernetes</a>&#xFF08;&#x8F6C;&#x8F7D;&#x81EA;<a href="https://www.kubernetes.org.cn/1879.html" target="_blank">kubernetes &#x4E2D;&#x6587;&#x793E;&#x533A;</a>&#xFF0C;&#x8BD1;&#x8005;&#x50AC;&#x603B;&#xFF0C;<a href="http://rootsongjc.github.com/about" target="_blank">Jimmy Song</a> &#x505A;&#x4E86;&#x7A0D;&#x8BB8;&#x4FEE;&#x6539;&#xFF09;</li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-05-13 14:10:33
+2019-06-16 02:00:53
 </span></footer>
                                 
                                 </section>
@@ -2815,7 +2840,7 @@ $ curl -ik \
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"RBAC 授权","level":"4.2.2","depth":2,"next":{"title":"准入控制","level":"4.2.3","depth":2,"path":"plugins/admission.md","ref":"plugins/admission.md","articles":[]},"previous":{"title":"认证","level":"4.2.1","depth":2,"path":"plugins/authentication.md","ref":"plugins/authentication.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/rbac.md","mtime":"2019-05-13T14:10:33.529Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-13T14:12:15.685Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"RBAC 授权","level":"4.2.2","depth":2,"next":{"title":"准入控制","level":"4.2.3","depth":2,"path":"plugins/admission.md","ref":"plugins/admission.md","articles":[]},"previous":{"title":"认证","level":"4.2.1","depth":2,"path":"plugins/authentication.md","ref":"plugins/authentication.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/rbac.md","mtime":"2019-06-16T02:00:53.532Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -2195,7 +2195,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+            
+                <a href="../practice/backup.html">
+            
+                    
+                    备份恢复
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2912,7 +2925,7 @@ kubectl taint nodes node1 key2=value2:NoSchedule
 </ul>
 <blockquote>
 <p><strong> &#x4EE3;&#x7801;&#x5165;&#x53E3;&#x8DEF;&#x5F84; </strong></p>
-<p>&#x4E0E; Kubernetes &#x5176;&#x4ED6;&#x7EC4;&#x4EF6;&#x7684;&#x5165;&#x53E3;&#x4E0D;&#x540C; (&#x5176;&#x4ED6;&#x90FD;&#x662F;&#x4F4D;&#x4E8E; <code>cmd/</code> &#x76EE;&#x5F55;)&#xFF0C;kube-schedular &#x7684;&#x5165;&#x53E3;&#x5728; <code>plugin/cmd/kube-scheduler</code>&#x3002;</p>
+<p>&#x5728;release-1.9&#x53CA;&#x4E4B;&#x524D;&#x7684;&#x4EE3;&#x7801;&#x5165;&#x53E3;&#x5728;plugin/cmd/kube-scheduler&#xFF0C;&#x4ECE;release-1.10&#x8D77;&#xFF0C;kube-scheduler&#x7684;&#x6838;&#x5FC3;&#x4EE3;&#x7801;&#x8FC1;&#x79FB;&#x5230;pkg/scheduler&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#xFF0C;&#x5165;&#x53E3;&#x4E5F;&#x8FC1;&#x79FB;&#x5230;cmd/kube-scheduler</p>
 </blockquote>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
@@ -2922,7 +2935,7 @@ kubectl taint nodes node1 key2=value2:NoSchedule
 <li><a href="https://kubernetes.io/blog/2017/03/advanced-scheduling-in-kubernetes/" target="_blank">Advanced Scheduling in Kubernetes</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-05-13 14:10:33
+2019-06-16 02:00:53
 </span></footer>
                                 
                                 </section>
@@ -2966,7 +2979,7 @@ kubectl taint nodes node1 key2=value2:NoSchedule
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"kube-scheduler","level":"2.4.3","depth":2,"next":{"title":"kube-controller-manager","level":"2.4.4","depth":2,"path":"components/controller-manager.md","ref":"components/controller-manager.md","articles":[]},"previous":{"title":"kube-apiserver","level":"2.4.2","depth":2,"path":"components/apiserver.md","ref":"components/apiserver.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/scheduler.md","mtime":"2019-05-13T14:10:33.353Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-13T14:12:15.685Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"kube-scheduler","level":"2.4.3","depth":2,"next":{"title":"kube-controller-manager","level":"2.4.4","depth":2,"path":"components/controller-manager.md","ref":"components/controller-manager.md","articles":[]},"previous":{"title":"kube-apiserver","level":"2.4.2","depth":2,"path":"components/apiserver.md","ref":"components/apiserver.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/scheduler.md","mtime":"2019-06-16T02:00:53.400Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
