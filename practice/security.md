@@ -22,6 +22,7 @@
 
 - Kubernetes 组件（如 kube-apiserver、etcd、kubelet 等）只开放安全 API 并开启 TLS 认证。
 - 开启 RBAC 授权，赋予容器应用最小权限，并开启 NodeRestriction 准入控制（限制 Kubelet 权限）。
+  - RBAC 规则过多或者无法满足实际需要时，推荐使用 [Open Policy Agent (OPA)](https://www.openpolicyagent.org/) 配置更灵活的访问策略
 - 开启 Secret 加密存储（Secret Encryption），并配置 etcd 的 TLS 认证；
 - 禁止 Kubelet 的匿名访问和只读端口，开启 Kubelet 的证书轮替更新（Certificate Rotation）。
 - 禁止默认 ServiceAccount 的 automountServiceAccountToken，并在需要时创建容器应用的专用 ServiceAccount。
@@ -323,7 +324,7 @@ $ $ reg server --clair https://clair.j3ss.co
 - [Aqua Container Security Platform](https://www.aquasec.com/)
 - [Sysdig Secure](https://sysdig.com/products/secure/)
 - [Neuvector](https://neuvector.com/)
- 
+
 ## 参考文档
 
 - [Securing a Kubernetes cluster](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/)

@@ -170,3 +170,5 @@ Error response from daemon: client version 1.38 is too new. Maximum supported AP
 ## 参考文档
 
 - [Kubernetes On Windows - Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)
+- [Debug Networking issues on Windows](https://github.com/microsoft/SDN/tree/master/Kubernetes/windows/debug)
+

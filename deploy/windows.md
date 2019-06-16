@@ -464,4 +464,8 @@ Start-Service Docker
 
 ## 参考文档
 
-- [Using Windows Server Containers in Kubernetes](https://kubernetes.io/docs/getting-started-guides/windows/)
+- [Guide for adding Windows Nodes in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-nodes/)
+- [Intro to Windows support in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/intro-windows-in-kubernetes/)
+- [Guide for scheduling Windows containers in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-containers/)
+- [Kubernetes for Windows Walkthroughs](https://github.com/PatrickLang/KubernetesForWindowsTutorial)
+

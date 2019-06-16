@@ -91,3 +91,10 @@ kube-proxy-7gd4p   1/1       Running   0          3d
 kube-proxy-87dbs   1/1       Running   0          4d
 $ kubectl -n kube-system logs kube-proxy-42zpn
 ```
+
+## 参考文档
+
+* [hjacobs/kubernetes-failure-stories](https://github.com/hjacobs/kubernetes-failure-stories) 整理了一些公开的 Kubernetes 异常案例。
+* <https://docs.microsoft.com/en-us/azure/aks/troubleshooting> 包含了 AKS 中排错的一般思路
+* <https://cloud.google.com/kubernetes-engine/docs/troubleshooting> 包含了 GKE 中问题排查的一般思路
+* <https://www.oreilly.com/ideas/kubernetes-recipes-maintenance-and-troubleshooting>

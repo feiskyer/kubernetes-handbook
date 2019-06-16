@@ -153,3 +153,8 @@ Events:
 - 保持 Pods 和 Nodes 健康（避免 Pod 频繁重建）
 - 保证用户请求的负载均衡
 - 使用 `kubectl top node` 和 `kubectl top pod` 查看资源使用情况
+
+## 参考文档
+
+- [Ensure High Availability and Uptime With Kubernetes Horizontal Pod Autoscaler and Prometheus](https://www.weave.works/blog/kubernetes-horizontal-pod-autoscaler-and-prometheus)
+

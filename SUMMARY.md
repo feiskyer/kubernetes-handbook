@@ -160,6 +160,7 @@
 ## 实践案例
 
 - [实践案例](practice/index.md)
+  - [资源控制](practice/resource-management.md)
   - [高可用](practice/ha.md)
   - [调试](practice/debugging.md)
   - [端口映射](practice/portmap.md)
