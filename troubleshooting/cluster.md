@@ -219,13 +219,18 @@ I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to 
 
 ## Node NotReady
 
-Node 处于 NotReady 状态，社区 issue [#45419](https://github.com/kubernetes/kubernetes/issues/45419)。
+Node 处于 NotReady 状态，大部分是由于 PLEG（Pod Lifecycle Event Generator）问题导致的。社区 issue [#45419](https://github.com/kubernetes/kubernetes/issues/45419) 目前还处于未解决状态。
 
-NotReady 的原因比较多，在排查时最重要的就是执行 `kubectl describe node <node name>` 并查看 Kubelet 日志中的错误信息。常见问题的修复方法为：
+NotReady 的原因比较多，在排查时最重要的就是执行 `kubectl describe node <node name>` 并查看 Kubelet 日志中的错误信息。常见的问题及修复方法为：
 
+* Kubelet 未启动或者异常挂起：重新启动 Kubelet。
 * CNI 网络插件未部署：部署 CNI 插件。
 * Docker 僵死（API 不响应）：重启 Docker。
 * 磁盘空间不足：清理磁盘空间，比如镜像、临时文件等。
+
+> Kubernetes node 有可能会出现各种硬件、内核或者运行时等问题，这些问题有可能导致服务异常。而 Node Problem Detector（NPD）就是用来监测这些异常的服务。NPD 以 DaemonSet 的方式运行在每台 Node 上面，并在异常发生时更新 NodeCondition（比如 KernelDaedlock、DockerHung、BadDisk 等）或者 Node Event（比如 OOM Kill 等）。
+>
+> 可以参考 [kubernetes/node-problem-detector](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/node-problem-detector) 来部署 NPD，以便更快发现 Node 上的问题。
 
 ## Kubelet: failed to initialize top level QOS containers
 
@@ -312,6 +317,8 @@ kubernetes-dashboard-665b4f7df-dsjpn   1/1       Running   0          5d
 
 $ kubectl -n kube-system logs kubernetes-dashboard-665b4f7df-dsjpn
 ```
+
+> 注意：Heapster 已被社区弃用，推荐部署 metrics-server 来获取这些指标。支持 metrics-server 的 dashboard 可以参考[这里](https://github.com/kubernetes/dashboard/blob/master/aio/deploy/recommended/kubernetes-dashboard-head.yaml)。
 
 ## HPA 不自动扩展 Pod
 
