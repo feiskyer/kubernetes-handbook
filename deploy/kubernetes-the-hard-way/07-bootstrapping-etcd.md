@@ -6,7 +6,7 @@ Kubernetes 组件都是无状态的，所有的群集状态都储存在 [etcd](h
 
 ## 事前准备
 
-本部分的命令需要在每个控制节点上都运行以便，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登录每个控制节点，比如
+本部分的命令需要在每个控制节点上都运行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登录每个控制节点，比如
 
 ```sh
 gcloud compute ssh controller-0
