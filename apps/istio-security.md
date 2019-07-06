@@ -99,5 +99,5 @@ Istio Auth 由三部分组成：
 ## 参考文档
 
 - [Istio Security 文档](https://istio.io/docs/concepts/security/)
-- [Istio Role-Based Access Control (RBAC)](https://istio.io/docs/concepts/security/rbac.html)
-- [Istio 双向 TLS 文档](https://istio.io/docs/concepts/security/mutual-tls.html)
+- [Istio Role-Based Access Control (RBAC)](https://istio.io/docs/concepts/security/)
+- [Istio 双向 TLS 文档](https://istio.io/docs/concepts/security/#mutual-tls-authentication)

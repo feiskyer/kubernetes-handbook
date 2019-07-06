@@ -17,7 +17,6 @@
 - [Operator](operator.md)
 - [Service Mesh](service-mesh.md)
 - [Linkerd](linkerd.md)
-- [Conduit](conduit.md)
 - [Istio](istio.md)
   - [安装](istio-deploy.md)
   - [流量管理](istio-traffic-management.md)

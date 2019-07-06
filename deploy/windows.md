@@ -15,10 +15,10 @@ Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开�
 
 ## 下载
 
-可以从 <<https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
+可以从 <https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
 
 ```sh
-wget https://dl.k8s.io/v1.11.2/kubernetes-node-windows-amd64.tar.gz
+wget https://dl.k8s.io/v1.15.0/kubernetes-node-windows-amd64.tar.gz
 ```
 
 或者从 Kubernetes 源码编译
@@ -41,13 +41,14 @@ KUBE_BUILD_PLATFORMS=windows/amd64 make WHAT=cmd/kube-proxy
 Windows Server 中支持以下几种网络插件（注意 Windows 节点上的网络插件要与 Linux 节点相同）
 
 1. [wincni](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/cni/wincni.exe) 等 L3 路由网络插件，路由配置在 TOR 交换机、路由器或者云服务中
-2. [Host Gateway](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/configuring-host-gateway-mode) 网络插件，跟上面类似但将 IP 路由配置到每台主机上面
-3. [Azure VNET CNI Plugin](https://github.com/Azure/azure-container-networking/blob/master/docs/cni.md)
-4. [Open vSwitch (OVS) & Open Virtual Network (OVN) with Overlay](https://github.com/openvswitch/ovn-kubernetes/)
-5. Flannel v0.10.0+
-6. Calico v3.0.1+
-7. [win-bridge](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-bridge)
-8. [win-overlay](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-overlay)
+2. [Azure VNET CNI Plugin](https://github.com/Azure/azure-container-networking/blob/master/docs/cni.md)
+3. [Open vSwitch (OVS) & Open Virtual Network (OVN) with Overlay](https://github.com/openvswitch/ovn-kubernetes/)
+4. Flannel v0.10.0+
+5. Calico v3.0.1+
+6. [win-bridge](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-bridge)
+7. [win-overlay](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-overlay)
+
+更多网络拓扑模式请参考 [Windows container network drivers](https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/network-drivers-topologies)。
 
 ### L3 路由拓扑
 
@@ -468,4 +469,3 @@ Start-Service Docker
 - [Intro to Windows support in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/intro-windows-in-kubernetes/)
 - [Guide for scheduling Windows containers in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-containers/)
 - [Kubernetes for Windows Walkthroughs](https://github.com/PatrickLang/KubernetesForWindowsTutorial)
-

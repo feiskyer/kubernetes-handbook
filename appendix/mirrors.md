@@ -2,33 +2,23 @@
 
 ## Docker Hub 镜像
 
-- Docker 中国镜像：https://registry.docker-cn.com
-- 开源社镜像：https://dockerhub.akscn.io
+- 开源社镜像：<http://mirror.azure.cn/help/docker-registry-proxy-cache.html>
 
 示例
 
 ```sh
-docker pull registry.docker-cn.com/library/nginx
+docker pull rdockerhub.azk8s.cn/library/nginx
 ```
 
 ## GCR（Google Container Registry）镜像
 
-- 开源社镜像：https://gcr.akscn.io/google_containers
+- 开源社镜像（Azure China）：http://mirror.azure.cn/help/gcr-proxy-cache.html
 
 示例
 
 ```sh
-docker pull gcr.akscn.io/google_containers/hyperkube:v1.12.1
-docker pull gcr.akscn.io/google_containers/pause-amd64:3.1
-```
-
-- Azure中国镜像：gcr.azk8s.cn/google_containers
-
-示例
-
-```sh
-docker pull gcr.azk8s.cn/google_containers/pause-amd64:3.0
-docker pull gcr.azk8s.cn/google_containers/kubedns-amd64:1.7
+docker pull gcr.azk8s.cn/google_containers/hyperkube:v1.12.1
+docker pull gcr.azk8s.cn/google_containers/pause-amd64:3.1
 ```
 
 ## Kubernetes RPM/DEB镜像
@@ -76,4 +66,3 @@ deb-src http://azure.archive.ubuntu.com/ubuntu/ bionic-updates main restricted u
 deb-src http://azure.archive.ubuntu.com/ubuntu/ bionic-proposed main restricted universe multiverse
 deb-src http://azure.archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
 ```
-

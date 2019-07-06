@@ -279,8 +279,7 @@ spark-ui-proxy-controller-d4br2   1/1       Running   4          6d
 
 ### 创建 Zeppelin UI
 
-我们可以利用 Zeppelin UI 经由 web notebook 直接去执行我们的任务,
-详情可以看 [Zeppelin UI](http://zeppelin.apache.org/) 与 [ Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
+我们可以利用 Zeppelin UI 经由 web notebook 直接去执行我们的任务, 详情可以看 [Zeppelin UI](https://zeppelin.apache.org) 与 [Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
 
 zeppelin-controller.yaml
 

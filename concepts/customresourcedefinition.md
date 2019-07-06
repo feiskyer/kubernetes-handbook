@@ -1,6 +1,6 @@
 # CustomResourceDefinition
 
-CustomResourceDefinition（CRD）是 v1.7 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 [ThirdPartyResources（TPR）](thirdpartyresources.md) 的升级版本，而 TPR 已经在 v1.8 中删除。
+CustomResourceDefinition（CRD）是 v1.7 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 ThirdPartyResources（TPR）的升级版本，而 TPR 已经在 v1.8 中弃用。
 
 ## API 版本对照表
 
@@ -320,7 +320,7 @@ make run
 >
 > 然后运行 `kubectl apply -f config/crds` 创建 CRD。
 
-然后就可以用 `ships.k8s.io/v1beta1` 来创建 Kind 为 `Sloop` 的资源了，比如 
+然后就可以用 `ships.k8s.io/v1beta1` 来创建 Kind 为 `Sloop` 的资源了，比如
 
 ```sh
 kubectl apply -f config/samples/ships_v1beta1_sloop.yaml
@@ -358,4 +358,4 @@ kubebuilder docs
 ## 参考文档
 
 - [Extend the Kubernetes API with CustomResourceDefinitions](https://kubernetes.io/docs/tasks/access-kubernetes-api/extend-api-custom-resource-definitions/#validation)
-- [CustomResourceDefinition API](https://kubernetes.io/docs/api-reference/v1.8/#customresourcedefinition-v1beta1-apiextensions)
+- [CustomResourceDefinition API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#customresourcedefinition-v1beta1-apiextensions-k8s-io)

@@ -9,5 +9,5 @@
   - [istio-announce@](https://groups.google.com/forum/#!forum/istio-announce)
 - [Twitter](https://twitter.com/IstioMesh)
 - [Rocket.Chat](https://istio.rocket.chat/home)
-- [FAQ](https://istio.io/help/faq/general.html)
-- [术语表](https://istio.io/help/glossary.html)
+- [FAQ](https://istio.io/faq/)
+- [术语表](https://istio.io/docs/reference/glossary/)

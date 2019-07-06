@@ -85,4 +85,4 @@ GCP 也提供了一个 GPU 设备的插件，仅适用于 Google Container Engin
 - [Device Manager Proposal](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/resource-management/device-plugin.md)
 - [Device Plugins](https://kubernetes.io/docs/concepts/cluster-administration/device-plugins/)
 - [NVIDIA device plugin for Kubernetes](https://github.com/NVIDIA/k8s-device-plugin)
-- [NVIDIA/nvidia-docker 2.0](https://github.com/NVIDIA/nvidia-docker/tree/2.0)
+- [NVIDIA Container Runtime for Docker](https://github.com/NVIDIA/nvidia-docker)

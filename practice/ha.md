@@ -240,7 +240,7 @@ EOF
 
 ## kube-apiserver
 
-把 [kube-apiserver.yaml](https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml) 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
+把 `kube-apiserver.yaml` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
 
 - basic_auth.csv - basic auth user and password
 - ca.crt - Certificate Authority cert
@@ -371,7 +371,7 @@ kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把  [kube-scheduler.yaml](https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml) 和 [kube-controller-manager.yaml](https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml)  放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
+把  `kube-scheduler.yaml` 和 `kube-controller-manager.yaml` 放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
 
 ## kube-dns
 
@@ -419,6 +419,7 @@ sudo systemctl restart kubelet
 
 ## 参考文档
 
+- [Set up High-Availability Kubernetes Masters](https://kubernetes.io/docs/tasks/administer-cluster/highly-available-master/)
 - [Creating Highly Available Clusters with kubeadm](https://kubernetes.io/docs/setup/independent/high-availability/)
 - http://kubecloud.io/setup-ha-k8s-kops/
 - https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md

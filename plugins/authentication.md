@@ -29,7 +29,7 @@
 openssl genrsa -out username.key 2048
 # Create CSR (certificate signing request)
 openssl req -new -key username.key -out username.csr -subj "/CN=username/O=group"
-# Create certificate from CSR using the cluster authority 
+# Create certificate from CSR using the cluster authority
 openssl x509 -req -in username.csr -CA $CA_LOCATION/ca.crt -CAkey $CA_LOCATION/ca.key -CAcreateserial -out username.crt -days 500
 ```
 
@@ -255,7 +255,7 @@ current-context: my-cluster
 - [Single Sign-On for Internal Apps in Kubernetes using Google Oauth / SSO](https://medium.com/@while1eq1/single-sign-on-for-internal-apps-in-kubernetes-using-google-oauth-sso-2386a34bc433) by William Broach
 - [Single Sign-On for Kubernetes: An Introduction](https://thenewstack.io/kubernetes-single-sign-one-less-identity/) by Joel Speed
 - [Let’s Encrypt, OAuth 2, and Kubernetes Ingress](https://eng.fromatob.com/post/2017/02/lets-encrypt-oauth-2-and-kubernetes-ingress/) by Ian Chiles
-- [Comparing Kubernetes Authentication Methods](https://medium.com/@etienne_24233/comparing-kubernetes-authentication-methods-6f538d834ca7by) by Etienne Dilocker
+- [Comparing Kubernetes Authentication Methods](https://medium.com/@etienne_24233/comparing-kubernetes-authentication-methods-6f538d834ca7) by Etienne Dilocker
 - [K8s auth proxy example](http://uptoknow.blogspot.com/2017/06/kubernetes-authentication-proxy-example.html)
 - [K8s authentication with Conjur](https://blog.conjur.org/kubernetes-authentication)
 - [Effective RBAC](https://www.youtube.com/watch?v=Nw1ymxcLIDI) by Jordan Liggitt

@@ -60,7 +60,7 @@ Kubernetes 的 Cloud Provider 目前正在重构中
 
 构建一个新的云提供商的 Cloud Provider 步骤为
 
-- 编写实现 [cloudprovider.Interface](https://github.com/kubernetes/kubernetes/blob/master/pkg/cloudprovider/cloud.go) 的 cloudprovider 代码
+- 编写实现 [cloudprovider.Interface](https://github.com/kubernetes/cloud-provider/blob/master/cloud.go) 的 cloudprovider 代码
 - 将该 cloudprovider 链接到 `cloud-controller-manager`
   - 在 `cloud-controller-manager` 中导入新的 cloudprovider：`import "pkg/new-cloud-provider"`
   - 初始化时传入新 cloudprovider 的名字，如 `cloudprovider.InitCloudProvider("rancher", s.CloudConfigFile)`

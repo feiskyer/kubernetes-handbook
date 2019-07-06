@@ -22,7 +22,7 @@ ABAC（Attribute Based Access Control）本来是不错的概念，但是在 Kub
 
 ## 基础概念
 
-需要理解 RBAC 一些基础的概念和思路，RBAC 是让用户能够访问 [Kubernetes API 资源](https://kubernetes.io/docs/api-reference/v1.6/) 的授权方式。
+需要理解 RBAC 一些基础的概念和思路，RBAC 是让用户能够访问 [Kubernetes API 资源](https://kubernetes.io/docs/api-reference/v1.15/) 的授权方式。
 
 ![RBAC 架构图 1](images/rbac1.png)
 

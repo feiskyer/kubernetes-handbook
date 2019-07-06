@@ -165,7 +165,7 @@ nginx version: nginx/1.13.7
 kubectl expose deployment nginx --port 80 --type NodePort
 ```
 
-> LoadBalancer 类型的 Service 不能使用是因为没有设置 [cloud provider 集成](https://kubernetes.io/docs/getting-started-guides/scratch/#cloud-provider)。 设定 cloud provider 不在本教程范围之内。
+> LoadBalancer 类型的 Service 不能使用是因为没有设置 [cloud provider 集成](https://kubernetes.io/docs/setup/#production-environment)。 设定 cloud provider 不在本教程范围之内。
 
 查询 `nginx` 服务分配的 Node Port：
 

@@ -172,7 +172,6 @@ kubectl apply -f https://github.com/weaveworks/kured/releases/download/1.0.0/kur
 
 - [Sysdig](http://blog.kubernetes.io/2015/11/monitoring-Kubernetes-with-Sysdig.html)
 - [Weave scope](https://www.weave.works/docs/scope/latest/features/)
-- [CoScale](https://www.coscale.com/)
 - [Datadog](https://www.datadoghq.com/)
 - [Sematext](https://sematext.com/)
 

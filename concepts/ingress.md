@@ -180,7 +180,7 @@ spec:
     servicePort: 80
 ```
 
-注意，不同 Ingress controller 支持的 TLS 功能不尽相同。 请参阅有关 [nginx](https://github.com/kubernetes/ingress/blob/master/controllers/nginx/README.md#https)，[GCE](https://github.com/kubernetes/ingress/blob/master/controllers/gce/README.md#tls) 或任何其他 Ingress controller 的文档，以了解 TLS 的支持情况。
+注意，不同 Ingress controller 支持的 TLS 功能不尽相同。 请参阅有关 [nginx](https://kubernetes.github.io/ingress-nginx/)，[GCE](https://github.com/kubernetes/ingress-gce) 或任何其他 Ingress controller 的文档，以了解 TLS 的支持情况。
 
 ## 更新 Ingress
 

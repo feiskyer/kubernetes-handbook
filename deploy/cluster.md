@@ -81,8 +81,8 @@ cluster/kube-up.sh
 
 ## AWS
 
-在 aws 上建议使用 [kops](https://kubernetes.io/docs/getting-started-guides/kops/) 来部署。
+在 aws 上建议使用 [kops](https://kubernetes.io/docs/setup/production-environment/tools/kops/) 来部署。
 
 ## 物理机或虚拟机
 
-在 Linux 物理机或虚拟机中，建议使用 [kubeadm](https://kubernetes.io/docs/getting-started-guides/kubeadm/) 或 [kubespray](kubespray.md) 来部署 Kubernetes 集群。
+在 Linux 物理机或虚拟机中，建议使用 [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) 或 [kubespray](kubespray.md) 来部署 Kubernetes 集群。

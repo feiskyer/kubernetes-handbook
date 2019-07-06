@@ -36,7 +36,6 @@ Serverless，即无服务器架构，将大家从服务器中解放了出来，�
 - Azure Container Instance (ACI): https://azure.microsoft.com/zh-cn/services/container-instances/
 - Azure Functions: https://azure.microsoft.com/zh-cn/services/functions/
 - Google Cloud Functions: https://cloud.google.com/functions/
-- Hyper: https://hyper.sh/
 - Huawei CCI: https://www.huaweicloud.com/product/cci.html
 - Aliyun Serverless Kubernetes: https://help.aliyun.com/document_detail/71480.html
 

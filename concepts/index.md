@@ -24,5 +24,4 @@ Kubernetes 主要概念和对象介绍。
 - [Service](service.md)
 - [ServiceAccount](serviceaccount.md)
 - [StatefulSet](statefulset.md)
-- [ThirdPartyResources](thirdpartyresources.md)
 - [Volume](volume.md)

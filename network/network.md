@@ -134,17 +134,6 @@ Calico 在每一个计算节点利用 Linux Kernel 实现了一个高效的 vRou
 kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
 ```
 
-## OVS
-
-<https://kubernetes.io/docs/admin/ovs-networking/> 提供了一种简单的基于 OVS 的网络配置方法：
-
-- 每台机器创建一个 Linux 网桥 kbr0，并配置 docker 使用该网桥（而不是默认的 docker0），其子网为 10.244.x.0/24
-- 每台机器创建一个 OVS 网桥 obr0，通过 veth pair 连接 kbr0 并通过 GRE 将所有机器互联
-- 开启 STP
-- 路由 10.244.0.0/16 到 OVS 隧道
-
-![](ovs-networking.png)
-
 ## [OVN](ovn-kubernetes.md)
 
 [OVN (Open Virtual Network)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是 OVS 提供的原生虚拟化网络方案，旨在解决传统 SDN 架构（比如 Neutron DVR）的性能问题。

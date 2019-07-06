@@ -7,8 +7,8 @@ Kubernetes 支持以许多种方式来贡献社区，包括汇报代码缺陷、
 Kubernetes 社区由三部分组成
 
 - [Steering committee](http://blog.kubernetes.io/2017/10/kubernetes-community-steering-committee-election-results.html)
-- [Special Interest Groups (SIG)](https://contributor.kubernetes.io/sigs/)
-- [Working Groups (WG)](https://contributor.kubernetes.io/sigs/#master-working-group-list)
+- [Special Interest Groups (SIG)](https://github.com/kubernetes/community/blob/master/sig-list.md)
+- [Working Groups (WG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-working-group-list)
 
 ![](images/community.png)
 
@@ -22,7 +22,7 @@ Kubernetes 社区由三部分组成
 
 - 使用小的提交，将不同功能的代码分拆到不同的提交甚至是不同的 Pull Request 中
 - 必要的逻辑添加注释说明变更的理由
-- 遵循代码约定，如 [Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/coding-conventions.md)、[API Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md) 和 [kubectl Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/kubectl-conventions.md)
+- 遵循代码约定，如 [Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/guide/coding-conventions.md)、[API Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md) 和 [kubectl Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-cli/kubectl-conventions.md)
 - 确保修改部分可以本地跑过单元测试和功能测试
 - 使用 [Bot 命令](https://prow.k8s.io/command-help) 设置正确的标签或重试失败的测试
 
@@ -54,7 +54,7 @@ hack/cherry_pick_pull.sh upstream/release-1.7 51870
 
 如果在社区贡献中碰到问题，可以参考以下指南
 
-- **[Kubernetes Contributor Community](https://contributor.kubernetes.io/)**
+- **[Kubernetes Contributor Community](https://kubernetes.io/community/)**
 - **[Kubernetes Contributor Guide](https://github.com/kubernetes/community/tree/master/contributors/guide)**
 - **[Kubernetes Developer Guide](https://github.com/kubernetes/community/tree/master/contributors/devel)**
 - [Special Interest Groups](https://github.com/kubernetes/community)

@@ -32,10 +32,10 @@ Calico 控制平面的设计要求物理网络得是 L2 Fabric，这样 vRouter 
 
 Calico 通过 Pool 和 Profile 的方式实现了 docker CNM 网络：
 
-1.  Pool，定义可用于 Docker Network 的 IP 资源范围，比如：10.0.0.0/8 或者 192.168.0.0/16；
-2.  Profile，定义 Docker Network Policy 的集合，由 tags 和 rules 组成；每个 Profile 默认拥有一个和 Profile 名字相同的 Tag，每个 Profile 可以有多个 Tag，以 List 形式保存。
+1. Pool，定义可用于 Docker Network 的 IP 资源范围，比如：10.0.0.0/8 或者 192.168.0.0/16；
+2. Profile，定义 Docker Network Policy 的集合，由 tags 和 rules 组成；每个 Profile 默认拥有一个和 Profile 名字相同的 Tag，每个 Profile 可以有多个 Tag，以 List 形式保存。
 
-具体实现见 <https://github.com/projectcalico/libnetwork-plugin>，而使用方法可以参考 [https://docs.projectcalico.org/master/getting-started/docker/](https://docs.projectcalico.org/master/getting-started/docker/)。
+具体实现见 <https://github.com/projectcalico/libnetwork-plugin>。
 
 ## Calico Kubernetes
 

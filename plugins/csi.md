@@ -167,5 +167,5 @@ spec:
 
 ## 参考文档
 
-- [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/Home.html)
+- [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
 - [CSI Volume Plugins in Kubernetes Design Doc](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes)

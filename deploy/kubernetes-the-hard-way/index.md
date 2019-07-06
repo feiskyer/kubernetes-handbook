@@ -8,7 +8,7 @@
 
 ---
 
-本教程将带领你一步步配置和部署一套高可用的 Kubernetes 集群。它不适用于想要一键自动化部署 Kubernetes 集群的人。如果你想要一键自动化部署，请参考 [Google Container Engine](https://cloud.google.com/container-engine) 或 [Getting Started Guides](http://kubernetes.io/docs/getting-started-guides/)。
+本教程将带领你一步步配置和部署一套高可用的 Kubernetes 集群。它不适用于想要一键自动化部署 Kubernetes 集群的人。如果你想要一键自动化部署，请参考 [Google Container Engine](https://cloud.google.com/container-engine) 或 [Getting Started Guides](https://kubernetes.io/docs/setup/)。
 
 Kubernetes The Hard Way 的主要目的是学习, 也就是说它会花很多时间来保障读者可以真正理解搭建 Kubernetes 的每个步骤。
 

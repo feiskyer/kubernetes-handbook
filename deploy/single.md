@@ -96,9 +96,7 @@ $ kind build node-image
 $ kind create cluster --image kindest/node:latest
 ```
 
-
-
 ## 参考文档
 
-- [Running Kubernetes Locally via Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/)
+- [Running Kubernetes Locally via Minikube](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 - <https://github.com/kubernetes-sigs/kind>

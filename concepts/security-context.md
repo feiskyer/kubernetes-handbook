@@ -10,7 +10,7 @@ Kubernetes 提供了三种配置 Security Context 的方法：
 
 ## Container-level Security Context
 
-[Container-level Security Context](https://kubernetes.io/docs/api-reference/v1.6/#securitycontext-v1-core) 仅应用到指定的容器上，并且不会影响 Volume。比如设置容器运行在特权模式：
+[Container-level Security Context](https://kubernetes.io/docs/api-reference/v1.15/#securitycontext-v1-core) 仅应用到指定的容器上，并且不会影响 Volume。比如设置容器运行在特权模式：
 
 ```yaml
 apiVersion: v1
@@ -28,7 +28,7 @@ spec:
 
 ## Pod-level Security Context
 
-[Pod-level Security Context](https://kubernetes.io/docs/api-reference/v1.6/#podsecuritycontext-v1-core) 应用到 Pod 内所有容器，并且还会影响 Volume（包括 fsGroup 和 selinuxOptions）。
+[Pod-level Security Context](https://kubernetes.io/docs/api-reference/v1.15/#podsecuritycontext-v1-core) 应用到 Pod 内所有容器，并且还会影响 Volume（包括 fsGroup 和 selinuxOptions）。
 
 ```yaml
 apiVersion: v1
@@ -118,7 +118,7 @@ spec:
     rule: RunAsAny
   volumes:
     - flexVolume
-  allowedFlexVolumes: 
+  allowedFlexVolumes:
     - driver: example/lvm
     - driver: example/cifs
 ```
