@@ -15,7 +15,7 @@ Kubernetes [网络模型](https://kubernetes.io/docs/concepts/cluster-administra
 首先创建一个名为 kubernetes-the-hard-way 的 VPC 网络：
 
 ```sh
-gcloud compute networks create kubernetes-the-hard-way --mode custom
+gcloud compute networks create kubernetes-the-hard-way --subnet-mode custom
 ```
 
 为了给 Kubernetes 集群的每个节点分配私有 IP 地址，需要创建一个含有足够大 IP 地址池的子网。 在 `kubernetes-the-hard-way` VPC 网络中创建 `kubernetes` 子网：
