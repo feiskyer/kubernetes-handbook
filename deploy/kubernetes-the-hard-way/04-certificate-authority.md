@@ -26,7 +26,7 @@ cat > ca-config.json <<EOF
 EOF
 ```
 
-新建 CA 凭证簽发请求文件:
+新建 CA 凭证签发请求文件:
 
 ```sh
 cat > ca-csr.json <<EOF
@@ -68,7 +68,7 @@ ca.pem
 
 ### Admin 客户端凭证
 
-创建 `admin` client 凭证簽发请求文件:
+创建 `admin` client 凭证签发请求文件:
 
 ```sh
 cat > admin-csr.json <<EOF
@@ -287,7 +287,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-har
   --format 'value(address)')
 ```
 
-创建 Kubernetes API Server 凭证簽发请求文件:
+创建 Kubernetes API Server 凭证签发请求文件:
 
 ```sh
 cat > kubernetes-csr.json <<EOF
@@ -385,6 +385,6 @@ for instance in controller-0 controller-1 controller-2; do
 done
 ```
 
-> `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 客户端凭证将会在下一节中用来创建客户端簽发请求文件。
+> `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 客户端凭证将会在下一节中用来创建客户端签发请求文件。
 
 下一步：[配置和生成 Kubernetes 配置文件](05-kubernetes-configuration-files.md)。
