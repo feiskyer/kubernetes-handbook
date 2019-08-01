@@ -1,27 +1,27 @@
-# 部署 Windows 节点
+# 部署 Windows 節點
 
-Kubernetes 从 v1.5 开始支持 alpha 版的 Windows 节点，并从 v1.9 开始升级为 beta 版。Windows 容器的主要特性包括
+Kubernetes 從 v1.5 開始支持 alpha 版的 Windows 節點，並從 v1.9 開始升級為 beta 版。Windows 容器的主要特性包括
 
 - Windows 容器支持 Pod（isolation=process）
-- 基于 Virtual Filtering Platform (VFP) Hyper-v Switch Extension 的内核负载均衡
-- 基于 Container Runtime Interface (CRI) 管理 Windows 容器
-- 支持 kubeadm 命令将 Windows 节点加入到已有集群中
-- 推荐使用 Windows Server Version 1803+ 和 Docker Version 17.06+
+- 基於 Virtual Filtering Platform (VFP) Hyper-v Switch Extension 的內核負載均衡
+- 基於 Container Runtime Interface (CRI) 管理 Windows 容器
+- 支持 kubeadm 命令將 Windows 節點加入到已有集群中
+- 推薦使用 Windows Server Version 1803+ 和 Docker Version 17.06+
 
 > 注意：
 >
-> 1. 控制平面的服务依然运行在 Linux 服务器中，而 Windows 节点上只运行 Kubelet、Kube-proxy、Docker 以及网络插件等服务。
-> 2. 推荐使用 Windows Server 1803（修复了 Windows 容器软链接的问题，从而 ServiceAccount 和 ConfigMap 可以正常使用）
+> 1. 控制平面的服務依然運行在 Linux 服務器中，而 Windows 節點上只運行 Kubelet、Kube-proxy、Docker 以及網絡插件等服務。
+> 2. 推薦使用 Windows Server 1803（修復了 Windows 容器軟鏈接的問題，從而 ServiceAccount 和 ConfigMap 可以正常使用）
 
-## 下载
+## 下載
 
-可以从 <https://github.com/kubernetes/kubernetes/releases> 下载已发布的用于 Windows 服务器的二进制文件，如
+可以從 <https://github.com/kubernetes/kubernetes/releases> 下載已發佈的用於 Windows 服務器的二進制文件，如
 
 ```sh
 wget https://dl.k8s.io/v1.15.0/kubernetes-node-windows-amd64.tar.gz
 ```
 
-或者从 Kubernetes 源码编译
+或者從 Kubernetes 源碼編譯
 
 ```sh
 go get -u k8s.io/kubernetes
@@ -36,11 +36,11 @@ KUBE_BUILD_PLATFORMS=windows/amd64 make WHAT=cmd/kube-proxy
 # You will find the output binaries under the folder _output/local/bin/windows/
 ```
 
-## 网络插件
+## 網絡插件
 
-Windows Server 中支持以下几种网络插件（注意 Windows 节点上的网络插件要与 Linux 节点相同）
+Windows Server 中支持以下幾種網絡插件（注意 Windows 節點上的網絡插件要與 Linux 節點相同）
 
-1. [wincni](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/cni/wincni.exe) 等 L3 路由网络插件，路由配置在 TOR 交换机、路由器或者云服务中
+1. [wincni](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/cni/wincni.exe) 等 L3 路由網絡插件，路由配置在 TOR 交換機、路由器或者雲服務中
 2. [Azure VNET CNI Plugin](https://github.com/Azure/azure-container-networking/blob/master/docs/cni.md)
 3. [Open vSwitch (OVS) & Open Virtual Network (OVN) with Overlay](https://github.com/openvswitch/ovn-kubernetes/)
 4. Flannel v0.10.0+
@@ -48,13 +48,13 @@ Windows Server 中支持以下几种网络插件（注意 Windows 节点上的�
 6. [win-bridge](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-bridge)
 7. [win-overlay](https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-overlay)
 
-更多网络拓扑模式请参考 [Windows container network drivers](https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/network-drivers-topologies)。
+更多網絡拓撲模式請參考 [Windows container network drivers](https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/network-drivers-topologies)。
 
-### L3 路由拓扑
+### L3 路由拓撲
 
 ![](images/upstreamrouting.png)
 
-wincni 网络插件配置示例
+wincni 網絡插件配置示例
 
 ```json
 {
@@ -105,7 +105,7 @@ wincni 网络插件配置示例
 }
 ```
 
-### OVS 网络拓扑
+### OVS 網絡拓撲
 
 ![](images/ovn_kubernetes.png)
 
@@ -113,7 +113,7 @@ wincni 网络插件配置示例
 
 ### kubeadm
 
-如果 Master 是通过 kubeadm 来部署的，那 Windows 节点也可以使用 kubeadm 来部署：
+如果 Master 是通過 kubeadm 來部署的，那 Windows 節點也可以使用 kubeadm 來部署：
 
 ```sh
 kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-cert-hash sha256:<hash>
@@ -121,9 +121,9 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
 
 ### Azure
 
-在 Azure 上面推荐使用 [acs-engine](azure.md#Windows) 自动部署 Master 和 Windows 节点。
+在 Azure 上面推薦使用 [acs-engine](azure.md#Windows) 自動部署 Master 和 Windows 節點。
 
-首先创建一个包含 Windows 的 Kubernetes 集群配置文件 `windows.json`
+首先創建一個包含 Windows 的 Kubernetes 集群配置文件 `windows.json`
 
 ```json
 {
@@ -175,7 +175,7 @@ kubeadm.exe join --token <token> <master-ip>:<master-port> --discovery-token-ca-
 
 ```
 
-然后使用 acs-engine 部署：
+然後使用 acs-engine 部署：
 
 ```sh
 # create a new resource group.
@@ -189,9 +189,9 @@ export KUBECONFIG="$(pwd)/_output/<name-with-suffix>/kubeconfig/kubeconfig.centr
 kubectl get node
 ```
 
-### 手动部署
+### 手動部署
 
-(1) 在 Windows Server 中 [安装 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
+(1) 在 Windows Server 中 [安裝 Docker](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-server)
 
 ```powershell
 Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
@@ -199,11 +199,11 @@ Install-Package -Name Docker -ProviderName DockerMsftProvider
 Restart-Computer -Force
 ```
 
-(2) 根据前面的下载部分下载 kubelet.exe 和 kube-proxy.exe
+(2) 根據前面的下載部分下載 kubelet.exe 和 kube-proxy.exe
 
-(3) 从 Master 节点上面拷贝 Node spec file (kube config)
+(3) 從 Master 節點上面拷貝 Node spec file (kube config)
 
-(4) 配置 CNI 网络插件和基础镜像
+(4) 配置 CNI 網絡插件和基礎鏡像
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -221,7 +221,7 @@ cd C:/k/
 docker build -t kubeletwin/pause .
 ```
 
-(5) 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 启动 kubelet.exe，并使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 启动 kube-proxy.exe
+(5) 使用 [start-kubelet.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubelet.ps1) 啟動 kubelet.exe，並使用 [start-kubeproxy.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/start-kubeproxy.ps1) 啟動 kube-proxy.exe
 
 ```sh
 [Environment]::SetEnvironmentVariable("KUBECONFIG", "C:\k\config", [EnvironmentVariableTarget]::User)
@@ -229,13 +229,13 @@ docker build -t kubeletwin/pause .
 ./start-kubeproxy.ps1
 ```
 
-(6) 如果使用 Host-Gateway 网络插件，还需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加静态路由
+(6) 如果使用 Host-Gateway 網絡插件，還需要使用 [AddRoutes.ps1](https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/AddRoutes.ps1) 添加靜態路由
 
-详细的操作步骤可以参考 [这里](https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/live/virtualization/windowscontainers/kubernetes/getting-started-kubernetes-windows.md)。
+詳細的操作步驟可以參考 [這裡](https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/live/virtualization/windowscontainers/kubernetes/getting-started-kubernetes-windows.md)。
 
-## 运行 Windows 容器
+## 運行 Windows 容器
 
-使用 NodeSelector  `beta.kubernetes.io/os: windows` 将容器调度到 Windows 节点上，比如
+使用 NodeSelector  `beta.kubernetes.io/os: windows` 將容器調度到 Windows 節點上，比如
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -278,7 +278,7 @@ spec:
   type: NodePort
 ```
 
-运行 DaemonSet
+運行 DaemonSet
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -300,15 +300,15 @@ spec:
         beta.kubernetes.io/os: windows
 ```
 
-## 已知问题
+## 已知問題
 
-### Secrets 和 ConfigMaps 只能以环境变量的方式使用
+### Secrets 和 ConfigMaps 只能以環境變量的方式使用
 
-1709和更早版本有这个问题，升级到 1803 即可解决。
+1709和更早版本有這個問題，升級到 1803 即可解決。
 
-### Volume 支持情况
+### Volume 支持情況
 
-Windows 容器暂时只支持 local、emptyDir、hostPath、AzureDisk、AzureFile 以及 flexvolume。注意 Volume 的路径格式需要为 `mountPath: "C:\\etc\\foo"` 或者 `mountPath: "C:/etc/foo"`。
+Windows 容器暫時只支持 local、emptyDir、hostPath、AzureDisk、AzureFile 以及 flexvolume。注意 Volume 的路徑格式需要為 `mountPath: "C:\\etc\\foo"` 或者 `mountPath: "C:/etc/foo"`。
 
 ```yaml
 apiVersion: v1
@@ -358,19 +358,19 @@ spec:
     beta.kubernetes.io/os: windows
 ```
 
-### 镜像版本匹配问题
+### 鏡像版本匹配問題
 
-在 `Windows Server version 1709` 中必须使用带有 1709 标签的镜像，如
+在 `Windows Server version 1709` 中必須使用帶有 1709 標籤的鏡像，如
 
 - microsoft/aspnet:4.7.1-windowsservercore-1709
 - microsoft/windowsservercore:1709
 - microsoft/iis:windowsservercore-1709
 
-同样，在 `Windows Server version 1803` 中必须使用带有 1803 标签的镜像。而在 `Windows Server 2016` 上需要使用带有 ltsc2016 标签的镜像，如 `microsoft/windowsservercore:ltsc2016`。
+同樣，在 `Windows Server version 1803` 中必須使用帶有 1803 標籤的鏡像。而在 `Windows Server 2016` 上需要使用帶有 ltsc2016 標籤的鏡像，如 `microsoft/windowsservercore:ltsc2016`。
 
-## 设置 CPU 和内存
+## 設置 CPU 和內存
 
-从 v1.10 开始，Kubernetes 支持给 Windows 容器设置 CPU 和内存：
+從 v1.10 開始，Kubernetes 支持給 Windows 容器設置 CPU 和內存：
 
 ```yaml
 apiVersion: apps/v1
@@ -397,7 +397,7 @@ spec:
 
 ## Hyper-V 容器
 
-从 v1.10 开始支持 Hyper-V 隔离的容器（Alpha）。 在使用之前，需要配置 kubelet 开启 `HyperVContainer` 特性开关。然后使用 Annotation `experimental.windows.kubernetes.io/isolation-type=hyperv` 来指定容器使用 Hyper-V 隔离:
+從 v1.10 開始支持 Hyper-V 隔離的容器（Alpha）。 在使用之前，需要配置 kubelet 開啟 `HyperVContainer` 特性開關。然後使用 Annotation `experimental.windows.kubernetes.io/isolation-type=hyperv` 來指定容器使用 Hyper-V 隔離:
 
 ```yaml
 apiVersion: apps/v1
@@ -420,21 +420,21 @@ spec:
         - containerPort: 80
 ```
 
-### 其他已知问题
+### 其他已知問題
 
-- 仅  Windows Server 1709 或更新的版本才支持在 Pod 内运行多个容器（仅支持 Process 隔离）
-- 暂不支持 StatefulSet
-- 暂不支持 Windows Server Container Pods 的自动扩展（Horizontal Pod Autoscaling）
-- Windows 容器的 OS 版本需要与 Host OS 版本匹配，否则容器无法启动
-- 使用 L3 或者 Host GW 网络时，无法从 Windows Node 中直接访问 Kubernetes Services（使用 OVS/OVN 时没有这个问题）
-- 在 VMWare Fusion 的 Window Server 中 kubelet.exe 可能会无法启动（已在 [#57124](https://github.com/kubernetes/kubernetes/pull/57124) 中修复）
-- 暂不支持 Weave 网络插件
-- Calico 网络插件仅支持 Policy-Only 模式
-- 对于需要使用 `:` 作为环境变量的 .NET 容器，可以将环境变量中的 `:` 替换为 `__`（参考 [这里](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration#configuration-by-environment)）
+- 僅  Windows Server 1709 或更新的版本才支持在 Pod 內運行多個容器（僅支持 Process 隔離）
+- 暫不支持 StatefulSet
+- 暫不支持 Windows Server Container Pods 的自動擴展（Horizontal Pod Autoscaling）
+- Windows 容器的 OS 版本需要與 Host OS 版本匹配，否則容器無法啟動
+- 使用 L3 或者 Host GW 網絡時，無法從 Windows Node 中直接訪問 Kubernetes Services（使用 OVS/OVN 時沒有這個問題）
+- 在 VMWare Fusion 的 Window Server 中 kubelet.exe 可能會無法啟動（已在 [#57124](https://github.com/kubernetes/kubernetes/pull/57124) 中修復）
+- 暫不支持 Weave 網絡插件
+- Calico 網絡插件僅支持 Policy-Only 模式
+- 對於需要使用 `:` 作為環境變量的 .NET 容器，可以將環境變量中的 `:` 替換為 `__`（參考 [這裡](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration#configuration-by-environment)）
 
-## 附录：Docker EE 安装方法
+## 附錄：Docker EE 安裝方法
 
-安装 Docker EE 稳定版本
+安裝 Docker EE 穩定版本
 
 ```powershell
 Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
@@ -442,14 +442,14 @@ Install-Package -Name docker -ProviderName DockerMsftProvider
 Restart-Computer -Force
 ```
 
-安装 Docker EE 预览版本
+安裝 Docker EE 預覽版本
 
 ```powershell
 Install-Module DockerProvider
 Install-Package -Name Docker -ProviderName DockerProvider -RequiredVersion preview
 ```
 
-升级 Docker EE 版本
+升級 Docker EE 版本
 
 ```powershell
 # Check the installed version
@@ -463,7 +463,7 @@ Install-Package -Name Docker -ProviderName DockerMsftProvider -Update -Force
 Start-Service Docker
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Guide for adding Windows Nodes in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-nodes/)
 - [Intro to Windows support in Kubernetes](https://kubernetes.io/docs/setup/production-environment/windows/intro-windows-in-kubernetes/)

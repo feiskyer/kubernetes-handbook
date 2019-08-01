@@ -1,11 +1,11 @@
 # Weave Net
 
-Weave Net是一个多主机容器网络方案，支持去中心化的控制平面，各个host上的wRouter间通过建立Full Mesh的TCP链接，并通过Gossip来同步控制信息。这种方式省去了集中式的K/V Store，能够在一定程度上减低部署的复杂性，Weave将其称为“data centric”，而非RAFT或者Paxos的“algorithm centric”。
+Weave Net是一個多主機容器網絡方案，支持去中心化的控制平面，各個host上的wRouter間通過建立Full Mesh的TCP鏈接，並通過Gossip來同步控制信息。這種方式省去了集中式的K/V Store，能夠在一定程度上減低部署的複雜性，Weave將其稱為“data centric”，而非RAFT或者Paxos的“algorithm centric”。
 
-数据平面上，Weave通过UDP封装实现L2 Overlay，封装支持两种模式：
+數據平面上，Weave通過UDP封裝實現L2 Overlay，封裝支持兩種模式：
 
-- 运行在user space的sleeve mode：通过pcap设备在Linux bridge上截获数据包并由wRouter完成UDP封装，支持对L2 traffic进行加密，还支持Partial Connection，但是性能损失明显。
-- 运行在kernal space的 fastpath mode：即通过OVS的odp封装VxLAN并完成转发，wRouter不直接参与转发，而是通过下发odp 流表的方式控制转发，这种方式可以明显地提升吞吐量，但是不支持加密等高级功能。
+- 運行在user space的sleeve mode：通過pcap設備在Linux bridge上截獲數據包並由wRouter完成UDP封裝，支持對L2 traffic進行加密，還支持Partial Connection，但是性能損失明顯。
+- 運行在kernal space的 fastpath mode：即通過OVS的odp封裝VxLAN並完成轉發，wRouter不直接參與轉發，而是通過下發odp 流表的方式控制轉發，這種方式可以明顯地提升吞吐量，但是不支持加密等高級功能。
 
 Sleeve Mode:
 
@@ -15,11 +15,11 @@ Fastpath Mode:
 
 ![](2.png)
 
-关于Service的发布，weave做的也比较完整。首先，wRouter集成了DNS功能，能够动态地进行服务发现和负载均衡，另外，与libnetwork 的overlay driver类似，weave要求每个POD有两个网卡，一个就连在lb/ovs上处理L2 流量，另一个则连在docker0上处理Service流量，docker0后面仍然是iptables作NAT。
+關於Service的發佈，weave做的也比較完整。首先，wRouter集成了DNS功能，能夠動態地進行服務發現和負載均衡，另外，與libnetwork 的overlay driver類似，weave要求每個POD有兩個網卡，一個就連在lb/ovs上處理L2 流量，另一個則連在docker0上處理Service流量，docker0後面仍然是iptables作NAT。
 
 ![](3.png)
 
-Weave已经集成了主流的容器系统
+Weave已經集成了主流的容器系統
 
 - Docker: https://www.weave.works/docs/net/latest/plugin/
 - Kubernetes: https://www.weave.works/docs/net/latest/kube-addon/
@@ -33,7 +33,7 @@ Weave已经集成了主流的容器系统
 kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 ```
 
-这会在所有Node上启动Weave插件以及Network policy controller：
+這會在所有Node上啟動Weave插件以及Network policy controller：
 
 ```sh
 $ ps -ef | grep weave | grep -v grep
@@ -42,20 +42,20 @@ root     25204 25147  0 16:22 ?        00:00:00 /home/weave/weaver --port=6783 -
 root     25669 25654  0 16:22 ?        00:00:00 /usr/bin/weave-npc
 ```
 
-这样，容器网络为
+這樣，容器網絡為
 
-- 所有容器都连接到weave网桥
-- weave网桥通过veth pair连到内核的openvswitch模块
-- 跨主机容器通过openvswitch vxlan通信
-- policy controller通过配置iptables规则为容器设置网络策略
+- 所有容器都連接到weave網橋
+- weave網橋通過veth pair連到內核的openvswitch模塊
+- 跨主機容器通過openvswitch vxlan通信
+- policy controller通過配置iptables規則為容器設置網絡策略
 
 ![](weave-flow.png)
 
 ## Weave Scope
 
-Weave Scope是一个容器监控和故障排查工具，可以方便的生成整个集群的拓扑并智能分组（Automatic Topologies and Intelligent Grouping）。
+Weave Scope是一個容器監控和故障排查工具，可以方便的生成整個集群的拓撲並智能分組（Automatic Topologies and Intelligent Grouping）。
 
-Weave Scope主要由scope-probe和scope-app组成
+Weave Scope主要由scope-probe和scope-app組成
 
 ```
 +--Docker host----------+
@@ -74,20 +74,20 @@ Weave Scope主要由scope-probe和scope-app组成
 +-----------------------+
 ```
 
-## 优点
+## 優點
 
 - 去中心化
-- 故障自动恢复
+- 故障自動恢復
 - 加密通信
 - Multicast networking
 
-## 缺点
+## 缺點
 
-- UDP模式性能损失较大
+- UDP模式性能損失較大
 
 
 
-**参考文档**
+**參考文檔**
 
 - <https://github.com/weaveworks/weave>
 - <https://www.weave.works/products/weave-net/>

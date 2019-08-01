@@ -1,6 +1,6 @@
-# 特性开关
+# 特性開關
 
-特性开关（Feature Gates）是 Kubernetes 中用来开启实验性功能的配置，可以通过选项 `--feature-gates` 来给不同的组件（如 kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、kube-proxy等）开启功能特性。
+特性開關（Feature Gates）是 Kubernetes 中用來開啟實驗性功能的配置，可以通過選項 `--feature-gates` 來給不同的組件（如 kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、kube-proxy等）開啟功能特性。
 
 | Feature                                   | Default | Stage      | Since | Until |
 | ----------------------------------------- | ------- | ---------- | ----- | ----- |
@@ -95,6 +95,6 @@
 | `VolumeSubpathEnvExpansion`               | `false` | Alpha      | 1.11  |       |
 | `ScheduleDaemonSetPods`                   | `true`  | Beta       | 1.12  |       |
 
-## 参考文档
+## 參考文檔
 
 - [Kubernetes Feature Gates](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)

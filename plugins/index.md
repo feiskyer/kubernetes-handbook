@@ -1,3 +1,3 @@
 # Kubernetes插件
 
-Kubernetes在设计之初就充分考虑了[可扩展性](https://kubernetes.io/docs/concepts/overview/extending/)，很多资源或操作都可以通过插件来[自由扩展](https://kubernetes.io/docs/concepts/overview/extending/)，比如认证授权、网络、Volume、容器执行引擎、调度等。
+Kubernetes在設計之初就充分考慮了[可擴展性](https://kubernetes.io/docs/concepts/overview/extending/)，很多資源或操作都可以通過插件來[自由擴展](https://kubernetes.io/docs/concepts/overview/extending/)，比如認證授權、網絡、Volume、容器執行引擎、調度等。

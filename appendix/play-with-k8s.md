@@ -1,10 +1,10 @@
 # Play with Kubernetes
 
-[Play with Kubernetes](http://play-with-k8s.com)提供了一个免费的Kubernets体验环境，每次创建的集群最长可以使用4小时。
+[Play with Kubernetes](http://play-with-k8s.com)提供了一個免費的Kubernets體驗環境，每次創建的集群最長可以使用4小時。
 
 ## 集群初始化
 
-打开[play-with-k8s.com](http://play-with-k8s.com)，点击"ADD NEW INSTANCE"，并在新INSTANCE（名字为node1）的TERMINAL中初始化kubernetes master：
+打開[play-with-k8s.com](http://play-with-k8s.com)，點擊"ADD NEW INSTANCE"，並在新INSTANCE（名字為node1）的TERMINAL中初始化kubernetes master：
 
 ```sh
 $ kubeadm init --apiserver-advertise-address $(hostname -i)
@@ -54,7 +54,7 @@ Warning: kubectl apply should be used on resource created by either kubectl crea
 daemonset "kube-proxy" configured
 ```
 
-> 注意：记住输出中的`kubeadm join --token 35e301.77277e7cafee013c 10.0.1.3:6443`命令，后面会用来添加新的节点。
+> 注意：記住輸出中的`kubeadm join --token 35e301.77277e7cafee013c 10.0.1.3:6443`命令，後面會用來添加新的節點。
 
 ## 配置kubectl
 
@@ -64,26 +64,26 @@ cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-## 初始化网络
+## 初始化網絡
 
 ```sh
 kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 ```
 
-## 创建Dashboard
+## 創建Dashboard
 
 ```sh
 curl -L -s https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml  | sed 's/targetPort: 9090/targetPort: 9090\n  type: LoadBalancer/' | kubectl apply -f -
 ```
 
-稍等一会，在页面上方会显示Dashborad服务的端口号，点击端口号就可以访问Dashboard页面。
+稍等一會，在頁面上方會顯示Dashborad服務的端口號，點擊端口號就可以訪問Dashboard頁面。
 
-## 添加新的节点
+## 添加新的節點
 
-点击"ADD NEW INSTANCE"，并在新INSTANCE的TERMINAL中输入前面第一步记住的`kubeadm join`命令，如
+點擊"ADD NEW INSTANCE"，並在新INSTANCE的TERMINAL中輸入前面第一步記住的`kubeadm join`命令，如
 
 ```sh
 kubeadm join --token 35e301.77277e7cafee013c 10.0.1.3:6443
 ```
 
-回到node1的TERMINAL，输入`kubectl get node`即可查看所有Node的状态。等所有Node状态都变成Ready后，整个Kubernetes集群都搭建好了。
+回到node1的TERMINAL，輸入`kubectl get node`即可查看所有Node的狀態。等所有Node狀態都變成Ready後，整個Kubernetes集群都搭建好了。

@@ -1,34 +1,34 @@
 # 容器安全
 
-从安全的角度来看，Kubernetes 中包含如下图所示的潜在攻击面：
+從安全的角度來看，Kubernetes 中包含如下圖所示的潛在攻擊面：
 
 ![](images/attach-vectors.png)
 
-（图片来自《Kubernetes Security - Operating Kubernetes Clusters and Applications Safely》）
+（圖片來自《Kubernetes Security - Operating Kubernetes Clusters and Applications Safely》）
 
-为了保证集群以及容器应用的安全，Kubernetes 提供了多种安全机制，限制容器的行为，减少容器和集群的攻击面，保证整个系统的安全性。
+為了保證集群以及容器應用的安全，Kubernetes 提供了多種安全機制，限制容器的行為，減少容器和集群的攻擊面，保證整個系統的安全性。
 
-- 集群安全，比如组件（如 kube-apiserver、etcd、kubelet 等）只开放安全 API并开启 TLS 认证、开启 RBAC 等；
-- Security Context：限制容器的行为，包括 Capabilities、ReadOnlyRootFilesystem、Privileged、RunAsNonRoot、RunAsUser 以及 SELinuxOptions 等；
-- Pod Security Policy：集群级的 Pod 安全策略，自动为集群内的 Pod 和 Volume 设置 Security Context；
-- Sysctls：允许容器设置内核参数，分为安全 Sysctls 和非安全 Sysctls；
-- AppArmor：限制应用的访问权限；
-- Network Policies：精细控制容器应用和集群中的网络访问；
-- Seccomp：Secure computing mode 的缩写，限制容器应用可执行的系统调用。
+- 集群安全，比如組件（如 kube-apiserver、etcd、kubelet 等）只開放安全 API並開啟 TLS 認證、開啟 RBAC 等；
+- Security Context：限制容器的行為，包括 Capabilities、ReadOnlyRootFilesystem、Privileged、RunAsNonRoot、RunAsUser 以及 SELinuxOptions 等；
+- Pod Security Policy：集群級的 Pod 安全策略，自動為集群內的 Pod 和 Volume 設置 Security Context；
+- Sysctls：允許容器設置內核參數，分為安全 Sysctls 和非安全 Sysctls；
+- AppArmor：限制應用的訪問權限；
+- Network Policies：精細控制容器應用和集群中的網絡訪問；
+- Seccomp：Secure computing mode 的縮寫，限制容器應用可執行的系統調用。
 
-除此之外，推荐尽量使用较新版本的 Kubernetes，因为它们通常会包含常见安全问题的修复。你可以参考 [kubernetes-announce](https://groups.google.com/forum/#!forum/kubernetes-announce) 来查询最新的 Kubernetes 发布情况，也可以参考 [cvedetails.com](https://www.cvedetails.com/version-list/15867/34016/1/Kubernetes-Kubernetes.html) 查询 Kubernetes 各个版本的 CVE (Common Vulnerabilities and Exposures) 列表。
+除此之外，推薦儘量使用較新版本的 Kubernetes，因為它們通常會包含常見安全問題的修復。你可以參考 [kubernetes-announce](https://groups.google.com/forum/#!forum/kubernetes-announce) 來查詢最新的 Kubernetes 發佈情況，也可以參考 [cvedetails.com](https://www.cvedetails.com/version-list/15867/34016/1/Kubernetes-Kubernetes.html) 查詢 Kubernetes 各個版本的 CVE (Common Vulnerabilities and Exposures) 列表。
 
 ## 集群安全
 
-- Kubernetes 组件（如 kube-apiserver、etcd、kubelet 等）只开放安全 API 并开启 TLS 认证。
-- 开启 RBAC 授权，赋予容器应用最小权限，并开启 NodeRestriction 准入控制（限制 Kubelet 权限）。
-  - RBAC 规则过多或者无法满足实际需要时，推荐使用 [Open Policy Agent (OPA)](https://www.openpolicyagent.org/) 配置更灵活的访问策略
-- 开启 Secret 加密存储（Secret Encryption），并配置 etcd 的 TLS 认证；
-- 禁止 Kubelet 的匿名访问和只读端口，开启 Kubelet 的证书轮替更新（Certificate Rotation）。
-- 禁止默认 ServiceAccount 的 automountServiceAccountToken，并在需要时创建容器应用的专用 ServiceAccount。
-- 禁止 Dashboard 的匿名访问，通过 RBAC 限制 Dashboard 的访问权限，并确保 Dashboard 仅可在内网访问（通过 kubectl proxy）。
-- 定期运行 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)，确保集群的配置或更新符合最佳的安全实践（使用 [kube-bench](https://github.com/aquasecurity/kube-bench) 和 [kube-hunter](https://github.com/aquasecurity/kube-hunter)）。
-- 在多租户场景中，还可以使用 Kata Containers、gVisor 等对容器进程进行强隔离，或者使用 Istio、Linkerd 等对容器应用之间的通信也进行自动加密。
+- Kubernetes 組件（如 kube-apiserver、etcd、kubelet 等）只開放安全 API 並開啟 TLS 認證。
+- 開啟 RBAC 授權，賦予容器應用最小權限，並開啟 NodeRestriction 准入控制（限制 Kubelet 權限）。
+  - RBAC 規則過多或者無法滿足實際需要時，推薦使用 [Open Policy Agent (OPA)](https://www.openpolicyagent.org/) 配置更靈活的訪問策略
+- 開啟 Secret 加密存儲（Secret Encryption），並配置 etcd 的 TLS 認證；
+- 禁止 Kubelet 的匿名訪問和只讀端口，開啟 Kubelet 的證書輪替更新（Certificate Rotation）。
+- 禁止默認 ServiceAccount 的 automountServiceAccountToken，並在需要時創建容器應用的專用 ServiceAccount。
+- 禁止 Dashboard 的匿名訪問，通過 RBAC 限制 Dashboard 的訪問權限，並確保 Dashboard 僅可在內網訪問（通過 kubectl proxy）。
+- 定期運行 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)，確保集群的配置或更新符合最佳的安全實踐（使用 [kube-bench](https://github.com/aquasecurity/kube-bench) 和 [kube-hunter](https://github.com/aquasecurity/kube-hunter)）。
+- 在多租戶場景中，還可以使用 Kata Containers、gVisor 等對容器進程進行強隔離，或者使用 Istio、Linkerd 等對容器應用之間的通信也進行自動加密。
 
 ## Security Context 和 Pod Security Policy
 
@@ -84,19 +84,19 @@ spec:
   readOnlyRootFilesystem: false
 ```
 
-完整参考见[这里](../concepts/security-context.md)。
+完整參考見[這裡](../concepts/security-context.md)。
 
 ## Sysctls
 
-Sysctls 允许容器设置内核参数，分为安全 Sysctls 和非安全 Sysctls
+Sysctls 允許容器設置內核參數，分為安全 Sysctls 和非安全 Sysctls
 
-- 安全 Sysctls：即设置后不影响其他 Pod 的内核选项，只作用在容器 namespace 中，默认开启。包括以下几种
+- 安全 Sysctls：即設置後不影響其他 Pod 的內核選項，只作用在容器 namespace 中，默認開啟。包括以下幾種
   - `kernel.shm_rmid_forced`
   - `net.ipv4.ip_local_port_range`
   - `net.ipv4.tcp_syncookies`
-- 非安全 Sysctls：即设置好有可能影响其他 Pod 和 Node 上其他服务的内核选项，默认禁止。如果使用，需要管理员在配置 kubelet 时开启，如 `kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,net.ipv4.route.min_pmtu'`
+- 非安全 Sysctls：即設置好有可能影響其他 Pod 和 Node 上其他服務的內核選項，默認禁止。如果使用，需要管理員在配置 kubelet 時開啟，如 `kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,net.ipv4.route.min_pmtu'`
 
-Sysctls 在 v1.11 升级为 Beta 版，可以通过 PSP spec 直接设置，如
+Sysctls 在 v1.11 升級為 Beta 版，可以通過 PSP spec 直接設置，如
 
 ```yaml
 apiVersion: policy/v1beta1
@@ -110,7 +110,7 @@ spec:
   - kernel.shm_rmid_forced
 ```
 
-而 v1.10 及更早版本则为 Alpha 阶段，需要通过 Pod annotation 设置，如：
+而 v1.10 及更早版本則為 Alpha 階段，需要通過 Pod annotation 設置，如：
 
 ```yaml
 apiVersion: v1
@@ -126,20 +126,20 @@ spec:
 
 ## AppArmor
 
-[AppArmor(Application Armor)](http://wiki.apparmor.net/index.php/AppArmor_Core_Policy_Reference) 是 Linux 内核的一个安全模块，允许系统管理员将每个程序与一个安全配置文件关联，从而限制程序的功能。通过它你可以指定程序可以读、写或运行哪些文件，是否可以打开网络端口等。作为对传统 Unix 的自主访问控制模块的补充，AppArmor 提供了强制访问控制机制。
+[AppArmor(Application Armor)](http://wiki.apparmor.net/index.php/AppArmor_Core_Policy_Reference) 是 Linux 內核的一個安全模塊，允許系統管理員將每個程序與一個安全配置文件關聯，從而限制程序的功能。通過它你可以指定程序可以讀、寫或運行哪些文件，是否可以打開網絡端口等。作為對傳統 Unix 的自主訪問控制模塊的補充，AppArmor 提供了強制訪問控制機制。
 
 在使用 AppArmor 之前需要注意
 
 - Kubernetes 版本 >=v1.4
-- apiserver 和 kubelet 已开启 AppArmor 特性，`--feature-gates=AppArmor=true`
-- 已开启 apparmor 内核模块，通过 `cat /sys/module/apparmor/parameters/enabled` 查看
-- 仅支持 docker container runtime
-- AppArmor profile 已经加载到内核，通过 `cat /sys/kernel/security/apparmor/profiles` 查看
+- apiserver 和 kubelet 已開啟 AppArmor 特性，`--feature-gates=AppArmor=true`
+- 已開啟 apparmor 內核模塊，通過 `cat /sys/module/apparmor/parameters/enabled` 查看
+- 僅支持 docker container runtime
+- AppArmor profile 已經加載到內核，通過 `cat /sys/kernel/security/apparmor/profiles` 查看
 
-AppArmor 还在 alpha 阶段，需要通过 Pod annotation `container.apparmor.security.beta.kubernetes.io/<container_name>` 来设置。可选的值包括
+AppArmor 還在 alpha 階段，需要通過 Pod annotation `container.apparmor.security.beta.kubernetes.io/<container_name>` 來設置。可選的值包括
 
-- `runtime/default`: 使用 Container Runtime 的默认配置
-- `localhost/<profile_name>`: 使用已加载到内核的 AppArmor profile
+- `runtime/default`: 使用 Container Runtime 的默認配置
+- `localhost/<profile_name>`: 使用已加載到內核的 AppArmor profile
 
 ```sh
 $ sudo apparmor_parser -q <<EOF
@@ -180,9 +180,9 @@ error: error executing remote command: command terminated with non-zero exit cod
 
 ## Seccomp
 
-[Seccomp](https://www.kernel.org/doc/Documentation/prctl/seccomp_filter.txt) 是 Secure computing mode 的缩写，它是 Linux 内核提供的一个操作，用于限制一个进程可以执行的系统调用．Seccomp 需要有一个配置文件来指明容器进程允许和禁止执行的系统调用。
+[Seccomp](https://www.kernel.org/doc/Documentation/prctl/seccomp_filter.txt) 是 Secure computing mode 的縮寫，它是 Linux 內核提供的一個操作，用於限制一個進程可以執行的系統調用．Seccomp 需要有一個配置文件來指明容器進程允許和禁止執行的系統調用。
 
-在 Kubernetes 中，需要将 seccomp 配置文件放到 `/var/lib/kubelet/seccomp` 目录中（可以通过 kubelet 选项 `--seccomp-profile-root` 修改）。比如禁止 chmod 的格式为
+在 Kubernetes 中，需要將 seccomp 配置文件放到 `/var/lib/kubelet/seccomp` 目錄中（可以通過 kubelet 選項 `--seccomp-profile-root` 修改）。比如禁止 chmod 的格式為
 
 ```sh
 $ cat /var/lib/kubelet/seccomp/chmod.json
@@ -197,18 +197,18 @@ $ cat /var/lib/kubelet/seccomp/chmod.json
 }
 ```
 
-Seccomp 还在 alpha 阶段，需要通过 Pod annotation 设置，包括
+Seccomp 還在 alpha 階段，需要通過 Pod annotation 設置，包括
 
-- `security.alpha.kubernetes.io/seccomp/pod`：应用到该 Pod 的所有容器
-- `security.alpha.kubernetes.io/seccomp/container/<container name>`：应用到指定容器
+- `security.alpha.kubernetes.io/seccomp/pod`：應用到該 Pod 的所有容器
+- `security.alpha.kubernetes.io/seccomp/container/<container name>`：應用到指定容器
 
-而 value 有三个选项
+而 value 有三個選項
 
-- `runtime/default`: 使用 Container Runtime 的默认配置
-- `unconfined`: 允许所有系统调用
-- `localhost/<profile-name>`: 使用 Node 本地安装的 seccomp，需要放到 `/var/lib/kubelet/seccomp` 目录中
+- `runtime/default`: 使用 Container Runtime 的默認配置
+- `unconfined`: 允許所有系統調用
+- `localhost/<profile-name>`: 使用 Node 本地安裝的 seccomp，需要放到 `/var/lib/kubelet/seccomp` 目錄中
 
-比如使用刚才创建的 seccomp 配置：
+比如使用剛才創建的 seccomp 配置：
 
 ```yaml
 apiVersion: v1
@@ -225,18 +225,18 @@ spec:
 
 ## kube-bench
 
-[kube-bench](https://github.com/aquasecurity/kube-bench) 提供了一个简单的工具来检查 Kubernetes 的配置（包括 master 和 node）是否符合最佳的安全实践（基于 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)）。
+[kube-bench](https://github.com/aquasecurity/kube-bench) 提供了一個簡單的工具來檢查 Kubernetes 的配置（包括 master 和 node）是否符合最佳的安全實踐（基於 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)）。
 
-**推荐所有生产环境的 Kubernetes 集群定期运行 kube-bench，保证集群配置符合最佳的安全实践。**
+**推薦所有生產環境的 Kubernetes 集群定期運行 kube-bench，保證集群配置符合最佳的安全實踐。**
 
-安装 `kube-bench`：
+安裝 `kube-bench`：
 
 ```sh
 $ docker run --rm -v `pwd`:/host aquasec/kube-bench:latest install
 $ ./kube-bench <master|node>
 ```
 
-当然，kube-bench 也可以直接在容器内运行，比如通常对 Master 和 Node 的检查命令分别为：
+當然，kube-bench 也可以直接在容器內運行，比如通常對 Master 和 Node 的檢查命令分別為：
 
 ```sh
 $ kubectl apply -f https://github.com/feiskyer/kubernetes-handbook/raw/master/examples/job-master.yaml
@@ -258,11 +258,11 @@ $ kubectl logs kube-bench-master-k7jdd
 ...
 ```
 
-## 镜像安全
+## 鏡像安全
 
-[Clair](https://github.com/coreos/clair/) 是 CoreOS 开源的容器安全工具，用来静态分析镜像中潜在的安全问题。推荐将 Clair 集成到 Devops 流程中，自动对所有镜像进行安全扫描。
+[Clair](https://github.com/coreos/clair/) 是 CoreOS 開源的容器安全工具，用來靜態分析鏡像中潛在的安全問題。推薦將 Clair 集成到 Devops 流程中，自動對所有鏡像進行安全掃描。
 
-安装 Clair 的方法为：
+安裝 Clair 的方法為：
 
 ```sh
 git clone https://github.com/coreos/clair
@@ -271,7 +271,7 @@ helm dependency update clair
 helm install clair
 ```
 
-Clair 项目本身只提供了 API，在实际使用中还需要一个[客户端（或集成Clair的服务）](https://github.com/coreos/clair/blob/master/Documentation/integrations.md)配合使用。比如，使用 [reg](https://github.com/genuinetools/reg) 的方法为
+Clair 項目本身只提供了 API，在實際使用中還需要一個[客戶端（或集成Clair的服務）](https://github.com/coreos/clair/blob/master/Documentation/integrations.md)配合使用。比如，使用 [reg](https://github.com/genuinetools/reg) 的方法為
 
 ```sh
 # Install
@@ -284,7 +284,7 @@ $ reg vulns --clair https://clair.j3ss.co r.j3ss.co/chrome
 $ $ reg server --clair https://clair.j3ss.co
 ```
 
-其他镜像安全扫描工具还有：
+其他鏡像安全掃描工具還有：
 
 - [National Vulnerability Database](https://nvd.nist.gov/)
 - [OpenSCAP tools](https://www.open-scap.org/tools/)
@@ -302,11 +302,11 @@ $ $ reg server --clair https://clair.j3ss.co
 
 ## 其他安全工具
 
-开源产品：
+開源產品：
 
-- [falco](https://github.com/falcosecurity/falco)：容器运行时安全行为监控工具。
-- [docker-bench-security](https://github.com/docker/docker-bench-security)：Docker 环境安全检查工具。
-- [kube-hunter](https://github.com/aquasecurity/kube-hunter)：Kubernetes 集群渗透测试工具。
+- [falco](https://github.com/falcosecurity/falco)：容器運行時安全行為監控工具。
+- [docker-bench-security](https://github.com/docker/docker-bench-security)：Docker 環境安全檢查工具。
+- [kube-hunter](https://github.com/aquasecurity/kube-hunter)：Kubernetes 集群滲透測試工具。
 - <https://github.com/shyiko/kubesec>
 - [Istio](https://istio.io/)
 - [Linkerd](https://linkerd.io/)
@@ -318,14 +318,14 @@ $ $ reg server --clair https://clair.j3ss.co
 - [SPIFFE](https://spiffe.io/)
 - [Open Policy Agent](https://www.openpolicyagent.org/)
 
-商业产品
+商業產品
 
 - [Twistlock](https://www.twistlock.com/)
 - [Aqua Container Security Platform](https://www.aquasec.com/)
 - [Sysdig Secure](https://sysdig.com/products/secure/)
 - [Neuvector](https://neuvector.com/)
 
-## 参考文档
+## 參考文檔
 
 - [Securing a Kubernetes cluster](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/)
 - [kube-bench](https://github.com/aquasecurity/kube-bench)

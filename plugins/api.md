@@ -1,22 +1,22 @@
-# API 扩展
+# API 擴展
 
-Kubernetes 的架构非常灵活，提供了从 API、认证授权、准入控制、网络、存储、运行时以及云平台等一系列的[扩展机制](https://kubernetes.io/docs/concepts/extend-kubernetes/extend-cluster/)，方便用户无侵入的扩展集群的功能。
+Kubernetes 的架構非常靈活，提供了從 API、認證授權、准入控制、網絡、存儲、運行時以及雲平臺等一系列的[擴展機制](https://kubernetes.io/docs/concepts/extend-kubernetes/extend-cluster/)，方便用戶無侵入的擴展集群的功能。
 
-从 API 的角度来说，可以通过 Aggregation 和 CustomResourceDefinition（CRD） 等扩展 Kubernetes API。
+從 API 的角度來說，可以通過 Aggregation 和 CustomResourceDefinition（CRD） 等擴展 Kubernetes API。
 
-- API Aggregation 允许在不修改 Kubernetes 核心代码的同时将第三方服务注册到 Kubernetes API 中，这样就可以通过 Kubernetes API 来访问外部服务。
-- CustomResourceDefinition 则可以在集群中新增资源对象，并可以与已有资源对象（如 Pod、Deployment 等）相同的方式来管理它们。
+- API Aggregation 允許在不修改 Kubernetes 核心代碼的同時將第三方服務註冊到 Kubernetes API 中，這樣就可以通過 Kubernetes API 來訪問外部服務。
+- CustomResourceDefinition 則可以在集群中新增資源對象，並可以與已有資源對象（如 Pod、Deployment 等）相同的方式來管理它們。
 
-CRD 相比 Aggregation 更易用，两者对比如下
+CRD 相比 Aggregation 更易用，兩者對比如下
 
 | CRDs | Aggregated API |
 | --------- | --------- |
-| 无需编程即可使用 CRD 管理资源 | 需要使用 Go 来构建 Aggregated APIserver |
-| 不需要运行额外服务，但一般需要一个 CRD 控制器同步和管理这些资源 | 需要独立的第三方服务 |
-| 任何缺陷都会在 Kubernetes 核心中修复 | 可能需要定期从 Kubernetes 社区同步缺陷修复方法并重新构建 Aggregated APIserver. |
-| 无需额外管理版本 | 需要第三方服务来管理版本 |
+| 無需編程即可使用 CRD 管理資源 | 需要使用 Go 來構建 Aggregated APIserver |
+| 不需要運行額外服務，但一般需要一個 CRD 控制器同步和管理這些資源 | 需要獨立的第三方服務 |
+| 任何缺陷都會在 Kubernetes 核心中修復 | 可能需要定期從 Kubernetes 社區同步缺陷修復方法並重新構建 Aggregated APIserver. |
+| 無需額外管理版本 | 需要第三方服務來管理版本 |
 
-更多的特性对比
+更多的特性對比
 
 | Feature | Description | CRDs | Aggregated API |
 | --------------------- | --------- | --------- | -------------- |
@@ -34,7 +34,7 @@ CRD 相比 Aggregation 更易用，两者对比如下
 
 ## 使用方法
 
-详细的使用方法请参考
+詳細的使用方法請參考
 
 - [Aggregation](aggregation.md)
 - [CustomResourceDefinition](../concepts/customresourcedefinition.md)

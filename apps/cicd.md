@@ -1,6 +1,6 @@
 # CI/CD
 
-本章介绍如何基于 Kubernetes 构建持续集成和持续部署。
+本章介紹如何基於 Kubernetes 構建持續集成和持續部署。
 
 - [Jenkins X](jenkinsx.md)
 - [Spinnaker](spinnaker.md)

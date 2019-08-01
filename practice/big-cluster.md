@@ -1,37 +1,37 @@
-# Kubernetes 大规模集群
+# Kubernetes 大規模集群
 
-Kubernetes v1.6-v1.11 单集群最大支持 5000 个节点，也就是说 Kubernetes 最新稳定版的单个集群支持
+Kubernetes v1.6-v1.11 單集群最大支持 5000 個節點，也就是說 Kubernetes 最新穩定版的單個集群支持
 
-* 不超过 5000 个节点
-* 不超过 150000 个 Pod
-* 不超过 300000 个容器
-* 每台 Node 上不超过 100 个 Pod
+* 不超過 5000 個節點
+* 不超過 150000 個 Pod
+* 不超過 300000 個容器
+* 每臺 Node 上不超過 100 個 Pod
 
-## 公有云配额
+## 公有云配額
 
-对于公有云上的 Kubernetes 集群，规模大了之后很容器碰到配额问题，需要提前在云平台上增大配额。这些需要增大的配额包括
+對於公有云上的 Kubernetes 集群，規模大了之後很容器碰到配額問題，需要提前在雲平臺上增大配額。這些需要增大的配額包括
 
-* 虚拟机个数
-* vCPU 个数
-* 内网 IP 地址个数
-* 公网 IP 地址个数
-* 安全组条数
-* 路由表条数
-* 持久化存储大小
+* 虛擬機個數
+* vCPU 個數
+* 內網 IP 地址個數
+* 公網 IP 地址個數
+* 安全組條數
+* 路由表條數
+* 持久化存儲大小
 
-### Etcd 存储
+### Etcd 存儲
 
-除了常规的 [Etcd 高可用集群](https://coreos.com/etcd/docs/3.2.15/op-guide/clustering.html)配置、使用 SSD 存储等，还需要为 Events 配置单独的 Etcd 集群。即部署两套独立的 Etcd 集群，并配置 kube-apiserver
+除了常規的 [Etcd 高可用集群](https://coreos.com/etcd/docs/3.2.15/op-guide/clustering.html)配置、使用 SSD 存儲等，還需要為 Events 配置單獨的 Etcd 集群。即部署兩套獨立的 Etcd 集群，並配置 kube-apiserver
 
 ```sh
 --etcd-servers="http://etcd1:2379,http://etcd2:2379,http://etcd3:2379" --etcd-servers-overrides="/events#http://etcd4:2379,http://etcd5:2379,http://etcd6:2379"
 ```
 
-另外，Etcd 默认存储限制为 2GB，可以通过 `--quota-backend-bytes` 选项增大。
+另外，Etcd 默認存儲限制為 2GB，可以通過 `--quota-backend-bytes` 選項增大。
 
-## Master 节点大小
+## Master 節點大小
 
-可以参考 AWS 配置 Master 节点的大小：
+可以參考 AWS 配置 Master 節點的大小：
 
 * 1-5 nodes: m3.medium
 * 6-10 nodes: m3.large
@@ -40,11 +40,11 @@ Kubernetes v1.6-v1.11 单集群最大支持 5000 个节点，也就是说 Kubern
 * 251-500 nodes: c4.4xlarge
 * more than 500 nodes: c4.8xlarge
 
-## 为扩展分配更多资源
+## 為擴展分配更多資源
 
-Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Pod 分配更大的 CPU 和内存以及增大容器副本数量等。当 Node 本身的容量太小时，还需要增大 Node 本身的 CPU 和内存（特别是在公有云平台上）。
+Kubernetes 集群內的擴展也需要分配更多的資源，包括為這些 Pod 分配更大的 CPU 和內存以及增大容器副本數量等。當 Node 本身的容量太小時，還需要增大 Node 本身的 CPU 和內存（特別是在公有云平臺上）。
 
-以下扩展服务需要增大 CPU 和内存：
+以下擴展服務需要增大 CPU 和內存：
 
 * [DNS (kube-dns or CoreDNS)](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)
 * [InfluxDB and Grafana](http://releases.k8s.io/master/cluster/addons/cluster-monitoring/influxdb/influxdb-grafana-controller.yaml)
@@ -52,12 +52,12 @@ Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Po
 * [FluentD with ElasticSearch Plugin](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml)
 * [FluentD with GCP Plugin](http://releases.k8s.io/master/cluster/addons/fluentd-gcp/fluentd-gcp-ds.yaml)
 
-以下扩展服务需要增大副本数：
+以下擴展服務需要增大副本數：
 
 * [elasticsearch](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/es-statefulset.yaml)
 * [DNS (kube-dns or CoreDNS)](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)
 
-另外，为了保证多个副本分散调度到不同的 Node 上，需要为容器配置 [AntiAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity)。比如，对 kube-dns，可以增加如下的配置：
+另外，為了保證多個副本分散調度到不同的 Node 上，需要為容器配置 [AntiAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity)。比如，對 kube-dns，可以增加如下的配置：
 
 ```yaml
 affinity:
@@ -75,33 +75,33 @@ affinity:
 
 ## Kube-apiserver 配置
 
-* 设置 `--max-requests-inflight=3000`
-* 设置 `--max-mutating-requests-inflight=1000`
+* 設置 `--max-requests-inflight=3000`
+* 設置 `--max-mutating-requests-inflight=1000`
 
 ## Kube-scheduler 配置
 
-* 设置 `--kube-api-qps=100`
+* 設置 `--kube-api-qps=100`
 
 ## Kube-controller-manager 配置
 
-* 设置 `--kube-api-qps=100`
-* 设置 `--kube-api-burst=100`
+* 設置 `--kube-api-qps=100`
+* 設置 `--kube-api-burst=100`
 
 ## Kubelet 配置
 
-* 设置 `--image-pull-progress-deadline=30m`
-* 设置 `--serialize-image-pulls=false`（需要 Docker 使用 overlay2 ）
-* Kubelet 单节点允许运行的最大 Pod 数：`--max-pods=110`（默认是 110，可以根据实际需要设置）
+* 設置 `--image-pull-progress-deadline=30m`
+* 設置 `--serialize-image-pulls=false`（需要 Docker 使用 overlay2 ）
+* Kubelet 單節點允許運行的最大 Pod 數：`--max-pods=110`（默認是 110，可以根據實際需要設置）
 
 ## Docker 配置
 
-* 设置 `max-concurrent-downloads=10`
-* 使用 SSD 存储 `graph=/ssd-storage-path`
-* 预加载 pause 镜像，比如 `docker image save -o /opt/preloaded_docker_images.tar` 和 `docker image load -i /opt/preloaded_docker_images.tar`
+* 設置 `max-concurrent-downloads=10`
+* 使用 SSD 存儲 `graph=/ssd-storage-path`
+* 預加載 pause 鏡像，比如 `docker image save -o /opt/preloaded_docker_images.tar` 和 `docker image load -i /opt/preloaded_docker_images.tar`
 
-## 节点配置
+## 節點配置
 
-增大内核选项配置 `/etc/sysctl.conf`：
+增大內核選項配置 `/etc/sysctl.conf`：
 
 ```sh
 fs.file-max=1000000
@@ -125,26 +125,26 @@ fs.inotify.max_user_instances=524288
 fs.inotify.max_user_watches=524288
 ```
 
-## 应用配置
+## 應用配置
 
-在运行 Pod 的时候也需要注意遵循一些最佳实践，比如
+在運行 Pod 的時候也需要注意遵循一些最佳實踐，比如
 
-* 为容器设置资源请求和限制
+* 為容器設置資源請求和限制
   * `spec.containers[].resources.limits.cpu`
   * `spec.containers[].resources.limits.memory`
   * `spec.containers[].resources.requests.cpu`
   * `spec.containers[].resources.requests.memory`
   * `spec.containers[].resources.limits.ephemeral-storage`
   * `spec.containers[].resources.requests.ephemeral-storage`
-* 对关键应用使用 PodDisruptionBudget、nodeAffinity、podAffinity 和 podAntiAffinity 等保护
-* 尽量使用控制器来管理容器（如 Deployment、StatefulSet、DaemonSet、Job 等）
-* 更多内容参考[这里](../deploy/kubernetes-configuration-best-practice.md)
+* 對關鍵應用使用 PodDisruptionBudget、nodeAffinity、podAffinity 和 podAntiAffinity 等保護
+* 儘量使用控制器來管理容器（如 Deployment、StatefulSet、DaemonSet、Job 等）
+* 更多內容參考[這裡](../deploy/kubernetes-configuration-best-practice.md)
 
-## 必要的扩展
+## 必要的擴展
 
-监控、告警以及可视化（如 Prometheus 和 Grafana）至关重要，推荐部署并开启。
+監控、告警以及可視化（如 Prometheus 和 Grafana）至關重要，推薦部署並開啟。
 
-## 参考文档
+## 參考文檔
 
 * [Building Large Clusters](https://kubernetes.io/docs/setup/cluster-large/)
 * [Scaling Kubernetes to 2,500 Nodes](https://blog.openai.com/scaling-kubernetes-to-2500-nodes/)

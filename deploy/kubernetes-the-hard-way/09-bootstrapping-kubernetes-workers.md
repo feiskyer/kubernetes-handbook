@@ -1,29 +1,29 @@
-# 部署 Kubernetes Workers 节点
+# 部署 Kubernetes Workers 節點
 
-本部分将会部署三个 Kubernetes Worker 节点。每个节点上将会安装以下服务：[runc](https://github.com/opencontainers/runc), [gVisor](https://github.com/google/gvisor), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/admin/kubelet), 和 [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)。
+本部分將會部署三個 Kubernetes Worker 節點。每個節點上將會安裝以下服務：[runc](https://github.com/opencontainers/runc), [gVisor](https://github.com/google/gvisor), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/admin/kubelet), 和 [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)。
 
-## 事前准备
+## 事前準備
 
-以下命令需要在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。可以使用 `gcloud` 命令登录到 worker 节点上，比如
+以下命令需要在所有 worker 節點上面都運行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。可以使用 `gcloud` 命令登錄到 worker 節點上，比如
 
 ```sh
 gcloud compute ssh worker-0
 ```
 
-可以使用 tmux 同时登录到三个 Worker 节点上，加快部署步骤。
+可以使用 tmux 同時登錄到三個 Worker 節點上，加快部署步驟。
 
-## 部署 Kubernetes Worker 节点
+## 部署 Kubernetes Worker 節點
 
-安装 OS 依赖组件：
+安裝 OS 依賴組件：
 
 ```sh
 sudo apt-get update
 sudo apt-get -y install socat conntrack ipset
 ```
 
-> socat 命令用于支持 `kubectl port-forward` 命令。
+> socat 命令用於支持 `kubectl port-forward` 命令。
 
-### 下载并安装 worker 二进制文件
+### 下載並安裝 worker 二進制文件
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
@@ -37,7 +37,7 @@ wget -q --show-progress --https-only --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubelet
 ```
 
-创建安装目录：
+創建安裝目錄：
 
 ```sh
 sudo mkdir -p \
@@ -49,7 +49,7 @@ sudo mkdir -p \
   /var/run/kubernetes
 ```
 
-安装 worker 二进制文件
+安裝 worker 二進制文件
 
 ```sh
 sudo mv runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 runsc
@@ -61,16 +61,16 @@ sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
 sudo tar -xvf containerd-1.2.0-rc.0.linux-amd64.tar.gz -C /
 ```
 
-### 配置 CNI 网路
+### 配置 CNI 網路
 
-查询当前计算节点的 Pod CIDR 范围：
+查詢當前計算節點的 Pod CIDR 範圍：
 
 ```sh
 POD_CIDR=$(curl -s -H "Metadata-Flavor: Google" \
   http://metadata.google.internal/computeMetadata/v1/instance/attributes/pod-cidr)
 ```
 
-生成 `bridge` 网络插件配置文件
+生成 `bridge` 網絡插件配置文件
 
 ```sh
 cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
@@ -92,7 +92,7 @@ cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
 EOF
 ```
 
-生成 `loopback` 网络插件配置文件
+生成 `loopback` 網絡插件配置文件
 
 ```sh
 cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
@@ -245,7 +245,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### 启动 worker 服务
+### 啟動 worker 服務
 
 ```sh
 sudo systemctl daemon-reload
@@ -253,18 +253,18 @@ sudo systemctl enable containerd kubelet kube-proxy
 sudo systemctl start containerd kubelet kube-proxy
 ```
 
-> 记得在所有 worker 节点上面都运行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。
+> 記得在所有 worker 節點上面都運行一遍，包括 `worker-0`, `worker-1` 和 `worker-2`。
 
-## 验证
+## 驗證
 
-登入任意一台控制节点查询 Nodes 列表
+登入任意一臺控制節點查詢 Nodes 列表
 
 ```sh
 gcloud compute ssh controller-0 \
   --command "kubectl get nodes --kubeconfig admin.kubeconfig"
 ```
 
-输出为
+輸出為
 
 ```sh
 NAME       STATUS   ROLES    AGE   VERSION

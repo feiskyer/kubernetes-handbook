@@ -1,16 +1,16 @@
 # Deis workflow
 
-> **Workflow 不再由 Deis 维护**
+> **Workflow 不再由 Deis 維護**
 >
-> Workflow v2.18 是[Deis 维护版的最后一个发行版本](https://deis.com/blog/2017/deis-workflow-final-release/)，后续不再维护和更新。后续的更新维护在 [teamhephy/workflow](https://github.com/teamhephy/workflow) 中。
+> Workflow v2.18 是[Deis 維護版的最後一個發行版本](https://deis.com/blog/2017/deis-workflow-final-release/)，後續不再維護和更新。後續的更新維護在 [teamhephy/workflow](https://github.com/teamhephy/workflow) 中。
 >
-> 推荐使用 [Helm](helm.md) 来管理Kubernetes应用。
+> 推薦使用 [Helm](helm.md) 來管理Kubernetes應用。
 
-Deis workflow是基于Kubernetes的PaaS管理平台，进一步简化了应用的打包、部署和服务发现。
+Deis workflow是基於Kubernetes的PaaS管理平臺，進一步簡化了應用的打包、部署和服務發現。
 
 ![](https://deis.com/docs/workflow/diagrams/Git_Push_Flow.png)
 
-## Deis架构
+## Deis架構
 
 ![](https://deis.com/docs/workflow/diagrams/Workflow_Overview.png)
 
@@ -18,9 +18,9 @@ Deis workflow是基于Kubernetes的PaaS管理平台，进一步简化了应用�
 
 ![](https://deis.com/docs/workflow/diagrams/Application_Layout.png)
 
-## Deis安装部署
+## Deis安裝部署
 
-首先需要部署一套kubernetes（比如minikube，GKE等，记得启用`KUBE_ENABLE_CLUSTER_DNS=true`），并配置好本机的kubectl客户端，然后运行以下脚本安装deis：
+首先需要部署一套kubernetes（比如minikube，GKE等，記得啟用`KUBE_ENABLE_CLUSTER_DNS=true`），並配置好本機的kubectl客戶端，然後運行以下腳本安裝deis：
 
 ```sh
 # install deis v2 (workflow)
@@ -42,7 +42,7 @@ kubectl --namespace=deis get pods
 
 ## Deis基本使用
 
-### 注册用户并登录
+### 註冊用戶並登錄
 
 ```sh
 deis register deis-controller.deis.svc.cluster.local
@@ -50,9 +50,9 @@ deis login deis-controller.deis.svc.cluster.local
 deis perms:create newuser --admin
 ```
 
-### 部署应用
+### 部署應用
 
-**注意，deis的大部分操作命令都需要在应用的目录中（即下面的`example-dockerfile-http`）。**
+**注意，deis的大部分操作命令都需要在應用的目錄中（即下面的`example-dockerfile-http`）。**
 
 ```sh
 git clone https://github.com/deis/example-dockerfile-http.git
@@ -69,7 +69,7 @@ deis pull deis/example-dockerfile-http:latest
 deis info
 ```
 
-扩展应用
+擴展應用
 
 ```sh
 $ deis scale cmd=3
@@ -81,13 +81,13 @@ example-dockerfile-http-cmd-4246296512-40lfv up (v2)
 example-dockerfile-http-cmd-4246296512-fx3w3 up (v2)
 ```
 
-也可以配置自动扩展
+也可以配置自動擴展
 
 ```sh
 deis autoscale:set example-dockerfile-http --min=3 --max=8 --cpu-percent=75
 ```
 
-这样，就可以通过Kubernetes的DNS来访问应用了（配置了外网负载均衡后，还可以通过负载均衡来访问服务）：
+這樣，就可以通過Kubernetes的DNS來訪問應用了（配置了外網負載均衡後，還可以通過負載均衡來訪問服務）：
 
 ```sh
 $ curl example-dockerfile-http.example-dockerfile-http.svc.cluster.local
@@ -97,14 +97,14 @@ Powered by Deis
 ### 域名和路由
 
 ```sh
-# 注意设置CNMAE记录到原来的地址
+# 注意設置CNMAE記錄到原來的地址
 deis domains:add hello.bacongobbler.com
 
 dig hello.deisapp.com
 deis routing:enable
 ```
 
-这实际上是在deis-router的nginx配置中增加了 virtual hosts ：
+這實際上是在deis-router的nginx配置中增加了 virtual hosts ：
 
 ```
     server {
@@ -159,7 +159,7 @@ deis routing:enable
     }
 ```
 
-### 参考文档
+### 參考文檔
 
 - <https://github.com/deis/workflow>
 - <https://deis.com/workflow/>

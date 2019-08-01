@@ -1,8 +1,8 @@
 # CustomResourceDefinition
 
-CustomResourceDefinition（CRD）是 v1.7 新增的无需改变代码就可以扩展 Kubernetes API 的机制，用来管理自定义对象。它实际上是 ThirdPartyResources（TPR）的升级版本，而 TPR 已经在 v1.8 中弃用。
+CustomResourceDefinition（CRD）是 v1.7 新增的無需改變代碼就可以擴展 Kubernetes API 的機制，用來管理自定義對象。它實際上是 ThirdPartyResources（TPR）的升級版本，而 TPR 已經在 v1.8 中棄用。
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 | CRD API 版本                 |
 | --------------- | ---------------------------- |
@@ -10,7 +10,7 @@ CustomResourceDefinition（CRD）是 v1.7 新增的无需改变代码就可以�
 
 ## CRD 示例
 
-下面的例子会创建一个 `/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/…` 的自定义 API：
+下面的例子會創建一個 `/apis/stable.example.com/v1/namespaces/<namespace>/crontabs/…` 的自定義 API：
 
 ```sh
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -45,7 +45,7 @@ spec:
     - ct
 ```
 
-API 创建好后，就可以创建具体的 CronTab 对象了
+API 創建好後，就可以創建具體的 CronTab 對象了
 
 ```sh
 $ cat my-cronjob.yaml
@@ -80,7 +80,7 @@ spec:
 
 ## Finalizer
 
-Finalizer 用于实现控制器的异步预删除钩子，可以通过 `metadata.finalizers` 来指定 Finalizer。
+Finalizer 用於實現控制器的異步預刪除鉤子，可以通過 `metadata.finalizers` 來指定 Finalizer。
 
 ```yaml
 apiVersion: "stable.example.com/v1"
@@ -90,16 +90,16 @@ metadata:
   - finalizer.stable.example.com
 ```
 
-Finalizer 指定后，客户端删除对象的操作只会设置 `metadata.deletionTimestamp` 而不是直接删除。这会触发正在监听 CRD 的控制器，控制器执行一些删除前的清理操作，从列表中删除自己的 finalizer，然后再重新发起一个删除操作。此时，被删除的对象才会真正删除。
+Finalizer 指定後，客戶端刪除對象的操作只會設置 `metadata.deletionTimestamp` 而不是直接刪除。這會觸發正在監聽 CRD 的控制器，控制器執行一些刪除前的清理操作，從列表中刪除自己的 finalizer，然後再重新發起一個刪除操作。此時，被刪除的對象才會真正刪除。
 
 ## Validation
 
-v1.8 开始新增了实验性的基于 [OpenAPI v3 schema](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#schemaObject) 的验证（Validation）机制，可以用来提前验证用户提交的资源是否符合规范。使用该功能需要配置 kube-apiserver 的 `--feature-gates=CustomResourceValidation=true`。
+v1.8 開始新增了實驗性的基於 [OpenAPI v3 schema](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#schemaObject) 的驗證（Validation）機制，可以用來提前驗證用戶提交的資源是否符合規範。使用該功能需要配置 kube-apiserver 的 `--feature-gates=CustomResourceValidation=true`。
 
 比如下面的 CRD 要求
 
-- `spec.cronSpec` 必须是匹配正则表达式的字符串
-- `spec.replicas` 必须是从 1 到 10 的整数
+- `spec.cronSpec` 必須是匹配正則表達式的字符串
+- `spec.replicas` 必須是從 1 到 10 的整數
 
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -131,7 +131,7 @@ spec:
               maximum: 10
 ```
 
-这样，在创建下面的 CronTab 时
+這樣，在創建下面的 CronTab 時
 
 ```yaml
 apiVersion: "stable.example.com/v1"
@@ -144,7 +144,7 @@ spec:
   replicas: 15
 ```
 
-会报验证失败的错误：
+會報驗證失敗的錯誤：
 
 ```sh
 The CronTab "my-new-cron-object" is invalid: []: Invalid value: map[string]interface {}{"apiVersion":"stable.example.com/v1", "kind":"CronTab", "metadata":map[string]interface {}{"name":"my-new-cron-object", "namespace":"default", "deletionTimestamp":interface {}(nil), "deletionGracePeriodSeconds":(*int64)(nil), "creationTimestamp":"2017-09-05T05:20:07Z", "uid":"e14d79e7-91f9-11e7-a598-f0761cb232d1", "selfLink":"","clusterName":""}, "spec":map[string]interface {}{"cronSpec":"* * * *", "image":"my-awesome-cron-image", "replicas":15}}:
@@ -155,9 +155,9 @@ spec.replicas in body should be less than or equal to 10
 
 ## Subresources
 
-v1.10 开始 CRD 还支持 `/status` 和 `/scale` 等两个子资源（Beta），并且从 v1.11 开始默认开启。
+v1.10 開始 CRD 還支持 `/status` 和 `/scale` 等兩個子資源（Beta），並且從 v1.11 開始默認開啟。
 
-> v1.10 版本使用前需要在 `kube-apiserver` 开启 `--feature-gates=CustomResourceSubresources=true`。
+> v1.10 版本使用前需要在 `kube-apiserver` 開啟 `--feature-gates=CustomResourceSubresources=true`。
 
 ```yaml
 # resourcedefinition.yaml
@@ -211,7 +211,7 @@ $ kubectl get crontabs my-new-cron-object -o jsonpath='{.spec.replicas}'
 
 ## Categories
 
-Categories 用来将 CRD 对象分组，这样就可以使用 `kubectl get <category-name>` 来查询属于该组的所有对象。
+Categories 用來將 CRD 對象分組，這樣就可以使用 `kubectl get <category-name>` 來查詢屬於該組的所有對象。
 
 ```yaml
 # resourcedefinition.yaml
@@ -255,21 +255,21 @@ crontabs/my-new-cron-object   3s
 
 ## CRD 控制器
 
-在使用 CRD 扩展 Kubernetes API 时，通常还需要实现一个新建资源的控制器，监听新资源的变化情况，并作进一步的处理。
+在使用 CRD 擴展 Kubernetes API 時，通常還需要實現一個新建資源的控制器，監聽新資源的變化情況，並作進一步的處理。
 
-<https://github.com/kubernetes/sample-controller> 提供了一个 CRD 控制器的示例，包括
+<https://github.com/kubernetes/sample-controller> 提供了一個 CRD 控制器的示例，包括
 
-- 如何注册资源 `Foo`
-- 如何创建、删除和查询 `Foo` 对象
-- 如何监听 `Foo` 资源对象的变化情况
+- 如何註冊資源 `Foo`
+- 如何創建、刪除和查詢 `Foo` 對象
+- 如何監聽 `Foo` 資源對象的變化情況
 
 ## Kubebuilder
 
-从上面的实例中可以看到从头构建一个 CRD 控制器并不容易，需要对 Kubernetes 的 API 有深入了解，并且RBAC 集成、镜像构建、持续集成和部署等都需要很大工作量。
+從上面的實例中可以看到從頭構建一個 CRD 控制器並不容易，需要對 Kubernetes 的 API 有深入瞭解，並且RBAC 集成、鏡像構建、持續集成和部署等都需要很大工作量。
 
-[kubebuilder](https://github.com/kubernetes-sigs/kubebuilder) 正是为解决这个问题而生，为 CRD 控制器提供了一个简单易用的框架，并可直接生成镜像构建、持续集成、持续部署等所需的资源文件。
+[kubebuilder](https://github.com/kubernetes-sigs/kubebuilder) 正是為解決這個問題而生，為 CRD 控制器提供了一個簡單易用的框架，並可直接生成鏡像構建、持續集成、持續部署等所需的資源文件。
 
-### 安装
+### 安裝
 
 ```sh
 # Install kubebuilder
@@ -286,7 +286,7 @@ go get github.com/kubernetes-sigs/kustomize
 
 ### 使用方法
 
-#### 初始化项目
+#### 初始化項目
 
 ```sh
 mkdir -p $GOPATH/src/demo
@@ -294,22 +294,22 @@ cd $GOPATH/src/demo
 kubebuilder init --domain k8s.io --license apache2 --owner "The Kubernetes Authors"
 ```
 
-#### 创建 API
+#### 創建 API
 
 ```sh
 kubebuilder create api --group ships --version v1beta1 --kind Sloop
 ```
 
-然后按照实际需要修改 `pkg/apis/ship/v1beta1/sloop_types.go` 和 `pkg/controller/sloop/sloop_controller.go` 增加业务逻辑。
+然後按照實際需要修改 `pkg/apis/ship/v1beta1/sloop_types.go` 和 `pkg/controller/sloop/sloop_controller.go` 增加業務邏輯。
 
-#### 本地运行测试
+#### 本地運行測試
 
 ```sh
 make install
 make run
 ```
 
-> 如果碰到错误 ` ValidationError(CustomResourceDefinition.status): missing required field "storedVersions" in io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionStatus]`，可以手动修改 `config/crds/ships_v1beta1_sloop.yaml`:
+> 如果碰到錯誤 ` ValidationError(CustomResourceDefinition.status): missing required field "storedVersions" in io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionStatus]`，可以手動修改 `config/crds/ships_v1beta1_sloop.yaml`:
 > ```yaml
 > status:
 >   acceptedNames:
@@ -318,34 +318,34 @@ make run
 >   conditions: []
 >   storedVersions: []
 >
-> 然后运行 `kubectl apply -f config/crds` 创建 CRD。
+> 然後運行 `kubectl apply -f config/crds` 創建 CRD。
 
-然后就可以用 `ships.k8s.io/v1beta1` 来创建 Kind 为 `Sloop` 的资源了，比如
+然後就可以用 `ships.k8s.io/v1beta1` 來創建 Kind 為 `Sloop` 的資源了，比如
 
 ```sh
 kubectl apply -f config/samples/ships_v1beta1_sloop.yaml
 ```
 
-#### 构建镜像并部署控制器
+#### 構建鏡像並部署控制器
 
 ```sh
-# 替换 IMG 为你自己的
+# 替換 IMG 為你自己的
 export IMG=feisky/demo-crd:v1
 make docker-build
 make docker-push
 make deploy
 ```
 
-> kustomize 已经不再支持通配符，因而上述 `make deploy` 可能会碰到 `Load from path ../rbac/*.yaml failed` 错误，解决方法是手动修改 `config/default/kustomization.yaml`:
+> kustomize 已經不再支持通配符，因而上述 `make deploy` 可能會碰到 `Load from path ../rbac/*.yaml failed` 錯誤，解決方法是手動修改 `config/default/kustomization.yaml`:
 >
 > resources:
 > - ../rbac/rbac_role.yaml
 > - ../rbac/rbac_role_binding.yaml
 > - ../manager/manager.yaml
 >
-> 然后执行 `kustomize build config/default | kubectl apply -f -` 部署，默认部署到 `demo-system` namespace 中。
+> 然後執行 `kustomize build config/default | kubectl apply -f -` 部署，默認部署到 `demo-system` namespace 中。
 
-#### 文档和测试
+#### 文檔和測試
 
 ```sh
 # run unit tests
@@ -355,7 +355,7 @@ make test
 kubebuilder docs
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Extend the Kubernetes API with CustomResourceDefinitions](https://kubernetes.io/docs/tasks/access-kubernetes-api/extend-api-custom-resource-definitions/#validation)
 - [CustomResourceDefinition API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#customresourcedefinition-v1beta1-apiextensions-k8s-io)

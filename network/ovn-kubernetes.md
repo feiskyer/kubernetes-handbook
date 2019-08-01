@@ -1,9 +1,9 @@
 # Open Virtual Networking (OVN)
 
-[ovn-kubernetes](https://github.com/openvswitch/ovn-kubernetes) 提供了一个ovs OVN 网络插件，支持 underlay 和 overlay 两种模式。
+[ovn-kubernetes](https://github.com/openvswitch/ovn-kubernetes) 提供了一個ovs OVN 網絡插件，支持 underlay 和 overlay 兩種模式。
 
-- underlay：容器运行在虚拟机中，而ovs则运行在虚拟机所在的物理机上，OVN将容器网络和虚拟机网络连接在一起
-- overlay：OVN通过logical overlay network连接所有节点的容器，此时ovs可以直接运行在物理机或虚拟机上
+- underlay：容器運行在虛擬機中，而ovs則運行在虛擬機所在的物理機上，OVN將容器網絡和虛擬機網絡連接在一起
+- overlay：OVN通過logical overlay network連接所有節點的容器，此時ovs可以直接運行在物理機或虛擬機上
 
 ## Overlay模式
 
@@ -47,7 +47,7 @@ nohup sudo ovnkube -k8s-kubeconfig kubeconfig.yaml -loglevel=4 \
 
 #### ADD操作
 
-- 从`ovn` annotation获取ip/mac/gateway
+- 從`ovn` annotation獲取ip/mac/gateway
 - 在容器netns中配置接口和路由
 - 添加ovs端口
 
@@ -67,11 +67,11 @@ ovs-vsctl del-port br-int port
 
 ## Underlay模式
 
-暂未实现。
+暫未實現。
 
-## OVN 安装方法
+## OVN 安裝方法
 
-所有节点配置安装源并安装公共依赖
+所有節點配置安裝源並安裝公共依賴
 
 ```sh
 sudo apt-get install apt-transport-https
@@ -88,18 +88,18 @@ sudo apt-get install openvswitch-switch openvswitch-common -y
 sudo -H pip install ovs
 ```
 
-Master 节点安装 ovn-central
+Master 節點安裝 ovn-central
 
 ```sh
 sudo apt-get install ovn-central ovn-common ovn-host -y
 ```
 
-Node 节点安装 ovn-host
+Node 節點安裝 ovn-host
 
 ```sh
 sudo apt-get install ovn-host ovn-common -y
 ```
 
-## 参考文档
+## 參考文檔
 
 - <https://github.com/openvswitch/ovn-kubernetes>

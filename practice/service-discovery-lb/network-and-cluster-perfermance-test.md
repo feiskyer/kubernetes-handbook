@@ -1,16 +1,16 @@
-# Kubernetes网络和集群性能测试
+# Kubernetes網絡和集群性能測試
 
-## 准备
+## 準備
 
-**测试环境**
+**測試環境**
 
-在以下几种环境下进行测试：
+在以下幾種環境下進行測試：
 
-- Kubernetes集群node节点上通过Cluster IP方式访问
-- Kubernetes集群内部通过service访问
-- Kubernetes集群外部通过traefik ingress暴露的地址访问
+- Kubernetes集群node節點上通過Cluster IP方式訪問
+- Kubernetes集群內部通過service訪問
+- Kubernetes集群外部通過traefik ingress暴露的地址訪問
 
-**测试地址**
+**測試地址**
 
 Cluster IP: 10.254.149.31
 
@@ -18,33 +18,33 @@ Service Port：8000
 
 Ingress Host：traefik.sample-webapp.io
 
-**测试工具**
+**測試工具**
 
-- [Locust](http://locust.io)：一个简单易用的用户负载测试工具，用来测试web或其他系统能够同时处理的并发用户数。
+- [Locust](http://locust.io)：一個簡單易用的用戶負載測試工具，用來測試web或其他系統能夠同時處理的併發用戶數。
 - curl
 - [kubemark](https://github.com/kubernetes/kubernetes/tree/master/test/e2e)
-- 测试程序：sample-webapp，源码见Github [kubernetes的分布式负载测试](https://github.com/feiskyer/kubernetes-handbook/blob/master/practice/service-discovery-lb/distributed-load-test.md)
+- 測試程序：sample-webapp，源碼見Github [kubernetes的分佈式負載測試](https://github.com/feiskyer/kubernetes-handbook/blob/master/practice/service-discovery-lb/distributed-load-test.md)
 
-**测试说明**
+**測試說明**
 
-通过向`sample-webapp`发送curl请求获取响应时间，直接curl后的结果为：
+通過向`sample-webapp`發送curl請求獲取響應時間，直接curl後的結果為：
 
 ```Bash
 $ curl "http://10.254.149.31:8000/"
 Welcome to the "Distributed Load Testing Using Kubernetes" sample web app
 ```
 
-## 网络延迟测试
+## 網絡延遲測試
 
-### 场景一、 Kubernetes集群node节点上通过Cluster IP访问
+### 場景一、 Kubernetes集群node節點上通過Cluster IP訪問
 
-**测试命令**
+**測試命令**
 
 ```shell
 curl -o /dev/null -s -w '%{time_connect} %{time_starttransfer} %{time_total}' "http://10.254.149.31:8000/"
 ```
 
-**10组测试结果**
+**10組測試結果**
 
 | No   | time_connect | time_starttransfer | time_total |
 | ---- | ------------ | ------------------ | ---------- |
@@ -59,27 +59,27 @@ curl -o /dev/null -s -w '%{time_connect} %{time_starttransfer} %{time_total}' "h
 | 9    | 0.000        | 0.002              | 0.002      |
 | 10   | 0.000        | 0.002              | 0.002      |
 
-**平均响应时间：2ms**
+**平均響應時間：2ms**
 
-**时间指标说明**
+**時間指標說明**
 
-单位：秒
+單位：秒
 
-time_connect：建立到服务器的 TCP 连接所用的时间
+time_connect：建立到服務器的 TCP 連接所用的時間
 
-time_starttransfer：在发出请求之后，Web 服务器返回数据的第一个字节所用的时间
+time_starttransfer：在發出請求之後，Web 服務器返回數據的第一個字節所用的時間
 
-time_total：完成请求所用的时间
+time_total：完成請求所用的時間
 
-### 场景二、Kubernetes集群内部通过service访问
+### 場景二、Kubernetes集群內部通過service訪問
 
-**测试命令**
+**測試命令**
 
 ```Shell
 curl -o /dev/null -s -w '%{time_connect} %{time_starttransfer} %{time_total}' "http://sample-webapp:8000/"
 ```
 
-**10组测试结果**
+**10組測試結果**
 
 | No   | time_connect | time_starttransfer | time_total |
 | ---- | ------------ | ------------------ | ---------- |
@@ -94,17 +94,17 @@ curl -o /dev/null -s -w '%{time_connect} %{time_starttransfer} %{time_total}' "h
 | 9    | 0.004        | 0.006              | 0.006      |
 | 10   | 0.004        | 0.006              | 0.006      |
 
-**平均响应时间：6ms**
+**平均響應時間：6ms**
 
-### 场景三、在公网上通过traefik ingress访问
+### 場景三、在公網上通過traefik ingress訪問
 
-**测试命令**
+**測試命令**
 
 ```Shell
 curl -o /dev/null -s -w '%{time_connect} %{time_starttransfer} %{time_total}' "http://traefik.sample-webapp.io" >>result
 ```
 
-**10组测试结果**
+**10組測試結果**
 
 | No   | time_connect | time_starttransfer | time_total |
 | ---- | ------------ | ------------------ | ---------- |
@@ -119,37 +119,37 @@ curl -o /dev/null -s -w '%{time_connect} %{time_starttransfer} %{time_total}' "h
 | 9    | 0.065        | 0.126              | 0.127      |
 | 10   | 0.050        | 0.111              | 0.111      |
 
-**平均响应时间：110ms**
+**平均響應時間：110ms**
 
-### 测试结果
+### 測試結果
 
-在这三种场景下的响应时间测试结果如下：
+在這三種場景下的響應時間測試結果如下：
 
-- Kubernetes集群node节点上通过Cluster IP方式访问：2ms
-- Kubernetes集群内部通过service访问：6ms
-- Kubernetes集群外部通过traefik ingress暴露的地址访问：110ms
+- Kubernetes集群node節點上通過Cluster IP方式訪問：2ms
+- Kubernetes集群內部通過service訪問：6ms
+- Kubernetes集群外部通過traefik ingress暴露的地址訪問：110ms
 
-*注意：执行测试的node节点/Pod与serivce所在的pod的距离（是否在同一台主机上），对前两个场景可以能会有一定影响。*
+*注意：執行測試的node節點/Pod與serivce所在的pod的距離（是否在同一臺主機上），對前兩個場景可以能會有一定影響。*
 
-## 网络性能测试
+## 網絡性能測試
 
-网络使用flannel的vxlan模式。
+網絡使用flannel的vxlan模式。
 
-使用iperf进行测试。
+使用iperf進行測試。
 
-服务端命令：
+服務端命令：
 
 ```shell
 iperf -s -p 12345 -i 1 -M
 ```
 
-客户端命令：
+客戶端命令：
 
 ```shell
 iperf -c ${server-ip} -p 12345 -i 1 -t 10 -w 20K
 ```
 
-### 场景一、主机之间
+### 場景一、主機之間
 
 ```
 [ ID] Interval       Transfer     Bandwidth
@@ -166,7 +166,7 @@ iperf -c ${server-ip} -p 12345 -i 1 -t 10 -w 20K
 [  3]  0.0-10.0 sec  6.25 GBytes  5.37 Gbits/sec
 ```
 
-### 场景二、不同主机的Pod之间(使用flannel的vxlan模式)
+### 場景二、不同主機的Pod之間(使用flannel的vxlan模式)
 
 ```
 [ ID] Interval       Transfer     Bandwidth
@@ -183,7 +183,7 @@ iperf -c ${server-ip} -p 12345 -i 1 -t 10 -w 20K
 [  3]  0.0-10.0 sec  3.85 GBytes  3.30 Gbits/sec
 ```
 
-### 场景三、Node与非同主机的Pod之间（使用flannel的vxlan模式）
+### 場景三、Node與非同主機的Pod之間（使用flannel的vxlan模式）
 
 ```
 [ ID] Interval       Transfer     Bandwidth
@@ -200,7 +200,7 @@ iperf -c ${server-ip} -p 12345 -i 1 -t 10 -w 20K
 [  3]  0.0-10.0 sec  3.98 GBytes  3.42 Gbits/sec
 ```
 
-### 场景四、不同主机的Pod之间（使用flannel的host-gw模式）
+### 場景四、不同主機的Pod之間（使用flannel的host-gw模式）
 
 ```
 [ ID] Interval       Transfer     Bandwidth
@@ -217,7 +217,7 @@ iperf -c ${server-ip} -p 12345 -i 1 -t 10 -w 20K
 [  5]  0.0-10.0 sec  5.68 GBytes  4.88 Gbits/sec
 ```
 
-### 场景五、Node与非同主机的Pod之间（使用flannel的host-gw模式）
+### 場景五、Node與非同主機的Pod之間（使用flannel的host-gw模式）
 
 ```
 [ ID] Interval       Transfer     Bandwidth
@@ -234,17 +234,17 @@ iperf -c ${server-ip} -p 12345 -i 1 -t 10 -w 20K
 [  3]  0.0-10.0 sec  5.75 GBytes  4.94 Gbits/sec
 ```
 
-### 网络性能对比综述
+### 網絡性能對比綜述
 
-使用Flannel的**vxlan**模式实现每个pod一个IP的方式，会比宿主机直接互联的网络性能损耗30%～40%，符合网上流传的测试结论。而flannel的host-gw模式比起宿主机互连的网络性能损耗大约是10%。
+使用Flannel的**vxlan**模式實現每個pod一個IP的方式，會比宿主機直接互聯的網絡性能損耗30%～40%，符合網上流傳的測試結論。而flannel的host-gw模式比起宿主機互連的網絡性能損耗大約是10%。
 
-Vxlan会有一个封包解包的过程，所以会对网络性能造成较大的损耗，而host-gw模式是直接使用路由信息，网络损耗小，关于host-gw的架构请访问[Flannel host-gw architecture](https://docs.openshift.com/container-platform/3.4/architecture/additional_concepts/flannel.html)。
+Vxlan會有一個封包解包的過程，所以會對網絡性能造成較大的損耗，而host-gw模式是直接使用路由信息，網絡損耗小，關於host-gw的架構請訪問[Flannel host-gw architecture](https://docs.openshift.com/container-platform/3.4/architecture/additional_concepts/flannel.html)。
 
-## Kubernete的性能测试
+## Kubernete的性能測試
 
-参考[Kubernetes集群性能测试](https://supereagle.github.io/2017/03/09/kubemark/)中的步骤，对kubernetes的性能进行测试。
+參考[Kubernetes集群性能測試](https://supereagle.github.io/2017/03/09/kubemark/)中的步驟，對kubernetes的性能進行測試。
 
-我的集群版本是Kubernetes1.6.0，首先克隆代码，将kubernetes目录复制到`$GOPATH/src/k8s.io/`下然后执行：
+我的集群版本是Kubernetes1.6.0，首先克隆代碼，將kubernetes目錄複製到`$GOPATH/src/k8s.io/`下然後執行：
 
 ```bash
 $ ./hack/generate-bindata.sh
@@ -276,7 +276,7 @@ $ export KUBECTL_PATH=/usr/bin/kubectl
 $ go run hack/e2e.go -v -test  --test_args="--host=http://172.20.0.113:8080 --ginkgo.focus=\[Feature:Performance\]" >>log.txt
 ```
 
-**测试结果**
+**測試結果**
 
 ```bash
 Apr 25 18:27:31.461: INFO: API calls latencies: {
@@ -328,11 +328,11 @@ Ginkgo ran 1 suite in 4m28.667870101s
 Test Suite Passed
 ```
 
-从kubemark输出的日志中可以看到**API calls latencies**和**Performance**。
+從kubemark輸出的日誌中可以看到**API calls latencies**和**Performance**。
 
-**日志里显示，创建90个pod用时40秒以内，平均创建每个pod耗时0.44秒。**
+**日誌裡顯示，創建90個pod用時40秒以內，平均創建每個pod耗時0.44秒。**
 
-### 不同type的资源类型API请求耗时分布
+### 不同type的資源類型API請求耗時分佈
 
 | Resource  | Verb   | 50%     | 90%      | 99%      |
 | --------- | ------ | ------- | -------- | -------- |
@@ -342,29 +342,29 @@ Test Suite Passed
 | nodes     | PATCH  | 4.245ms | 11.117ms | 18.63ms  |
 | pods      | PUT    | 2.193ms | 2.619ms  | 17.285ms |
 
-从`log.txt`日志中还可以看到更多详细请求的测试指标。
+從`log.txt`日誌中還可以看到更多詳細請求的測試指標。
 
 ![kubernetes-dashboard](http://olz1di9xf.bkt.clouddn.com/kubenetes-e2e-test.jpg)
 
-### 注意事项
+### 注意事項
 
-测试过程中需要用到docker镜像存储在GCE中，需要翻墙下载，我没看到哪里配置这个镜像的地址。该镜像副本已上传时速云：
+測試過程中需要用到docker鏡像存儲在GCE中，需要翻牆下載，我沒看到哪裡配置這個鏡像的地址。該鏡像副本已上傳時速雲：
 
-用到的镜像有如下两个：
+用到的鏡像有如下兩個：
 
 - gcr.io/google_containers/pause-amd64:3.0
 - gcr.io/google_containers/serve_hostname:v1.4
 
-时速云镜像地址：
+時速雲鏡像地址：
 
 - index.tenxcloud.com/jimmy/pause-amd64:3.0
 - index.tenxcloud.com/jimmy/serve_hostname:v1.4
 
-将镜像pull到本地后重新打tag。
+將鏡像pull到本地後重新打tag。
 
-## Locust测试
+## Locust測試
 
-请求统计
+請求統計
 
 | Method | Name     | # requests | # failures | Median response time | Average response time | Min response time | Max response time | Average Content Size | Requests/s |
 | ------ | -------- | ---------- | ---------- | -------------------- | --------------------- | ----------------- | ----------------- | -------------------- | ---------- |
@@ -372,7 +372,7 @@ Test Suite Passed
 | POST   | /metrics | 5114232    | 85879      | 63000                | 82280                 | 29518             | 331330            | 94                   | 1178.77    |
 | None   | Total    | 5119302    | 85957      | 63000                | 82279                 | 11218             | 331330            | 94                   | 1179.94    |
 
-响应时间分布
+響應時間分佈
 
 | Name          | # requests | 50%   | 66%    | 75%    | 80%    | 90%    | 95%    | 98%    | 99%    | 100%   |
 | ------------- | ---------- | ----- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -380,29 +380,29 @@ Test Suite Passed
 | POST /metrics | 5114993    | 63000 | 127000 | 142000 | 149000 | 160000 | 166000 | 172000 | 176000 | 331330 |
 | None Total    | 5120063    | 63000 | 127000 | 142000 | 149000 | 160000 | 166000 | 172000 | 176000 | 331330 |
 
-以上两个表格都是瞬时值。请求失败率在2%左右。
+以上兩個表格都是瞬時值。請求失敗率在2%左右。
 
-Sample-webapp起了48个pod。
+Sample-webapp起了48個pod。
 
-Locust模拟10万用户，每秒增长100个。
+Locust模擬10萬用戶，每秒增長100個。
 
 ![locust-test](http://olz1di9xf.bkt.clouddn.com/kubernetes-locust-test.jpg)
 
-## 参考
+## 參考
 
-[基于 Python 的性能测试工具 locust (与 LR 的简单对比)](https://testerhome.com/topics/4839)
+[基於 Python 的性能測試工具 locust (與 LR 的簡單對比)](https://testerhome.com/topics/4839)
 
 [Locust docs](http://docs.locust.io/en/latest/what-is-locust.html)
 
-[python用户负载测试工具：locust](http://timd.cn/2015/09/17/locust/)
+[python用戶負載測試工具：locust](http://timd.cn/2015/09/17/locust/)
 
-[Kubernetes集群性能测试](https://supereagle.github.io/2017/03/09/kubemark/)
+[Kubernetes集群性能測試](https://supereagle.github.io/2017/03/09/kubemark/)
 
-[CoreOS是如何将Kubernetes的性能提高10倍的](http://dockone.io/article/1050)
+[CoreOS是如何將Kubernetes的性能提高10倍的](http://dockone.io/article/1050)
 
-[Kubernetes 1.3 的性能和弹性 —— 2000 节点，60,0000 Pod 的集群](http://blog.fleeto.us/translation/updates-performance-and-scalability-kubernetes-13-2000-node-60000-pod-clusters)
+[Kubernetes 1.3 的性能和彈性 —— 2000 節點，60,0000 Pod 的集群](http://blog.fleeto.us/translation/updates-performance-and-scalability-kubernetes-13-2000-node-60000-pod-clusters)
 
-[运用Kubernetes进行分布式负载测试](http://www.csdn.net/article/2015-07-07/2825155)
+[運用Kubernetes進行分佈式負載測試](http://www.csdn.net/article/2015-07-07/2825155)
 
 [Kubemark User Guide](https://github.com/kubernetes/community/blob/master/contributors/devel/kubemark-guide.md)
 

@@ -1,12 +1,12 @@
-# Scheduler 扩展
+# Scheduler 擴展
 
-如果默认的调度器不满足要求，还可以部署自定义的调度器。并且，在整个集群中还可以同时运行多个调度器实例，通过 `podSpec.schedulerName` 来选择使用哪一个调度器（默认使用内置的调度器）。
+如果默認的調度器不滿足要求，還可以部署自定義的調度器。並且，在整個集群中還可以同時運行多個調度器實例，通過 `podSpec.schedulerName` 來選擇使用哪一個調度器（默認使用內置的調度器）。
 
-## 开发自定义调度器
+## 開發自定義調度器
 
-自定义调度器主要的功能是查询未调度的 Pod，按照自定义的调度策略选择新的 Node，并将其更新到 Pod 的 Node Binding 上。
+自定義調度器主要的功能是查詢未調度的 Pod，按照自定義的調度策略選擇新的 Node，並將其更新到 Pod 的 Node Binding 上。
 
-比如，一个最简单的调度器可以用 shell 来编写（假设 Kubernetes 监听在 `localhost:8001`）：
+比如，一個最簡單的調度器可以用 shell 來編寫（假設 Kubernetes 監聽在 `localhost:8001`）：
 
 ```sh
 #!/bin/bash
@@ -27,7 +27,7 @@ do
 done
 ```
 
-## 使用自定义调度器
+## 使用自定義調度器
 
 ```yaml
 apiVersion: v1
@@ -37,7 +37,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  # 选择使用自定义调度器 my-scheduler
+  # 選擇使用自定義調度器 my-scheduler
   schedulerName: my-scheduler
   containers:
   - name: nginx

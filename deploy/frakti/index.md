@@ -1,15 +1,15 @@
 # Frakti
 
-## 简介
+## 簡介
 
-Frakti是一个基于Kubelet CRI的运行时，它提供了hypervisor级别的隔离性，特别适用于运行不可信应用以及多租户场景下。Frakti实现了一个混合运行时：
+Frakti是一個基於Kubelet CRI的運行時，它提供了hypervisor級別的隔離性，特別適用於運行不可信應用以及多租戶場景下。Frakti實現了一個混合運行時：
 
-- 特权容器以Docker container的方式运行
-- 而普通容器则以hyper container的方法运行在VM内
+- 特權容器以Docker container的方式運行
+- 而普通容器則以hyper container的方法運行在VM內
 
-## Allinone安装方法
+## Allinone安裝方法
 
-Frakti提供了一个简便的安装脚本，可以一键在Ubuntu或CentOS上启动一个本机的Kubernetes+frakti集群。
+Frakti提供了一個簡便的安裝腳本，可以一鍵在Ubuntu或CentOS上啟動一個本機的Kubernetes+frakti集群。
 
 ```sh
 curl -sSL https://github.com/kubernetes/frakti/raw/master/cluster/allinone.sh | bash
@@ -17,9 +17,9 @@ curl -sSL https://github.com/kubernetes/frakti/raw/master/cluster/allinone.sh | 
 
 ## 集群部署
 
-首先需要在所有机器上安装hyperd, docker, frakti, CNI 和 kubelet。
+首先需要在所有機器上安裝hyperd, docker, frakti, CNI 和 kubelet。
 
-### 安装hyperd
+### 安裝hyperd
 
 Ubuntu 16.04+:
 
@@ -46,7 +46,7 @@ systemctl enable hyperd
 systemctl restart hyperd
 ```
 
-### 安装docker
+### 安裝docker
 
 Ubuntu 16.04+:
 
@@ -61,14 +61,14 @@ CentOS 7:
 yum install -y docker
 ```
 
-启动docker:
+啟動docker:
 
 ```sh
 systemctl enable docker
 systemctl start docker
 ```
 
-### 安装frakti
+### 安裝frakti
 
 ```sh
 curl -sSL https://github.com/kubernetes/frakti/releases/download/v0.2/frakti -o /usr/bin/frakti
@@ -101,7 +101,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### 安装CNI
+### 安裝CNI
 
 Ubuntu 16.04+:
 
@@ -132,10 +132,10 @@ setenforce 0
 yum install -y kubernetes-cni
 ```
 
-配置CNI网络，注意
+配置CNI網絡，注意
 
-- frakti目前仅支持bridge插件
-- 所有机器上Pod的子网不能相同，比如master上可以用`10.244.1.0/24`，而第一个Node上可以用`10.244.2.0/24`
+- frakti目前僅支持bridge插件
+- 所有機器上Pod的子網不能相同，比如master上可以用`10.244.1.0/24`，而第一個Node上可以用`10.244.2.0/24`
 
 ```sh
 mkdir -p /etc/cni/net.d
@@ -164,7 +164,7 @@ cat >/etc/cni/net.d/99-loopback.conf <<-EOF
 EOF
 ```
 
-### 安装Kubelet
+### 安裝Kubelet
 
 Ubuntu 16.04+:
 
@@ -205,9 +205,9 @@ token=$(kubeadm token list | grep authentication,signing | awk '{print $1}')
 kubeadm join --token $token ${master_ip}
 ```
 
-### 配置CNI网络路由
+### 配置CNI網絡路由
 
-在集群模式下，需要为容器网络配置直接路由，假设有一台master和两台Node：
+在集群模式下，需要為容器網絡配置直接路由，假設有一臺master和兩臺Node：
 
 ```
 NODE   IP_ADDRESS   CONTAINER_CIDR
@@ -216,7 +216,7 @@ node-1 10.140.0.2  10.244.2.0/24
 node-2 10.140.0.3  10.244.3.0/24
 ```
 
-CNI的网络路由可以这么配置：
+CNI的網絡路由可以這麼配置：
 
 ```sh
 # on master
@@ -232,6 +232,6 @@ ip route add 10.244.1.0/24 via 10.140.0.1
 ip route add 10.244.2.0/24 via 10.140.0.2
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Frakti部署指南](https://github.com/kubernetes/frakti/blob/master/docs/deploy.md)

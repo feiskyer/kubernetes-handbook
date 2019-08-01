@@ -1,12 +1,12 @@
 # DaemonSet
 
-DaemonSet 保证在每个 Node 上都运行一个容器副本，常用来部署一些集群的日志、监控或者其他系统管理应用。典型的应用包括：
+DaemonSet 保證在每個 Node 上都運行一個容器副本，常用來部署一些集群的日誌、監控或者其他系統管理應用。典型的應用包括：
 
-* 日志收集，比如 fluentd，logstash 等
-* 系统监控，比如 Prometheus Node Exporter，collectd，New Relic agent，Ganglia gmond 等
-* 系统程序，比如 kube-proxy, kube-dns, glusterd, ceph 等
+* 日誌收集，比如 fluentd，logstash 等
+* 系統監控，比如 Prometheus Node Exporter，collectd，New Relic agent，Ganglia gmond 等
+* 系統程序，比如 kube-proxy, kube-dns, glusterd, ceph 等
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 |   Deployment 版本   |
 | ------------- | ------------------ |
@@ -15,7 +15,7 @@ DaemonSet 保证在每个 Node 上都运行一个容器副本，常用来部署�
 |     v1.8      |   apps/v1beta2     |
 |     v1.9      |      apps/v1       |
 
-使用 Fluentd 收集日志的例子：
+使用 Fluentd 收集日誌的例子：
 
 ```yaml
 apiVersion: apps/v1
@@ -62,52 +62,52 @@ spec:
           path: /var/lib/docker/containers
 ```
 
-## 滚动更新
+## 滾動更新
 
-v1.6 + 支持 DaemonSet 的滚动更新，可以通过 `.spec.updateStrategy.type` 设置更新策略。目前支持两种策略
+v1.6 + 支持 DaemonSet 的滾動更新，可以通過 `.spec.updateStrategy.type` 設置更新策略。目前支持兩種策略
 
-- OnDelete：默认策略，更新模板后，只有手动删除了旧的 Pod 后才会创建新的 Pod
-- RollingUpdate：更新 DaemonSet 模版后，自动删除旧的 Pod 并创建新的 Pod
+- OnDelete：默認策略，更新模板後，只有手動刪除了舊的 Pod 後才會創建新的 Pod
+- RollingUpdate：更新 DaemonSet 模版後，自動刪除舊的 Pod 並創建新的 Pod
 
-在使用 RollingUpdate 策略时，还可以设置
+在使用 RollingUpdate 策略時，還可以設置
 
-- `.spec.updateStrategy.rollingUpdate.maxUnavailable`, 默认 1
-- `spec.minReadySeconds`，默认 0
+- `.spec.updateStrategy.rollingUpdate.maxUnavailable`, 默認 1
+- `spec.minReadySeconds`，默認 0
 
-### 回滚
+### 回滾
 
-v1.7 + 还支持回滚
+v1.7 + 還支持回滾
 
 ```sh
-# 查询历史版本
+# 查詢歷史版本
 $ kubectl rollout history daemonset <daemonset-name>
 
-# 查询某个历史版本的详细信息
+# 查詢某個歷史版本的詳細信息
 $ kubectl rollout history daemonset <daemonset-name> --revision=1
 
-# 回滚
+# 回滾
 $ kubectl rollout undo daemonset <daemonset-name> --to-revision=<revision>
-# 查询回滚状态
+# 查詢回滾狀態
 $ kubectl rollout status ds/<daemonset-name>
 ```
 
-## 指定 Node 节点
+## 指定 Node 節點
 
-DaemonSet 会忽略 Node 的 unschedulable 状态，有两种方式来指定 Pod 只运行在指定的 Node 节点上：
+DaemonSet 會忽略 Node 的 unschedulable 狀態，有兩種方式來指定 Pod 只運行在指定的 Node 節點上：
 
-- nodeSelector：只调度到匹配指定 label 的 Node 上
-- nodeAffinity：功能更丰富的 Node 选择器，比如支持集合操作
-- podAffinity：调度到满足条件的 Pod 所在的 Node 上
+- nodeSelector：只調度到匹配指定 label 的 Node 上
+- nodeAffinity：功能更豐富的 Node 選擇器，比如支持集合操作
+- podAffinity：調度到滿足條件的 Pod 所在的 Node 上
 
 ### nodeSelector 示例
 
-首先给 Node 打上标签
+首先給 Node 打上標籤
 
 ```sh
 kubectl label nodes node-01 disktype=ssd
 ```
 
-然后在 daemonset 中指定 nodeSelector 为 `disktype=ssd`：
+然後在 daemonset 中指定 nodeSelector 為 `disktype=ssd`：
 
 ```yaml
 spec:
@@ -117,7 +117,7 @@ spec:
 
 ### nodeAffinity 示例
 
-nodeAffinity 目前支持两种：requiredDuringSchedulingIgnoredDuringExecution 和 preferredDuringSchedulingIgnoredDuringExecution，分别代表必须满足条件和优选条件。比如下面的例子代表调度到包含标签 `kubernetes.io/e2e-az-name` 并且值为 e2e-az1 或 e2e-az2 的 Node 上，并且优选还带有标签 `another-node-label-key=another-node-label-value` 的 Node。
+nodeAffinity 目前支持兩種：requiredDuringSchedulingIgnoredDuringExecution 和 preferredDuringSchedulingIgnoredDuringExecution，分別代表必須滿足條件和優選條件。比如下面的例子代表調度到包含標籤 `kubernetes.io/e2e-az-name` 並且值為 e2e-az1 或 e2e-az2 的 Node 上，並且優選還帶有標籤 `another-node-label-key=another-node-label-value` 的 Node。
 
 ```yaml
 apiVersion: v1
@@ -150,10 +150,10 @@ spec:
 
 ### podAffinity 示例
 
-podAffinity 基于 Pod 的标签来选择 Node，仅调度到满足条件 Pod 所在的 Node 上，支持 podAffinity 和 podAntiAffinity。这个功能比较绕，以下面的例子为例：
+podAffinity 基於 Pod 的標籤來選擇 Node，僅調度到滿足條件 Pod 所在的 Node 上，支持 podAffinity 和 podAntiAffinity。這個功能比較繞，以下面的例子為例：
 
-* 如果一个 “Node 所在 Zone 中包含至少一个带有 `security=S1` 标签且运行中的 Pod”，那么可以调度到该 Node
-* 不调度到 “包含至少一个带有 `security=S2` 标签且运行中 Pod” 的 Node 上
+* 如果一個 “Node 所在 Zone 中包含至少一個帶有 `security=S1` 標籤且運行中的 Pod”，那麼可以調度到該 Node
+* 不調度到 “包含至少一個帶有 `security=S2` 標籤且運行中 Pod” 的 Node 上
 
 ```yaml
 apiVersion: v1
@@ -187,14 +187,14 @@ spec:
     image: gcr.io/google_containers/pause:2.0
 ```
 
-## 静态 Pod
+## 靜態 Pod
 
-除了 DaemonSet，还可以使用静态 Pod 来在每台机器上运行指定的 Pod，这需要 kubelet 在启动的时候指定 manifest 目录：
+除了 DaemonSet，還可以使用靜態 Pod 來在每臺機器上運行指定的 Pod，這需要 kubelet 在啟動的時候指定 manifest 目錄：
 
 ```sh
 kubelet --pod-manifest-path=/etc/kubernetes/manifests
 ```
 
-然后将所需要的 Pod 定义文件放到指定的 manifest 目录中。
+然後將所需要的 Pod 定義文件放到指定的 manifest 目錄中。
 
-注意：静态 Pod 不能通过 API Server 来删除，但可以通过删除 manifest 文件来自动删除对应的 Pod。
+注意：靜態 Pod 不能通過 API Server 來刪除，但可以通過刪除 manifest 文件來自動刪除對應的 Pod。

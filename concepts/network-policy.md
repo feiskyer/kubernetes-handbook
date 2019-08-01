@@ -1,28 +1,28 @@
 # Network Policy
 
-随着微服务的流行，越来越多的云服务平台需要大量模块之间的网络调用。Kubernetes 在 1.3 引入了 Network Policy，Network Policy 提供了基于策略的网络控制，用于隔离应用并减少攻击面。它使用标签选择器模拟传统的分段网络，并通过策略控制它们之间的流量以及来自外部的流量。
+隨著微服務的流行，越來越多的雲服務平臺需要大量模塊之間的網絡調用。Kubernetes 在 1.3 引入了 Network Policy，Network Policy 提供了基於策略的網絡控制，用於隔離應用並減少攻擊面。它使用標籤選擇器模擬傳統的分段網絡，並通過策略控制它們之間的流量以及來自外部的流量。
 
-在使用 Network Policy 时，需要注意
+在使用 Network Policy 時，需要注意
 
-- v1.6 以及以前的版本需要在 kube-apiserver 中开启 `extensions/v1beta1/networkpolicies`
-- v1.7 版本 Network Policy 已经 GA，API 版本为 `networking.k8s.io/v1`
+- v1.6 以及以前的版本需要在 kube-apiserver 中開啟 `extensions/v1beta1/networkpolicies`
+- v1.7 版本 Network Policy 已經 GA，API 版本為 `networking.k8s.io/v1`
 - v1.8 版本新增 **Egress** 和 **IPBlock** 的支持
-- 网络插件要支持 Network Policy，如 Calico、Romana、Weave Net 和 trireme 等，参考 [这里](../plugins/network-policy.md)
+- 網絡插件要支持 Network Policy，如 Calico、Romana、Weave Net 和 trireme 等，參考 [這裡](../plugins/network-policy.md)
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 | Networking API 版本  |
 | --------------- | -------------------- |
 | v1.5-v1.6       | extensions/v1beta1   |
 | v1.7+           | networking.k8s.io/v1 |
 
-## 网络策略
+## 網絡策略
 
-### Namespace 隔离
+### Namespace 隔離
 
-默认情况下，所有 Pod 之间是全通的。每个 Namespace 可以配置独立的网络策略，来隔离 Pod 之间的流量。
+默認情況下，所有 Pod 之間是全通的。每個 Namespace 可以配置獨立的網絡策略，來隔離 Pod 之間的流量。
 
-v1.7 + 版本通过创建匹配所有 Pod 的 Network Policy 来作为默认的网络策略，比如默认拒绝所有 Pod 之间 Ingress 通信
+v1.7 + 版本通過創建匹配所有 Pod 的 Network Policy 來作為默認的網絡策略，比如默認拒絕所有 Pod 之間 Ingress 通信
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -35,7 +35,7 @@ spec:
   - Ingress
 ```
 
-默认拒绝所有 Pod 之间 Egress 通信的策略为
+默認拒絕所有 Pod 之間 Egress 通信的策略為
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -48,7 +48,7 @@ spec:
   - Egress
 ```
 
-甚至是默认拒绝所有 Pod 之间 Ingress 和 Egress 通信的策略为
+甚至是默認拒絕所有 Pod 之間 Ingress 和 Egress 通信的策略為
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -62,7 +62,7 @@ spec:
   - Egress
 ```
 
-而默认允许所有 Pod 之间 Ingress 通信的策略为
+而默認允許所有 Pod 之間 Ingress 通信的策略為
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -75,7 +75,7 @@ spec:
   - {}
 ```
 
-默认允许所有 Pod 之间 Egress 通信的策略为
+默認允許所有 Pod 之間 Egress 通信的策略為
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -88,21 +88,21 @@ spec:
   - {}
 ```
 
-而 v1.6 版本则通过 Annotation 来隔离 namespace 的所有 Pod 之间的流量，包括从外部到该 namespace 中所有 Pod 的流量以及 namespace 内部 Pod 相互之间的流量：
+而 v1.6 版本則通過 Annotation 來隔離 namespace 的所有 Pod 之間的流量，包括從外部到該 namespace 中所有 Pod 的流量以及 namespace 內部 Pod 相互之間的流量：
 
 ```sh
 kubectl annotate ns <namespace> "net.beta.kubernetes.io/network-policy={\"ingress\": {\"isolation\": \"DefaultDeny\"}}"
 ```
 
-### Pod 隔离
+### Pod 隔離
 
-通过使用标签选择器（包括 namespaceSelector 和 podSelector）来控制 Pod 之间的流量。比如下面的 Network Policy
+通過使用標籤選擇器（包括 namespaceSelector 和 podSelector）來控制 Pod 之間的流量。比如下面的 Network Policy
 
-- 允许 default namespace 中带有 `role=frontend` 标签的 Pod 访问 default namespace 中带有 `role=db` 标签 Pod 的 6379 端口
-- 允许带有 `project=myprojects` 标签的 namespace 中所有 Pod 访问 default namespace 中带有 `role=db` 标签 Pod 的 6379 端口
+- 允許 default namespace 中帶有 `role=frontend` 標籤的 Pod 訪問 default namespace 中帶有 `role=db` 標籤 Pod 的 6379 端口
+- 允許帶有 `project=myprojects` 標籤的 namespace 中所有 Pod 訪問 default namespace 中帶有 `role=db` 標籤 Pod 的 6379 端口
 
 ```yaml
-# v1.6 以及更老的版本应该使用 extensions/v1beta1
+# v1.6 以及更老的版本應該使用 extensions/v1beta1
 # apiVersion: extensions/v1beta1
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -126,7 +126,7 @@ spec:
       port: 6379
 ```
 
-另外一个同时开启 Ingress 和 Egress 通信的策略为
+另外一個同時開啟 Ingress 和 Egress 通信的策略為
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -165,30 +165,30 @@ spec:
       port: 5978
 ```
 
-它用来隔离 default namespace 中带有 `role=db` 标签的 Pod：
+它用來隔離 default namespace 中帶有 `role=db` 標籤的 Pod：
 
-- 允许 default namespace 中带有 `role=frontend` 标签的 Pod 访问 default namespace 中带有 `role=db` 标签 Pod 的 6379 端口
-- 允许带有 `project=myprojects` 标签的 namespace 中所有 Pod 访问 default namespace 中带有 `role=db` 标签 Pod 的 6379 端口
-- 允许 default namespace 中带有 `role=db` 标签的 Pod 访问 `10.0.0.0/24` 网段的 TCP 5987 端口
+- 允許 default namespace 中帶有 `role=frontend` 標籤的 Pod 訪問 default namespace 中帶有 `role=db` 標籤 Pod 的 6379 端口
+- 允許帶有 `project=myprojects` 標籤的 namespace 中所有 Pod 訪問 default namespace 中帶有 `role=db` 標籤 Pod 的 6379 端口
+- 允許 default namespace 中帶有 `role=db` 標籤的 Pod 訪問 `10.0.0.0/24` 網段的 TCP 5987 端口
 
-## 简单示例
+## 簡單示例
 
-以 calico 为例看一下 Network Policy 的具体用法。
+以 calico 為例看一下 Network Policy 的具體用法。
 
-首先配置 kubelet 使用 CNI 网络插件
+首先配置 kubelet 使用 CNI 網絡插件
 
 ```sh
 kubelet --network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin ...
 ```
 
-安装 calio 网络插件
+安裝 calio 網絡插件
 
 ```sh
-# 注意修改 CIDR，需要跟 k8s pod-network-cidr 一致，默认为 192.168.0.0/16
+# 注意修改 CIDR，需要跟 k8s pod-network-cidr 一致，默認為 192.168.0.0/16
 kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 ```
 
-首先部署一个 nginx 服务
+首先部署一個 nginx 服務
 
 ```sh
 $ kubectl run nginx --image=nginx --replicas=2
@@ -197,7 +197,7 @@ $ kubectl expose deployment nginx --port=80
 service "nginx" exposed
 ```
 
-此时，通过其他 Pod 是可以访问 nginx 服务的
+此時，通過其他 Pod 是可以訪問 nginx 服務的
 
 ```sh
 $ kubectl get svc,pod
@@ -219,7 +219,7 @@ Connecting to nginx (10.100.0.16:80)
 / #
 ```
 
-开启 default namespace 的 DefaultDeny Network Policy 后，其他 Pod（包括 namespace 外部）不能访问 nginx 了：
+開啟 default namespace 的 DefaultDeny Network Policy 後，其他 Pod（包括 namespace 外部）不能訪問 nginx 了：
 
 ```sh
 $ cat default-deny.yaml
@@ -245,7 +245,7 @@ wget: download timed out
 / #
 ```
 
-最后再创建一个运行带有 `access=true` 的 Pod 访问的网络策略
+最後再創建一個運行帶有 `access=true` 的 Pod 訪問的網絡策略
 
 ```sh
 $ cat nginx-policy.yaml
@@ -266,7 +266,7 @@ spec:
 $ kubectl create -f nginx-policy.yaml
 networkpolicy "access-nginx" created
 
-# 不带 access=true 标签的 Pod 还是无法访问 nginx 服务
+# 不帶 access=true 標籤的 Pod 還是無法訪問 nginx 服務
 $ kubectl run busybox --rm -ti --image=busybox /bin/sh
 Waiting for pod default/busybox-472357175-y0m47 to be running, status is Pending, pod ready: false
 
@@ -278,7 +278,7 @@ wget: download timed out
 / #
 
 
-# 而带有 access=true 标签的 Pod 可以访问 nginx 服务
+# 而帶有 access=true 標籤的 Pod 可以訪問 nginx 服務
 $ kubectl run busybox --rm -ti --labels="access=true" --image=busybox /bin/sh
 Waiting for pod default/busybox-472357175-y0m47 to be running, status is Pending, pod ready: false
 
@@ -289,7 +289,7 @@ Connecting to nginx (10.100.0.16:80)
 / #
 ```
 
-最后开启 nginx 服务的外部访问：
+最後開啟 nginx 服務的外部訪問：
 
 ```sh
 $ cat nginx-external-policy.yaml
@@ -310,9 +310,9 @@ spec:
 $ kubectl create -f nginx-external-policy.yaml
 ```
 
-## 使用场景
+## 使用場景
 
-### 禁止访问指定服务
+### 禁止訪問指定服務
 
 ```sh
 kubectl run web --image=nginx --labels app=web,env=prod --expose --port 80
@@ -320,7 +320,7 @@ kubectl run web --image=nginx --labels app=web,env=prod --expose --port 80
 
 ![](images/15022447799137.jpg)
 
-网络策略
+網絡策略
 
 ```yaml
 kind: NetworkPolicy
@@ -334,7 +334,7 @@ spec:
       env: prod
 ```
 
-### 只允许指定 Pod 访问服务
+### 只允許指定 Pod 訪問服務
 
 ```sh
 kubectl run apiserver --image=nginx --labels app=bookstore,role=api --expose --port 80
@@ -342,7 +342,7 @@ kubectl run apiserver --image=nginx --labels app=bookstore,role=api --expose --p
 
 ![](images/15022448622429.jpg)
 
-网络策略
+網絡策略
 
 ```yaml
 kind: NetworkPolicy
@@ -361,7 +361,7 @@ spec:
             app: bookstore
 ```
 
-### 禁止 namespace 中所有 Pod 之间的相互访问
+### 禁止 namespace 中所有 Pod 之間的相互訪問
 
 ![](images/15022451724392.gif)
 
@@ -375,7 +375,7 @@ spec:
   podSelector: {}
 ```
 
-### 禁止其他 namespace 访问服务
+### 禁止其他 namespace 訪問服務
 
 ```sh
 kubectl create namespace secondary
@@ -385,7 +385,7 @@ kubectl run web --namespace secondary --image=nginx \
 
 ![](images/15022452203435.gif)
 
-网络策略
+網絡策略
 
 ```yaml
 kind: NetworkPolicy
@@ -401,7 +401,7 @@ spec:
     - podSelector: {}
 ```
 
-### 只允许指定 namespace 访问服务
+### 只允許指定 namespace 訪問服務
 
 ```sh
 kubectl run web --image=nginx \
@@ -410,7 +410,7 @@ kubectl run web --image=nginx \
 
 ![](images/15022453441751.gif)
 
-网络策略
+網絡策略
 
 ```yaml
 kind: NetworkPolicy
@@ -428,7 +428,7 @@ spec:
           purpose: production
 ```
 
-### 允许外网访问服务
+### 允許外網訪問服務
 
 ```sh
 kubectl run web --image=nginx --labels=app=web --port 80
@@ -437,7 +437,7 @@ kubectl expose deployment/web --type=LoadBalancer
 
 ![](images/15022454444461.gif)
 
-网络策略
+網絡策略
 
 ```yaml
 kind: NetworkPolicy
@@ -454,7 +454,7 @@ spec:
     from: []
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Kubernetes network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 - [Declare Network Policy](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/)

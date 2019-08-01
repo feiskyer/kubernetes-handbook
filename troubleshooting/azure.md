@@ -1,8 +1,8 @@
-# Azure 云平台排错
+# Azure 雲平臺排錯
 
-## Azure 负载均衡
+## Azure 負載均衡
 
-使用 Azure Cloud Provider 后，Kubernetes 会为 LoadBalancer 类型的 Service 创建 Azure 负载均衡器以及相关的 公网 IP、BackendPool 和 Network Security Group (NSG)。注意目前 Azure Cloud Provider 仅支持 `Basic` SKU 的负载均衡，并将在 v1.11 中支持 Standard SKU。`Basic` 与 `Standard` SKU 负载均衡相比有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview)：
+使用 Azure Cloud Provider 後，Kubernetes 會為 LoadBalancer 類型的 Service 創建 Azure 負載均衡器以及相關的 公網 IP、BackendPool 和 Network Security Group (NSG)。注意目前 Azure Cloud Provider 僅支持 `Basic` SKU 的負載均衡，並將在 v1.11 中支持 Standard SKU。`Basic` 與 `Standard` SKU 負載均衡相比有一定的[侷限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview)：
 
 | Load Balancer                     | Basic                                    | Standard                                 |
 | --------------------------------- | ---------------------------------------- | ---------------------------------------- |
@@ -18,7 +18,7 @@
 | Outbound SNAT front-end selection | Not configurable, multiple candidates    | Optional configuration to reduce candidates |
 | Network Security Group            | Optional on NIC/subnet                   | Required                                 |
 
-同样，对应的 Public IP 也是 Basic SKU，与 Standard SKU 相比也有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview#sku-service-limits-and-abilities)：
+同樣，對應的 Public IP 也是 Basic SKU，與 Standard SKU 相比也有一定的[侷限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview#sku-service-limits-and-abilities)：
 
 | Public IP                    | Basic           | Standard                                 |
 | ---------------------------- | --------------- | ---------------------------------------- |
@@ -28,63 +28,63 @@
 | Counters                     | Not supported   | Available                                |
 | Network Security Group       | Optional on NIC | Required                                 |
 
-在创建 Service 时，可以通过 `metadata.annotation` 来自定义 Azure 负载均衡的行为，可选的选项包括
+在創建 Service 時，可以通過 `metadata.annotation` 來自定義 Azure 負載均衡的行為，可選的選項包括
 
 | Annotation                               | 功能                                       |
 | ---------------------------------------- | ---------------------------------------- |
-| service.beta.kubernetes.io/azure-load-balancer-internal | 如果设置，则创建内网负载均衡                           |
-| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | 设置内网负载均衡 IP 使用的子网                        |
-| service.beta.kubernetes.io/azure-load-balancer-mode | 设置如何为负载均衡选择所属的 AvailabilitySet（之所以有该选项是因为在 Azure 的每个 AvailabilitySet 中只能创建最多一个外网负载均衡和一个内网负载均衡）。可选项为：（1）不设置或者设置为空，使用 `/etc/kubernetes/azure.json` 中设置的 `primaryAvailabilitySet`；（2）设置为 `auto`，选择负载均衡规则最少的 AvailabilitySet；（3）设置为`as1,as2`，指定 AvailabilitySet 列表 |
-| service.beta.kubernetes.io/azure-dns-label-name | 设置后为公网 IP 创建 外网 DNS                      |
-| service.beta.kubernetes.io/azure-shared-securityrule | 如果设置，则为多个 Service 共享相同的 NSG 规则。注意该选项需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
-| service.beta.kubernetes.io/azure-load-balancer-resource-group | 当为 Service 指定公网 IP 并且该公网 IP 与 Kubernetes 集群不在同一个 Resource Group 时，需要使用该 Annotation 指定公网 IP 所在的 Resource Group |
+| service.beta.kubernetes.io/azure-load-balancer-internal | 如果設置，則創建內網負載均衡                           |
+| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | 設置內網負載均衡 IP 使用的子網                        |
+| service.beta.kubernetes.io/azure-load-balancer-mode | 設置如何為負載均衡選擇所屬的 AvailabilitySet（之所以有該選項是因為在 Azure 的每個 AvailabilitySet 中只能創建最多一個外網負載均衡和一個內網負載均衡）。可選項為：（1）不設置或者設置為空，使用 `/etc/kubernetes/azure.json` 中設置的 `primaryAvailabilitySet`；（2）設置為 `auto`，選擇負載均衡規則最少的 AvailabilitySet；（3）設置為`as1,as2`，指定 AvailabilitySet 列表 |
+| service.beta.kubernetes.io/azure-dns-label-name | 設置後為公網 IP 創建 外網 DNS                      |
+| service.beta.kubernetes.io/azure-shared-securityrule | 如果設置，則為多個 Service 共享相同的 NSG 規則。注意該選項需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
+| service.beta.kubernetes.io/azure-load-balancer-resource-group | 當為 Service 指定公網 IP 並且該公網 IP 與 Kubernetes 集群不在同一個 Resource Group 時，需要使用該 Annotation 指定公網 IP 所在的 Resource Group |
 
-在 Kubernetes 中，负载均衡的创建逻辑都在 kube-controller-manager 中，因而排查负载均衡相关的问题时，除了查看 Service 自身的状态，如
+在 Kubernetes 中，負載均衡的創建邏輯都在 kube-controller-manager 中，因而排查負載均衡相關的問題時，除了查看 Service 自身的狀態，如
 
 ```sh
 kubectl describe service <service-name>
 ```
 
-还需要查看 kube-controller-manager 是否有异常发生：
+還需要查看 kube-controller-manager 是否有異常發生：
 
 ```
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-## LoadBalancer Service 一直处于 pending 状态
+## LoadBalancer Service 一直處於 pending 狀態
 
-查看 Service `kubectl describe service <service-name>` 没有错误信息，但 EXTERNAL-IP 一直是 `<pending>`，说明 Azure Cloud Provider 在创建 LB/NSG/PublicIP 过程中出错。一般按照前面的步骤查看 kube-controller-manager 可以查到具体失败的原因，可能的因素包括
+查看 Service `kubectl describe service <service-name>` 沒有錯誤信息，但 EXTERNAL-IP 一直是 `<pending>`，說明 Azure Cloud Provider 在創建 LB/NSG/PublicIP 過程中出錯。一般按照前面的步驟查看 kube-controller-manager 可以查到具體失敗的原因，可能的因素包括
 
-- clientId、clientSecret、tenandId 或 subscriptionId 配置错误导致 Azure API 认证失败：更新所有节点的 `/etc/kubernetes/azure.json` ，修复错误的配置即可恢复服务
-- 配置的客户端无权管理 LB/NSG/PublicIP/VM：可以为使用的 clientId 增加授权或创建新的 `az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<subscriptionID>/resourceGroups/<resourceGroupName>"`
-- Kuberentes v1.8.X 中还有可能出现 `Security rule must specify SourceAddressPrefixes, SourceAddressPrefix, or SourceApplicationSecurityGroups` 的错误，这是由于 Azure Go SDK 的问题导致的，可以通过升级集群到 v1.9.X/v1.10.X 或者将 SourceAddressPrefixes 替换为多条 SourceAddressPrefix 规则来解决
+- clientId、clientSecret、tenandId 或 subscriptionId 配置錯誤導致 Azure API 認證失敗：更新所有節點的 `/etc/kubernetes/azure.json` ，修復錯誤的配置即可恢復服務
+- 配置的客戶端無權管理 LB/NSG/PublicIP/VM：可以為使用的 clientId 增加授權或創建新的 `az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<subscriptionID>/resourceGroups/<resourceGroupName>"`
+- Kuberentes v1.8.X 中還有可能出現 `Security rule must specify SourceAddressPrefixes, SourceAddressPrefix, or SourceApplicationSecurityGroups` 的錯誤，這是由於 Azure Go SDK 的問題導致的，可以通過升級集群到 v1.9.X/v1.10.X 或者將 SourceAddressPrefixes 替換為多條 SourceAddressPrefix 規則來解決
 
-## 负载均衡公网 IP 无法访问
+## 負載均衡公網 IP 無法訪問
 
-Azure Cloud Provider 会为负载均衡器创建探测器，只有探测正常的服务才可以响应用户的请求。负载均衡公网 IP 无法访问一般是探测失败导致的，可能原因有：
+Azure Cloud Provider 會為負載均衡器創建探測器，只有探測正常的服務才可以響應用戶的請求。負載均衡公網 IP 無法訪問一般是探測失敗導致的，可能原因有：
 
-- 后端 VM  本身不正常（可以重启 VM 恢复）
-- 后端容器未监听在设置的端口上（可通过配置正确的端口解决）
-- 防火墙或网络安全组阻止了要访问的端口（可通过增加安全规则解决）
-- 当使用内网负载均衡时，从同一个 ILB 的后端 VM 上访问 ILB VIP 时也会失败，这是 Azure 的[预期行为](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)（此时可以访问 service 的 clusterIP）
-- 后端容器不响应（部分或者全部）外部请求时也会导致负载均衡 IP 无法访问。注意这里包含**部分容器不响应的场景**，这是由于 Azure 探测器与 Kubernetes 服务发现机制共同导致的结果：
-  - （1）Azure 探测器定期去访问 service 的端口（即 NodeIP:NodePort）
-  - （2）Kubernetes 将其负载均衡到后端容器中
-  - （3）当负载均衡到异常容器时，访问失败会导致探测失败，进而 Azure 可能会将 VM 移出负载均衡
-  - 该问题的解决方法是使用[健康探针](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)，保证异常容器自动从服务的后端（endpoints）中删除。
+- 後端 VM  本身不正常（可以重啟 VM 恢復）
+- 後端容器未監聽在設置的端口上（可通過配置正確的端口解決）
+- 防火牆或網絡安全組阻止了要訪問的端口（可通過增加安全規則解決）
+- 當使用內網負載均衡時，從同一個 ILB 的後端 VM 上訪問 ILB VIP 時也會失敗，這是 Azure 的[預期行為](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)（此時可以訪問 service 的 clusterIP）
+- 後端容器不響應（部分或者全部）外部請求時也會導致負載均衡 IP 無法訪問。注意這裡包含**部分容器不響應的場景**，這是由於 Azure 探測器與 Kubernetes 服務發現機制共同導致的結果：
+  - （1）Azure 探測器定期去訪問 service 的端口（即 NodeIP:NodePort）
+  - （2）Kubernetes 將其負載均衡到後端容器中
+  - （3）當負載均衡到異常容器時，訪問失敗會導致探測失敗，進而 Azure 可能會將 VM 移出負載均衡
+  - 該問題的解決方法是使用[健康探針](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/)，保證異常容器自動從服務的後端（endpoints）中刪除。
 
-## 内网负载均衡 BackendPool 为空
+## 內網負載均衡 BackendPool 為空
 
-Kubernetes 1.9.0-1.9.3 中会有这个问题（[kubernetes#59746](https://github.com/kubernetes/kubernetes/issues/59746) [kubernetes#60060](https://github.com/kubernetes/kubernetes/issues/60060) [acs-engine#2151](https://github.com/Azure/acs-engine/issues/2151)），这是由于一个查找负载均衡所属 AvaibilitySet 的缺陷导致的。
+Kubernetes 1.9.0-1.9.3 中會有這個問題（[kubernetes#59746](https://github.com/kubernetes/kubernetes/issues/59746) [kubernetes#60060](https://github.com/kubernetes/kubernetes/issues/60060) [acs-engine#2151](https://github.com/Azure/acs-engine/issues/2151)），這是由於一個查找負載均衡所屬 AvaibilitySet 的缺陷導致的。
 
-该问题的修复（[kubernetes#59747](https://github.com/kubernetes/kubernetes/pull/59747) [kubernetes#59083](https://github.com/kubernetes/kubernetes/pull/59083)）将包含到 v1.9.4 和 v1.10 中。
+該問題的修復（[kubernetes#59747](https://github.com/kubernetes/kubernetes/pull/59747) [kubernetes#59083](https://github.com/kubernetes/kubernetes/pull/59083)）將包含到 v1.9.4 和 v1.10 中。
 
-## 外网负载均衡均衡 BackendPool 为空
+## 外網負載均衡均衡 BackendPool 為空
 
-在使用不支持 Cloud Provider 的工具（如 kubeadm）部署的集群中，如果未给 Kubelet 配置 `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`，那么 Kubelet 会以 hostname 将其注册到集群中。此时，查看该 Node 的信息（kubectl get node <node-name> -o yaml），可以发现其 externalID 与 hostname 相同。此时，kube-controller-manager 也无法将其加入到负载均衡的后端中。
+在使用不支持 Cloud Provider 的工具（如 kubeadm）部署的集群中，如果未給 Kubelet 配置 `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`，那麼 Kubelet 會以 hostname 將其註冊到集群中。此時，查看該 Node 的信息（kubectl get node <node-name> -o yaml），可以發現其 externalID 與 hostname 相同。此時，kube-controller-manager 也無法將其加入到負載均衡的後端中。
 
-一个简单的确认方式是查看 Node 的 externalID 和 name 是否不同：
+一個簡單的確認方式是查看 Node 的 externalID 和 name 是否不同：
 
 ```sh
 $ kubectl get node -o jsonpath='{.items[*].metadata.name}'
@@ -93,40 +93,40 @@ $ kubectl get node -o jsonpath='{.items[*].spec.externalID}'
 /subscriptions/<subscription-id>/resourceGroups/<rg-name>/providers/Microsoft.Compute/virtualMachines/k8s-agentpool1-27347916-0
 ```
 
-该问题的解决方法是先删除 Node `kubectl delete node <node-name>`，为 Kubelet 配置 `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`，最后再重启 Kubelet。
+該問題的解決方法是先刪除 Node `kubectl delete node <node-name>`，為 Kubelet 配置 `--cloud-provider=azure --cloud-config=/etc/kubernetes/cloud-config`，最後再重啟 Kubelet。
 
-## Service 删除后 Azure 公网 IP 未自动删除
+## Service 刪除後 Azure 公網 IP 未自動刪除
 
-Kubernetes 1.9.0-1.9.3 中会有这个问题（[kubernetes#59255](https://github.com/kubernetes/kubernetes/issues/59255)）：当创建超过 10 个 LoadBalancer Service 后有可能会碰到由于超过 FrontendIPConfiguations Quota（默认为 10）导致负载均衡无法创建的错误。此时虽然负载均衡无法创建，但公网 IP 已经创建成功了，由于 Cloud Provider 的缺陷导致删除 Service 后公网 IP 却未删除。
+Kubernetes 1.9.0-1.9.3 中會有這個問題（[kubernetes#59255](https://github.com/kubernetes/kubernetes/issues/59255)）：當創建超過 10 個 LoadBalancer Service 後有可能會碰到由於超過 FrontendIPConfiguations Quota（默認為 10）導致負載均衡無法創建的錯誤。此時雖然負載均衡無法創建，但公網 IP 已經創建成功了，由於 Cloud Provider 的缺陷導致刪除 Service 後公網 IP 卻未刪除。
 
-该问题的修复（[kubernetes#59340](https://github.com/kubernetes/kubernetes/pull/59340)）将包含到 v1.9.4 和 v1.10 中。
+該問題的修復（[kubernetes#59340](https://github.com/kubernetes/kubernetes/pull/59340)）將包含到 v1.9.4 和 v1.10 中。
 
-另外，超过 FrontendIPConfiguations Quota 的问题可以参考 [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits) 增加 Quota 来解决。
+另外，超過 FrontendIPConfiguations Quota 的問題可以參考 [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits) 增加 Quota 來解決。
 
-## MSI 无法使用
+## MSI 無法使用
 
-配置 `"useManagedIdentityExtension": true` 后，可以使用 [Managed Service Identity (MSI)](https://docs.microsoft.com/en-us/azure/active-directory/msi-overview) 来管理 Azure API 的认证授权。但由于 Cloud Provider 的缺陷（[kubernetes #60691](https://github.com/kubernetes/kubernetes/issues/60691) 未定义 `useManagedIdentityExtension` yaml 标签导致无法解析该选项。
+配置 `"useManagedIdentityExtension": true` 後，可以使用 [Managed Service Identity (MSI)](https://docs.microsoft.com/en-us/azure/active-directory/msi-overview) 來管理 Azure API 的認證授權。但由於 Cloud Provider 的缺陷（[kubernetes #60691](https://github.com/kubernetes/kubernetes/issues/60691) 未定義 `useManagedIdentityExtension` yaml 標籤導致無法解析該選項。
 
-该问题的修复（[kubernetes#60775](https://github.com/kubernetes/kubernetes/pull/60775)）将包含在 v1.10 中。
+該問題的修復（[kubernetes#60775](https://github.com/kubernetes/kubernetes/pull/60775)）將包含在 v1.10 中。
 
-## Azure ARM API 调用请求过多
+## Azure ARM API 調用請求過多
 
-有时 kube-controller-manager 或者 kubelet 会因请求调用过多而导致 Azure ARM API 失败的情况，比如
+有時 kube-controller-manager 或者 kubelet 會因請求調用過多而導致 Azure ARM API 失敗的情況，比如
 
 ```sh
 "OperationNotAllowed",\r\n    "message": "The server rejected the request because too many requests have been received for this subscription.
 ```
 
-特别是在 Kubernetes 集群创建或者批量增加 Nodes 的时候。从 [v1.9.2 和 v1.10](https://github.com/kubernetes/kubernetes/issues/58770) 开始， Azure cloud provider 为一些列的 Azure 资源（如 VM、VMSS、安全组和路由表等）增加了缓存，大大缓解了这个问题。
+特別是在 Kubernetes 集群創建或者批量增加 Nodes 的時候。從 [v1.9.2 和 v1.10](https://github.com/kubernetes/kubernetes/issues/58770) 開始， Azure cloud provider 為一些列的 Azure 資源（如 VM、VMSS、安全組和路由表等）增加了緩存，大大緩解了這個問題。
 
-一般来说，如果该问题重复出现可以考虑
+一般來說，如果該問題重複出現可以考慮
 
-- 使用 Azure instance metadata，即为所有 Node 的 `/etc/kubernetes/azure.json` 设置 `"useInstanceMetadata": true` 并重启 kubelet
-- 为 kube-controller-manager 增大 `--route-reconciliation-period`（默认为 10s），比如在 `/etc/kubernetes/manifests/kube-controller-manager.yaml` 中设置 `--route-reconciliation-period=1m` 后 kubelet 会自动重新创建 kube-controller-manager Pod。
+- 使用 Azure instance metadata，即為所有 Node 的 `/etc/kubernetes/azure.json` 設置 `"useInstanceMetadata": true` 並重啟 kubelet
+- 為 kube-controller-manager 增大 `--route-reconciliation-period`（默認為 10s），比如在 `/etc/kubernetes/manifests/kube-controller-manager.yaml` 中設置 `--route-reconciliation-period=1m` 後 kubelet 會自動重新創建 kube-controller-manager Pod。
 
 ## AKS kubectl logs connection timed out
 
-`kubectl logs` 命令报 `getsockopt: connection timed out` 的错误（[AKS#232](https://github.com/Azure/AKS/issues/232)）：
+`kubectl logs` 命令報 `getsockopt: connection timed out` 的錯誤（[AKS#232](https://github.com/Azure/AKS/issues/232)）：
 
 ```sh
 $ kubectl --v=8 logs x
@@ -146,7 +146,7 @@ I0308 10:34:32.790999   26486 helpers.go:207] server response object: [{
 F0308 10:34:32.791043   26486 helpers.go:120] Error from server: Get https://aks-nodepool1-53392281-1:10250/containerLogs/default/x/x: dial tcp 10.240.0.6:10250: getsockopt: connection timed out
 ```
 
-在 AKS 中，kubectl logs, exec, and attach 等命令需要 Master 与 Nodes 节点之间建立隧道连接。在 `kube-system` namespace 中可以看到 `tunnelfront` 和 `kube-svc-redirect` Pod：
+在 AKS 中，kubectl logs, exec, and attach 等命令需要 Master 與 Nodes 節點之間建立隧道連接。在 `kube-system` namespace 中可以看到 `tunnelfront` 和 `kube-svc-redirect` Pod：
 
 ```
 $ kubectl -n kube-system get po -l component=tunnel
@@ -160,26 +160,26 @@ kube-svc-redirect-x6sq5   1/1       Running   0          2d
 kube-svc-redirect-zjl7x   1/1       Running   1          2d
 ```
 
-如果它们不是处于 `Running` 状态或者 Exec/Logs/PortForward 等命令报 `net/http: TLS handshake timeout` 错误，删除 `tunnelfront` Pod，稍等一会就会自动创建新的出来，如：
+如果它們不是處於 `Running` 狀態或者 Exec/Logs/PortForward 等命令報 `net/http: TLS handshake timeout` 錯誤，刪除 `tunnelfront` Pod，稍等一會就會自動創建新的出來，如：
 
 ```
 $ kubectl -n kube-system delete po -l component=tunnel
 pod "tunnelfront-7644cd56b7-l5jmc" deleted
 ```
 
-## 使用 Virtual Kubelet 后 LoadBalancer Service 无法分配公网 IP
+## 使用 Virtual Kubelet 後 LoadBalancer Service 無法分配公網 IP
 
-使用 Virtual Kubelet 后，LoadBalancer Service 可能会一直处于 pending 状态，无法分配 IP 地址。查看该服务的事件（如 `kubectl describe svc）`会发现错误 `CreatingLoadBalancerFailed  4m (x15 over 45m)  service-controller  Error creating load balancer (will retry): failed to ensure load balancer for service default/nginx: ensure(default/nginx): lb(kubernetes) - failed to ensure host in pool: "instance not found"`。这是由于 Virtual Kubelet 创建的虚拟 Node 并不存在于 Azure 云平台中，因而无法将其加入到 Azure Load Balancer 的后端中。
+使用 Virtual Kubelet 後，LoadBalancer Service 可能會一直處於 pending 狀態，無法分配 IP 地址。查看該服務的事件（如 `kubectl describe svc）`會發現錯誤 `CreatingLoadBalancerFailed  4m (x15 over 45m)  service-controller  Error creating load balancer (will retry): failed to ensure load balancer for service default/nginx: ensure(default/nginx): lb(kubernetes) - failed to ensure host in pool: "instance not found"`。這是由於 Virtual Kubelet 創建的虛擬 Node 並不存在於 Azure 雲平臺中，因而無法將其加入到 Azure Load Balancer 的後端中。
 
-解决方法是开启 ServiceNodeExclusion 特性，即设置 `kube-controller-manager --feature-gates=ServiceNodeExclusion=true`。开启后，所有带有 `alpha.service-controller.kubernetes.io/exclude-balancer` 标签的 Node 都不会加入到云平台负载均衡的后端中。
+解決方法是開啟 ServiceNodeExclusion 特性，即設置 `kube-controller-manager --feature-gates=ServiceNodeExclusion=true`。開啟後，所有帶有 `alpha.service-controller.kubernetes.io/exclude-balancer` 標籤的 Node 都不會加入到雲平臺負載均衡的後端中。
 
-注意该特性仅适用于 Kubernetes 1.9 及以上版本。
+注意該特性僅適用於 Kubernetes 1.9 及以上版本。
 
-## Node 的 GPU 数总是 0
+## Node 的 GPU 數總是 0
 
-当在 AKS 集群中运行 GPU 负载时，发现它们无法调度，这可能是由于 Node 容量中的 `nvidia.com/gpu` 总是0。
+當在 AKS 集群中運行 GPU 負載時，發現它們無法調度，這可能是由於 Node 容量中的 `nvidia.com/gpu` 總是0。
 
-解决方法是重新部署 nvidia-gpu 设备插件扩展：
+解決方法是重新部署 nvidia-gpu 設備插件擴展：
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -224,15 +224,15 @@ spec:
         accelerator: nvidia
 ```
 
-## Azure ServicePrincipal 过期
+## Azure ServicePrincipal 過期
 
-默认情况下，Service Principal 的过期时间是 1 年，可以通过以下的命令延长过期时间：
+默認情況下，Service Principal 的過期時間是 1 年，可以通過以下的命令延長過期時間：
 
 ```sh
 az ad sp credential reset --name <clientId> --password <clientSecret> --years <newYears>
 ```
 
-## 参考文档
+## 參考文檔
 
 * [AKS troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting)
 

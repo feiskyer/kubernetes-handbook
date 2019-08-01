@@ -2,7 +2,7 @@
 
 ![](https://i.imgur.com/6zYTLL8.png)
 
-**Kubernetes 从 v1.8 开始支持 [原生的 Apache Spark](https://apache-spark-on-k8s.github.io/userdocs/running-on-kubernetes.html) 应用（需要 Spark 支持 Kubernetes，比如 v2.3）**，可以通过 `spark-submit` 命令直接提交 Kubernetes 任务。比如计算圆周率
+**Kubernetes 從 v1.8 開始支持 [原生的 Apache Spark](https://apache-spark-on-k8s.github.io/userdocs/running-on-kubernetes.html) 應用（需要 Spark 支持 Kubernetes，比如 v2.3）**，可以通過 `spark-submit` 命令直接提交 Kubernetes 任務。比如計算圓周率
 
 ```sh
 bin/spark-submit \
@@ -35,14 +35,14 @@ bin/spark-submit \
 
 ## Spark on Kubernetes 部署
 
-Kubernetes 示例 [github](https://github.com/kubernetes/examples/tree/master/staging/spark) 上提供了一个详细的 spark 部署方法，由于步骤复杂，这里简化一些部分让大家安装的时候不用去多设定一些东西。
+Kubernetes 示例 [github](https://github.com/kubernetes/examples/tree/master/staging/spark) 上提供了一個詳細的 spark 部署方法，由於步驟複雜，這裡簡化一些部分讓大家安裝的時候不用去多設定一些東西。
 
-### 部署条件
+### 部署條件
 
-* 一个 kubernetes 群集, 可参考 [集群部署](../deploy/cluster.md)
-* kube-dns 正常运作
+* 一個 kubernetes 群集, 可參考 [集群部署](../deploy/cluster.md)
+* kube-dns 正常運作
 
-### 创建一个命名空间
+### 創建一個命名空間
 
 namespace-spark-cluster.yaml
 
@@ -59,12 +59,12 @@ metadata:
 $ kubectl create -f examples/staging/spark/namespace-spark-cluster.yaml
 ```
 
-这边原文提到需要将 kubectl 的执行环境转到 spark-cluster, 这边为了方便我们不这样做, 而是将之后的佈署命名空间都加入 spark-cluster
+這邊原文提到需要將 kubectl 的執行環境轉到 spark-cluster, 這邊為了方便我們不這樣做, 而是將之後的佈署命名空間都加入 spark-cluster
 
 
 ### 部署 Master Service
 
-建立一个 replication controller, 来运行 Spark Master 服务
+建立一個 replication controller, 來運行 Spark Master 服務
 
 ```yaml
 kind: ReplicationController
@@ -98,7 +98,7 @@ spec:
 $ kubectl create -f spark-master-controller.yaml
 ```
 
-创建 master 服务
+創建 master 服務
 
 
 spark-master-service.yaml
@@ -125,7 +125,7 @@ spec:
 $ kubectl create -f spark-master-service.yaml
 ```
 
-检查 Master 是否正常运行
+檢查 Master 是否正常運行
 
 ```sh
 $ kubectl get pod -n spark-cluster
@@ -152,7 +152,7 @@ $ kubectl logs spark-master-controller-qtwm8 -n spark-cluster
 ```
 
 
-若 master 已经被建立与运行, 我们可以透过 Spark 开发的 webUI 来察看我们 spark 的群集状况, 我们将佈署 [specialized proxy](https://github.com/aseigneurin/spark-ui-proxy)
+若 master 已經被建立與運行, 我們可以透過 Spark 開發的 webUI 來察看我們 spark 的群集狀況, 我們將佈署 [specialized proxy](https://github.com/aseigneurin/spark-ui-proxy)
 
 
 spark-ui-proxy-controller.yaml
@@ -194,7 +194,7 @@ spec:
 $ kubectl create -f spark-ui-proxy-controller.yaml
 ```
 
-提供一个 service 做存取, 这边原文是使用 LoadBalancer type, 这边我们改成 NodePort, 如果你的 kubernetes 运行环境是在 cloud provider, 也可以参考原文作法
+提供一個 service 做存取, 這邊原文是使用 LoadBalancer type, 這邊我們改成 NodePort, 如果你的 kubernetes 運行環境是在 cloud provider, 也可以參考原文作法
 
 spark-ui-proxy-service.yaml
 
@@ -218,17 +218,17 @@ spec:
 $ kubectl create -f spark-ui-proxy-service.yaml
 ```
 
-部署完后你可以利用 [kubecrl proxy](https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/) 来察看你的 Spark 群集状态
+部署完後你可以利用 [kubecrl proxy](https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/) 來察看你的 Spark 群集狀態
 
 ```sh
 $ kubectl proxy --port=8001
 ```
 
-可以透过 `http://localhost:8001/api/v1/proxy/namespaces/spark-cluster/services/spark-master:8080/` 察看, 若 kubectl 中断就无法这样观察了, 但我们再先前有设定 nodeport 所以也可以透过任意台 node 的端口 30080 去察看（例如 `http://10.201.2.34:30080`）。
+可以透過 `http://localhost:8001/api/v1/proxy/namespaces/spark-cluster/services/spark-master:8080/` 察看, 若 kubectl 中斷就無法這樣觀察了, 但我們再先前有設定 nodeport 所以也可以透過任意臺 node 的端口 30080 去察看（例如 `http://10.201.2.34:30080`）。
 
 ### 部署 Spark workers
 
-要先确定 Matser 是再运行的状态
+要先確定 Matser 是再運行的狀態
 
 spark-worker-controller.yaml
 ```
@@ -262,7 +262,7 @@ $ kubectl create -f spark-worker-controller.yaml
 replicationcontroller "spark-worker-controller" created
 ```
 
-透过指令察看运行状况
+透過指令察看運行狀況
 
 ```sh
 $ kubectl get pod -n spark-cluster
@@ -272,14 +272,14 @@ spark-worker-controller-z6f21     1/1       Running   0          6d
 spark-ui-proxy-controller-d4br2   1/1       Running   4          6d
 ```
 
-也可以透过上面建立的 WebUI 服务去察看
+也可以透過上面建立的 WebUI 服務去察看
 
-基本上到这边 Spark 的群集已经建立完成了
+基本上到這邊 Spark 的群集已經建立完成了
 
 
-### 创建 Zeppelin UI
+### 創建 Zeppelin UI
 
-我们可以利用 Zeppelin UI 经由 web notebook 直接去执行我们的任务, 详情可以看 [Zeppelin UI](https://zeppelin.apache.org) 与 [Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
+我們可以利用 Zeppelin UI 經由 web notebook 直接去執行我們的任務, 詳情可以看 [Zeppelin UI](https://zeppelin.apache.org) 與 [Spark architecture](https://spark.apache.org/docs/latest/cluster-overview.html)
 
 zeppelin-controller.yaml
 
@@ -314,7 +314,7 @@ $ kubectl create -f zeppelin-controller.yaml
 replicationcontroller "zeppelin-controller" created
 ```
 
-然后一样佈署 Service
+然後一樣佈署 Service
 
 zeppelin-service.yaml
 
@@ -338,9 +338,9 @@ spec:
 $ kubectl create -f zeppelin-service.yaml
 ```
 
-可以看到我们把 NodePort 设再 30081, 一样可以透过任意台 node 的 30081 port 访问 zeppelin UI。
+可以看到我們把 NodePort 設再 30081, 一樣可以透過任意臺 node 的 30081 port 訪問 zeppelin UI。
 
-通过命令行访问 pyspark（记得把 pod 名字换成你自己的）：
+通過命令行訪問 pyspark（記得把 pod 名字換成你自己的）：
 
 ```
 $ kubectl exec -it zeppelin-controller-8f14f -n spark-cluster pyspark
@@ -360,14 +360,14 @@ SparkContext available as sc, HiveContext available as sqlContext.
 >>>
 ```
 
-接着就能使用 Spark 的服务了, 如有错误欢迎更正。
+接著就能使用 Spark 的服務了, 如有錯誤歡迎更正。
 
-### zeppelin 常见问题
+### zeppelin 常見問題
 
-* zeppelin 的镜像非常大, 所以再 pull 时会花上一些时间, 而 size 大小的问题现在也正在解决中, 详情可参考 issue #17231
-* 在 GKE 的平台上, `kubectl post-forward` 可能有些不稳定, 如果你看现 zeppelin 的状态为 `Disconnected`,`port-forward` 可能已经失败你需要去重新启动它, 详情可参考 #12179
+* zeppelin 的鏡像非常大, 所以再 pull 時會花上一些時間, 而 size 大小的問題現在也正在解決中, 詳情可參考 issue #17231
+* 在 GKE 的平臺上, `kubectl post-forward` 可能有些不穩定, 如果你看現 zeppelin 的狀態為 `Disconnected`,`port-forward` 可能已經失敗你需要去重新啟動它, 詳情可參考 #12179
 
-## 参考文档
+## 參考文檔
 
 - [Apache Spark on Kubernetes](https://apache-spark-on-k8s.github.io/userdocs/index.html)
 - [https://github.com/kweisamx/spark-on-kubernetes](https://github.com/kweisamx/spark-on-kubernetes)

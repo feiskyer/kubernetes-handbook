@@ -1,20 +1,20 @@
-# Kubernetes 生态圈
+# Kubernetes 生態圈
 
-## 云原生全景
+## 雲原生全景
 
 ![](CloudNativeLandscape.png)
 
-图片来源：<https://landscape.cncf.io/>。
+圖片來源：<https://landscape.cncf.io/>。
 
-## 云原生地图
+## 雲原生地圖
 
 ![](CNCF_TrailMap_latest.png)
 
-图片来源：<https://github.com/cncf/landscape>。
+圖片來源：<https://github.com/cncf/landscape>。
 
 ## Serverless
 
 ![](CloudNativeLandscape_Serverless_latest.png)
 
-图片来源：<https://s.cncf.io>。
+圖片來源：<https://s.cncf.io>。
 

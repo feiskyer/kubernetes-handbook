@@ -1,22 +1,22 @@
 # Istio 策略管理
 
-Mixer 为应用程序和基础架构后端之间提供了一个通用的策略控制层，负责先决条件检查（如认证授权）、配额管理并从 Envoy 代理中收集遥测数据等。
+Mixer 為應用程序和基礎架構後端之間提供了一個通用的策略控制層，負責先決條件檢查（如認證授權）、配額管理並從 Envoy 代理中收集遙測數據等。
 
 ![](images/istio-mixer.png)
 
-Mixer 是高度模块化和可扩展的组件。他的一个关键功能就是把不同后端的策略和遥测收集系统的细节抽象出来，使得 Istio 的其余部分对这些后端不知情。Mixer 处理不同基础设施后端的灵活性是通过使用通用插件模型实现的。每个插件都被称为 **Adapter**，Mixer通过它们与不同的基础设施后端连接，这些后端可提供核心功能，例如日志、监控、配额、ACL 检查等。通过配置能够决定在运行时使用的确切的适配器套件，并且可以轻松扩展到新的或定制的基础设施后端。
+Mixer 是高度模塊化和可擴展的組件。他的一個關鍵功能就是把不同後端的策略和遙測收集系統的細節抽象出來，使得 Istio 的其餘部分對這些後端不知情。Mixer 處理不同基礎設施後端的靈活性是通過使用通用插件模型實現的。每個插件都被稱為 **Adapter**，Mixer通過它們與不同的基礎設施後端連接，這些後端可提供核心功能，例如日誌、監控、配額、ACL 檢查等。通過配置能夠決定在運行時使用的確切的適配器套件，並且可以輕鬆擴展到新的或定製的基礎設施後端。
 
 ![](images/istio-adapters.png)
 
 
-## 实现原理
+## 實現原理
 
-本质上，Mixer 是一个 [属性](https://istio.io/docs/concepts/policy-and-control/attributes.html) 处理机，进入 Mixer 的请求带有一系列的属性，Mixer 按照不同的处理阶段处理：
+本質上，Mixer 是一個 [屬性](https://istio.io/docs/concepts/policy-and-control/attributes.html) 處理機，進入 Mixer 的請求帶有一系列的屬性，Mixer 按照不同的處理階段處理：
 
-- 通过全局 Adapters 为请求引入新的属性
-- 通过解析（Resolution）识别要用于处理请求的配置资源
-- 处理属性，生成 Adapter 参数
-- 分发请求到各个 Adapters 后端处理
+- 通過全局 Adapters 為請求引入新的屬性
+- 通過解析（Resolution）識別要用於處理請求的配置資源
+- 處理屬性，生成 Adapter 參數
+- 分發請求到各個 Adapters 後端處理
 
 ![](images/istio-phase.png)
 
@@ -102,6 +102,6 @@ spec:
   - name: productpage
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Istio Mixer](https://istio.io/docs/concepts/policy-and-control/mixer.html)

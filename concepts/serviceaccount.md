@@ -1,16 +1,16 @@
 # Service Account
 
-Service account 是为了方便 Pod 里面的进程调用 Kubernetes API 或其他外部服务而设计的。它与 User account 不同
+Service account 是為了方便 Pod 裡面的進程調用 Kubernetes API 或其他外部服務而設計的。它與 User account 不同
 
-- User account 是为人设计的，而 service account 则是为 Pod 中的进程调用 Kubernetes API 而设计；
-- User account 是跨 namespace 的，而 service account 则是仅局限它所在的 namespace；
-- 每个 namespace 都会自动创建一个 default service account
-- Token controller 检测 service account 的创建，并为它们创建 [secret](secret.md)
-- 开启 ServiceAccount Admission Controller 后
-  - 每个 Pod 在创建后都会自动设置 `spec.serviceAccountName` 为 default（除非指定了其他 ServiceAccout）
-  - 验证 Pod 引用的 service account 已经存在，否则拒绝创建
-  - 如果 Pod 没有指定 ImagePullSecrets，则把 service account 的 ImagePullSecrets 加到 Pod 中
-  - 每个 container 启动后都会挂载该 service account 的 token 和 `ca.crt` 到 `/var/run/secrets/kubernetes.io/serviceaccount/`
+- User account 是為人設計的，而 service account 則是為 Pod 中的進程調用 Kubernetes API 而設計；
+- User account 是跨 namespace 的，而 service account 則是僅侷限它所在的 namespace；
+- 每個 namespace 都會自動創建一個 default service account
+- Token controller 檢測 service account 的創建，併為它們創建 [secret](secret.md)
+- 開啟 ServiceAccount Admission Controller 後
+  - 每個 Pod 在創建後都會自動設置 `spec.serviceAccountName` 為 default（除非指定了其他 ServiceAccout）
+  - 驗證 Pod 引用的 service account 已經存在，否則拒絕創建
+  - 如果 Pod 沒有指定 ImagePullSecrets，則把 service account 的 ImagePullSecrets 加到 Pod 中
+  - 每個 container 啟動後都會掛載該 service account 的 token 和 `ca.crt` 到 `/var/run/secrets/kubernetes.io/serviceaccount/`
 
 ```sh
 $ kubectl exec nginx-3137573019-md1u2 ls /var/run/secrets/kubernetes.io/serviceaccount
@@ -19,9 +19,9 @@ namespace
 token
 ```
 
-> 注：你可以使用 <https://jwt.io/> 来查看 token 的详细信息（如 PAYLOAD、SIGNATURE 等）。
+> 注：你可以使用 <https://jwt.io/> 來查看 token 的詳細信息（如 PAYLOAD、SIGNATURE 等）。
 
-## 创建 Service Account
+## 創建 Service Account
 
 ```sh
 $ kubectl create serviceaccount jenkins
@@ -40,7 +40,7 @@ secrets:
 - name: jenkins-token-l9v7v
 ```
 
-自动创建的 secret：
+自動創建的 secret：
 
 ```sh
 kubectl get secret jenkins-token-l9v7v -o yaml
@@ -80,12 +80,12 @@ imagePullSecrets:
 - name: myregistrykey
 ```
 
-## 授权
+## 授權
 
-Service Account 为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合 [RBAC](https://kubernetes.io/docs/admin/authorization/#a-quick-note-on-service-accounts) 来为 Service Account 鉴权：
+Service Account 為服務提供了一種方便的認證機制，但它不關心授權的問題。可以配合 [RBAC](https://kubernetes.io/docs/admin/authorization/#a-quick-note-on-service-accounts) 來為 Service Account 鑑權：
 - 配置 `--authorization-mode=RBAC` 和 `--runtime-config=rbac.authorization.k8s.io/v1alpha1`
 - 配置 `--authorization-rbac-super-user=admin`
-- 定义 Role、ClusterRole、RoleBinding 或 ClusterRoleBinding
+- 定義 Role、ClusterRole、RoleBinding 或 ClusterRoleBinding
 
 比如
 

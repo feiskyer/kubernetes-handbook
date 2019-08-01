@@ -1,3 +1,3 @@
-# Istio 排错
+# Istio 排錯
 
-请见 <https://istio.io/docs/ops/traffic-management/troubleshooting/>。
+請見 <https://istio.io/docs/ops/traffic-management/troubleshooting/>。

@@ -1,17 +1,17 @@
 # kube-proxy
 
-每台机器上都运行一个 kube-proxy 服务，它监听 API server 中 service 和 endpoint 的变化情况，并通过 iptables 等来为服务配置负载均衡（仅支持 TCP 和 UDP）。
+每臺機器上都運行一個 kube-proxy 服務，它監聽 API server 中 service 和 endpoint 的變化情況，並通過 iptables 等來為服務配置負載均衡（僅支持 TCP 和 UDP）。
 
-kube-proxy 可以直接运行在物理机上，也可以以 static pod 或者 daemonset 的方式运行。
+kube-proxy 可以直接運行在物理機上，也可以以 static pod 或者 daemonset 的方式運行。
 
-kube-proxy 当前支持以下几种实现
+kube-proxy 當前支持以下幾種實現
 
-- userspace：最早的负载均衡方案，它在用户空间监听一个端口，所有服务通过 iptables 转发到这个端口，然后在其内部负载均衡到实际的 Pod。该方式最主要的问题是效率低，有明显的性能瓶颈。
-- iptables：目前推荐的方案，完全以 iptables 规则的方式来实现 service 负载均衡。该方式最主要的问题是在服务多的时候产生太多的 iptables 规则，非增量式更新会引入一定的时延，大规模情况下有明显的性能问题
-- ipvs：为解决 iptables 模式的性能问题，v1.11 新增了 ipvs 模式（v1.8 开始支持测试版，并在 v1.11 GA），采用增量式更新，并可以保证 service 更新期间连接保持不断开
-- winuserspace：同 userspace，但仅工作在 windows 节点上
+- userspace：最早的負載均衡方案，它在用戶空間監聽一個端口，所有服務通過 iptables 轉發到這個端口，然後在其內部負載均衡到實際的 Pod。該方式最主要的問題是效率低，有明顯的性能瓶頸。
+- iptables：目前推薦的方案，完全以 iptables 規則的方式來實現 service 負載均衡。該方式最主要的問題是在服務多的時候產生太多的 iptables 規則，非增量式更新會引入一定的時延，大規模情況下有明顯的性能問題
+- ipvs：為解決 iptables 模式的性能問題，v1.11 新增了 ipvs 模式（v1.8 開始支持測試版，並在 v1.11 GA），採用增量式更新，並可以保證 service 更新期間連接保持不斷開
+- winuserspace：同 userspace，但僅工作在 windows 節點上
 
-注意：使用 ipvs 模式时，需要预先在每台 Node 上加载内核模块 `nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh` 等。
+注意：使用 ipvs 模式時，需要預先在每臺 Node 上加載內核模塊 `nf_conntrack_ipv4`, `ip_vs`, `ip_vs_rr`, `ip_vs_wrr`, `ip_vs_sh` 等。
 
 ```sh
 # load module <module_name>
@@ -31,7 +31,7 @@ cut -f1 -d " "  /proc/modules | grep -e ip_vs -e nf_conntrack_ipv4
 
 ![](images/iptables-mode.png)
 
-(图片来自[cilium/k8s-iptables-diagram](https://github.com/cilium/k8s-iptables-diagram))
+(圖片來自[cilium/k8s-iptables-diagram](https://github.com/cilium/k8s-iptables-diagram))
 
 ```sh
 # Masquerade
@@ -71,7 +71,7 @@ cut -f1 -d " "  /proc/modules | grep -e ip_vs -e nf_conntrack_ipv4
 -A KUBE-SEP-UXHBWR5XIMVGXW3H -p tcp -m comment --comment "default/nginx:" -m tcp -j DNAT --to-destination 10.244.1.2:80
 ```
 
-如果服务设置了 `externalTrafficPolicy: Local` 并且当前 Node 上面没有任何属于该服务的 Pod，那么在 `KUBE-XLB-4N57TFCL4MD7ZTDA` 中会直接丢掉从公网 IP 请求的包：
+如果服務設置了 `externalTrafficPolicy: Local` 並且當前 Node 上面沒有任何屬於該服務的 Pod，那麼在 `KUBE-XLB-4N57TFCL4MD7ZTDA` 中會直接丟掉從公網 IP 請求的包：
 
 ```sh
 -A KUBE-XLB-4N57TFCL4MD7ZTDA -m comment --comment "default/nginx: has no local endpoints" -j KUBE-MARK-DROP
@@ -79,7 +79,7 @@ cut -f1 -d " "  /proc/modules | grep -e ip_vs -e nf_conntrack_ipv4
 
 ## ipvs 示例
 
-[Kube-proxy IPVS mode](https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md) 列出了各种服务在 IPVS 模式下的工作原理。
+[Kube-proxy IPVS mode](https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md) 列出了各種服務在 IPVS 模式下的工作原理。
 
 ![](images/ipvs-mode.png)
 
@@ -96,9 +96,9 @@ UDP  10.0.0.10:53 rr
   -> 172.17.0.2:53                Masq    1      0          0
 ```
 
-注意，IPVS 模式也会使用 iptables 来执行 SNAT 和 IP 伪装（MASQUERADE），并使用 ipset 来简化 iptables 规则的管理：
+注意，IPVS 模式也會使用 iptables 來執行 SNAT 和 IP 偽裝（MASQUERADE），並使用 ipset 來簡化 iptables 規則的管理：
 
-| ipset 名                       | 成员                                                         | 用途                                                         |
+| ipset 名                       | 成員                                                         | 用途                                                         |
 | ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | KUBE-CLUSTER-IP                | All service IP + port                                        | Mark-Masq for cases that `masquerade-all=true` or `clusterCIDR` specified |
 | KUBE-LOOP-BACK                 | All service IP + port + IP                                   | masquerade for solving hairpin purpose                       |
@@ -112,7 +112,7 @@ UDP  10.0.0.10:53 rr
 | KUBE-NODE-PORT-UDP             | nodeport type service UDP port                               | masquerade for packets to nodePort(UDP)                      |
 | KUBE-NODE-PORT-LOCAL-UDP       | nodeport type service UDP port with`externalTrafficPolicy=local` | accept packages to nodeport service with`externalTrafficPolicy=local` |
 
-## 启动 kube-proxy 示例
+## 啟動 kube-proxy 示例
 
 ```sh
 kube-proxy --kubeconfig=/var/lib/kubelet/kubeconfig --cluster-cidr=10.240.0.0/12 --feature-gates=ExperimentalCriticalPodAnnotation=true --proxy-mode=iptables
@@ -120,10 +120,10 @@ kube-proxy --kubeconfig=/var/lib/kubelet/kubeconfig --cluster-cidr=10.240.0.0/12
 
 ## kube-proxy 工作原理
 
-kube-proxy 监听 API server 中 service 和 endpoint 的变化情况，并通过 userspace、iptables、ipvs 或 winuserspace 等 proxier 来为服务配置负载均衡（仅支持 TCP 和 UDP）。
+kube-proxy 監聽 API server 中 service 和 endpoint 的變化情況，並通過 userspace、iptables、ipvs 或 winuserspace 等 proxier 來為服務配置負載均衡（僅支持 TCP 和 UDP）。
 
 ![](images/kube-proxy.png)
 
 ## kube-proxy 不足
 
-kube-proxy 目前仅支持 TCP 和 UDP，不支持 HTTP 路由，并且也没有健康检查机制。这些可以通过自定义 [Ingress Controller](../plugins/ingress.md) 的方法来解决。
+kube-proxy 目前僅支持 TCP 和 UDP，不支持 HTTP 路由，並且也沒有健康檢查機制。這些可以通過自定義 [Ingress Controller](../plugins/ingress.md) 的方法來解決。

@@ -1,60 +1,60 @@
-# Kubernetes 简介
+# Kubernetes 簡介
 
-Kubernetes 是谷歌开源的容器集群管理系统，是 Google 多年大规模容器管理技术 Borg 的开源版本，主要功能包括：
+Kubernetes 是谷歌開源的容器集群管理系統，是 Google 多年大規模容器管理技術 Borg 的開源版本，主要功能包括：
 
-- 基于容器的应用部署、维护和滚动升级
-- 负载均衡和服务发现
-- 跨机器和跨地区的集群调度
-- 自动伸缩
-- 无状态服务和有状态服务
-- 广泛的 Volume 支持
-- 插件机制保证扩展性
+- 基於容器的應用部署、維護和滾動升級
+- 負載均衡和服務發現
+- 跨機器和跨地區的集群調度
+- 自動伸縮
+- 無狀態服務和有狀態服務
+- 廣泛的 Volume 支持
+- 插件機制保證擴展性
 
-Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。
+Kubernetes 發展非常迅速，已經成為容器編排領域的領導者。
 
-## Kubernetes 是一个平台
+## Kubernetes 是一個平臺
 
-Kubernetes 提供了很多的功能，它可以简化应用程序的工作流，加快开发速度。通常，一个成功的应用编排系统需要有较强的自动化能力，这也是为什么 Kubernetes 被设计作为构建组件和工具的生态系统平台，以便更轻松地部署、扩展和管理应用程序。
+Kubernetes 提供了很多的功能，它可以簡化應用程序的工作流，加快開發速度。通常，一個成功的應用編排系統需要有較強的自動化能力，這也是為什麼 Kubernetes 被設計作為構建組件和工具的生態系統平臺，以便更輕鬆地部署、擴展和管理應用程序。
 
-用户可以使用 Label 以自己的方式组织管理资源，还可以使用 Annotation 来自定义资源的描述信息，比如为管理工具提供状态检查等。
+用戶可以使用 Label 以自己的方式組織管理資源，還可以使用 Annotation 來自定義資源的描述信息，比如為管理工具提供狀態檢查等。
 
-此外，Kubernetes 控制器也是构建在跟开发人员和用户使用的相同的 API 之上。用户还可以编写自己的控制器和调度器，也可以通过各种插件机制扩展系统的功能。
+此外，Kubernetes 控制器也是構建在跟開發人員和用戶使用的相同的 API 之上。用戶還可以編寫自己的控制器和調度器，也可以通過各種插件機制擴展系統的功能。
 
-这种设计使得可以方便地在 Kubernetes 之上构建各种应用系统。
+這種設計使得可以方便地在 Kubernetes 之上構建各種應用系統。
 
-## Kubernetes 不是什么
+## Kubernetes 不是什麼
 
-Kubernetes 不是一个传统意义上，包罗万象的 PaaS (平台即服务) 系统。它给用户预留了选择的自由。
+Kubernetes 不是一個傳統意義上，包羅萬象的 PaaS (平臺即服務) 系統。它給用戶預留了選擇的自由。
 
-- 不限制支持的应用程序类型，它不插手应用程序框架, 也不限制支持的语言 (如 Java, Python, Ruby 等)，只要应用符合 [12 因素](http://12factor.net/) 即可。Kubernetes 旨在支持极其多样化的工作负载，包括无状态、有状态和数据处理工作负载。只要应用可以在容器中运行，那么它就可以很好的在 Kubernetes 上运行。
-- 不提供内置的中间件 (如消息中间件)、数据处理框架 (如 Spark)、数据库 (如 mysql) 或集群存储系统 (如 Ceph) 等。这些应用直接运行在 Kubernetes 之上。
-- 不提供点击即部署的服务市场。
-- 不直接部署代码，也不会构建您的应用程序，但您可以在 Kubernetes 之上构建需要的持续集成 (CI) 工作流。
-- 允许用户选择自己的日志、监控和告警系统。
-- 不提供应用程序配置语言或系统 (如 [jsonnet](https://github.com/google/jsonnet))。
-- 不提供机器配置、维护、管理或自愈系统。
+- 不限制支持的應用程序類型，它不插手應用程序框架, 也不限制支持的語言 (如 Java, Python, Ruby 等)，只要應用符合 [12 因素](http://12factor.net/) 即可。Kubernetes 旨在支持極其多樣化的工作負載，包括無狀態、有狀態和數據處理工作負載。只要應用可以在容器中運行，那麼它就可以很好的在 Kubernetes 上運行。
+- 不提供內置的中間件 (如消息中間件)、數據處理框架 (如 Spark)、數據庫 (如 mysql) 或集群存儲系統 (如 Ceph) 等。這些應用直接運行在 Kubernetes 之上。
+- 不提供點擊即部署的服務市場。
+- 不直接部署代碼，也不會構建您的應用程序，但您可以在 Kubernetes 之上構建需要的持續集成 (CI) 工作流。
+- 允許用戶選擇自己的日誌、監控和告警系統。
+- 不提供應用程序配置語言或系統 (如 [jsonnet](https://github.com/google/jsonnet))。
+- 不提供機器配置、維護、管理或自愈系統。
 
-另外，已经有很多 PaaS 系统运行在 Kubernetes 之上，如 [Openshift](https://github.com/openshift/origin), [Deis](http://deis.io/) 和 [Eldarion](http://eldarion.cloud/) 等。 您也可以构建自己的 PaaS 系统，或者只使用 Kubernetes 管理您的容器应用。
+另外，已經有很多 PaaS 系統運行在 Kubernetes 之上，如 [Openshift](https://github.com/openshift/origin), [Deis](http://deis.io/) 和 [Eldarion](http://eldarion.cloud/) 等。 您也可以構建自己的 PaaS 系統，或者只使用 Kubernetes 管理您的容器應用。
 
-当然了，Kubernetes 不仅仅是一个 “编排系统”，它消除了编排的需要。Kubernetes 通过声明式的 API 和一系列独立、可组合的控制器保证了应用总是在期望的状态，而用户并不需要关心中间状态是如何转换的。这使得整个系统更容易使用，而且更强大、更可靠、更具弹性和可扩展性。
+當然了，Kubernetes 不僅僅是一個 “編排系統”，它消除了編排的需要。Kubernetes 通過聲明式的 API 和一系列獨立、可組合的控制器保證了應用總是在期望的狀態，而用戶並不需要關心中間狀態是如何轉換的。這使得整個系統更容易使用，而且更強大、更可靠、更具彈性和可擴展性。
 
-## 核心组件
+## 核心組件
 
-Kubernetes 主要由以下几个核心组件组成：
+Kubernetes 主要由以下幾個核心組件組成：
 
-- etcd 保存了整个集群的状态；
-- apiserver 提供了资源操作的唯一入口，并提供认证、授权、访问控制、API 注册和发现等机制；
-- controller manager 负责维护集群的状态，比如故障检测、自动扩展、滚动更新等；
-- scheduler 负责资源的调度，按照预定的调度策略将 Pod 调度到相应的机器上；
-- kubelet 负责维护容器的生命周期，同时也负责 Volume（CVI）和网络（CNI）的管理；
-- Container runtime 负责镜像管理以及 Pod 和容器的真正运行（CRI）；
-- kube-proxy 负责为 Service 提供 cluster 内部的服务发现和负载均衡
+- etcd 保存了整個集群的狀態；
+- apiserver 提供了資源操作的唯一入口，並提供認證、授權、訪問控制、API 註冊和發現等機制；
+- controller manager 負責維護集群的狀態，比如故障檢測、自動擴展、滾動更新等；
+- scheduler 負責資源的調度，按照預定的調度策略將 Pod 調度到相應的機器上；
+- kubelet 負責維護容器的生命週期，同時也負責 Volume（CVI）和網絡（CNI）的管理；
+- Container runtime 負責鏡像管理以及 Pod 和容器的真正運行（CRI）；
+- kube-proxy 負責為 Service 提供 cluster 內部的服務發現和負載均衡
 
 ![](architecture.png)
 
 ## Kubernetes 版本
 
-Kubernetes 的稳定版本在发布后会继续支持 9 个月。每个版本的支持周期为：
+Kubernetes 的穩定版本在發佈後會繼續支持 9 個月。每個版本的支持週期為：
 
 | Kubernetes version | Release month  | End-of-life-month |
 |--------------------|----------------|-------------------|
@@ -65,7 +65,7 @@ Kubernetes 的稳定版本在发布后会继续支持 9 个月。每个版本的
 | v1.10.x            | March 2018     | December 2018     |
 | v1.11.x            | June 2018      | March 2019        |
 
-## 参考文档
+## 參考文檔
 
 - [What is Kubernetes?](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 - [HOW CUSTOMERS ARE REALLY USING KUBERNETES](https://apprenda.com/blog/customers-really-using-kubernetes/)

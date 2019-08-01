@@ -1,6 +1,6 @@
-# 资源对象
+# 資源對象
 
-Kubernetes 主要概念和对象介绍。
+Kubernetes 主要概念和對象介紹。
 
 - [Autoscaling (HPA)](autoscaling.md)
 - [ConfigMap](configmap.md)

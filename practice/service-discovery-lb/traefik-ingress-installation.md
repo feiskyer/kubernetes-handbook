@@ -1,22 +1,22 @@
-# 安装traefik ingress
+# 安裝traefik ingress
 
-## Ingress简介
+## Ingress簡介
 
-简单的说，ingress就是从kubernetes集群外访问集群的入口，将用户的URL请求转发到不同的service上。Ingress相当于nginx、apache等负载均衡方向代理服务器，其中还包括规则定义，即URL的路由信息，路由信息得的刷新由[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)来提供。
+簡單的說，ingress就是從kubernetes集群外訪問集群的入口，將用戶的URL請求轉發到不同的service上。Ingress相當於nginx、apache等負載均衡方向代理服務器，其中還包括規則定義，即URL的路由信息，路由信息得的刷新由[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)來提供。
 
-Ingress Controller 实质上可以理解为是个监视器，Ingress Controller 通过不断地跟 kubernetes API 打交道，实时的感知后端 service、pod 等变化，比如新增和减少 pod，service 增加与减少等；当得到这些变化信息后，Ingress Controller 再结合下文的 Ingress 生成配置，然后更新反向代理负载均衡器，并刷新其配置，达到服务发现的作用。
+Ingress Controller 實質上可以理解為是個監視器，Ingress Controller 通過不斷地跟 kubernetes API 打交道，實時的感知後端 service、pod 等變化，比如新增和減少 pod，service 增加與減少等；當得到這些變化信息後，Ingress Controller 再結合下文的 Ingress 生成配置，然後更新反向代理負載均衡器，並刷新其配置，達到服務發現的作用。
 
 ## 部署Traefik
 
-**介绍traefik**
+**介紹traefik**
 
-[Traefik](https://traefik.io/)是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API等等后端模型。
+[Traefik](https://traefik.io/)是一款開源的反向代理與負載均衡工具。它最大的優點是能夠與常見的微服務系統直接整合，可以實現自動化動態配置。目前支持Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API等等後端模型。
 
-以下配置文件可以在Traefik GitHub仓库中的[examples/k8s/traefik-rbac.yaml](https://github.com/containous/traefik/tree/master/examples/k8s/traefik-rbac.yaml)找到。
+以下配置文件可以在Traefik GitHub倉庫中的[examples/k8s/traefik-rbac.yaml](https://github.com/containous/traefik/tree/master/examples/k8s/traefik-rbac.yaml)找到。
 
-**创建ingress-rbac.yaml**
+**創建ingress-rbac.yaml**
 
-将用于service account验证。
+將用於service account驗證。
 
 ```Yaml
 ---
@@ -62,7 +62,7 @@ subjects:
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
 ```
 
-**创建Depeloyment**
+**創建Depeloyment**
 
 ```yaml
 ---
@@ -119,13 +119,13 @@ spec:
 ```sh
 # 使用deployment部署
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-deployment.yaml
-# 也可以使用daemonset来部署
+# 也可以使用daemonset來部署
 # kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
 ```
 
-注意我们这里用的是Deploy类型，没有限定该pod运行在哪个主机上。Traefik的端口是8580。
+注意我們這裡用的是Deploy類型，沒有限定該pod運行在哪個主機上。Traefik的端口是8580。
 
-**创建名为`traefik-ingress`的ingress**，文件名traefik.yaml
+**創建名為`traefik-ingress`的ingress**，文件名traefik.yaml
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -150,9 +150,9 @@ spec:
           servicePort: 80
 ```
 
-这其中的`backend`中要配置default namespace中启动的service名字。`path`就是URL地址后的路径，如traefik.frontend.io/path，service将会接受path这个路径，host最好使用service-name.filed1.filed2.domain-name这种类似主机名称的命名方式，方便区分服务。
+這其中的`backend`中要配置default namespace中啟動的service名字。`path`就是URL地址後的路徑，如traefik.frontend.io/path，service將會接受path這個路徑，host最好使用service-name.filed1.filed2.domain-name這種類似主機名稱的命名方式，方便區分服務。
 
-根据你自己环境中部署的service的名字和端口自行修改，有新service增加时，修改该文件后可以使用`kubectl replace -f traefik.yaml`来更新。
+根據你自己環境中部署的service的名字和端口自行修改，有新service增加時，修改該文件後可以使用`kubectl replace -f traefik.yaml`來更新。
 
 **Traefik UI**
 
@@ -186,23 +186,23 @@ spec:
           servicePort: 80
 ```
 
-配置完成后就可以启动treafik ingress了。
+配置完成後就可以啟動treafik ingress了。
 
 ```
 kubectl create -f .
 ```
 
-我查看到traefik的pod在`172.20.0.115`这台节点上启动了。
+我查看到traefik的pod在`172.20.0.115`這臺節點上啟動了。
 
-访问该地址`http://172.20.0.115:8580/`将可以看到dashboard。
+訪問該地址`http://172.20.0.115:8580/`將可以看到dashboard。
 
 ![kubernetes-dashboard](images/traefik-dashboard.jpg)
 
-左侧黄色部分部分列出的是所有的rule，右侧绿色部分是所有的backend。
+左側黃色部分部分列出的是所有的rule，右側綠色部分是所有的backend。
 
-## 测试
+## 測試
 
-在集群的任意一个节点上执行。假如现在我要访问nginx的"/"路径。
+在集群的任意一個節點上執行。假如現在我要訪問nginx的"/"路徑。
 
 ```bash
 $ curl -H Host:traefik.nginx.io http://172.20.0.115/
@@ -233,7 +233,7 @@ Commercial support is available at
 </html>
 ```
 
-如果你需要在kubernetes集群以外访问就需要设置DNS，或者修改本机的hosts文件。
+如果你需要在kubernetes集群以外訪問就需要設置DNS，或者修改本機的hosts文件。
 
 在其中加入：
 
@@ -242,17 +242,17 @@ Commercial support is available at
 172.20.0.115 traefik.frontend.io
 ```
 
-所有访问这些地址的流量都会发送给172.20.0.115这台主机，就是我们启动traefik的主机。
+所有訪問這些地址的流量都會發送給172.20.0.115這臺主機，就是我們啟動traefik的主機。
 
-Traefik会解析http请求header里的Host参数将流量转发给Ingress配置里的相应service。
+Traefik會解析http請求header裡的Host參數將流量轉發給Ingress配置裡的相應service。
 
-修改hosts后就就可以在kubernetes集群外访问以上两个service，如下图：
+修改hosts後就就可以在kubernetes集群外訪問以上兩個service，如下圖：
 
 ![traefik-nginx](images/traefik-nginx.jpg)
 
 ![traefik-guestbook](images/traefik-guestbook.jpg)
 
-## 参考文档
+## 參考文檔
 
-- [Traefik简介](http://www.tuicool.com/articles/ZnuEfay)
+- [Traefik簡介](http://www.tuicool.com/articles/ZnuEfay)
 - [Guestbook example](https://github.com/kubernetes/kubernetes/tree/master/examples/guestbook)

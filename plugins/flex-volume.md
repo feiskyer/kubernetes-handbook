@@ -1,29 +1,29 @@
 # FlexVolume
 
-FlexVolume 是 Kubernetes v1.8+ 支持的一种存储插件扩展方式。类似于 CNI 插件，它需要外部插件将二进制文件放到预先配置的路径中（如 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`），并需要在系统中安装好所有需要的依赖。
+FlexVolume 是 Kubernetes v1.8+ 支持的一種存儲插件擴展方式。類似於 CNI 插件，它需要外部插件將二進制文件放到預先配置的路徑中（如 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`），並需要在系統中安裝好所有需要的依賴。
 
-> 对于新的存储插件，推荐基于 [CSI](csi.md) 构建。
+> 對於新的存儲插件，推薦基於 [CSI](csi.md) 構建。
 
 ## FlexVolume 接口
 
-实现一个 FlexVolume 包括两个步骤
+實現一個 FlexVolume 包括兩個步驟
 
-- 实现 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可参考 [lvm 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/lvm) 和 [NFS 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/nfs)）
-- 将插件放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>` 目录中
+- 實現 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可參考 [lvm 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/lvm) 和 [NFS 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/nfs)）
+- 將插件放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>` 目錄中
 
 FlexVolume 的接口包括
 
-- init：kubelet/kube-controller-manager 初始化存储插件时调用，插件需要返回是否需要要 `attach` 和 `detach` 操作
-- attach：将存储卷挂载到 Node 上
-- detach：将存储卷从 Node 上卸载
-- waitforattach： 等待 attach 操作成功（超时时间为 10 分钟）
-- isattached：检查存储卷是否已经挂载
-- mountdevice：将设备挂载到指定目录中以便后续 bind mount 使用
-- unmountdevice：将设备取消挂载
-- mount：将存储卷挂载到指定目录中
-- umount：将存储卷取消挂载
+- init：kubelet/kube-controller-manager 初始化存儲插件時調用，插件需要返回是否需要要 `attach` 和 `detach` 操作
+- attach：將存儲卷掛載到 Node 上
+- detach：將存儲卷從 Node 上卸載
+- waitforattach： 等待 attach 操作成功（超時時間為 10 分鐘）
+- isattached：檢查存儲卷是否已經掛載
+- mountdevice：將設備掛載到指定目錄中以便後續 bind mount 使用
+- unmountdevice：將設備取消掛載
+- mount：將存儲卷掛載到指定目錄中
+- umount：將存儲卷取消掛載
 
-而存储驱动在实现这些接口时需要以 JSON 格式返回数据，数据格式为
+而存儲驅動在實現這些接口時需要以 JSON 格式返回數據，數據格式為
 
 ```json
 {
@@ -41,7 +41,7 @@ FlexVolume 的接口包括
 
 ## 使用 FlexVolume
 
-在使用 flexVolume 时，需要指定卷的 driver，格式为 `<vendor~driver>/<driver>`，如下面的例子使用了 `kubernetes.io/lvm`
+在使用 flexVolume 時，需要指定卷的 driver，格式為 `<vendor~driver>/<driver>`，如下面的例子使用了 `kubernetes.io/lvm`
 
 ```yaml
 apiVersion: v1
@@ -71,5 +71,5 @@ spec:
 
 注意：
 
-- 在 v1.7 版本，部署新的 FlevVolume 插件后需要重启 kubelet 和 kube-controller-manager；
-- 而从 v1.8 开始不需要重启它们了。
+- 在 v1.7 版本，部署新的 FlevVolume 插件後需要重啟 kubelet 和 kube-controller-manager；
+- 而從 v1.8 開始不需要重啟它們了。

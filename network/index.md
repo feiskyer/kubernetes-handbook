@@ -1,3 +1,3 @@
-# Kubernetes网络
+# Kubernetes網絡
 
-本章介绍Kubernetes的网络模型以及常见插件的原理和使用方法。
+本章介紹Kubernetes的網絡模型以及常見插件的原理和使用方法。

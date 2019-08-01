@@ -1,18 +1,18 @@
 # 集群部署
 
-## Kubernetes 集群架构
+## Kubernetes 集群架構
 
 ![](images/ha.png)
 
 ### etcd 集群
 
-从 `https://discovery.etcd.io/new?size=3` 获取 token 后，把 `etcd.yaml` 放到每台机器的 `/etc/kubernetes/manifests/etcd.yaml`，并替换掉 `${DISCOVERY_TOKEN}`, `${NODE_NAME}` 和 `${NODE_IP}`，即可以由 kubelet 来启动一个 etcd 集群。
+從 `https://discovery.etcd.io/new?size=3` 獲取 token 後，把 `etcd.yaml` 放到每臺機器的 `/etc/kubernetes/manifests/etcd.yaml`，並替換掉 `${DISCOVERY_TOKEN}`, `${NODE_NAME}` 和 `${NODE_IP}`，即可以由 kubelet 來啟動一個 etcd 集群。
 
-对于运行在 kubelet 外部的 etcd，可以参考 [etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md) 来手动配置集群模式。
+對於運行在 kubelet 外部的 etcd，可以參考 [etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md) 來手動配置集群模式。
 
 ### kube-apiserver
 
-把 `kube-apiserver.yaml` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
+把 `kube-apiserver.yaml` 放到每臺 Master 節點的 `/etc/kubernetes/manifests/`，並把相關的配置放到 `/srv/kubernetes/`，即可由 kubelet 自動創建並啟動 apiserver:
 
 - basic_auth.csv - basic auth user and password
 - ca.crt - Certificate Authority cert
@@ -22,29 +22,29 @@
 - server.cert - Server certificate, public key
 - server.key - Server certificate, private key
 
-apiserver 启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用 haproxy/lvs/nginx 等为 master 节点配置负载均衡。
+apiserver 啟動後，還需要為它們做負載均衡，可以使用雲平臺的彈性負載均衡服務或者使用 haproxy/lvs/nginx 等為 master 節點配置負載均衡。
 
-另外，还可以借助 Keepalived、OSPF、Pacemaker 等来保证负载均衡节点的高可用。
+另外，還可以藉助 Keepalived、OSPF、Pacemaker 等來保證負載均衡節點的高可用。
 
 注意：
 
-- 大规模集群注意增加 `--max-requests-inflight`（默认 400）
-- 使用 nginx 时注意增加 `proxy_timeout: 10m`
+- 大規模集群注意增加 `--max-requests-inflight`（默認 400）
+- 使用 nginx 時注意增加 `proxy_timeout: 10m`
 
 ### controller manager 和 scheduler
 
-controller manager 和 scheduler 需要保证任何时刻都只有一个实例运行，需要一个选主的过程，所以在启动时要设置 `--leader-elect=true`，比如
+controller manager 和 scheduler 需要保證任何時刻都只有一個實例運行，需要一個選主的過程，所以在啟動時要設置 `--leader-elect=true`，比如
 
 ```
 kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把 `kube-scheduler.yaml` 和 `kube-controller-manager` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 kube-scheduler 和 kube-controller-manager。
+把 `kube-scheduler.yaml` 和 `kube-controller-manager` 放到每臺 Master 節點的 `/etc/kubernetes/manifests/`，並把相關的配置放到 `/srv/kubernetes/`，即可由 kubelet 自動創建並啟動 kube-scheduler 和 kube-controller-manager。
 
 ### kube-dns
 
-kube-dns 可以通过 Deployment 的方式来部署，默认 kubeadm 会自动创建。但在大规模集群的时候，需要放宽资源限制，比如
+kube-dns 可以通過 Deployment 的方式來部署，默認 kubeadm 會自動創建。但在大規模集群的時候，需要放寬資源限制，比如
 
 ```
 dns_replicas: 6
@@ -54,22 +54,22 @@ dns_cpu_requests 70m
 dns_memory_requests: 70Mi
 ```
 
-另外，也需要给 dnsmasq 增加资源，比如增加缓存大小到 10000，增加并发处理数量 `--dns-forward-max=1000` 等。
+另外，也需要給 dnsmasq 增加資源，比如增加緩存大小到 10000，增加併發處理數量 `--dns-forward-max=1000` 等。
 
-### 数据持久化
+### 數據持久化
 
-除了上面提到的这些配置，持久化存储也是高可用 Kubernetes 集群所必须的。
+除了上面提到的這些配置，持久化存儲也是高可用 Kubernetes 集群所必須的。
 
-- 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如 aws ebs 或者 gce persistent disk
-- 对于物理机部署的集群，可以考虑使用 iSCSI、NFS、Gluster 或者 Ceph 等网络存储，也可以使用 RAID
+- 對於公有云上部署的集群，可以考慮使用雲平臺提供的持久化存儲，比如 aws ebs 或者 gce persistent disk
+- 對於物理機部署的集群，可以考慮使用 iSCSI、NFS、Gluster 或者 Ceph 等網絡存儲，也可以使用 RAID
 
 ## Azure
 
-在 Azure 上可以使用 AKS 或者 acs-engine 来部署 Kubernetes 集群，具体部署方法参考 [这里](azure.md)。
+在 Azure 上可以使用 AKS 或者 acs-engine 來部署 Kubernetes 集群，具體部署方法參考 [這裡](azure.md)。
 
 ## GCE
 
-在 GCE 上可以利用 cluster 脚本方便的部署集群：
+在 GCE 上可以利用 cluster 腳本方便的部署集群：
 
 ```
 # gce,aws,gke,azure-legacy,vsphere,openstack-heat,rackspace,libvirt-coreos
@@ -81,8 +81,8 @@ cluster/kube-up.sh
 
 ## AWS
 
-在 aws 上建议使用 [kops](https://kubernetes.io/docs/setup/production-environment/tools/kops/) 来部署。
+在 aws 上建議使用 [kops](https://kubernetes.io/docs/setup/production-environment/tools/kops/) 來部署。
 
-## 物理机或虚拟机
+## 物理機或虛擬機
 
-在 Linux 物理机或虚拟机中，建议使用 [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) 或 [kubespray](kubespray.md) 来部署 Kubernetes 集群。
+在 Linux 物理機或虛擬機中，建議使用 [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) 或 [kubespray](kubespray.md) 來部署 Kubernetes 集群。

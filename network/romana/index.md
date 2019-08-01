@@ -1,25 +1,25 @@
 # Romana
 
-Romana是Panic Networks在2016年提出的开源项目，旨在解决Overlay方案给网络带来的开销。
+Romana是Panic Networks在2016年提出的開源項目，旨在解決Overlay方案給網絡帶來的開銷。
 
 ## Kubernetes部署
 
-对使用kubeadm部署的Kubernetes集群：
+對使用kubeadm部署的Kubernetes集群：
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/romana/romana/master/docs/kubernetes/romana-kubeadm.yml
 ```
 
-对使用kops部署的Kubernetes集群:
+對使用kops部署的Kubernetes集群:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/romana/romana/master/docs/kubernetes/romana-kops.yml
 ```
 
-使用kops时要注意
+使用kops時要注意
 
-- 设置网络插件使用CNI `--networking cni`
-- 对于aws还提供`romana-aws`和`romana-vpcrouter`自动配置Node和Zone之间的路由
+- 設置網絡插件使用CNI `--networking cni`
+- 對於aws還提供`romana-aws`和`romana-vpcrouter`自動配置Node和Zone之間的路由
 
 ## 工作原理
 
@@ -27,22 +27,22 @@ kubectl apply -f https://raw.githubusercontent.com/romana/romana/master/docs/kub
 
 ![](routeagg.png)
 
-- layer 3 networking，消除overlay带来的开销
-- 基于iptables ACL的网络隔离
-- 基于hierarchy CIDR管理Host/Tenant/Segment ID
+- layer 3 networking，消除overlay帶來的開銷
+- 基於iptables ACL的網絡隔離
+- 基於hierarchy CIDR管理Host/Tenant/Segment ID
 
 ![](cidr.png)
 
-## 优点
+## 優點
 
-- 纯三层网络，性能好
+- 純三層網絡，性能好
 
-## 缺点
+## 缺點
 
-- 基于IP管理租户，有规模上的限制
-- 物理设备变更或地址规划变更麻烦
+- 基於IP管理租戶，有規模上的限制
+- 物理設備變更或地址規劃變更麻煩
 
-**参考文档**
+**參考文檔**
 
 - <http://romana.io/>
 - [Romana basics](http://romana.io/how/romana_basics/)

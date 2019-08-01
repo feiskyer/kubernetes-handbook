@@ -1,32 +1,32 @@
 # kubeadm 工作原理
 
-kubeadm 是 Kubernetes 主推的部署工具之一，正在快速迭代开发中。
+kubeadm 是 Kubernetes 主推的部署工具之一，正在快速迭代開發中。
 
-## 初始化系统
+## 初始化系統
 
-所有机器都需要初始化容器执行引擎（如 docker 或 frakti 等）和 kubelet。这是因为 kubeadm 依赖 kubelet 来启动 Master 组件，比如 kube-apiserver、kube-manager-controller、kube-scheduler、kube-proxy 等。
+所有機器都需要初始化容器執行引擎（如 docker 或 frakti 等）和 kubelet。這是因為 kubeadm 依賴 kubelet 來啟動 Master 組件，比如 kube-apiserver、kube-manager-controller、kube-scheduler、kube-proxy 等。
 
-## 安装 master
+## 安裝 master
 
-在初始化 master 时，只需要执行 kubeadm init 命令即可，比如
+在初始化 master 時，只需要執行 kubeadm init 命令即可，比如
 
 ```sh
 kubeadm init --pod-network-cidr 10.244.0.0/16 --kubernetes-version stable
 ```
 
-这个命令会自动
+這個命令會自動
 
-- 系统状态检查
+- 系統狀態檢查
 - 生成 token
-- 生成自签名 CA 和 client 端证书
-- 生成 kubeconfig 用于 kubelet 连接 API server
-- 为 Master 组件生成 Static Pod manifests，并放到 `/etc/kubernetes/manifests` 目录中
-- 配置 RBAC 并设置 Master node 只运行控制平面组件
-- 创建附加服务，比如 kube-proxy 和 kube-dns
+- 生成自簽名 CA 和 client 端證書
+- 生成 kubeconfig 用於 kubelet 連接 API server
+- 為 Master 組件生成 Static Pod manifests，並放到 `/etc/kubernetes/manifests` 目錄中
+- 配置 RBAC 並設置 Master node 只運行控制平面組件
+- 創建附加服務，比如 kube-proxy 和 kube-dns
 
 ## 配置 Network plugin
 
-kubeadm 在初始化时并不关心网络插件，默认情况下，kubelet 配置使用 CNI 插件，这样就需要用户来额外初始化网络插件。
+kubeadm 在初始化時並不關心網絡插件，默認情況下，kubelet 配置使用 CNI 插件，這樣就需要用戶來額外初始化網絡插件。
 
 ### CNI bridge
 
@@ -84,18 +84,18 @@ token=$(kubeadm token list | grep authentication,signing | awk '{print $1}')
 kubeadm join --token $token ${master_ip}
 ```
 
-这包括以下几个步骤
+這包括以下幾個步驟
 
-- 从 API server 下载 CA
-- 创建本地证书，并请求 API Server 签名
-- 最后配置 kubelet 连接到 API Server
+- 從 API server 下載 CA
+- 創建本地證書，並請求 API Server 簽名
+- 最後配置 kubelet 連接到 API Server
 
-## 删除安装
+## 刪除安裝
 
 ```sh
 kubeadm reset
 ```
 
-## 参考文档
+## 參考文檔
 
 - [kubeadm Setup Tool](https://kubernetes.io/docs/admin/kubeadm/)

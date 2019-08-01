@@ -1,6 +1,6 @@
 # Container Storage Interface
 
-Container Storage Interface (CSI) 是从 v1.9 引入的容器存储接口，并于 v1.13 版本正式 GA。实际上，CSI 是整个容器生态的标准存储接口，同样适用于 Mesos、Cloud Foundry 等其他的容器集群调度系统。
+Container Storage Interface (CSI) 是從 v1.9 引入的容器存儲接口，並於 v1.13 版本正式 GA。實際上，CSI 是整個容器生態的標準存儲接口，同樣適用於 Mesos、Cloud Foundry 等其他的容器集群調度系統。
 
 **版本信息**
 
@@ -24,25 +24,25 @@ Sidecar 容器版本
 
 ## 原理
 
-类似于 CRI，CSI 也是基于 gRPC 实现。详细的 CSI SPEC 可以参考 [这里](https://github.com/container-storage-interface/spec/blob/master/spec.md)，它要求插件开发者要实现三个 gRPC 服务：
+類似於 CRI，CSI 也是基於 gRPC 實現。詳細的 CSI SPEC 可以參考 [這裡](https://github.com/container-storage-interface/spec/blob/master/spec.md)，它要求插件開發者要實現三個 gRPC 服務：
 
-- **Identity Service**：用于 Kubernetes 与 CSI 插件协调版本信息
-- **Controller Service**：用于创建、删除以及管理 Volume 存储卷
-- **Node Service**：用于将 Volume 存储卷挂载到指定的目录中以便 Kubelet 创建容器时使用（需要监听在 `/var/lib/kubelet/plugins/[SanitizedCSIDriverName]/csi.sock`）
+- **Identity Service**：用於 Kubernetes 與 CSI 插件協調版本信息
+- **Controller Service**：用於創建、刪除以及管理 Volume 存儲卷
+- **Node Service**：用於將 Volume 存儲卷掛載到指定的目錄中以便 Kubelet 創建容器時使用（需要監聽在 `/var/lib/kubelet/plugins/[SanitizedCSIDriverName]/csi.sock`）
 
-由于 CSI 监听在 unix socket 文件上， kube-controller-manager 并不能直接调用 CSI 插件。为了协调 Volume 生命周期的管理，并方便开发者实现 CSI 插件，Kubernetes 提供了几个 sidecar 容器并推荐使用下述方法来部署 CSI 插件：
+由於 CSI 監聽在 unix socket 文件上， kube-controller-manager 並不能直接調用 CSI 插件。為了協調 Volume 生命週期的管理，並方便開發者實現 CSI 插件，Kubernetes 提供了幾個 sidecar 容器並推薦使用下述方法來部署 CSI 插件：
 
 ![Recommended CSI Deployment Diagram](assets/container-storage-interface_diagram1.png)
 
-该部署方法包括：
+該部署方法包括：
 
-- StatefuelSet：副本数为 1 保证只有一个实例运行，它包含三个容器
-  - 用户实现的 CSI 插件
-  - [External Attacher](https://github.com/kubernetes-csi/external-attacher)：Kubernetes 提供的 sidecar 容器，它监听 *VolumeAttachment* 和 *PersistentVolume* 对象的变化情况，并调用 CSI 插件的 ControllerPublishVolume 和 ControllerUnpublishVolume 等 API 将 Volume 挂载或卸载到指定的 Node 上
-  - [External Provisioner](https://github.com/kubernetes-csi/external-provisioner)：Kubernetes 提供的 sidecar 容器，它监听  *PersistentVolumeClaim* 对象的变化情况，并调用 CSI 插件的 *ControllerPublish* 和 *ControllerUnpublish* 等 API 管理 Volume
-- Daemonset：将 CSI 插件运行在每个 Node 上，以便 Kubelet 可以调用。它包含 2 个容器
-  - 用户实现的 CSI 插件
-  - [Driver Registrar](https://github.com/kubernetes-csi/driver-registrar)：注册 CSI 插件到 kubelet 中，并初始化 *NodeId*（即给 Node 对象增加一个 Annotation `csi.volume.kubernetes.io/nodeid`）
+- StatefuelSet：副本數為 1 保證只有一個實例運行，它包含三個容器
+  - 用戶實現的 CSI 插件
+  - [External Attacher](https://github.com/kubernetes-csi/external-attacher)：Kubernetes 提供的 sidecar 容器，它監聽 *VolumeAttachment* 和 *PersistentVolume* 對象的變化情況，並調用 CSI 插件的 ControllerPublishVolume 和 ControllerUnpublishVolume 等 API 將 Volume 掛載或卸載到指定的 Node 上
+  - [External Provisioner](https://github.com/kubernetes-csi/external-provisioner)：Kubernetes 提供的 sidecar 容器，它監聽  *PersistentVolumeClaim* 對象的變化情況，並調用 CSI 插件的 *ControllerPublish* 和 *ControllerUnpublish* 等 API 管理 Volume
+- Daemonset：將 CSI 插件運行在每個 Node 上，以便 Kubelet 可以調用。它包含 2 個容器
+  - 用戶實現的 CSI 插件
+  - [Driver Registrar](https://github.com/kubernetes-csi/driver-registrar)：註冊 CSI 插件到 kubelet 中，並初始化 *NodeId*（即給 Node 對象增加一個 Annotation `csi.volume.kubernetes.io/nodeid`）
 
 ## 配置
 
@@ -69,7 +69,7 @@ Sidecar 容器版本
 
 ### 示例
 
-Kubernetes 提供了几个 [CSI 示例](https://github.com/kubernetes-csi/drivers)，包括 NFS、ISCSI、HostPath、Cinder 以及 FlexAdapter 等。在实现 CSI 插件时，这些示例可以用作参考。
+Kubernetes 提供了幾個 [CSI 示例](https://github.com/kubernetes-csi/drivers)，包括 NFS、ISCSI、HostPath、Cinder 以及 FlexAdapter 等。在實現 CSI 插件時，這些示例可以用作參考。
 
 | Name                                                         | Status         | More Information                                             |
 | ------------------------------------------------------------ | -------------- | ------------------------------------------------------------ |
@@ -88,7 +88,7 @@ Kubernetes 提供了几个 [CSI 示例](https://github.com/kubernetes-csi/driver
 | [Nutanix](https://portal.nutanix.com/#/page/docs/details?targetId=CSI-Volume-Driver:CSI-Volume-Driver) | beta           | A Container Storage Interface (CSI) Storage Driver for Nutanix |
 | [Quobyte](https://github.com/quobyte/quobyte-csi)            | v0.2.0         | A Container Storage Interface (CSI) Plugin for Quobyte       |
 
-下面以 NFS 为例来看一下 CSI 插件的使用方法。
+下面以 NFS 為例來看一下 CSI 插件的使用方法。
 
 首先需要部署 NFS 插件：
 
@@ -98,13 +98,13 @@ cd drivers/pkg/nfs
 kubectl create -f deploy/kubernetes
 ```
 
-然后创建一个使用 NFS 存储卷的容器
+然後創建一個使用 NFS 存儲卷的容器
 
 ```sh
 kubectl create -f examples/kubernetes/nginx.yaml
 ```
 
-该例中已直接创建 PV 的方式使用 NFS
+該例中已直接創建 PV 的方式使用 NFS
 
 ```yaml
 apiVersion: v1
@@ -165,7 +165,7 @@ spec:
   storageClassName: csi-sc-nfsplugin
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
 - [CSI Volume Plugins in Kubernetes Design Doc](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes)

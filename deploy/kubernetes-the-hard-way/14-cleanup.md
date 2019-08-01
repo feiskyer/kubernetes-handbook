@@ -1,10 +1,10 @@
-# 删除集群
+# 刪除集群
 
-本部分将删除该教程所创建的全部计算资源。
+本部分將刪除該教程所創建的全部計算資源。
 
-## 计算节点
+## 計算節點
 
-删除所有的控制节点和 worker 节点:
+刪除所有的控制節點和 worker 節點:
 
 ```sh
 gcloud -q compute instances delete \
@@ -12,9 +12,9 @@ gcloud -q compute instances delete \
   worker-0 worker-1 worker-2
 ```
 
-## 网路
+## 網路
 
-删除外部负载均衡器以及网络资源:
+刪除外部負載均衡器以及網絡資源:
 
 ```sh
 gcloud -q compute forwarding-rules delete kubernetes-forwarding-rule \
@@ -24,7 +24,7 @@ gcloud -q compute http-health-checks delete kubernetes
 gcloud -q compute addresses delete kubernetes-the-hard-way
 ```
 
-删除 `kubernetes-the-hard-way` 防火墙规则:
+刪除 `kubernetes-the-hard-way` 防火牆規則:
 
 ```sh
 gcloud -q compute firewall-rules delete \
@@ -34,7 +34,7 @@ gcloud -q compute firewall-rules delete \
   kubernetes-the-hard-way-allow-health-check
 ```
 
-删除 Pod 网络路由:
+刪除 Pod 網絡路由:
 
 ```sh
 gcloud -q compute routes delete \
@@ -43,13 +43,13 @@ gcloud -q compute routes delete \
     kubernetes-route-10-200-2-0-24
 ```
 
-删除 `kubernetes` 子网:
+刪除 `kubernetes` 子網:
 
 ```sh
 gcloud -q compute networks subnets delete kubernetes
 ```
 
-删除 `kubernetes-the-hard-way` 网络 VPC:
+刪除 `kubernetes-the-hard-way` 網絡 VPC:
 
 ```sh
 gcloud -q compute networks delete kubernetes-the-hard-way

@@ -1,47 +1,47 @@
-# Kubernetes 审计
+# Kubernetes 審計
 
-Kubernetes 审计（Audit）提供了安全相关的时序操作记录，支持日志和 webhook 两种格式，并可以通过审计策略自定义事件类型。
+Kubernetes 審計（Audit）提供了安全相關的時序操作記錄，支持日誌和 webhook 兩種格式，並可以通過審計策略自定義事件類型。
 
-## 审计日志
+## 審計日誌
 
-通过配置 kube-apiserver 的下列参数开启审计日志
+通過配置 kube-apiserver 的下列參數開啟審計日誌
 
-- audit-log-path：审计日志路径
-- audit-log-maxage：旧日志最长保留天数
-- audit-log-maxbackup：旧日志文件最多保留个数
-- audit-log-maxsize：日志文件最大大小（单位 MB），超过后自动做轮转（默认为 100MB）
+- audit-log-path：審計日誌路徑
+- audit-log-maxage：舊日誌最長保留天數
+- audit-log-maxbackup：舊日誌文件最多保留個數
+- audit-log-maxsize：日誌文件最大大小（單位 MB），超過後自動做輪轉（默認為 100MB）
 
-每条审计记录包括两行
+每條審計記錄包括兩行
 
-- 请求行包括：唯一 ID 和请求的元数据（如源 IP、用户名、请求资源等）
-- 响应行包括：唯一 ID（与请求 ID 一致）和响应的元数据（如 HTTP 状态码）
+- 請求行包括：唯一 ID 和請求的元數據（如源 IP、用戶名、請求資源等）
+- 響應行包括：唯一 ID（與請求 ID 一致）和響應的元數據（如 HTTP 狀態碼）
 
-比如，admin 用户查询默认 namespace 的 Pod 列表的审计日志格式为
+比如，admin 用戶查詢默認 namespace 的 Pod 列表的審計日誌格式為
 
 ```sh
 2017-03-21T03:57:09.106841886-04:00 AUDIT: id="c939d2a7-1c37-4ef1-b2f7-4ba9b1e43b53" ip="127.0.0.1" method="GET" user="admin" groups="\"system:masters\",\"system:authenticated\""as="<self>"asgroups="<lookup>"namespace="default"uri="/api/v1/namespaces/default/pods"
 2017-03-21T03:57:09.108403639-04:00 AUDIT: id="c939d2a7-1c37-4ef1-b2f7-4ba9b1e43b53" response="200"
 ```
 
-## 审计策略
+## 審計策略
 
-v1.7 + 支持实验性的高级审计特性，可以自定义审计策略（选择记录哪些事件）和审计存储后端（日志和 webhook）等。开启方法为
+v1.7 + 支持實驗性的高級審計特性，可以自定義審計策略（選擇記錄哪些事件）和審計存儲後端（日誌和 webhook）等。開啟方法為
 
 ```sh
 kube-apiserver ... --feature-gates=AdvancedAuditing=true
 ```
 
-注意开启 AdvancedAuditing 后，日志的格式有一些修改，如新增了 stage 字段（包括 RequestReceived，ResponseStarted ，ResponseComplete，Panic 等）。
+注意開啟 AdvancedAuditing 後，日誌的格式有一些修改，如新增了 stage 字段（包括 RequestReceived，ResponseStarted ，ResponseComplete，Panic 等）。
 
-## 审计策略
+## 審計策略
 
-审计策略选择记录哪些事件，设置方法为
+審計策略選擇記錄哪些事件，設置方法為
 
 ```sh
 kube-apiserver ... --audit-policy-file=/etc/kubernetes/audit-policy.yaml
 ```
 
-其中，设计策略的配置格式为
+其中，設計策略的配置格式為
 
 ```yaml
 rules:
@@ -85,20 +85,20 @@ rules:
   - level: Metadata
 ```
 
-在生产环境中，推荐参考 [GCE 审计策略](https://github.com/kubernetes/kubernetes/blob/v1.7.0/cluster/gce/gci/configure-helper.sh#L490) 配置。
+在生產環境中，推薦參考 [GCE 審計策略](https://github.com/kubernetes/kubernetes/blob/v1.7.0/cluster/gce/gci/configure-helper.sh#L490) 配置。
 
-### 审计存储后端
+### 審計存儲後端
 
-审计存储后端支持两种方式
+審計存儲後端支持兩種方式
 
-- 日志，配置 `--audit-log-path` 开启，格式为
+- 日誌，配置 `--audit-log-path` 開啟，格式為
 
 ```
 2017-06-15T21:50:50.259470834Z AUDIT: id="591e9fde-6a98-46f6-b7bc-ec8ef575696d" stage="RequestReceived" ip="10.2.1.3" method="update" user="system:serviceaccount:kube-system:default" groups="\"system:serviceaccounts\",\"system:serviceaccounts:kube-system\",\"system:authenticated\""as="<self>"asgroups="<lookup>"namespace="kube-system"uri="/api/v1/namespaces/kube-system/endpoints/kube-controller-manager"response="<deferred>"
 2017-06-15T21:50:50.259470834Z AUDIT: id="591e9fde-6a98-46f6-b7bc-ec8ef575696d" stage="ResponseComplete" ip="10.2.1.3" method="update" user="system:serviceaccount:kube-system:default" groups="\"system:serviceaccounts\",\"system:serviceaccounts:kube-system\",\"system:authenticated\""as="<self>"asgroups="<lookup>"namespace="kube-system"uri="/api/v1/namespaces/kube-system/endpoints/kube-controller-manager"response="200"
 ```
 
-- webhook，配置 `--audit-webhook-config-file=/etc/kubernetes/audit-webhook-kubeconfig --audit-webhook-mode=batch` 开启，其中 audit-webhook-mode 支持 batch 和 blocking 两种格式，而 webhook 配置文件格式为
+- webhook，配置 `--audit-webhook-config-file=/etc/kubernetes/audit-webhook-kubeconfig --audit-webhook-mode=batch` 開啟，其中 audit-webhook-mode 支持 batch 和 blocking 兩種格式，而 webhook 配置文件格式為
 
 ```yaml
 # clusters refers to the remote service.
@@ -124,7 +124,7 @@ contexts:
   name: webhook
 ```
 
-所有的事件以 JSON 格式 POST 给 webhook server，如
+所有的事件以 JSON 格式 POST 給 webhook server，如
 
 ```json
 {

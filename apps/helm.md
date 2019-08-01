@@ -1,16 +1,16 @@
 # Helm
 
-[Helm](https://github.com/kubernetes/helm) 是一个类似于 yum/apt/[homebrew](https://brew.sh/) 的 Kubernetes 应用管理工具。Helm 使用 [Chart](https://github.com/kubernetes/charts) 来管理 Kubernetes manifest 文件。
+[Helm](https://github.com/kubernetes/helm) 是一個類似於 yum/apt/[homebrew](https://brew.sh/) 的 Kubernetes 應用管理工具。Helm 使用 [Chart](https://github.com/kubernetes/charts) 來管理 Kubernetes manifest 文件。
 
 ## Helm 基本使用
 
-安装 `helm` 客户端
+安裝 `helm` 客戶端
 
 ```sh
 brew install kubernetes-helm
 ```
 
-初始化 Helm 并安装 `Tiller` 服务（需要事先配置好 kubectl）
+初始化 Helm 並安裝 `Tiller` 服務（需要事先配置好 kubectl）
 
 ```sh
 helm init
@@ -22,7 +22,7 @@ helm init
 helm repo update
 ```
 
-部署服务，比如 mysql
+部署服務，比如 mysql
 
 ```sh
 ➜  ~ helm install stable/mysql
@@ -71,42 +71,42 @@ To connect to your database:
     $ mysql -h quieting-warthog-mysql -p
 ```
 
-更多命令的使用方法可以参考下面的 "Helm 命令参考" 部分。
+更多命令的使用方法可以參考下面的 "Helm 命令參考" 部分。
 
 ## Helm 工作原理
 
 ### 基本概念
 
-Helm 的三个基本概念
+Helm 的三個基本概念
 
-- Chart：Helm 应用（package），包括该应用的所有 Kubernetes manifest 模版，类似于 YUM RPM 或 Apt dpkg 文件
-- Repository：Helm package 存储仓库
-- Release：chart 的部署实例，每个 chart 可以部署一个或多个 release
+- Chart：Helm 應用（package），包括該應用的所有 Kubernetes manifest 模版，類似於 YUM RPM 或 Apt dpkg 文件
+- Repository：Helm package 存儲倉庫
+- Release：chart 的部署實例，每個 chart 可以部署一個或多個 release
 
 ### Helm 工作原理
 
-Helm 包括两个部分，`helm` 客户端和 `tiller` 服务端。
+Helm 包括兩個部分，`helm` 客戶端和 `tiller` 服務端。
 
 > the client is responsible for managing charts, and the server is responsible for managing releases.
 
-#### helm 客户端
+#### helm 客戶端
 
-helm 客户端是一个命令行工具，负责管理 charts、repository 和 release。它通过 gPRC API（使用 `kubectl port-forward` 将 tiller 的端口映射到本地，然后再通过映射后的端口跟 tiller 通信）向 tiller 发送请求，并由 tiller 来管理对应的 Kubernetes 资源。
+helm 客戶端是一個命令行工具，負責管理 charts、repository 和 release。它通過 gPRC API（使用 `kubectl port-forward` 將 tiller 的端口映射到本地，然後再通過映射後的端口跟 tiller 通信）向 tiller 發送請求，並由 tiller 來管理對應的 Kubernetes 資源。
 
-`helm` 命令的使用方法可以参考下面的 "Helm 命令参考" 部分。
+`helm` 命令的使用方法可以參考下面的 "Helm 命令參考" 部分。
 
-#### tiller 服务端
+#### tiller 服務端
 
-tiller 接收来自 helm 客户端的请求，并把相关资源的操作发送到 Kubernetes，负责管理（安装、查询、升级或删除等）和跟踪 Kubernetes 资源。为了方便管理，tiller 把 release 的相关信息保存在 kubernetes 的 ConfigMap 中。
+tiller 接收來自 helm 客戶端的請求，並把相關資源的操作發送到 Kubernetes，負責管理（安裝、查詢、升級或刪除等）和跟蹤 Kubernetes 資源。為了方便管理，tiller 把 release 的相關信息保存在 kubernetes 的 ConfigMap 中。
 
-tiller 对外暴露 gRPC API，供 helm 客户端调用。
+tiller 對外暴露 gRPC API，供 helm 客戶端調用。
 
 ## Helm Charts
 
-Helm 使用 [Chart](https://github.com/kubernetes/charts) 来管理 Kubernetes manifest 文件。每个 chart 都至少包括
+Helm 使用 [Chart](https://github.com/kubernetes/charts) 來管理 Kubernetes manifest 文件。每個 chart 都至少包括
 
-- 应用的基本信息 `Chart.yaml`
-- 一个或多个 Kubernetes manifest 文件模版（放置于 templates / 目录中），可以包括 Pod、Deployment、Service 等各种 Kubernetes 资源
+- 應用的基本信息 `Chart.yaml`
+- 一個或多個 Kubernetes manifest 文件模版（放置於 templates / 目錄中），可以包括 Pod、Deployment、Service 等各種 Kubernetes 資源
 
 ### Chart.yaml 示例
 
@@ -126,12 +126,12 @@ engine: gotpl # The name of the template engine (optional, defaults to gotpl)
 icon: A URL to an SVG or PNG image to be used as an icon (optional).
 ```
 
-### 依赖管理
+### 依賴管理
 
-Helm 支持两种方式管理依赖的方式：
+Helm 支持兩種方式管理依賴的方式：
 
-- 直接把依赖的 package 放在 `charts/` 目录中
-- 使用 `requirements.yaml` 并用 `helm dep up foochart` 来自动下载依赖的 packages
+- 直接把依賴的 package 放在 `charts/` 目錄中
+- 使用 `requirements.yaml` 並用 `helm dep up foochart` 來自動下載依賴的 packages
 
 ```yaml
 dependencies:
@@ -145,7 +145,7 @@ dependencies:
 
 ### Chart 模版
 
-Chart 模板基于 Go template 和 [Sprig](https://github.com/Masterminds/sprig)，比如
+Chart 模板基於 Go template 和 [Sprig](https://github.com/Masterminds/sprig)，比如
 
 ```yaml
 apiVersion: v1
@@ -176,7 +176,7 @@ spec:
               value: {{default "minio" .Values.storage}}
 ```
 
-模版参数的默认值必须放到 `values.yaml` 文件中，其格式为
+模版參數的默認值必須放到 `values.yaml` 文件中，其格式為
 
 ```yaml
 imageRegistry: "quay.io/deis"
@@ -184,7 +184,7 @@ dockerTag: "latest"
 pullPolicy: "alwaysPull"
 storage: "s3"
 
-# 依赖的 mysql chart 的默认参数
+# 依賴的 mysql chart 的默認參數
 mysql:
   max_connections: 100
   password: "secret"
@@ -192,9 +192,9 @@ mysql:
 
 ### Helm 插件
 
-插件提供了扩展 Helm 核心功能的方法，它在客户端执行，并放在 `$(helm home)/plugins` 目录中。
+插件提供了擴展 Helm 核心功能的方法，它在客戶端執行，並放在 `$(helm home)/plugins` 目錄中。
 
-一个典型的 helm 插件格式为
+一個典型的 helm 插件格式為
 
 ```sh
 $(helm home)/plugins/
@@ -204,7 +204,7 @@ $(helm home)/plugins/
       |- keybase.sh
 ```
 
-而 plugin.yaml 格式为
+而 plugin.yaml 格式為
 
 ```yaml
 name: "keybase"
@@ -217,18 +217,18 @@ useTunnel: false
 command: "$HELM_PLUGIN_DIR/keybase.sh"
 ```
 
-这样，就可以用 `helm keybase` 命令来使用这个插件。
+這樣，就可以用 `helm keybase` 命令來使用這個插件。
 
-## Helm 命令参考
+## Helm 命令參考
 
-### 查询 charts
+### 查詢 charts
 
 ```sh
 helm search
 helm search mysql
 ```
 
-### 查询 package 详细信息
+### 查詢 package 詳細信息
 
 ```sh
 helm inspect stable/mariadb
@@ -240,20 +240,20 @@ helm inspect stable/mariadb
 helm install stable/mysql
 ```
 
-部署之前可以自定义 package 的选项：
+部署之前可以自定義 package 的選項：
 
 ```sh
-# 查询支持的选项
+# 查詢支持的選項
 helm inspect values stable/mysql
 
-# 自定义 password
+# 自定義 password
 echo "mysqlRootPassword: passwd" > config.yaml
 helm install -f config.yaml stable/mysql
 ```
 
-另外，还可以通过打包文件（.tgz）或者本地 package 路径（如 path/foo）来部署应用。
+另外，還可以通過打包文件（.tgz）或者本地 package 路徑（如 path/foo）來部署應用。
 
-### 查询服务 (Release) 列表
+### 查詢服務 (Release) 列表
 
 ```sh
 ➜  ~ helm ls
@@ -261,7 +261,7 @@ NAME            	REVISION	UPDATED                 	STATUS  	CHART      	NAMESPAC
 quieting-warthog	1       	Tue Feb 21 20:13:02 2017	DEPLOYED	mysql-0.2.5	default
 ```
 
-### 查询服务 (Release) 状态
+### 查詢服務 (Release) 狀態
 
 ```sh
 ➜  ~ helm status quieting-warthog
@@ -309,18 +309,18 @@ To connect to your database:
     $ mysql -h quieting-warthog-mysql -p
 ```
 
-### 升级和回滚 Release
+### 升級和回滾 Release
 
 ```sh
-# 升级
+# 升級
 cat "mariadbUser: user1" >panda.yaml
 helm upgrade -f panda.yaml happy-panda stable/mariadb
 
-# 回滚
+# 回滾
 helm rollback happy-panda 1
 ```
 
-### 删除 Release
+### 刪除 Release
 
 ```sh
 helm delete quieting-warthog
@@ -332,17 +332,17 @@ helm delete quieting-warthog
 # 添加 incubator repo
 helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 
-# 查询 repo 列表
+# 查詢 repo 列表
 helm repo list
 
-# 生成 repo 索引（用于搭建 helm repository）
+# 生成 repo 索引（用於搭建 helm repository）
 helm repo index
 ```
 
 ### chart 管理
 
 ```sh
-# 创建一个新的 chart
+# 創建一個新的 chart
 helm create deis-workflow
 
 # validate chart
@@ -354,7 +354,7 @@ helm package deis-workflow
 
 ## Helm UI
 
-[Kubeapps](https://github.com/kubeapps/kubeapps) 提供了一个开源的 Helm UI 界面，方便以图形界面的形式管理 Helm 应用。
+[Kubeapps](https://github.com/kubeapps/kubeapps) 提供了一個開源的 Helm UI 界面，方便以圖形界面的形式管理 Helm 應用。
 
 ```sh
 curl -s https://api.github.com/repos/kubeapps/kubeapps/releases/latest | grep -i $(uname -s) | grep browser_download_url | cut -d '"' -f 4 | wget -i -
@@ -365,7 +365,7 @@ kubeapps up
 kubeapps dashboard
 ```
 
-更多使用方法请参考 [Kubeapps 官方网站](https://kubeapps.com/)。
+更多使用方法請參考 [Kubeapps 官方網站](https://kubeapps.com/)。
 
 ## Helm Repository
 

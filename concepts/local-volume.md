@@ -1,12 +1,12 @@
-# 本地数据卷
+# 本地數據卷
 
-> 注意：仅在 v1.7 + 中支持，并从 v1.10 开始升级为 beta 版本。
+> 注意：僅在 v1.7 + 中支持，並從 v1.10 開始升級為 beta 版本。
 
-本地数据卷（Local Volume）代表一个本地存储设备，比如磁盘、分区或者目录等。主要的应用场景包括分布式存储和数据库等需要高性能和高可靠性的环境里。本地数据卷同时支持块设备和文件系统，通过 `spec.local.path` 指定；但对于文件系统来说，kubernetes 并不会限制该目录可以使用的存储空间大小。
+本地數據卷（Local Volume）代表一個本地存儲設備，比如磁盤、分區或者目錄等。主要的應用場景包括分佈式存儲和數據庫等需要高性能和高可靠性的環境裡。本地數據卷同時支持塊設備和文件系統，通過 `spec.local.path` 指定；但對於文件系統來說，kubernetes 並不會限制該目錄可以使用的存儲空間大小。
 
-本地数据卷只能以静态创建的 PV 使用。相对于 [HostPath](volume.md#hostPath)，本地数据卷可以直接以持久化的方式使用（它总是通过 NodeAffinity 调度在某个指定的节点上）。
+本地數據卷只能以靜態創建的 PV 使用。相對於 [HostPath](volume.md#hostPath)，本地數據卷可以直接以持久化的方式使用（它總是通過 NodeAffinity 調度在某個指定的節點上）。
 
-另外，社区还提供了一个 [local-volume-provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/local-volume/provisioner)，用于自动创建和清理本地数据卷。
+另外，社區還提供了一個 [local-volume-provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/local-volume/provisioner)，用於自動創建和清理本地數據卷。
 
 ## 示例
 
@@ -21,7 +21,7 @@ provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ```
 
-创建一个调度到 hostname 为 `example-node` 的本地数据卷：
+創建一個調度到 hostname 為 `example-node` 的本地數據卷：
 
 ```yaml
 # For kubernetes v1.10
@@ -77,7 +77,7 @@ spec:
     path: /mnt/disks/ssd1
 ```
 
-创建 PVC：
+創建 PVC：
 
 ```yaml
 kind: PersistentVolumeClaim
@@ -93,7 +93,7 @@ spec:
   storageClassName: local-storage
 ```
 
-创建 Pod，引用 PVC：
+創建 Pod，引用 PVC：
 
 ```yaml
 kind: Pod
@@ -115,18 +115,18 @@ spec:
 
 ## 限制
 
-- 暂不支持一个 Pod 绑定多个本地数据卷的 PVC（计划 v1.9 支持）
-- 有可能导致调度冲突，比如 CPU 或者内存资源不足（计划 v1.9 增强）
-- 外部 Provisoner 在启动后无法正确检测挂载点的空间大小（需要 Mount Propagation，计划 v1.9 支持）
+- 暫不支持一個 Pod 綁定多個本地數據卷的 PVC（計劃 v1.9 支持）
+- 有可能導致調度衝突，比如 CPU 或者內存資源不足（計劃 v1.9 增強）
+- 外部 Provisoner 在啟動後無法正確檢測掛載點的空間大小（需要 Mount Propagation，計劃 v1.9 支持）
 
-## 最佳实践
+## 最佳實踐
 
-- 推荐为每个存储卷分配独立的磁盘，以便隔离 IO 请求
-- 推荐为每个存储卷分配独立的分区，以便隔离存储空间
-- 避免重新创建同名的 Node，否则会导致新 Node 无法识别已绑定旧 Node 的 PV
-- 推荐使用 UUID 而不是文件路径，以避免文件路径误配的问题
-- 对于不带文件系统的块存储，推荐使用唯一 ID（如 `/dev/disk/by-id/`），以避免块设备路径误配的问题
+- 推薦為每個存儲卷分配獨立的磁盤，以便隔離 IO 請求
+- 推薦為每個存儲卷分配獨立的分區，以便隔離存儲空間
+- 避免重新創建同名的 Node，否則會導致新 Node 無法識別已綁定舊 Node 的 PV
+- 推薦使用 UUID 而不是文件路徑，以避免文件路徑誤配的問題
+- 對於不帶文件系統的塊存儲，推薦使用唯一 ID（如 `/dev/disk/by-id/`），以避免塊設備路徑誤配的問題
 
-## 参考文档
+## 參考文檔
 
 - [Local Persistent Storage User Guide](https://github.com/kubernetes-incubator/external-storage/tree/master/local-volume)

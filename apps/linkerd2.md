@@ -1,11 +1,11 @@
 # Linkerd2 (Conduit)
 
-Linkerd2 （曾命名为 [Conduit](https://conduit.io)） 是 Buoyant 公司推出的下一代轻量级服务网格框架，开源在 <https://github.com/linkerd/linkerd2>。与 linkerd 不同的是，它专用于 Kubernetes 集群中，并且比 linkerd 更轻量级（基于 Rust 和 Go，没有了 JVM 等大内存的开销），可以以 sidecar 的方式把代理服务跟实际服务的 Pod 运行在一起（这点跟 Istio 类似）。Linkerd2 的主要特性包括：
+Linkerd2 （曾命名為 [Conduit](https://conduit.io)） 是 Buoyant 公司推出的下一代輕量級服務網格框架，開源在 <https://github.com/linkerd/linkerd2>。與 linkerd 不同的是，它專用於 Kubernetes 集群中，並且比 linkerd 更輕量級（基於 Rust 和 Go，沒有了 JVM 等大內存的開銷），可以以 sidecar 的方式把代理服務跟實際服務的 Pod 運行在一起（這點跟 Istio 類似）。Linkerd2 的主要特性包括：
 
-- 轻量级，速度快，每个代理容器仅占用 10mb RSS，并且额外延迟只有亚毫妙级
-- 安全，基于 Rust，默认开启 TLS
-- 端到端可视化
-- 增强 Kubernetes 的可靠性、可视性以及安全性
+- 輕量級，速度快，每個代理容器僅佔用 10mb RSS，並且額外延遲只有亞毫妙級
+- 安全，基於 Rust，默認開啟 TLS
+- 端到端可視化
+- 增強 Kubernetes 的可靠性、可視性以及安全性
 
 ## 部署
 
@@ -59,7 +59,7 @@ Opening Linkerd dashboard in the default browser
 
 ![](images/linkerd2.png)
 
-## 示例应用
+## 示例應用
 
 ```sh
 curl https://run.linkerd.io/emojivoto.yml \
@@ -67,7 +67,7 @@ curl https://run.linkerd.io/emojivoto.yml \
   | kubectl apply -f -
 ```
 
-查看服务的网络流量统计情况：
+查看服務的網絡流量統計情況：
 
 ```sh
 linkerd -n emojivoto stat deployment
@@ -78,7 +78,7 @@ voting        1/1    87.88%   1.1rps           1ms           1ms           1ms  
 web           1/1    93.65%   2.1rps           1ms           9ms          88ms    0%
 ```
 
-跟踪服务的网络流量
+跟蹤服務的網絡流量
 
 ```sh
 $ linkerd -n emojivoto tap deploy voting
@@ -90,7 +90,7 @@ rsp id=0:810 src=10.244.6.239:57202 dst=10.244.1.237:8080 :status=200 latency=41
 end id=0:810 src=10.244.6.239:57202 dst=10.244.1.237:8080 grpc-status=OK duration=8µs response-length=5B
 ```
 
-## 参考文档
+## 參考文檔
 
 - [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
 - [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)

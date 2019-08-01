@@ -1,46 +1,46 @@
 # Job
 
-Job 负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个 Pod 成功结束。
+Job 負責批量處理短暫的一次性任務 (short lived one-off tasks)，即僅執行一次的任務，它保證批處理任務的一個或多個 Pod 成功結束。
 
-## API 版本对照表
+## API 版本對照表
 
-| Kubernetes 版本 | Batch API 版本 | 默认开启 |
+| Kubernetes 版本 | Batch API 版本 | 默認開啟 |
 | --------------- | -------------- | -------- |
 | v1.5+           | batch/v1       | 是       |
 
-## Job 类型
+## Job 類型
 
-Kubernetes 支持以下几种 Job：
+Kubernetes 支持以下幾種 Job：
 
-- 非并行 Job：通常创建一个 Pod 直至其成功结束
-- 固定结束次数的 Job：设置 `.spec.completions`，创建多个 Pod，直到 `.spec.completions` 个 Pod 成功结束
-- 带有工作队列的并行 Job：设置 `.spec.Parallelism` 但不设置 `.spec.completions`，当所有 Pod 结束并且至少一个成功时，Job 就认为是成功
+- 非並行 Job：通常創建一個 Pod 直至其成功結束
+- 固定結束次數的 Job：設置 `.spec.completions`，創建多個 Pod，直到 `.spec.completions` 個 Pod 成功結束
+- 帶有工作隊列的並行 Job：設置 `.spec.Parallelism` 但不設置 `.spec.completions`，當所有 Pod 結束並且至少一個成功時，Job 就認為是成功
 
-根据 `.spec.completions` 和 `.spec.Parallelism` 的设置，可以将 Job 划分为以下几种 pattern：
+根據 `.spec.completions` 和 `.spec.Parallelism` 的設置，可以將 Job 劃分為以下幾種 pattern：
 
-|Job 类型 | 使用示例 | 行为 | completions|Parallelism|
+|Job 類型 | 使用示例 | 行為 | completions|Parallelism|
 |-------|------|----|----------|-----------|
-| 一次性 Job | 数据库迁移 | 创建一个 Pod 直至其成功结束 | 1|1|
-| 固定结束次数的 Job | 处理工作队列的 Pod | 依次创建一个 Pod 运行直至 completions 个成功结束 | 2+|1|
-| 固定结束次数的并行 Job | 多个 Pod 同时处理工作队列 | 依次创建多个 Pod 运行直至 completions 个成功结束 | 2+|2+|
-| 并行 Job | 多个 Pod 同时处理工作队列 | 创建一个或多个 Pod 直至有一个成功结束 | 1|2+|
+| 一次性 Job | 數據庫遷移 | 創建一個 Pod 直至其成功結束 | 1|1|
+| 固定結束次數的 Job | 處理工作隊列的 Pod | 依次創建一個 Pod 運行直至 completions 個成功結束 | 2+|1|
+| 固定結束次數的並行 Job | 多個 Pod 同時處理工作隊列 | 依次創建多個 Pod 運行直至 completions 個成功結束 | 2+|2+|
+| 並行 Job | 多個 Pod 同時處理工作隊列 | 創建一個或多個 Pod 直至有一個成功結束 | 1|2+|
 
 ## Job Controller
 
-Job Controller 负责根据 Job Spec 创建 Pod，并持续监控 Pod 的状态，直至其成功结束。如果失败，则根据 restartPolicy（只支持 OnFailure 和 Never，不支持 Always）决定是否创建新的 Pod 再次重试任务。
+Job Controller 負責根據 Job Spec 創建 Pod，並持續監控 Pod 的狀態，直至其成功結束。如果失敗，則根據 restartPolicy（只支持 OnFailure 和 Never，不支持 Always）決定是否創建新的 Pod 再次重試任務。
 
 ![](images/job.png)
 
 ## Job Spec 格式
 
 - spec.template 格式同 Pod
-- RestartPolicy 仅支持 Never 或 OnFailure
-- 单个 Pod 时，默认 Pod 成功运行后 Job 即结束
-- `.spec.completions` 标志 Job 结束需要成功运行的 Pod 个数，默认为 1
-- `.spec.parallelism` 标志并行运行的 Pod 的个数，默认为 1
-- `spec.activeDeadlineSeconds` 标志失败 Pod 的重试最大时间，超过这个时间不会继续重试
+- RestartPolicy 僅支持 Never 或 OnFailure
+- 單個 Pod 時，默認 Pod 成功運行後 Job 即結束
+- `.spec.completions` 標誌 Job 結束需要成功運行的 Pod 個數，默認為 1
+- `.spec.parallelism` 標誌並行運行的 Pod 的個數，默認為 1
+- `spec.activeDeadlineSeconds` 標誌失敗 Pod 的重試最大時間，超過這個時間不會繼續重試
 
-一个简单的例子：
+一個簡單的例子：
 
 ```yaml
 apiVersion: batch/v1
@@ -60,10 +60,10 @@ spec:
 ```
 
 ```sh
-# 创建 Job
+# 創建 Job
 $ kubectl create -f ./job.yaml
 job "pi" created
-# 查看 Job 的状态
+# 查看 Job 的狀態
 $ kubectl describe job pi
 Name:		pi
 Namespace:	default
@@ -95,19 +95,19 @@ Events:
   ---------	--------	-----	----		-------------	--------	------			-------
   2m		2m		1	job-controller			Normal		SuccessfulCreate	Created pod: pi-nltxv
 
-# 使用'job-name=pi'标签查询属于该 Job 的 Pod
-# 注意不要忘记'--show-all'选项显示已经成功（或失败）的 Pod
+# 使用'job-name=pi'標籤查詢屬於該 Job 的 Pod
+# 注意不要忘記'--show-all'選項顯示已經成功（或失敗）的 Pod
 $ kubectl get pod --show-all -l job-name=pi
 NAME       READY     STATUS      RESTARTS   AGE
 pi-nltxv   0/1       Completed   0          3m
 
-# 使用 jsonpath 获取 pod ID 并查看 Pod 的日志
+# 使用 jsonpath 獲取 pod ID 並查看 Pod 的日誌
 $ pods=$(kubectl get pods --selector=job-name=pi --output=jsonpath={.items..metadata.name})
 $ kubectl logs $pods
 3.141592653589793238462643383279502...
 ```
 
-固定结束次数的 Job 示例
+固定結束次數的 Job 示例
 
 ```yaml
 apiVersion: batch/v1
@@ -129,8 +129,8 @@ spec:
 
 ## Bare Pods
 
-所谓 Bare Pods 是指直接用 PodSpec 来创建的 Pod（即不在 ReplicaSets 或者 ReplicationCtroller 的管理之下的 Pods）。这些 Pod 在 Node 重启后不会自动重启，但 Job 则会创建新的 Pod 继续任务。所以，推荐使用 Job 来替代 Bare Pods，即便是应用只需要一个 Pod。
+所謂 Bare Pods 是指直接用 PodSpec 來創建的 Pod（即不在 ReplicaSets 或者 ReplicationCtroller 的管理之下的 Pods）。這些 Pod 在 Node 重啟後不會自動重啟，但 Job 則會創建新的 Pod 繼續任務。所以，推薦使用 Job 來替代 Bare Pods，即便是應用只需要一個 Pod。
 
-## 参考文档
+## 參考文檔
 
 - [Jobs - Run to Completion](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/)

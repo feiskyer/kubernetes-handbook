@@ -1,19 +1,19 @@
-# 资源控制
+# 資源控制
 
-推荐在 YAML 清单中针对所有 pod 设置 pod 请求和限制：
+推薦在 YAML 清單中針對所有 pod 設置 pod 請求和限制：
 
-- **pod 请求**定义 pod 所需的 CPU 和内存量。Kubernetes 基于这些请求量进行节点调度。
-- **pod 限制**是 pod 可以使用的最大 CPU 和内存量，用于防治失控 Pod 占用过多资源。
+- **pod 請求**定義 pod 所需的 CPU 和內存量。Kubernetes 基於這些請求量進行節點調度。
+- **pod 限制**是 pod 可以使用的最大 CPU 和內存量，用於防治失控 Pod 佔用過多資源。
 
-如果不包含这些值，Kubernetes 调度程序将不知道需要多少资源。 调度程序可能会在资源不足的节点上运行 pod，从而无法提供可接受的应用程序性能。 
+如果不包含這些值，Kubernetes 調度程序將不知道需要多少資源。 調度程序可能會在資源不足的節點上運行 pod，從而無法提供可接受的應用程序性能。 
 
-群集管理员也可以为需要设置资源请求和限制的命名空间设置资源配额。
+群集管理員也可以為需要設置資源請求和限制的命名空間設置資源配額。
 
-## 使用 kube-advisor 检查应用程序问题
+## 使用 kube-advisor 檢查應用程序問題
 
-你可以定期运行 [kube-advisor](https://github.com/Azure/kube-advisor) 工具，检查应用程序的配置是否存在问题。
+你可以定期運行 [kube-advisor](https://github.com/Azure/kube-advisor) 工具，檢查應用程序的配置是否存在問題。
 
-运行 kube-advisor 示例：
+運行 kube-advisor 示例：
 
 ```sh
 $ kubectl apply -f https://github.com/Azure/kube-advisor/raw/master/sa.yaml
@@ -33,7 +33,7 @@ If you don't see a command prompt, try pressing enter.
 +--------------+-------------------------+----------------+-------------+--------------------------------+
 ```
 
-## 参考文档
+## 參考文檔
 
 - <https://github.com/Azure/kube-advisor>
 - [Best practices for application developers to manage resources in Azure Kubernetes Service](https://docs.microsoft.com/en-us/azure/aks/developer-best-practices-resource-management)

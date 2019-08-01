@@ -1,6 +1,6 @@
-# 参考文档
+# 參考文檔
 
-- [Kubernetes官方网站](https://kubernetes.io/)
+- [Kubernetes官方網站](https://kubernetes.io/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/)
 - [Discuss Kubernetes](https://discuss.kubernetes.io/)
 - [Kubernetes Contributor Community](https://github.com/kubernetes/community)
@@ -12,8 +12,8 @@
   - [Kubernetes submit queue](http://submit-queue.k8s.io/#/e2e)
   - [Kubernetes Performance Dashboard](http://perf-dash.k8s.io/)
   - [Node Performance Dashboard](http://node-perf-dash.k8s.io/#/builds)
-- [CNCF项目贡献统计](https://devstats.cncf.io/)
-- [Kubernetes项目贡献统计](https://k8s.devstats.cncf.io/)
+- [CNCF項目貢獻統計](https://devstats.cncf.io/)
+- [Kubernetes項目貢獻統計](https://k8s.devstats.cncf.io/)
 - [Kubernetes github metrics](http://velodrome.k8s.io)
 - [Github public data](https://cloud.google.com/bigquery/public-data/github)
 - [Kubernetes the hard way](https://github.com/kelseyhightower/kubernetes-the-hard-way)

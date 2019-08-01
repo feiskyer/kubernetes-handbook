@@ -1,22 +1,22 @@
 # Kubespray 集群安裝
 
-[Kubespray](https://github.com/kubernetes-incubator/kubespray) 是 Kubernetes incubator 中的项目，目标是提供 Production Ready Kubernetes 部署方案，该项目基础是通过 Ansible Playbook 来定义系统与 Kubernetes 集群部署的任务，具有以下几个特点：
+[Kubespray](https://github.com/kubernetes-incubator/kubespray) 是 Kubernetes incubator 中的項目，目標是提供 Production Ready Kubernetes 部署方案，該項目基礎是通過 Ansible Playbook 來定義系統與 Kubernetes 集群部署的任務，具有以下幾個特點：
 
-* 可以部署在 AWS, GCE, Azure, OpenStack 以及裸机上.
+* 可以部署在 AWS, GCE, Azure, OpenStack 以及裸機上.
 * 部署 High Available Kubernetes 集群.
-* 可组合性 (Composable)，可自行选择 Network Plugin (flannel, calico, canal, weave) 来部署.
-* 支持多种 Linux distributions(CoreOS, Debian Jessie, Ubuntu 16.04, CentOS/RHEL7).
+* 可組合性 (Composable)，可自行選擇 Network Plugin (flannel, calico, canal, weave) 來部署.
+* 支持多種 Linux distributions(CoreOS, Debian Jessie, Ubuntu 16.04, CentOS/RHEL7).
 
-本篇将说明如何通过 Kubespray 部署 Kubernetes 至裸机节点，安装版本如下所示：
+本篇將說明如何通過 Kubespray 部署 Kubernetes 至裸機節點，安裝版本如下所示：
 
 * Kubernetes v1.7.3
 * Etcd v3.2.4
 * Flannel v0.8.0
 * Docker v17.04.0-ce
 
-## 节点资讯
+## 節點資訊
 
-本次安装测试环境的作业系统采用 `Ubuntu 16.04 Server`，其他细节内容如下：
+本次安裝測試環境的作業系統採用 `Ubuntu 16.04 Server`，其他細節內容如下：
 
 | IP Address      | Role             | CPU  | Memory |
 | --------------- | ---------------- | ---- | ------ |
@@ -25,25 +25,25 @@
 | 192.168.121.197 | node2            | 2    | 4G     |
 | 192.168.121.123 | node3            | 2    | 4G     |
 
-> 这边 master 为主要控制节点，node 为工作节点。
+> 這邊 master 為主要控制節點，node 為工作節點。
 
-## 预先准备资讯
+## 預先準備資訊
 
-* 所有节点的网路之间可以互相通信。
-* ` 部署节点 (这边为 master1)` 对其他节点不需要 SSH 密码即可登入。
-* 所有节点都拥有 Sudoer 权限，并且不需要输入密码。
-* 所有节点需要安装 `Python`。
-* 所有节点需要设定 `/etc/hosts` 解析到所有主机。
+* 所有節點的網路之間可以互相通信。
+* ` 部署節點 (這邊為 master1)` 對其他節點不需要 SSH 密碼即可登入。
+* 所有節點都擁有 Sudoer 權限，並且不需要輸入密碼。
+* 所有節點需要安裝 `Python`。
+* 所有節點需要設定 `/etc/hosts` 解析到所有主機。
 
-* 修改所有节点的 `/etc/resolv.conf`
+* 修改所有節點的 `/etc/resolv.conf`
 
 ```sh
 $ echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
 ```
 
-* ` 部署节点 (这边为 master1)` 安装 Ansible >= 2.3.0。
+* ` 部署節點 (這邊為 master1)` 安裝 Ansible >= 2.3.0。
 
-Ubuntu 16.04 安装 Ansible:
+Ubuntu 16.04 安裝 Ansible:
 ```sh
 $ sudo sed -i 's/us.archive.ubuntu.com/tw.archive.ubuntu.com/g' /etc/apt/sources.list
 $ sudo apt-get install -y software-properties-common
@@ -51,8 +51,8 @@ $ sudo apt-add-repository -y ppa:ansible/ansible
 $ sudo apt-get update && sudo apt-get install -y ansible git cowsay python-pip python-netaddr libssl-dev
 ```
 
-## 安装 Kubespray 与准备部署资讯
-首先通过 pypi 安装 kubespray-cli，虽然官方说已经改成 Go 语言版本的工具，但是根本没在更新，所以目前暂时用 pypi 版本：
+## 安裝 Kubespray 與準備部署資訊
+首先通過 pypi 安裝 kubespray-cli，雖然官方說已經改成 Go 語言版本的工具，但是根本沒在更新，所以目前暫時用 pypi 版本：
 ```sh
 $ sudo pip install -U kubespray
 ```
@@ -66,7 +66,7 @@ loglevel: "info"
 EOF
 ```
 
-接着用 kubespray cli 来产生 inventory 文件：
+接著用 kubespray cli 來產生 inventory 文件：
 ```sh
 $ kubespray prepare --masters master1 --etcds master1 --nodes node1 node2 node3
 ```
@@ -96,9 +96,9 @@ master1
 kube-node
 kube-master
 ```
-> 也可以自己新建 `inventory` 来描述部署节点。
+> 也可以自己新建 `inventory` 來描述部署節點。
 
-完成后通过以下指令进行部署 Kubernetes 集群：
+完成後通過以下指令進行部署 Kubernetes 集群：
 ```sh
 $ time kubespray deploy --verbose -u root -k .ssh/id_rsa -n flannel
 Run kubernetes cluster deployment with the above command ? [Y/n]y
@@ -110,17 +110,17 @@ node3                      : ok=276  changed=62   unreachable=0    failed=0
 
 Kubernetes deployed successfully
 ```
-> 其中 `-n` 为部署的网络插件类型，目前支持 calico、flannel、weave 与 canal。
+> 其中 `-n` 為部署的網絡插件類型，目前支持 calico、flannel、weave 與 canal。
 
-## 验证集群
-当 Ansible 运行完成后，若没发生错误就可以开始进行操作 Kubernetes，如取得版本资讯：
+## 驗證集群
+當 Ansible 運行完成後，若沒發生錯誤就可以開始進行操作 Kubernetes，如取得版本資訊：
 ```sh
 $ kubectl version
 Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.7.3+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.8.3", Compiler:"gc", Platform:"linux/amd64"}
 Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.7.3+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.8.3", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
-取得当前集群节点状态：
+取得當前集群節點狀態：
 ```sh
 $ kubectl get node
 NAME      STATUS                     AGE       VERSION
@@ -130,7 +130,7 @@ node2     Ready                      11m       v1.7.3+coreos.0
 node3     Ready                      11m       v1.7.3+coreos.
 ```
 
-查看当前集群 Pod 状态：
+查看當前集群 Pod 狀態：
 ```sh
 $ kubectl get po -n kube-system
 NAME                                  READY     STATUS    RESTARTS   AGE

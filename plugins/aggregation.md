@@ -1,12 +1,12 @@
 # Aggregation Layer
 
-API Aggregation 允许在不修改 Kubernetes 核心代码的同时扩展 Kubernetes API，即将第三方服务注册到 Kubernetes API 中，这样就可以通过 Kubernetes API 来访问外部服务。
+API Aggregation 允許在不修改 Kubernetes 核心代碼的同時擴展 Kubernetes API，即將第三方服務註冊到 Kubernetes API 中，這樣就可以通過 Kubernetes API 來訪問外部服務。
 
-> 备注：另外一种扩展 Kubernetes API 的方法是使用 [CustomResourceDefinition (CRD)](../concepts/customresourcedefinition.md)。
+> 備註：另外一種擴展 Kubernetes API 的方法是使用 [CustomResourceDefinition (CRD)](../concepts/customresourcedefinition.md)。
 
-## 何时使用 Aggregation
+## 何時使用 Aggregation
 
-| 满足以下条件时使用 API Aggregation                           | 满足以下条件时使用独立 API                                   |
+| 滿足以下條件時使用 API Aggregation                           | 滿足以下條件時使用獨立 API                                   |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Your API is [Declarative](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#declarative-apis). | Your API does not fit the [Declarative](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#declarative-apis) model. |
 | You want your new types to be readable and writable using `kubectl`. | `kubectl` support is not required                            |
@@ -16,7 +16,7 @@ API Aggregation 允许在不修改 Kubernetes 核心代码的同时扩展 Kubern
 | Your resources are naturally scoped to a cluster or to namespaces of a cluster. | Cluster or namespace scoped resources are a poor fit; you need control over the specifics of resource paths. |
 | You want to reuse [Kubernetes API support features](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#common-features). | You don’t need those features.                               |
 
-## 开启 API Aggregation
+## 開啟 API Aggregation
 
 kube-apiserver 增加以下配置
 
@@ -30,47 +30,47 @@ kube-apiserver 增加以下配置
 --proxy-client-key-file=<path to aggregator proxy key>
 ```
 
-如果 `kube-proxy` 没有在 Master 上面运行，还需要配置
+如果 `kube-proxy` 沒有在 Master 上面運行，還需要配置
 
 ```sh
 --enable-aggregator-routing=true
 ```
 
-## 创建扩展 API
+## 創建擴展 API
 
-1. 确保开启 APIService API（默认开启，可用 `kubectl get apiservice` 命令验证）
-2. 创建 RBAC 规则
-3. 创建一个 namespace，用来运行扩展的 API 服务
-4. 创建 CA 和证书，用于 https
-5. 创建一个存储证书的 secret
-6. 创建一个部署扩展 API 服务的 deployment，并使用上一步的 secret 配置证书，开启 https 服务
-7. 创建一个 ClusterRole 和 ClusterRoleBinding
-8. 创建一个非 namespace 的 apiservice，注意设置 `spec.caBundle`
-9. 运行 `kubectl get <resource-name>`，正常应该返回 `No resources found.`
+1. 確保開啟 APIService API（默認開啟，可用 `kubectl get apiservice` 命令驗證）
+2. 創建 RBAC 規則
+3. 創建一個 namespace，用來運行擴展的 API 服務
+4. 創建 CA 和證書，用於 https
+5. 創建一個存儲證書的 secret
+6. 創建一個部署擴展 API 服務的 deployment，並使用上一步的 secret 配置證書，開啟 https 服務
+7. 創建一個 ClusterRole 和 ClusterRoleBinding
+8. 創建一個非 namespace 的 apiservice，注意設置 `spec.caBundle`
+9. 運行 `kubectl get <resource-name>`，正常應該返回 `No resources found.`
 
-可以使用 [apiserver-builder](https://github.com/kubernetes-incubator/apiserver-builder) 工具自动化上面的步骤。
+可以使用 [apiserver-builder](https://github.com/kubernetes-incubator/apiserver-builder) 工具自動化上面的步驟。
 
 ```sh
-# 初始化项目
+# 初始化項目
 $ cd GOPATH/src/github.com/my-org/my-project
 $ apiserver-boot init repo --domain <your-domain>
 $ apiserver-boot init glide
 
-# 创建资源
+# 創建資源
 $ apiserver-boot create group version resource --group <group> --version <version> --kind <Kind>
 
-# 编译
+# 編譯
 $ apiserver-boot build executables
 $ apiserver-boot build docs
 
-# 本地运行
+# 本地運行
 $ apiserver-boot run local
 
-# 集群运行
+# 集群運行
 $ apiserver-boot run in-cluster --name nameofservicetorun --namespace default --image gcr.io/myrepo/myimage:mytag
 $ kubectl create -f sample/<type>.yaml
 ```
 
 ## 示例
 
-见 [sample-apiserver](https://github.com/kubernetes/sample-apiserver) 和 [apiserver-builder/example](https://github.com/kubernetes-incubator/apiserver-builder/tree/master/example)。
+見 [sample-apiserver](https://github.com/kubernetes/sample-apiserver) 和 [apiserver-builder/example](https://github.com/kubernetes-incubator/apiserver-builder/tree/master/example)。

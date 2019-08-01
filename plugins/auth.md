@@ -1,48 +1,48 @@
-# 访问控制
+# 訪問控制
 
-Kubernetes 对 API 访问提供了三种安全访问控制措施：认证、授权和 Admission Control。认证解决用户是谁的问题，授权解决用户能做什么的问题，Admission Control 则是资源管理方面的作用。通过合理的权限管理，能够保证系统的安全可靠。
+Kubernetes 對 API 訪問提供了三種安全訪問控制措施：認證、授權和 Admission Control。認證解決用戶是誰的問題，授權解決用戶能做什麼的問題，Admission Control 則是資源管理方面的作用。通過合理的權限管理，能夠保證系統的安全可靠。
 
-Kubernetes 集群的所有操作基本上都是通过 kube-apiserver 这个组件进行的，它提供 HTTP RESTful 形式的 API 供集群内外客户端调用。需要注意的是：认证授权过程只存在 HTTPS 形式的 API 中。也就是说，如果客户端使用 HTTP 连接到 kube-apiserver，那么是不会进行认证授权的。所以说，可以这么设置，在集群内部组件间通信使用 HTTP，集群外部就使用 HTTPS，这样既增加了安全性，也不至于太复杂。
+Kubernetes 集群的所有操作基本上都是通過 kube-apiserver 這個組件進行的，它提供 HTTP RESTful 形式的 API 供集群內外客戶端調用。需要注意的是：認證授權過程只存在 HTTPS 形式的 API 中。也就是說，如果客戶端使用 HTTP 連接到 kube-apiserver，那麼是不會進行認證授權的。所以說，可以這麼設置，在集群內部組件間通信使用 HTTP，集群外部就使用 HTTPS，這樣既增加了安全性，也不至於太複雜。
 
-下图是 API 访问要经过的三个步骤，前面两个是认证和授权，第三个是 Admission Control。
+下圖是 API 訪問要經過的三個步驟，前面兩個是認證和授權，第三個是 Admission Control。
 
 ![](images/authentication.png)
 
-## 认证
+## 認證
 
-开启 TLS 时，所有的请求都需要首先认证。Kubernetes 支持多种认证机制，并支持同时开启多个认证插件（只要有一个认证通过即可）。如果认证成功，则用户的 `username` 会传入授权模块做进一步授权验证；而对于认证失败的请求则返回 HTTP 401。
+開啟 TLS 時，所有的請求都需要首先認證。Kubernetes 支持多種認證機制，並支持同時開啟多個認證插件（只要有一個認證通過即可）。如果認證成功，則用戶的 `username` 會傳入授權模塊做進一步授權驗證；而對於認證失敗的請求則返回 HTTP 401。
 
-> **Kubernetes 不直接管理用户**
+> **Kubernetes 不直接管理用戶**
 >
-> 虽然 Kubernetes 认证和授权用到了 user 和 group，但 Kubernetes 并不直接管理用户，不能创建 `user` 对象，也不存储 user。
+> 雖然 Kubernetes 認證和授權用到了 user 和 group，但 Kubernetes 並不直接管理用戶，不能創建 `user` 對象，也不存儲 user。
 
-目前，Kubernetes 支持以下认证插件：
+目前，Kubernetes 支持以下認證插件：
 
-- X509 证书
-- 静态 Token 文件
-- 引导 Token
-- 静态密码文件
+- X509 證書
+- 靜態 Token 文件
+- 引導 Token
+- 靜態密碼文件
 - Service Account
 - OpenID
 - Webhook
-- 认证代理
-- OpenStack Keystone 密码
+- 認證代理
+- OpenStack Keystone 密碼
 
-详细使用方法请参考[这里](authentication.md)
+詳細使用方法請參考[這裡](authentication.md)
 
-## 授权
+## 授權
 
-授权主要是用于对集群资源的访问控制，通过检查请求包含的相关属性值，与相对应的访问策略相比较，API 请求必须满足某些策略才能被处理。跟认证类似，Kubernetes 也支持多种授权机制，并支持同时开启多个授权插件（只要有一个验证通过即可）。如果授权成功，则用户的请求会发送到准入控制模块做进一步的请求验证；对于授权失败的请求则返回 HTTP 403。
+授權主要是用於對集群資源的訪問控制，通過檢查請求包含的相關屬性值，與相對應的訪問策略相比較，API 請求必須滿足某些策略才能被處理。跟認證類似，Kubernetes 也支持多種授權機制，並支持同時開啟多個授權插件（只要有一個驗證通過即可）。如果授權成功，則用戶的請求會發送到准入控制模塊做進一步的請求驗證；對於授權失敗的請求則返回 HTTP 403。
 
-Kubernetes 授权仅处理以下的请求属性：
+Kubernetes 授權僅處理以下的請求屬性：
 
 - user, group, extra
-- API、请求方法（如 get、post、update、patch 和 delete）和请求路径（如 `/api`）
-- 请求资源和子资源
+- API、請求方法（如 get、post、update、patch 和 delete）和請求路徑（如 `/api`）
+- 請求資源和子資源
 - Namespace
 - API Group
 
-目前，Kubernetes 支持以下授权插件：
+目前，Kubernetes 支持以下授權插件：
 
 - ABAC
 - RBAC
@@ -51,12 +51,12 @@ Kubernetes 授权仅处理以下的请求属性：
 
 > **AlwaysDeny 和 AlwaysAllow**
 >
-> Kubernetes 还支持 AlwaysDeny 和 AlwaysAllow 模式，其中 AlwaysDeny 仅用来测试，而 AlwaysAllow 则
-> 允许所有请求（会覆盖其他模式）。
+> Kubernetes 還支持 AlwaysDeny 和 AlwaysAllow 模式，其中 AlwaysDeny 僅用來測試，而 AlwaysAllow 則
+> 允許所有請求（會覆蓋其他模式）。
 
-### ABAC 授权
+### ABAC 授權
 
-使用 ABAC 授权需要 API Server 配置 `--authorization-policy-file=SOME_FILENAME`，文件格式为每行一个 json 对象，比如
+使用 ABAC 授權需要 API Server 配置 `--authorization-policy-file=SOME_FILENAME`，文件格式為每行一個 json 對象，比如
 
 ```json
 {
@@ -89,13 +89,13 @@ Kubernetes 授权仅处理以下的请求属性：
 }
 ```
 
-### RBAC 授权
+### RBAC 授權
 
-见 [RBAC 授权](rbac.md)。
+見 [RBAC 授權](rbac.md)。
 
-### WebHook 授权
+### WebHook 授權
 
-使用 WebHook 授权需要 API Server 配置 `--authorization-webhook-config-file=SOME_FILENAME` 和 `--runtime-config=authorization.k8s.io/v1beta1=true`，配置文件格式同 kubeconfig，如
+使用 WebHook 授權需要 API Server 配置 `--authorization-webhook-config-file=SOME_FILENAME` 和 `--runtime-config=authorization.k8s.io/v1beta1=true`，配置文件格式同 kubeconfig，如
 
 ```yaml
 # clusters refers to the remote service.
@@ -125,7 +125,7 @@ contexts:
   name: webhook
 ```
 
-API Server 请求 Webhook server 的格式为
+API Server 請求 Webhook server 的格式為
 
 ```json
 {
@@ -147,7 +147,7 @@ API Server 请求 Webhook server 的格式为
 }
 ```
 
-而 Webhook server 需要返回授权的结果，允许 (allowed=true) 或拒绝(allowed=false)：
+而 Webhook server 需要返回授權的結果，允許 (allowed=true) 或拒絕(allowed=false)：
 
 ```json
 {
@@ -159,15 +159,15 @@ API Server 请求 Webhook server 的格式为
 }
 ```
 
-### Node 授权
+### Node 授權
 
-v1.7 + 支持 Node 授权，配合 `NodeRestriction` 准入控制来限制 kubelet 仅可访问 node、endpoint、pod、service 以及 secret、configmap、PV 和 PVC 等相关的资源，配置方法为
+v1.7 + 支持 Node 授權，配合 `NodeRestriction` 准入控制來限制 kubelet 僅可訪問 node、endpoint、pod、service 以及 secret、configmap、PV 和 PVC 等相關的資源，配置方法為
 
 `--authorization-mode=Node,RBAC --admission-control=...,NodeRestriction,...`
 
-注意，kubelet 认证需要使用 `system:nodes` 组，并使用用户名 `system:node:<nodeName>`。
+注意，kubelet 認證需要使用 `system:nodes` 組，並使用用戶名 `system:node:<nodeName>`。
 
-## 参考文档
+## 參考文檔
 
 - [Authenticating](https://kubernetes.io/docs/admin/authentication/)
 - [Authorization](https://kubernetes.io/docs/admin/authorization/)

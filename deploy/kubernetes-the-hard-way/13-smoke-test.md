@@ -1,19 +1,19 @@
-# 烟雾测试
+# 煙霧測試
 
-本部分将会运行一系列的测试来验证 Kubernetes 集群的功能正常。
+本部分將會運行一系列的測試來驗證 Kubernetes 集群的功能正常。
 
-## 数据加密
+## 數據加密
 
-本节将会验证 [encrypt secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#verifying-that-data-is-encrypted) 的功能。
+本節將會驗證 [encrypt secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#verifying-that-data-is-encrypted) 的功能。
 
-创建一个 Secret:
+創建一個 Secret:
 
 ```sh
 kubectl create secret generic kubernetes-the-hard-way \
   --from-literal="mykey=mydata"
 ```
 
-查询存在 etcd 里 16 进位编码的 `kubernetes-the-hard-way` secret:
+查詢存在 etcd 裡 16 進位編碼的 `kubernetes-the-hard-way` secret:
 
 ```sh
 gcloud compute ssh controller-0 \
@@ -25,7 +25,7 @@ gcloud compute ssh controller-0 \
   /registry/secrets/default/kubernetes-the-hard-way | hexdump -C"
 ```
 
-输出为
+輸出為
 
 ```sh
 00000000  2f 72 65 67 69 73 74 72  79 2f 73 65 63 72 65 74  |/registry/secret|
@@ -46,13 +46,13 @@ gcloud compute ssh controller-0 \
 000000ea
 ```
 
-Etcd 的密钥以 `k8s:enc:aescbc:v1:key1` 为前缀, 表示使用密钥为 `key1` 的 `aescbc` 加密数据。
+Etcd 的密鑰以 `k8s:enc:aescbc:v1:key1` 為前綴, 表示使用密鑰為 `key1` 的 `aescbc` 加密數據。
 
 ## 部署
 
-本节将会验证建立与管理 [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 的功能。
+本節將會驗證建立與管理 [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 的功能。
 
-创建一个 Deployment 用来搭建 [nginx](https://nginx.org/en/) Web 服务：
+創建一個 Deployment 用來搭建 [nginx](https://nginx.org/en/) Web 服務：
 
 ```sh
 kubectl run nginx --image=nginx
@@ -64,43 +64,43 @@ kubectl run nginx --image=nginx
 kubectl get pods -l run=nginx
 ```
 
-输出为
+輸出為
 
 ```sh
 NAME                     READY     STATUS    RESTARTS   AGE
 nginx-4217019353-b5gzn   1/1       Running   0          15s
 ```
 
-### 端口转发
+### 端口轉發
 
-本节将会验证使用 [port forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) 从远端进入容器的功能。
+本節將會驗證使用 [port forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) 從遠端進入容器的功能。
 
-查询 `nginx` pod 的全名:
+查詢 `nginx` pod 的全名:
 
 ```sh
 POD_NAME=$(kubectl get pods -l run=nginx -o jsonpath="{.items[0].metadata.name}")
 ```
 
-将本地机器的 8080 端口转发到 nginx pod 的 80 端口：
+將本地機器的 8080 端口轉發到 nginx pod 的 80 端口：
 
 ```sh
 kubectl port-forward $POD_NAME 8080:80
 ```
 
-输出为
+輸出為
 
 ```sh
 Forwarding from 127.0.0.1:8080 -> 80
 Forwarding from [::1]:8080 -> 80
 ```
 
-开一个新的终端来做 HTTP 请求测试:
+開一個新的終端來做 HTTP 請求測試:
 
 ```sh
 curl --head http://127.0.0.1:8080
 ```
 
-输出为
+輸出為
 
 ```sh
 HTTP/1.1 200 OK
@@ -114,7 +114,7 @@ ETag: "5989d7cc-264"
 Accept-Ranges: bytes
 ```
 
-回到前面的终端并按下 `Ctrl + C` 停止 port forwarding 命令：
+回到前面的終端並按下 `Ctrl + C` 停止 port forwarding 命令：
 
 ```sh
 Forwarding from 127.0.0.1:8080 -> 80
@@ -123,58 +123,58 @@ Handling connection for 8080
 ^C
 ```
 
-### 容器日志
+### 容器日誌
 
-本节会验证 [获取容器日志](https://kubernetes.io/docs/concepts/cluster-administration/logging/) 的功能。
+本節會驗證 [獲取容器日誌](https://kubernetes.io/docs/concepts/cluster-administration/logging/) 的功能。
 
-输出 nginx Pod 的容器日志：
+輸出 nginx Pod 的容器日誌：
 
 ```sh
 kubectl logs $POD_NAME
 ```
 
-输出为
+輸出為
 
 ```sh
 127.0.0.1 - - [02/Oct/2017:01:04:20 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.54.0" "-"
 ```
 
-### 执行容器命令
+### 執行容器命令
 
-本节将验证 [在容器里执行命令](https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/#running-individual-commands-in-a-container) 的功能。
+本節將驗證 [在容器裡執行命令](https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/#running-individual-commands-in-a-container) 的功能。
 
-使用 `nginx -v` 命令在 `nginx` Pod 中输出 nginx 的版本：
+使用 `nginx -v` 命令在 `nginx` Pod 中輸出 nginx 的版本：
 
 ```sh
 kubectl exec -ti $POD_NAME -- nginx -v
 ```
 
-输出为
+輸出為
 
 ```sh
 nginx version: nginx/1.13.7
 ```
 
-## 服务（Service）
+## 服務（Service）
 
-本节将验证 Kubernetes [Service](https://kubernetes.io/docs/concepts/services-networking/service/)。
+本節將驗證 Kubernetes [Service](https://kubernetes.io/docs/concepts/services-networking/service/)。
 
-将 `nginx` 部署导出为 [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) 类型的 Service：
+將 `nginx` 部署導出為 [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) 類型的 Service：
 
 ```sh
 kubectl expose deployment nginx --port 80 --type NodePort
 ```
 
-> LoadBalancer 类型的 Service 不能使用是因为没有设置 [cloud provider 集成](https://kubernetes.io/docs/setup/#production-environment)。 设定 cloud provider 不在本教程范围之内。
+> LoadBalancer 類型的 Service 不能使用是因為沒有設置 [cloud provider 集成](https://kubernetes.io/docs/setup/#production-environment)。 設定 cloud provider 不在本教程範圍之內。
 
-查询 `nginx` 服务分配的 Node Port：
+查詢 `nginx` 服務分配的 Node Port：
 
 ```sh
 NODE_PORT=$(kubectl get svc nginx \
   --output=jsonpath='{range .spec.ports[0]}{.nodePort}')
 ```
 
-建立防火墙规则允许外网访问该 Node 端口：
+建立防火牆規則允許外網訪問該 Node 端口：
 
 ```sh
 gcloud compute firewall-rules create kubernetes-the-hard-way-allow-nginx-service \
@@ -182,20 +182,20 @@ gcloud compute firewall-rules create kubernetes-the-hard-way-allow-nginx-service
   --network kubernetes-the-hard-way
 ```
 
-查询 worker 节点的外网 IP 地址：
+查詢 worker 節點的外網 IP 地址：
 
 ```sh
 EXTERNAL_IP=$(gcloud compute instances describe worker-0 \
   --format 'value(networkInterfaces[0].accessConfigs[0].natIP)')
 ```
 
-对得到的外网 IP 地址 + nginx 服务的 Node Port 做 HTTP 请求测试：
+對得到的外網 IP 地址 + nginx 服務的 Node Port 做 HTTP 請求測試：
 
 ```sh
 curl -I http://${EXTERNAL_IP}:${NODE_PORT}
 ```
 
-输出为
+輸出為
 
 
 ```sh
@@ -210,9 +210,9 @@ ETag: "5a1437f4-264"
 Accept-Ranges: bytes
 ```
 
-## 非可信应用
+## 非可信應用
 
-非可信应用可以运行在 [gVisor](https://github.com/google/gvisor) 容器引擎之中。
+非可信應用可以運行在 [gVisor](https://github.com/google/gvisor) 容器引擎之中。
 
 ```sh
 cat <<EOF | kubectl apply -f -
@@ -229,7 +229,7 @@ spec:
 EOF
 ```
 
-验证
+驗證
 
 ```sh
 kubectl get pods -o wide
@@ -242,7 +242,7 @@ nginx-65899c769f-xkfcn     1/1       Running   0          4m        10.200.1.2  
 untrusted                  1/1       Running   0          10s       10.200.0.3   worker-0
 ```
 
-查看 untrusted Pod 运行信息
+查看 untrusted Pod 運行信息
 
 ```sh
 # SSH to the node
@@ -253,7 +253,7 @@ gcloud compute ssh ${INSTANCE_NAME}
 sudo runsc --root  /run/containerd/runsc/k8s.io list
 ```
 
-输出
+輸出
 
 ```sh
 I0514 14:03:56.108368   14988 x:0] ***************************
@@ -274,7 +274,7 @@ ID                                                                 PID         S
 I0514 14:03:56.111287   14988 x:0] Exiting with status: 0
 ```
 
-查询容器中的进程
+查詢容器中的進程
 
 ```sh
 POD_ID=$(sudo crictl -r unix:///var/run/containerd/containerd.sock \
@@ -286,7 +286,7 @@ CONTAINER_ID=$(sudo crictl -r unix:///var/run/containerd/containerd.sock \
 sudo runsc --root /run/containerd/runsc/k8s.io ps ${CONTAINER_ID}
 ```
 
-输出
+輸出
 
 ```
 I0514 14:05:16.499237   15096 x:0] ***************************
@@ -306,4 +306,4 @@ UID       PID       PPID      C         STIME     TIME      CMD
 I0514 14:05:16.501354   15096 x:0] Exiting with status: 0
 ```
 
-下一步：[删除集群](14-cleanup.md)。
+下一步：[刪除集群](14-cleanup.md)。

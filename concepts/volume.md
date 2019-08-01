@@ -1,15 +1,15 @@
-# Kubernetes 存储卷
+# Kubernetes 存儲卷
 
-我们知道默认情况下容器的数据都是非持久化的，在容器消亡以后数据也跟着丢失，所以 Docker 提供了 Volume 机制以便将数据持久化存储。类似的，Kubernetes 提供了更强大的 Volume 机制和丰富的插件，解决了容器数据持久化和容器间共享数据的问题。
+我們知道默認情況下容器的數據都是非持久化的，在容器消亡以後數據也跟著丟失，所以 Docker 提供了 Volume 機制以便將數據持久化存儲。類似的，Kubernetes 提供了更強大的 Volume 機制和豐富的插件，解決了容器數據持久化和容器間共享數據的問題。
 
-与 Docker 不同，Kubernetes Volume 的生命周期与 Pod 绑定
+與 Docker 不同，Kubernetes Volume 的生命週期與 Pod 綁定
 
-- 容器挂掉后 Kubelet 再次重启容器时，Volume 的数据依然还在
-- 而 Pod 删除时，Volume 才会清理。数据是否丢失取决于具体的 Volume 类型，比如 emptyDir 的数据会丢失，而 PV 的数据则不会丢
+- 容器掛掉後 Kubelet 再次重啟容器時，Volume 的數據依然還在
+- 而 Pod 刪除時，Volume 才會清理。數據是否丟失取決於具體的 Volume 類型，比如 emptyDir 的數據會丟失，而 PV 的數據則不會丟
 
-## Volume 类型
+## Volume 類型
 
-目前，Kubernetes 支持以下 Volume 类型：
+目前，Kubernetes 支持以下 Volume 類型：
 
 - emptyDir
 - hostPath
@@ -35,9 +35,9 @@
 - StorageOS
 - local
 
-注意，这些 volume 并非全部都是持久化的，比如 emptyDir、secret、gitRepo 等，这些 volume 会随着 Pod 的消亡而消失。
+注意，這些 volume 並非全部都是持久化的，比如 emptyDir、secret、gitRepo 等，這些 volume 會隨著 Pod 的消亡而消失。
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 | Core API 版本 |
 | --------------- | ------------- |
@@ -45,7 +45,7 @@
 
 ## emptyDir
 
-如果 Pod 设置了 emptyDir 类型 Volume， Pod 被分配到 Node 上时候，会创建 emptyDir，只要 Pod 运行在 Node 上，emptyDir 都会存在（容器挂掉不会导致 emptyDir 丢失数据），但是如果 Pod 从 Node 上被删除（Pod 被删除，或者 Pod 发生迁移），emptyDir 也会被删除，并且永久丢失。
+如果 Pod 設置了 emptyDir 類型 Volume， Pod 被分配到 Node 上時候，會創建 emptyDir，只要 Pod 運行在 Node 上，emptyDir 都會存在（容器掛掉不會導致 emptyDir 丟失數據），但是如果 Pod 從 Node 上被刪除（Pod 被刪除，或者 Pod 發生遷移），emptyDir 也會被刪除，並且永久丟失。
 
 ```yaml
 apiVersion: v1
@@ -66,7 +66,7 @@ spec:
 
 ## hostPath
 
-hostPath 允许挂载 Node 上的文件系统到 Pod 里面去。如果 Pod 需要使用 Node 上的文件，可以使用 hostPath。
+hostPath 允許掛載 Node 上的文件系統到 Pod 裡面去。如果 Pod 需要使用 Node 上的文件，可以使用 hostPath。
 
 ```yaml
 apiVersion: v1
@@ -88,7 +88,7 @@ spec:
 
 ## NFS
 
-NFS 是 Network File System 的缩写，即网络文件系统。Kubernetes 中通过简单地配置就可以挂载 NFS 到 Pod 中，而 NFS 中的数据是可以永久保存的，同时 NFS 支持同时写操作。
+NFS 是 Network File System 的縮寫，即網絡文件系統。Kubernetes 中通過簡單地配置就可以掛載 NFS 到 Pod 中，而 NFS 中的數據是可以永久保存的，同時 NFS 支持同時寫操作。
 
 ```yaml
 volumes:
@@ -101,7 +101,7 @@ volumes:
 
 ## gcePersistentDisk
 
-gcePersistentDisk 可以挂载 GCE 上的永久磁盘到容器，需要 Kubernetes 运行在 GCE 的 VM 中。
+gcePersistentDisk 可以掛載 GCE 上的永久磁盤到容器，需要 Kubernetes 運行在 GCE 的 VM 中。
 
 ```yaml
 volumes:
@@ -114,7 +114,7 @@ volumes:
 
 ## awsElasticBlockStore
 
-awsElasticBlockStore 可以挂载 AWS 上的 EBS 盘到容器，需要 Kubernetes 运行在 AWS 的 EC2 上。
+awsElasticBlockStore 可以掛載 AWS 上的 EBS 盤到容器，需要 Kubernetes 運行在 AWS 的 EC2 上。
 
 ```yaml
 volumes:
@@ -127,7 +127,7 @@ volumes:
 
 ## gitRepo
 
-gitRepo volume 将 git 代码下拉到指定的容器路径中
+gitRepo volume 將 git 代碼下拉到指定的容器路徑中
 
 ```yaml
   volumes:
@@ -139,7 +139,7 @@ gitRepo volume 将 git 代码下拉到指定的容器路径中
 
 ## 使用 subPath
 
-Pod 的多个容器使用同一个 Volume 时，subPath 非常有用
+Pod 的多個容器使用同一個 Volume 時，subPath 非常有用
 
 ```yaml
 apiVersion: v1
@@ -168,7 +168,7 @@ spec:
 
 ## FlexVolume
 
-如果内置的这些 Volume 不满足要求，则可以使用 FlexVolume 实现自己的 Volume 插件。注意要把 volume plugin 放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>`，plugin 要实现 `init/attach/detach/mount/umount` 等命令（可参考 lvm 的 [示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/flexvolume)）。
+如果內置的這些 Volume 不滿足要求，則可以使用 FlexVolume 實現自己的 Volume 插件。注意要把 volume plugin 放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>`，plugin 要實現 `init/attach/detach/mount/umount` 等命令（可參考 lvm 的 [示例](https://github.com/kubernetes/examples/tree/master/staging/volumes/flexvolume)）。
 
 ```yaml
   - name: test
@@ -183,7 +183,7 @@ spec:
 
 ## Projected Volume
 
-Projected volume 将多个 Volume 源映射到同一个目录中，支持 secret、downwardAPI 和 configMap。
+Projected volume 將多個 Volume 源映射到同一個目錄中，支持 secret、downwardAPI 和 configMap。
 
 ```yaml
 apiVersion: v1
@@ -223,18 +223,18 @@ spec:
               path: my-group/my-config
 ```
 
-## 本地存储限额
+## 本地存儲限額
 
-v1.7 + 支持对基于本地存储（如 hostPath, emptyDir, gitRepo 等）的容量进行调度限额，可以通过 `--feature-gates=LocalStorageCapacityIsolation=true` 来开启这个特性。
+v1.7 + 支持對基於本地存儲（如 hostPath, emptyDir, gitRepo 等）的容量進行調度限額，可以通過 `--feature-gates=LocalStorageCapacityIsolation=true` 來開啟這個特性。
 
-为了支持这个特性，Kubernetes 将本地存储分为两类
+為了支持這個特性，Kubernetes 將本地存儲分為兩類
 
 - `storage.kubernetes.io/overlay`，即 `/var/lib/docker` 的大小
 - `storage.kubernetes.io/scratch`，即 `/var/lib/kubelet` 的大小
 
-Kubernetes 根据 `storage.kubernetes.io/scratch` 的大小来调度本地存储空间，而根据 `storage.kubernetes.io/overlay` 来调度容器的存储。比如
+Kubernetes 根據 `storage.kubernetes.io/scratch` 的大小來調度本地存儲空間，而根據 `storage.kubernetes.io/overlay` 來調度容器的存儲。比如
 
-为容器请求 64MB 的可写层存储空间
+為容器請求 64MB 的可寫層存儲空間
 
 ```yaml
 apiVersion: v1
@@ -252,7 +252,7 @@ spec:
         storage.kubernetes.io/overlay: 64Mi
 ```
 
-为 empty 请求 64MB 的存储空间
+為 empty 請求 64MB 的存儲空間
 
 ```yaml
 apiVersion: v1
@@ -274,27 +274,27 @@ spec:
       sizeLimit: 64Mi
 ```
 
-## Mount 传递
+## Mount 傳遞
 
-在 Kubernetes 中，Volume Mount 默认是 [私有的](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)，但从 v1.8 开始，Kubernetes 支持配置 Mount 传递（mountPropagation）。它支持两种选项
+在 Kubernetes 中，Volume Mount 默認是 [私有的](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)，但從 v1.8 開始，Kubernetes 支持配置 Mount 傳遞（mountPropagation）。它支持兩種選項
 
-- HostToContainer：这是开启 `MountPropagation=true` 时的默认模式，等效于 `rslave` 模式，即容器可以看到 Host 上面在该 volume 内的任何新 Mount 操作
-- Bidirectional：等效于 `rshared` 模式，即 Host 和容器都可以看到对方在该 Volume 内的任何新 Mount 操作。该模式要求容器必须运行在特权模式（即 `securityContext.privileged=true`）
+- HostToContainer：這是開啟 `MountPropagation=true` 時的默認模式，等效於 `rslave` 模式，即容器可以看到 Host 上面在該 volume 內的任何新 Mount 操作
+- Bidirectional：等效於 `rshared` 模式，即 Host 和容器都可以看到對方在該 Volume 內的任何新 Mount 操作。該模式要求容器必須運行在特權模式（即 `securityContext.privileged=true`）
 
 注意：
 
-- 使用 Mount 传递需要开启 `--feature-gates=MountPropagation=true`
-- `rslave` 和 `rshared` 的说明可以参考 [内核文档](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)
+- 使用 Mount 傳遞需要開啟 `--feature-gates=MountPropagation=true`
+- `rslave` 和 `rshared` 的說明可以參考 [內核文檔](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)
 
 ## Volume 快照
 
-v1.8 新增了 pre-alpha 版本的 Volume 快照，但还只是一个雏形，并且其实现不在 Kubernetes 核心代码中，而是存放在 [kubernetes-incubator/external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/snapshot) 中。
+v1.8 新增了 pre-alpha 版本的 Volume 快照，但還只是一個雛形，並且其實現不在 Kubernetes 核心代碼中，而是存放在 [kubernetes-incubator/external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/snapshot) 中。
 
-> TODO:  补充 Volume 快照的设计原理和示例。
+> TODO:  補充 Volume 快照的設計原理和示例。
 
 ## Windows Volume
 
-Windows 容器暂时只支持 local、emptyDir、hostPath、AzureDisk、AzureFile 以及 flexvolume。注意 Volume 的路径格式需要为 `mountPath: "C:\\etc\\foo"` 或者 `mountPath: "C:/etc/foo"`。
+Windows 容器暫時只支持 local、emptyDir、hostPath、AzureDisk、AzureFile 以及 flexvolume。注意 Volume 的路徑格式需要為 `mountPath: "C:\\etc\\foo"` 或者 `mountPath: "C:/etc/foo"`。
 
 ```yaml
 apiVersion: v1
@@ -344,23 +344,23 @@ spec:
     beta.kubernetes.io/os: windows
 ```
 
-## 挂载传播
+## 掛載傳播
 
-[挂载传播（MountPropagation）](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)是 v1.9 引入的新功能，并在 v1.10 中升级为 Beta 版本。挂载传播用来解决同一个 Volume 在不同的容器甚至是 Pod 之间挂载的问题。通过设置 `Container.volumeMounts.mountPropagation），可以为该存储卷设置不同的传播类型。
+[掛載傳播（MountPropagation）](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)是 v1.9 引入的新功能，並在 v1.10 中升級為 Beta 版本。掛載傳播用來解決同一個 Volume 在不同的容器甚至是 Pod 之間掛載的問題。通過設置 `Container.volumeMounts.mountPropagation），可以為該存儲卷設置不同的傳播類型。
 
-支持三种选项：
+支持三種選項：
 
-- None：即私有挂载（private）
-- HostToContainer：即 Host 内在该目录中的新挂载都可以在容器中看到，等价于 Linux 内核的 rslave。
-- Bidirectional：即 Host 内在该目录中的新挂载都可以在容器中看到，同样容器内在该目录中的任何新挂载也都可以在 Host 中看到，等价于 Linux 内核的 rshared。仅特权容器（privileged）可以使用 Bidirectional 类型。
+- None：即私有掛載（private）
+- HostToContainer：即 Host 內在該目錄中的新掛載都可以在容器中看到，等價於 Linux 內核的 rslave。
+- Bidirectional：即 Host 內在該目錄中的新掛載都可以在容器中看到，同樣容器內在該目錄中的任何新掛載也都可以在 Host 中看到，等價於 Linux 內核的 rshared。僅特權容器（privileged）可以使用 Bidirectional 類型。
 
 注意：
 
-- 使用前需要开启 MountPropagation 特性
-- 如未设置，则 v1.9 和 v1.10 中默认为私有挂载（`None`），而 v1.11 中默认为 `HostToContainer`
-- Docker 服务的 systemd 配置文件中需要设置 `MountFlags=shared`
+- 使用前需要開啟 MountPropagation 特性
+- 如未設置，則 v1.9 和 v1.10 中默認為私有掛載（`None`），而 v1.11 中默認為 `HostToContainer`
+- Docker 服務的 systemd 配置文件中需要設置 `MountFlags=shared`
 
-## 其他的 Volume 参考示例
+## 其他的 Volume 參考示例
 
 https://github.com/kubernetes/examples/tree/master/staging/volumes/iscsi
 

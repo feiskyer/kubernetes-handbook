@@ -1,20 +1,20 @@
 # Kubernetes HA
 
-Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会自动部署一个高可用的系统，包括
+Kubernetes 從 1.5 開始，通過 `kops` 或者 `kube-up.sh` 部署的集群會自動部署一個高可用的系統，包括
 
 - Etcd 集群模式
-- kube-apiserver 负载均衡
-- kube-controller-manager、kube-scheduler 和 cluster-autoscaler 自动选主（有且仅有一个运行实例）
+- kube-apiserver 負載均衡
+- kube-controller-manager、kube-scheduler 和 cluster-autoscaler 自動選主（有且僅有一個運行實例）
 
-如下图所示
+如下圖所示
 
 ![](images/ha.png)
 
-注意：以下步骤假设每台机器上 Kubelet 和 Docker 已配置并处于正常运行状态。
+注意：以下步驟假設每臺機器上 Kubelet 和 Docker 已配置並處於正常運行狀態。
 
 ## Etcd 集群
 
-安装 cfssl
+安裝 cfssl
 
 ```sh
 # On all etcd nodes
@@ -112,10 +112,10 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=serv
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer config.json | cfssljson -bare peer
 ```
 
-最后运行 etcd，将如下的 yaml 配置写入每台 etcd 节点的 `/etc/kubernetes/manifests/etcd.yaml` 文件中，注意替换
+最後運行 etcd，將如下的 yaml 配置寫入每臺 etcd 節點的 `/etc/kubernetes/manifests/etcd.yaml` 文件中，注意替換
 
-- `<podname>` 为 etcd 节点名称 （比如`etcd0`, `etcd1` 和 `etcd2`）
-- `<etcd0-ip-address>`, `<etcd1-ip-address>` and `<etcd2-ip-address>` 为 etcd 节点的内网 IP 地址
+- `<podname>` 為 etcd 節點名稱 （比如`etcd0`, `etcd1` 和 `etcd2`）
+- `<etcd0-ip-address>`, `<etcd1-ip-address>` and `<etcd2-ip-address>` 為 etcd 節點的內網 IP 地址
 
 ```sh
 cat >/etc/kubernetes/manifests/etcd.yaml <<EOF
@@ -186,7 +186,7 @@ volumes:
 EOF
 ```
 
-> 注意：以上方法需要每个 etcd 节点都运行 kubelet。如果不想使用 kubelet，还可以通过 systemd 的方式来启动 etcd：
+> 注意：以上方法需要每個 etcd 節點都運行 kubelet。如果不想使用 kubelet，還可以通過 systemd 的方式來啟動 etcd：
 >
 > ```sh
 > export ETCD_VERSION=v3.1.10
@@ -240,7 +240,7 @@ EOF
 
 ## kube-apiserver
 
-把 `kube-apiserver.yaml` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
+把 `kube-apiserver.yaml` 放到每臺 Master 節點的 `/etc/kubernetes/manifests/`，並把相關的配置放到 `/srv/kubernetes/`，即可由 kubelet 自動創建並啟動 apiserver:
 
 - basic_auth.csv - basic auth user and password
 - ca.crt - Certificate Authority cert
@@ -250,11 +250,11 @@ EOF
 - server.cert - Server certificate, public key
 - server.key - Server certificate, private key
 
-> 注意：确保 kube-apiserver 配置 --etcd-quorum-read=true（v1.9 之后默认为 true）。
+> 注意：確保 kube-apiserver 配置 --etcd-quorum-read=true（v1.9 之後默認為 true）。
 
 ### kubeadm
 
-如果使用 kubeadm 来部署集群的话，可以按照如下步骤配置：
+如果使用 kubeadm 來部署集群的話，可以按照如下步驟配置：
 
 ```sh
 # on master0
@@ -360,22 +360,22 @@ kubeadm alpha phase controlplane all --config kubeadm-config.yaml
 kubeadm alpha phase mark-master --config kubeadm-config.yaml
 ```
 
-kube-apiserver 启动后，还需要为它们做负载均衡，可以使用云平台的弹性负载均衡服务或者使用 haproxy/lvs 等为 master 节点配置负载均衡。
+kube-apiserver 啟動後，還需要為它們做負載均衡，可以使用雲平臺的彈性負載均衡服務或者使用 haproxy/lvs 等為 master 節點配置負載均衡。
 
 ## kube-controller-manager 和 kube-scheduler
 
-kube-controller manager 和 kube-scheduler 需要保证任何时刻都只有一个实例运行，需要一个选主的过程，所以在启动时要设置 `--leader-elect=true`，比如
+kube-controller manager 和 kube-scheduler 需要保證任何時刻都只有一個實例運行，需要一個選主的過程，所以在啟動時要設置 `--leader-elect=true`，比如
 
 ```
 kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把  `kube-scheduler.yaml` 和 `kube-controller-manager.yaml` 放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
+把  `kube-scheduler.yaml` 和 `kube-controller-manager.yaml` 放到每臺 master 節點的 `/etc/kubernetes/manifests/` 即可。
 
 ## kube-dns
 
-kube-dns 可以通过 Deployment 的方式来部署，默认 kubeadm 会自动创建。但在大规模集群的时候，需要放宽资源限制，比如
+kube-dns 可以通過 Deployment 的方式來部署，默認 kubeadm 會自動創建。但在大規模集群的時候，需要放寬資源限制，比如
 
 ```
 dns_replicas: 6
@@ -385,13 +385,13 @@ dns_cpu_requests 70m
 dns_memory_requests: 70Mi
 ```
 
-另外，也需要给 dnsmasq 增加资源，比如增加缓存大小到 10000，增加并发处理数量 `--dns-forward-max=1000` 等。
+另外，也需要給 dnsmasq 增加資源，比如增加緩存大小到 10000，增加併發處理數量 `--dns-forward-max=1000` 等。
 
 ## kube-proxy
 
-默认 kube-proxy 使用 iptables 来为 Service 作负载均衡，这在大规模时会产生很大的 Latency，可以考虑使用 [IPVS](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3) 的替代方式（注意 IPVS 在 v1.9 中还是 beta 状态）。
+默認 kube-proxy 使用 iptables 來為 Service 作負載均衡，這在大規模時會產生很大的 Latency，可以考慮使用 [IPVS](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3) 的替代方式（注意 IPVS 在 v1.9 中還是 beta 狀態）。
 
-另外，需要注意配置 kube-proxy 使用 kube-apiserver 负载均衡的 IP 地址：
+另外，需要注意配置 kube-proxy 使用 kube-apiserver 負載均衡的 IP 地址：
 
 ```sh
 kubectl get configmap -n kube-system kube-proxy -o yaml > kube-proxy-сm.yaml
@@ -403,21 +403,21 @@ kubectl delete pod -n kube-system -l k8s-app=kube-proxy
 
 ## kubelet
 
-kubelet 需要配置 kube-apiserver 负载均衡的 IP 地址
+kubelet 需要配置 kube-apiserver 負載均衡的 IP 地址
 
 ```sh
 sudo sed -i 's#server:.*#server: https://<masterLoadBalancerFQDN>:6443#g' /etc/kubernetes/kubelet.conf
 sudo systemctl restart kubelet
 ```
 
-## 数据持久化
+## 數據持久化
 
-除了上面提到的这些配置，持久化存储也是高可用 Kubernetes 集群所必须的。
+除了上面提到的這些配置，持久化存儲也是高可用 Kubernetes 集群所必須的。
 
-- 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如 aws ebs 或者 gce persistent disk
-- 对于物理机部署的集群，可以考虑使用 iSCSI、NFS、Gluster 或者 Ceph 等网络存储，也可以使用 RAID
+- 對於公有云上部署的集群，可以考慮使用雲平臺提供的持久化存儲，比如 aws ebs 或者 gce persistent disk
+- 對於物理機部署的集群，可以考慮使用 iSCSI、NFS、Gluster 或者 Ceph 等網絡存儲，也可以使用 RAID
 
-## 参考文档
+## 參考文檔
 
 - [Set up High-Availability Kubernetes Masters](https://kubernetes.io/docs/tasks/administer-cluster/highly-available-master/)
 - [Creating Highly Available Clusters with kubeadm](https://kubernetes.io/docs/setup/independent/high-availability/)

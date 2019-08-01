@@ -1,8 +1,8 @@
 # Kompose
 
-Kompose是一个将docker-compose配置转换成Kubernetes manifests的工具，官方网站为<http://kompose.io/>。
+Kompose是一個將docker-compose配置轉換成Kubernetes manifests的工具，官方網站為<http://kompose.io/>。
 
-## Kompose安装
+## Kompose安裝
 
 ```sh
 # Linux

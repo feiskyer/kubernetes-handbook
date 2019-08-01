@@ -1,18 +1,18 @@
 # minikube Ingress
 
-虽然 minikube 支持 LoadBalancer 类型的服务，但它并不会创建外部的负载均衡器，而是为这些服务开放一个 NodePort。这在使用 Ingress 时需要注意。
+雖然 minikube 支持 LoadBalancer 類型的服務，但它並不會創建外部的負載均衡器，而是為這些服務開放一個 NodePort。這在使用 Ingress 時需要注意。
 
-本节展示如何在 minikube 上开启 Ingress Controller 并创建和管理 Ingress 资源。
+本節展示如何在 minikube 上開啟 Ingress Controller 並創建和管理 Ingress 資源。
 
-## 启动 Ingress Controller
+## 啟動 Ingress Controller
 
-minikube 已经内置了 ingress addon，只需要开启一下即可
+minikube 已經內置了 ingress addon，只需要開啟一下即可
 
 ```sh
 $ minikube addons enable ingress
 ```
 
-稍等一会，nginx-ingress-controller 和 default-http-backend 就会起来
+稍等一會，nginx-ingress-controller 和 default-http-backend 就會起來
 
 ```sh
 $ kubectl get pods -n kube-system
@@ -24,9 +24,9 @@ kubernetes-dashboard-xh74p       1/1       Running   0          2m
 nginx-ingress-controller-78mk6   1/1       Running   0          1m
 ```
 
-## 创建 Ingress
+## 創建 Ingress
 
-首先启用一个 echo server 服务
+首先啟用一個 echo server 服務
 
 ```sh
 $ kubectl run echoserver --image=gcr.io/google_containers/echoserver:1.4 --port=8080
@@ -35,7 +35,7 @@ $ minikube service echoserver --url
 http://192.168.64.36:31957
 ```
 
-然后创建一个 Ingress，将 `http://mini-echo.io` 和 `http://mini-web.io/echo` 转发到刚才创建的 echoserver 服务上
+然後創建一個 Ingress，將 `http://mini-echo.io` 和 `http://mini-web.io/echo` 轉發到剛才創建的 echoserver 服務上
 
 ```sh
 $ cat <<EOF | kubectl create -f -
@@ -67,26 +67,26 @@ spec:
 EOF
 ```
 
-为了访问 `mini-echo.io` 和 `mini-web.io` 这两个域名，手动在 hosts 中增加一个映射
+為了訪問 `mini-echo.io` 和 `mini-web.io` 這兩個域名，手動在 hosts 中增加一個映射
 
 ```sh
 $ echo "$(minikube ip) mini-echo.io mini-web.io" | sudo tee -a /etc/hosts
 ```
 
-然后，就可以通过 `http://mini-echo.io` 和 `http://mini-web.io/echo` 来访问服务了。
+然後，就可以通過 `http://mini-echo.io` 和 `http://mini-web.io/echo` 來訪問服務了。
 
 ## 使用 xip.io
 
-前面的方法需要每次在使用不同域名时手动配置 hosts，借助 `xip.io` 可以省掉这个步骤。
+前面的方法需要每次在使用不同域名時手動配置 hosts，藉助 `xip.io` 可以省掉這個步驟。
 
-跟前面类似，先启动一个 nginx 服务
+跟前面類似，先啟動一個 nginx 服務
 
 ```sh
 $ kubectl run nginx --image=nginx --port=80
 $ kubectl expose deployment nginx --type=NodePort
 ```
 
-然后创建 Ingress，与前面不同的是 host 使用 `nginx.$(minikube ip).xip.io`：
+然後創建 Ingress，與前面不同的是 host 使用 `nginx.$(minikube ip).xip.io`：
 
 ```sh
 $ cat <<EOF | kubectl create -f -
@@ -106,7 +106,7 @@ spec:
 EOF
 ```
 
-然后就可以直接访问该域名了
+然後就可以直接訪問該域名了
 
 ```sh
 $ curl nginx.$(minikube ip).xip.io

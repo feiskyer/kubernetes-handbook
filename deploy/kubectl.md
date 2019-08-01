@@ -1,12 +1,12 @@
-# kubectl 安装
+# kubectl 安裝
 
-本章介绍 kubectl 的安装方法。
+本章介紹 kubectl 的安裝方法。
 
-## 安装方法
+## 安裝方法
 
 ### OSX
 
-可以使用 Homebrew 或者 `curl` 下载 kubectl：
+可以使用 Homebrew 或者 `curl` 下載 kubectl：
 
 ```sh
 brew install kubectl
@@ -30,7 +30,7 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/windows/amd64/kubectl.exe
 ```
 
-或者使用 Chocolatey 来安装：
+或者使用 Chocolatey 來安裝：
 
 ```sh
 choco install kubernetes-cli
@@ -38,15 +38,15 @@ choco install kubernetes-cli
 
 ## 使用方法
 
-kubectl 的详细使用方法请参考 [kubectl 指南](../components/kubectl.md)。
+kubectl 的詳細使用方法請參考 [kubectl 指南](../components/kubectl.md)。
 
 ## kubectl 插件
 
-你可以使用 krew 来管理 kubectl 插件。
+你可以使用 krew 來管理 kubectl 插件。
 
-[krew](https://github.com/GoogleContainerTools/krew) 是一个用来管理 kubectl 插件的工具，类似于 apt 或 yum，支持搜索、安装和管理 kubectl 插件。
+[krew](https://github.com/GoogleContainerTools/krew) 是一個用來管理 kubectl 插件的工具，類似於 apt 或 yum，支持搜索、安裝和管理 kubectl 插件。
 
-### 安装
+### 安裝
 
 ```sh
 (
@@ -58,13 +58,13 @@ kubectl 的详细使用方法请参考 [kubectl 指南](../components/kubectl.md
 )
 ```
 
-安装完成后，把 krew 的二进制文件加入环境变量 PATH 中：
+安裝完成後，把 krew 的二進制文件加入環境變量 PATH 中：
 
 ```sh
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 ```
 
-最后，再执行 kubectl 命令确认安装成功：
+最後，再執行 kubectl 命令確認安裝成功：
 
 ```sh
 $ kubectl plugin list
@@ -75,7 +75,7 @@ The following kubectl-compatible plugins are available:
 
 ### 使用方法
 
-首次使用前，请执行下面的命令更新插件索引：
+首次使用前，請執行下面的命令更新插件索引：
 
 ```sh
 kubectl krew update
@@ -91,7 +91,7 @@ kubectl krew upgrade              # upgrade installed plugins
 kubectl krew remove ssh-jump   # uninstall a plugin
 ```
 
-在安装插件后，会输出插件所依赖的外部工具，这些工具需要你自己手动安装。
+在安裝插件後，會輸出插件所依賴的外部工具，這些工具需要你自己手動安裝。
 
 ```sh
 Installing plugin: ssh-jump
@@ -106,18 +106,18 @@ CAVEATS:
 Installed plugin: ssh-jump
 ```
 
-最后，就可以通过 `kubectl <plugin-name>` 来使用插件了：
+最後，就可以通過 `kubectl <plugin-name>` 來使用插件了：
 
 ```sh
 kubectl ssh-jump <node-name> -u <username> -i ~/.ssh/id_rsa -p ~/.ssh/id_rsa.pub
 ```
 
-### 升级方法
+### 升級方法
 
 ```sh
 kubectl krew upgrade
 ```
 
-## 参考文档
+## 參考文檔
 
 - <https://github.com/GoogleContainerTools/krew>

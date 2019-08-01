@@ -1,46 +1,46 @@
 # Linkerd
 
-Linkerd 是一个面向云原生应用的 Service Mesh 组件，也是 CNCF 项目之一。它为服务间通信提供了一个统一的管理和控制平面，并且解耦了应用程序代码和通信机制，从而无需更改应用程序就可以可视化控制服务间的通信。linkerd 实例是无状态的，可以以每个应用一个实例 (sidecar) 或者每台 Node 一个实例的方式部署。
+Linkerd 是一個面向雲原生應用的 Service Mesh 組件，也是 CNCF 項目之一。它為服務間通信提供了一個統一的管理和控制平面，並且解耦了應用程序代碼和通信機制，從而無需更改應用程序就可以可視化控制服務間的通信。linkerd 實例是無狀態的，可以以每個應用一個實例 (sidecar) 或者每臺 Node 一個實例的方式部署。
 
 ![](images/linkerd.png)
 
 Linkerd 的主要特性包括
 
-- 服务发现
-- 动态请求路由
+- 服務發現
+- 動態請求路由
 - HTTP 代理集成，支持 HTTP、TLS、gRPC、HTTP/2 等
-- 感知时延的负载均衡，支持多种负载均衡算法，如 Power of Two Choices (P2C) Least Loaded、Power of Two Choices (P2C) peak ewma、Aperture: least loaded、Heap: least loaded、Round robin 等
-- 熔断机制，自动移除不健康的后端实例，包括 fail fast（只要连接失败就移除实例）和 failure accrual（超过 5 个请求处理失败时才将其标记为失效，并保留一定的恢复时间 ）两种
-- 分布式跟踪和度量
+- 感知時延的負載均衡，支持多種負載均衡算法，如 Power of Two Choices (P2C) Least Loaded、Power of Two Choices (P2C) peak ewma、Aperture: least loaded、Heap: least loaded、Round robin 等
+- 熔斷機制，自動移除不健康的後端實例，包括 fail fast（只要連接失敗就移除實例）和 failure accrual（超過 5 個請求處理失敗時才將其標記為失效，並保留一定的恢復時間 ）兩種
+- 分佈式跟蹤和度量
 
 ![](images/linkerd-features.png)
 
 ## Linkerd 原理
 
-Linkerd 路由将请求处理分解为多个步骤
+Linkerd 路由將請求處理分解為多個步驟
 
-- (1) IDENTIFICATION：为实际请求设置逻辑名字（即请求的目的服务），如默认将 HTTP 请求 `GET http://example/hello` 赋值名字 `/svc/example`
-- (2) BINDING：dtabs 负责将逻辑名与客户端名字绑定起来，客户端名字总是以 `/#` 或 `/$` 开头，比如
+- (1) IDENTIFICATION：為實際請求設置邏輯名字（即請求的目的服務），如默認將 HTTP 請求 `GET http://example/hello` 賦值名字 `/svc/example`
+- (2) BINDING：dtabs 負責將邏輯名與客戶端名字綁定起來，客戶端名字總是以 `/#` 或 `/$` 開頭，比如
 
 ```sh
-# 假设 dtab 为
+# 假設 dtab 為
 /env => /#/io.l5d.serversets/discovery
 /svc => /env/prod
 
-# 那么服务名 / svc/users 将会绑定为
+# 那麼服務名 / svc/users 將會綁定為
 /svc/users
 /env/prod/users
 /#/io.l5d.serversets/discovery/prod/users
 ```
 
-- (3) RESOLUTION：namer 负责解析客户端名，并得到真实的服务地址（IP + 端口）
-- (4) LOAD BALANCING：根据负载均衡算法选择如何发送请求
+- (3) RESOLUTION：namer 負責解析客戶端名，並得到真實的服務地址（IP + 端口）
+- (4) LOAD BALANCING：根據負載均衡算法選擇如何發送請求
 
 ![](images/linkerd-routing.png)
 
 ## Linkerd 部署
 
-Linkerd 以 DaemonSet 的方式部署在每个 Node 节点上：
+Linkerd 以 DaemonSet 的方式部署在每個 Node 節點上：
 
 ```sh
 # Deploy linkerd.
@@ -58,7 +58,7 @@ NAME      TYPE           CLUSTER-IP   EXTERNAL-IP     POR    AGE
 l5d       LoadBalancer   10.0.71.9    <pending>       4140:32728/TCP,4141:31804/TCP,4240:31418/TCP,4241:30611/TCP,4340:31768/TCP,4341:30845/TCP,80:31144/TCP,8080:31115/TCP   3m
 ```
 
-默认情况下，Linkerd 的 Dashboard 监听在每个容器实例的 9990 端口（注意未在 l5d 服务中对外暴露），可以通过服务的相应端口来访问。
+默認情況下，Linkerd 的 Dashboard 監聽在每個容器實例的 9990 端口（注意未在 l5d 服務中對外暴露），可以通過服務的相應端口來訪問。
 
 ```sh
 kubectl -n linkerd port-forward $(kubectl -n linkerd get pod -l app=l5d -o jsonpath='{.items[0].metadata.name}') 9990 &
@@ -117,7 +117,7 @@ $ $ namerctl dtab get internal
 
 ### Ingress Controller
 
-Linkerd 也可以作为 Kubernetes Ingress Controller 使用，注意下面的步骤将 Linkerd 部署到了 l5d-system namespace。
+Linkerd 也可以作為 Kubernetes Ingress Controller 使用，注意下面的步驟將 Linkerd 部署到了 l5d-system namespace。
 
 ```sh
 $ kubectl create ns l5d-system
@@ -133,7 +133,7 @@ $ L5D_SVC_IP=$HOST_IP:$(kubectl get svc l5d -n l5d-system -o 'jsonpath={.spec.po
 $ echo open http://$HOST_IP:$(kubectl get svc l5d -n l5d-system -o 'jsonpath={.spec.ports[1].nodePort}')
 ```
 
-然后通过 `kubernetes.io/ingress.class: "linkerd"` annotation 使用 linkerd ingress 控制器：
+然後通過 `kubernetes.io/ingress.class: "linkerd"` annotation 使用 linkerd ingress 控制器：
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -155,21 +155,21 @@ spec:
           servicePort: http
 ```
 
-更多使用方法见[这里](https://buoyant.io/2017/04/06/a-service-mesh-for-kubernetes-part-viii-linkerd-as-an-ingress-controller/)。
+更多使用方法見[這裡](https://buoyant.io/2017/04/06/a-service-mesh-for-kubernetes-part-viii-linkerd-as-an-ingress-controller/)。
 
-## 应用示例
+## 應用示例
 
-可以通过 HTTP 代理和 linkerd-inject 等两种方式来使用 Linkerd。
+可以通過 HTTP 代理和 linkerd-inject 等兩種方式來使用 Linkerd。
 
 ### HTTP 代理
 
-应用程序在使用 Linkerd 时需要为应用设置 HTTP 代理，其中
+應用程序在使用 Linkerd 時需要為應用設置 HTTP 代理，其中
 
 - HTTP 使用 `$(NODE_NAME):4140`
 - HTTP/2 使用 `$(NODE_NAME):4240`
 - gRPC 使用 `$(NODE_NAME):4340`
 
-在 Kubernetes 中，可以使用 Downward API 来获取 `NODE_NAME`，比如
+在 Kubernetes 中，可以使用 Downward API 來獲取 `NODE_NAME`，比如
 
 ```yaml
 ---
@@ -274,10 +274,10 @@ $ go get github.com/linkerd/linkerd-inject
 $ kubectl apply -f <(linkerd-inject -f <your k8s config>.yml -linkerdPort 4140)
 ```
 
-## 参考文档
+## 參考文檔
 
 - [WHAT’S A SERVICE MESH? AND WHY DO I NEED ONE?](https://buoyant.io/2017/04/25/whats-a-service-mesh-and-why-do-i-need-one/)
-- [Linkerd 官方文档](https://linkerd.io/documentation/)
+- [Linkerd 官方文檔](https://linkerd.io/documentation/)
 - [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
 - [Linkerd examples](https://github.com/linkerd/linkerd-examples)
 - [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)

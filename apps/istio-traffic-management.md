@@ -1,13 +1,13 @@
 # Istio 流量管理
 
-Istio 提供了强大的流量管理功能，如智能路由、服务发现与负载均衡、故障恢复、故障注入等。
+Istio 提供了強大的流量管理功能，如智能路由、服務發現與負載均衡、故障恢復、故障注入等。
 
 ![istio-traffic-management](images/istio-traffic.png)
 
-流量管理的功能由 Pilot 配合 Envoy 负责，并接管进入和离开容器的所有流量：
+流量管理的功能由 Pilot 配合 Envoy 負責，並接管進入和離開容器的所有流量：
 
-- 流量管理的核心组件是 Pilot，负责管理和配置服务网格中的所有 Envoy 实例
-- 而 Envoy 实例则负责维护负载均衡以及健康检查信息，从而允许其在目标实例之间智能分配流量，同时遵循其指定的路由规则
+- 流量管理的核心組件是 Pilot，負責管理和配置服務網格中的所有 Envoy 實例
+- 而 Envoy 實例則負責維護負載均衡以及健康檢查信息，從而允許其在目標實例之間智能分配流量，同時遵循其指定的路由規則
 
 
 
@@ -17,22 +17,22 @@ Istio 提供了强大的流量管理功能，如智能路由、服务发现与�
 
 ## API 版本
 
-Istio 0.7.X 及以前版本仅支持 `config.istio.io/v1alpha2`，0.8.0 将其升级为 `networking.istio.io/v1alpha3`，并且重命名了流量管理的几个资源对象：
+Istio 0.7.X 及以前版本僅支持 `config.istio.io/v1alpha2`，0.8.0 將其升級為 `networking.istio.io/v1alpha3`，並且重命名了流量管理的幾個資源對象：
 
-- RouteRule -> `VirtualService`：定义服务网格内对服务的请求如何进行路由控制 ，支持根据 host、sourceLabels 、http headers 等不同的路由方式，也支持百分比、超时、重试、错误注入等功能。
-- DestinationPolicy -> `DestinationRule`：定义 `VirtualService` 之后的路由策略，包括断路器、负载均衡以及 TLS 等。
-- EgressRule -> `ServiceEntry`：定义了服务网格之外的服务，支持两种类型：网格内部和网格外部。网格内的条目和其他的内部服务类似，用于显式的将服务加入网格。可以用来把服务作为服务网格扩展的一部分加入不受管理的基础设置（例如加入到基于 Kubernetes 的服务网格中的虚拟机）中。网格外的条目用于表达网格外的服务。对这种条目来说，双向 TLS 认证是禁止的，策略实现需要在客户端执行，而不像内部服务请求中的服务端执行。
-- Ingress -> `Gateway`：定义边缘网络流量的负载均衡。
+- RouteRule -> `VirtualService`：定義服務網格內對服務的請求如何進行路由控制 ，支持根據 host、sourceLabels 、http headers 等不同的路由方式，也支持百分比、超時、重試、錯誤注入等功能。
+- DestinationPolicy -> `DestinationRule`：定義 `VirtualService` 之後的路由策略，包括斷路器、負載均衡以及 TLS 等。
+- EgressRule -> `ServiceEntry`：定義了服務網格之外的服務，支持兩種類型：網格內部和網格外部。網格內的條目和其他的內部服務類似，用於顯式的將服務加入網格。可以用來把服務作為服務網格擴展的一部分加入不受管理的基礎設置（例如加入到基於 Kubernetes 的服務網格中的虛擬機）中。網格外的條目用於表達網格外的服務。對這種條目來說，雙向 TLS 認證是禁止的，策略實現需要在客戶端執行，而不像內部服務請求中的服務端執行。
+- Ingress -> `Gateway`：定義邊緣網絡流量的負載均衡。
 
-## 服务发现和负载均衡
+## 服務發現和負載均衡
 
-为了接管流量，Istio 假设所有容器在启动时自动将自己注册到 Istio 中（通过自动或手动给 Pod 注入 Envoy sidecar 容器）。Envoy 收到外部请求后，会对请求作负载均衡，并支持轮询、随机和加权最少请求等负载均衡算法。除此之外，Envoy 还会以熔断机制定期检查服务后端容器的健康状态，自动移除不健康的容器和加回恢复正常的容器。容器内也可以返回 HTTP 503 显示将自己从负载均衡中移除。
+為了接管流量，Istio 假設所有容器在啟動時自動將自己註冊到 Istio 中（通過自動或手動給 Pod 注入 Envoy sidecar 容器）。Envoy 收到外部請求後，會對請求作負載均衡，並支持輪詢、隨機和加權最少請求等負載均衡算法。除此之外，Envoy 還會以熔斷機制定期檢查服務後端容器的健康狀態，自動移除不健康的容器和加回恢復正常的容器。容器內也可以返回 HTTP 503 顯示將自己從負載均衡中移除。
 
 ![](images/istio-service-discovery.png)
 
 ### 流量接管
 
-Istio 假定进入和离开服务网络的所有流量都会通过 Envoy 代理进行传输。Envoy sidecar 使用 iptables 把进入 Pod 和从 Pod 发出的流量转发到 Envoy 进程监听的端口（即 15001 端口）上：
+Istio 假定進入和離開服務網絡的所有流量都會通過 Envoy 代理進行傳輸。Envoy sidecar 使用 iptables 把進入 Pod 和從 Pod 發出的流量轉發到 Envoy 進程監聽的端口（即 15001 端口）上：
 
 ```sh
 *nat
@@ -56,17 +56,17 @@ Istio 假定进入和离开服务网络的所有流量都会通过 Envoy 代理�
 -A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001
 ```
 
-## 故障恢复
+## 故障恢復
 
-Istio 提供了一系列开箱即用的故障恢复功能，如
+Istio 提供了一系列開箱即用的故障恢復功能，如
 
-- 超时处理
-- 重试处理，如限制最大重试时间以及可变重试间隔
-- 健康检查，如自动移除不健康的容器
-- 请求限制，如并发请求数和并发连接数
-- 熔断
+- 超時處理
+- 重試處理，如限制最大重試時間以及可變重試間隔
+- 健康檢查，如自動移除不健康的容器
+- 請求限制，如併發請求數和併發連接數
+- 熔斷
 
-这些功能均可以使用 VirtualService 动态配置。比如以下为用户 jason 的请求返回 500 （而其他用户均可正常访问）：
+這些功能均可以使用 VirtualService 動態配置。比如以下為用戶 jason 的請求返回 500 （而其他用戶均可正常訪問）：
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -95,7 +95,7 @@ spec:
         subset: v1
 ```
 
-熔断示例：
+熔斷示例：
 
 ```sh
 cat <<EOF | istioctl create -f -
@@ -123,12 +123,12 @@ EOF
 
 ## 故障注入
 
-Istio 支持为应用注入故障，以模拟实际生产中碰到的各种问题，包括
+Istio 支持為應用注入故障，以模擬實際生產中碰到的各種問題，包括
 
-- 注入延迟（模拟网络延迟和服务过载）
-- 注入失败（模拟应用失效）
+- 注入延遲（模擬網絡延遲和服務過載）
+- 注入失敗（模擬應用失效）
 
-这些故障均可以使用 VirtualService 动态配置。如以下配置 2 秒的延迟：
+這些故障均可以使用 VirtualService 動態配置。如以下配置 2 秒的延遲：
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -149,18 +149,18 @@ spec:
         subset: v1
 ```
 
-## 金丝雀部署
+## 金絲雀部署
 
 ![service-versions](images/istio-service-versions.png)
 
-首先部署 bookinfo，并配置默认路由为 v1 版本：
+首先部署 bookinfo，並配置默認路由為 v1 版本：
 
 ```sh
-# 以下命令假设 bookinfo 示例程序已部署，如未部署，可以执行下面的命令
+# 以下命令假設 bookinfo 示例程序已部署，如未部署，可以執行下面的命令
 $ kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)
-# 此时，三个版本的 reviews 服务以负载均衡的方式轮询。
+# 此時，三個版本的 reviews 服務以負載均衡的方式輪詢。
 
-# 创建默认路由，全部请求转发到 v1
+# 創建默認路由，全部請求轉發到 v1
 $ istioctl create -f samples/bookinfo/routing/route-rule-all-v1.yaml
 
 $ kubectl get virtualservice reviews -o yaml
@@ -178,7 +178,7 @@ spec:
         subset: v1
 ```
 
-### 示例一：将 10% 请求发送到 v2 版本而其余 90% 发送到 v1 版本
+### 示例一：將 10% 請求發送到 v2 版本而其餘 90% 發送到 v1 版本
 
 ```sh
 cat <<EOF | istioctl create -f -
@@ -202,7 +202,7 @@ spec:
 EOF
 ```
 
-### 示例二：将 jason 用户的请求全部发到 v2 版本
+### 示例二：將 jason 用戶的請求全部發到 v2 版本
 
 ```sh
 cat <<EOF | istioctl replace -f -
@@ -224,7 +224,7 @@ spec:
 EOF
 ```
 
-### 示例三：全部切换到 v2 版本
+### 示例三：全部切換到 v2 版本
 
 ```sh
 cat <<EOF | istioctl replace -f -
@@ -243,7 +243,7 @@ spec:
 EOF
 ```
 
-### 示例四：限制并发访问
+### 示例四：限制併發訪問
 
 ```sh
 cat <<EOF | istioctl create -f -
@@ -264,7 +264,7 @@ spec:
 EOF
 ```
 
-为了查看访问次数限制的效果，可以使用 [wrk](https://github.com/wg/wrk) 给应用加一些压力：
+為了查看訪問次數限制的效果，可以使用 [wrk](https://github.com/wg/wrk) 給應用加一些壓力：
 
 ```sh
 export BOOKINFO_URL=$(kubectl get po -n istio-system -l istio=ingress -o jsonpath={.items[0].status.hostIP}):$(kubectl get svc -n istio-system istio-ingress -o jsonpath={.spec.ports[0].nodePort})
@@ -273,7 +273,7 @@ wrk -t1 -c1 -d20s http://$BOOKINFO_URL/productpage
 
 ## Gateway
 
-Istio 在部署时会自动创建一个 [Istio Gateway](https://istio.io/docs/reference/config/istio.networking.v1alpha3/#Gateway)，用来控制 Ingress 访问。
+Istio 在部署時會自動創建一個 [Istio Gateway](https://istio.io/docs/reference/config/istio.networking.v1alpha3/#Gateway)，用來控制 Ingress 訪問。
 
 ```sh
 # prepare
@@ -374,7 +374,7 @@ curl --resolve httpbin.example.com:$SECURE_INGRESS_PORT:$INGRESS_HOST -HHost:htt
 
 ## Egress 流量
 
-默认情况下，Istio 接管了容器的内外网流量，从容器内部无法访问 Kubernetes 集群外的服务。可以通过 ServiceEntry 为需要的容器开放 Egress 访问，如
+默認情況下，Istio 接管了容器的內外網流量，從容器內部無法訪問 Kubernetes 集群外的服務。可以通過 ServiceEntry 為需要的容器開放 Egress 訪問，如
 
 ```yaml
 $ cat <<EOF | istioctl create -f -
@@ -408,13 +408,13 @@ spec:
 EOF
 ```
 
-需要注意的是 ServiceEntry 仅支持 HTTP、TCP 和 HTTPS，对于其他协议需要通过 `--includeIPRanges` 的方式设置 IP 地址范围，如
+需要注意的是 ServiceEntry 僅支持 HTTP、TCP 和 HTTPS，對於其他協議需要通過 `--includeIPRanges` 的方式設置 IP 地址範圍，如
 
 ```sh
 helm template @install/kubernetes/helm/istio@ --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.0.0.1/24" -x @templates/sidecar-injector-configmap.yaml@ | kubectl apply -f -
 ```
 
-## 流量镜像
+## 流量鏡像
 
 ```sh
 cat <<EOF | istioctl replace -f -
@@ -437,6 +437,6 @@ spec:
 EOF
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Istio traffic management overview](https://istio.io/docs/concepts/traffic-management/)

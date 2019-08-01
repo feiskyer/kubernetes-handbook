@@ -1,27 +1,27 @@
 # Serverless
 
-Serverless，即无服务器架构，将大家从服务器中解放了出来，只需要关注业务逻辑本身。用户只需要关注数据和业务逻辑，无需维护服务器，也不需要关心系统的容量和扩容。Serverless 本质上是一种更简单易用的 PaaS，包含两种含义：
+Serverless，即無服務器架構，將大家從服務器中解放了出來，只需要關注業務邏輯本身。用戶只需要關注數據和業務邏輯，無需維護服務器，也不需要關心繫統的容量和擴容。Serverless 本質上是一種更簡單易用的 PaaS，包含兩種含義：
 
-仅依赖云端服务来管理业务逻辑和状态的应用或服务，一般称为 BaaS (Backend as a Service)
-事件驱动且短时执行应用或服务，其主要逻辑由开发者完成，但由第三方管理（比如 AWS Lambda），一般称为 FaaS (Function as a Service)。目前大火的 Serverless 一般是指 FaaS。
+僅依賴雲端服務來管理業務邏輯和狀態的應用或服務，一般稱為 BaaS (Backend as a Service)
+事件驅動且短時執行應用或服務，其主要邏輯由開發者完成，但由第三方管理（比如 AWS Lambda），一般稱為 FaaS (Function as a Service)。目前大火的 Serverless 一般是指 FaaS。
 
-引入 serverless 可以给应用开发者带来明显的好处
+引入 serverless 可以給應用開發者帶來明顯的好處
 
-- 用户无需配置和管理服务器
-- 用户服务不需要基于特定框架或软件库
-- 部署简单，只需要将代码上传到 serverless 平台即可
-- 完全自动化的横向扩展
-- 事件触发，比如 http 请求触发、文件更新触发、时间触发、消息触发等
-- 低成本，比如 AWS Lambda 按执行时间和触发次数收费，在代码未运行时无需付费
+- 用戶無需配置和管理服務器
+- 用戶服務不需要基於特定框架或軟件庫
+- 部署簡單，只需要將代碼上傳到 serverless 平臺即可
+- 完全自動化的橫向擴展
+- 事件觸發，比如 http 請求觸發、文件更新觸發、時間觸發、消息觸發等
+- 低成本，比如 AWS Lambda 按執行時間和觸發次數收費，在代碼未運行時無需付費
 
-当然，serverless 也并非银弹，也有其特有的局限性
+當然，serverless 也並非銀彈，也有其特有的侷限性
 
-- 无状态，服务的任何进程内或主机状态均无法被后续调用所使用，需要借助外部数据库或网络存储管理状态
-- 每次函数调用的时间一般都有限制，比如 AWS Lambda 限制每个函数最长只能运行 5 分钟
-- 启动延迟，特别是应用不活跃或者突发流量的情况下延迟尤为明显
-- 平台依赖，比如服务发现、监控、调试、API Gateway 等都依赖于 serverless 平台提供的功能
+- 無狀態，服務的任何進程內或主機狀態均無法被後續調用所使用，需要藉助外部數據庫或網絡存儲管理狀態
+- 每次函數調用的時間一般都有限制，比如 AWS Lambda 限制每個函數最長只能運行 5 分鐘
+- 啟動延遲，特別是應用不活躍或者突發流量的情況下延遲尤為明顯
+- 平臺依賴，比如服務發現、監控、調試、API Gateway 等都依賴於 serverless 平臺提供的功能
 
-## 开源框架
+## 開源框架
 
 - OpenFaas: https://github.com/openfaas/faas
 - Fission: https://github.com/fission/fission
@@ -29,7 +29,7 @@ Serverless，即无服务器架构，将大家从服务器中解放了出来，�
 - OpenWhisk: https://github.com/apache/incubator-openwhisk
 - Fn: https://fnproject.io/
 
-## 商业产品
+## 商業產品
 
 - AWS Lambda: http://docs.aws.amazon.com/lambda/latest/dg/welcome.html
 - AWS Fargate: https://aws.amazon.com/cn/fargate/
@@ -39,11 +39,11 @@ Serverless，即无服务器架构，将大家从服务器中解放了出来，�
 - Huawei CCI: https://www.huaweicloud.com/product/cci.html
 - Aliyun Serverless Kubernetes: https://help.aliyun.com/document_detail/71480.html
 
-很多商业产品也可以与 Kubernetes 进行无缝集成，即通过 [Virtual Kubelet](https://github.com/virtual-kubelet/virtual-kubelet) 将商业 Serverless 产品（如 ACI 和 Fargate等）作为 Kubernetes 集群的一个无限 Node 使用，这样就无需考虑 Node 数量的问题。
+很多商業產品也可以與 Kubernetes 進行無縫集成，即通過 [Virtual Kubelet](https://github.com/virtual-kubelet/virtual-kubelet) 將商業 Serverless 產品（如 ACI 和 Fargate等）作為 Kubernetes 集群的一個無限 Node 使用，這樣就無需考慮 Node 數量的問題。
 
 ![](images/virtual-kubelet.png)
 
-## 参考文档
+## 參考文檔
 
 - [Awesome Serverless](https://github.com/anaibol/awesome-serverless)
 - [AWS Lambda](http://docs.aws.amazon.com/lambda/latest/dg/welcome.html)

@@ -1,10 +1,10 @@
 # Deployment
 
-## 简述
+## 簡述
 
-Deployment 为 Pod 和 ReplicaSet 提供了一个声明式定义 (declarative) 方法，用来替代以前的 ReplicationController 来方便的管理应用。
+Deployment 為 Pod 和 ReplicaSet 提供了一個聲明式定義 (declarative) 方法，用來替代以前的 ReplicationController 來方便的管理應用。
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 |   Deployment 版本 |
 | ------------- | ------------------- |
@@ -13,7 +13,7 @@ Deployment 为 Pod 和 ReplicaSet 提供了一个声明式定义 (declarative) �
 |     v1.8      |   apps/v1beta2      |
 |     v1.9      |      apps/v1        |
 
-比如一个简单的 nginx 应用可以定义为
+比如一個簡單的 nginx 應用可以定義為
 
 ```yaml
 apiVersion: apps/v1
@@ -34,69 +34,69 @@ spec:
         - containerPort: 80
 ```
 
-扩容：
+擴容：
 
 ```
 kubectl scale deployment nginx-deployment --replicas 10
 ```
 
-如果集群支持 horizontal pod autoscaling 的话，还可以为 Deployment 设置自动扩展：
+如果集群支持 horizontal pod autoscaling 的話，還可以為 Deployment 設置自動擴展：
 
 ```
 kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
 ```
 
-更新镜像也比较简单:
+更新鏡像也比較簡單:
 
 ```
 kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1
 ```
 
-回滚：
+回滾：
 
 ```
 kubectl rollout undo deployment/nginx-deployment
 ```
 
-Deployment 的 ** 典型应用场景 ** 包括：
+Deployment 的 ** 典型應用場景 ** 包括：
 
-- 定义 Deployment 来创建 Pod 和 ReplicaSet
-- 滚动升级和回滚应用
-- 扩容和缩容
-- 暂停和继续 Deployment
+- 定義 Deployment 來創建 Pod 和 ReplicaSet
+- 滾動升級和回滾應用
+- 擴容和縮容
+- 暫停和繼續 Deployment
 
 ## Deployment 概念解析
 
-## Deployment 是什么？
+## Deployment 是什麼？
 
-Deployment 为 Pod 和 Replica Set（下一代 Replication Controller）提供声明式更新。
+Deployment 為 Pod 和 Replica Set（下一代 Replication Controller）提供聲明式更新。
 
-你只需要在 Deployment 中描述你想要的目标状态是什么，Deployment controller 就会帮你将 Pod 和 Replica Set 的实际状态改变到你的目标状态。你可以定义一个全新的 Deployment，也可以创建一个新的替换旧的 Deployment。
+你只需要在 Deployment 中描述你想要的目標狀態是什麼，Deployment controller 就會幫你將 Pod 和 Replica Set 的實際狀態改變到你的目標狀態。你可以定義一個全新的 Deployment，也可以創建一個新的替換舊的 Deployment。
 
-一个典型的用例如下：
+一個典型的用例如下：
 
-- 使用 Deployment 来创建 ReplicaSet。ReplicaSet 在后台创建 pod。检查启动状态，看它是成功还是失败。
-- 然后，通过更新 Deployment 的 PodTemplateSpec 字段来声明 Pod 的新状态。这会创建一个新的 ReplicaSet，Deployment 会按照控制的速率将 pod 从旧的 ReplicaSet 移动到新的 ReplicaSet 中。
-- 如果当前状态不稳定，回滚到之前的 Deployment revision。每次回滚都会更新 Deployment 的 revision。
-- 扩容 Deployment 以满足更高的负载。
-- 暂停 Deployment 来应用 PodTemplateSpec 的多个修复，然后恢复上线。
-- 根据 Deployment 的状态判断上线是否 hang 住了。
-- 清除旧的不必要的 ReplicaSet。
+- 使用 Deployment 來創建 ReplicaSet。ReplicaSet 在後臺創建 pod。檢查啟動狀態，看它是成功還是失敗。
+- 然後，通過更新 Deployment 的 PodTemplateSpec 字段來聲明 Pod 的新狀態。這會創建一個新的 ReplicaSet，Deployment 會按照控制的速率將 pod 從舊的 ReplicaSet 移動到新的 ReplicaSet 中。
+- 如果當前狀態不穩定，回滾到之前的 Deployment revision。每次回滾都會更新 Deployment 的 revision。
+- 擴容 Deployment 以滿足更高的負載。
+- 暫停 Deployment 來應用 PodTemplateSpec 的多個修復，然後恢復上線。
+- 根據 Deployment 的狀態判斷上線是否 hang 住了。
+- 清除舊的不必要的 ReplicaSet。
 
-## 创建 Deployment
+## 創建 Deployment
 
-下面是一个 Deployment 示例，它创建了一个 Replica Set 来启动 3 个 nginx pod。
+下面是一個 Deployment 示例，它創建了一個 Replica Set 來啟動 3 個 nginx pod。
 
-下载示例文件并执行命令：
+下載示例文件並執行命令：
 
 ```sh
 $ kubectl create -f docs/user-guide/nginx-deployment.yaml --record
 deployment "nginx-deployment" created
 ```
 
-将 kubectl 的 `—record` 的 flag 设置为 `true` 可以在 annotation 中记录当前命令创建或者升级了该资源。这在未来会很有用，例如，查看在每个 Deployment revision 中执行了哪些命令。
+將 kubectl 的 `—record` 的 flag 設置為 `true` 可以在 annotation 中記錄當前命令創建或者升級了該資源。這在未來會很有用，例如，查看在每個 Deployment revision 中執行了哪些命令。
 
-然后立即执行 `get` 将获得如下结果：
+然後立即執行 `get` 將獲得如下結果：
 
 ```sh
 $ kubectl get deployments
@@ -104,9 +104,9 @@ NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         0         0            0           1s
 ```
 
-输出结果表明我们希望的 repalica 数是 3（根据 deployment 中的 `.spec.replicas` 配置）当前 replica 数（ `.status.replicas`）是 0, 最新的 replica 数（`.status.updatedReplicas`）是 0，可用的 replica 数（`.status.availableReplicas`）是 0。
+輸出結果表明我們希望的 repalica 數是 3（根據 deployment 中的 `.spec.replicas` 配置）當前 replica 數（ `.status.replicas`）是 0, 最新的 replica 數（`.status.updatedReplicas`）是 0，可用的 replica 數（`.status.availableReplicas`）是 0。
 
-过几秒后再执行 `get` 命令，将获得如下输出：
+過幾秒後再執行 `get` 命令，將獲得如下輸出：
 
 ```sh
 $ kubectl get deployments
@@ -114,7 +114,7 @@ NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         3         3            3           18s
 ```
 
-我们可以看到 Deployment 已经创建了 3 个 replica，所有的 replica 都已经是最新的了（包含最新的 pod template），可用的（根据 Deployment 中的 `.spec.minReadySeconds` 声明，处于已就绪状态的 pod 的最少个数）。执行 `kubectl get rs` 和 `kubectl get pods` 会显示 Replica Set（RS）和 Pod 已创建。
+我們可以看到 Deployment 已經創建了 3 個 replica，所有的 replica 都已經是最新的了（包含最新的 pod template），可用的（根據 Deployment 中的 `.spec.minReadySeconds` 聲明，處於已就緒狀態的 pod 的最少個數）。執行 `kubectl get rs` 和 `kubectl get pods` 會顯示 Replica Set（RS）和 Pod 已創建。
 
 ```sh
 $ kubectl get rs
@@ -122,7 +122,7 @@ NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-2035384211   3         3         0       18s
 ```
 
-你可能会注意到 Replica Set 的名字总是 `<Deployment 的名字>-<pod template 的 hash 值 >`。
+你可能會注意到 Replica Set 的名字總是 `<Deployment 的名字>-<pod template 的 hash 值 >`。
 
 ```sh
 $ kubectl get pods --show-labels
@@ -132,29 +132,29 @@ nginx-deployment-2035384211-kzszj   1/1       Running   0          18s       app
 nginx-deployment-2035384211-qqcnn   1/1       Running   0          18s       app=nginx,pod-template-hash=2035384211
 ```
 
-刚创建的 Replica Set 将保证总是有 3 个 nginx 的 pod 存在。
+剛創建的 Replica Set 將保證總是有 3 個 nginx 的 pod 存在。
 
-** 注意：**  你必须在 Deployment 中的 selector 指定正确 pod template label（在该示例中是 `app = nginx`），不要跟其他的 controller 搞混了（包括 Deployment、Replica Set、Replication Controller 等）。**Kubernetes 本身不会阻止你这么做 **，如果你真的这么做了，这些 controller 之间会相互打架，并可能导致不正确的行为。
+** 注意：**  你必須在 Deployment 中的 selector 指定正確 pod template label（在該示例中是 `app = nginx`），不要跟其他的 controller 搞混了（包括 Deployment、Replica Set、Replication Controller 等）。**Kubernetes 本身不會阻止你這麼做 **，如果你真的這麼做了，這些 controller 之間會相互打架，並可能導致不正確的行為。
 
 ## 更新 Deployment
 
-** 注意：**  Deployment 的 rollout 当且仅当 Deployment 的 pod template（例如 `.spec.template`）中的 label 更新或者镜像更改时被触发。其他更新，例如扩容 Deployment 不会触发 rollout。
+** 注意：**  Deployment 的 rollout 當且僅當 Deployment 的 pod template（例如 `.spec.template`）中的 label 更新或者鏡像更改時被觸發。其他更新，例如擴容 Deployment 不會觸發 rollout。
 
-假如我们现在想要让 nginx pod 使用 `nginx:1.9.1` 的镜像来代替原来的 `nginx:1.7.9` 的镜像。
+假如我們現在想要讓 nginx pod 使用 `nginx:1.9.1` 的鏡像來代替原來的 `nginx:1.7.9` 的鏡像。
 
 ```sh
 $ kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1
 deployment "nginx-deployment" image updated
 ```
 
-我们可以使用 `edit` 命令来编辑 Deployment，修改 `.spec.template.spec.containers[0].image` ，将 `nginx:1.7.9` 改写成 `nginx:1.9.1`。
+我們可以使用 `edit` 命令來編輯 Deployment，修改 `.spec.template.spec.containers[0].image` ，將 `nginx:1.7.9` 改寫成 `nginx:1.9.1`。
 
 ```sh
 $ kubectl edit deployment/nginx-deployment
 deployment "nginx-deployment" edited
 ```
 
-查看 rollout 的状态，只要执行：
+查看 rollout 的狀態，只要執行：
 
 ```sh
 $ kubectl rollout status deployment/nginx-deployment
@@ -162,7 +162,7 @@ Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
 deployment "nginx-deployment" successfully rolled out
 ```
 
-Rollout 成功后，`get` Deployment：
+Rollout 成功後，`get` Deployment：
 
 ```sh
 $ kubectl get deployments
@@ -170,11 +170,11 @@ NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         3         3            3           36s
 ```
 
-UP-TO-DATE 的 replica 的数目已经达到了配置中要求的数目。
+UP-TO-DATE 的 replica 的數目已經達到了配置中要求的數目。
 
-CURRENT 的 replica 数表示 Deployment 管理的 replica 数量，AVAILABLE 的 replica 数是当前可用的 replica 数量。
+CURRENT 的 replica 數表示 Deployment 管理的 replica 數量，AVAILABLE 的 replica 數是當前可用的 replica 數量。
 
-我们通过执行 `kubectl get rs` 可以看到 Deployment 更新了 Pod，通过创建一个新的 Replica Set 并扩容了 3 个 replica，同时将原来的 Replica Set 缩容到了 0 个 replica。
+我們通過執行 `kubectl get rs` 可以看到 Deployment 更新了 Pod，通過創建一個新的 Replica Set 並擴容了 3 個 replica，同時將原來的 Replica Set 縮容到了 0 個 replica。
 
 ```sh
 $ kubectl get rs
@@ -183,7 +183,7 @@ nginx-deployment-1564180365   3         3         0       6s
 nginx-deployment-2035384211   0         0         0       36s
 ```
 
-执行 `get pods` 只会看到当前的新的 pod:
+執行 `get pods` 只會看到當前的新的 pod:
 
 ```sh
 $ kubectl get pods
@@ -193,15 +193,15 @@ nginx-deployment-1564180365-nacti   1/1       Running   0          14s
 nginx-deployment-1564180365-z9gth   1/1       Running   0          14s
 ```
 
-下次更新这些 pod 的时候，只需要更新 Deployment 中的 pod 的 template 即可。
+下次更新這些 pod 的時候，只需要更新 Deployment 中的 pod 的 template 即可。
 
-Deployment 可以保证在升级时只有一定数量的 Pod 是 down 的。默认的，它会确保至少有比期望的 Pod 数量少一个的 Pod 是 up 状态（最多一个不可用）。
+Deployment 可以保證在升級時只有一定數量的 Pod 是 down 的。默認的，它會確保至少有比期望的 Pod 數量少一個的 Pod 是 up 狀態（最多一個不可用）。
 
-Deployment 同时也可以确保只创建出超过期望数量的一定数量的 Pod。默认的，它会确保最多比期望的 Pod 数量多一个的 Pod 是 up 的（最多 1 个 surge）。
+Deployment 同時也可以確保只創建出超過期望數量的一定數量的 Pod。默認的，它會確保最多比期望的 Pod 數量多一個的 Pod 是 up 的（最多 1 個 surge）。
 
-** 在未来的 Kuberentes 版本中，将从 1-1 变成 25%-25%）。**
+** 在未來的 Kuberentes 版本中，將從 1-1 變成 25%-25%）。**
 
-例如，如果你自己看下上面的 Deployment，你会发现，开始创建一个新的 Pod，然后删除一些旧的 Pod 再创建一个新的。当新的 Pod 创建出来之前不会杀掉旧的 Pod。这样能够确保可用的 Pod 数量至少有 2 个，Pod 的总数最多 4 个。
+例如，如果你自己看下上面的 Deployment，你會發現，開始創建一個新的 Pod，然後刪除一些舊的 Pod 再創建一個新的。當新的 Pod 創建出來之前不會殺掉舊的 Pod。這樣能夠確保可用的 Pod 數量至少有 2 個，Pod 的總數最多 4 個。
 
 ```sh
 $ kubectl describe deployments
@@ -227,47 +227,47 @@ Events:
   21s       21s         1       {deployment-controller}                 Normal      ScalingReplicaSet   Scaled up replica set nginx-deployment-1564180365 to 3
 ```
 
-我们可以看到当我们刚开始创建这个 Deployment 的时候，创建了一个 Replica Set（nginx-deployment-2035384211），并直接扩容到了 3 个 replica。
+我們可以看到當我們剛開始創建這個 Deployment 的時候，創建了一個 Replica Set（nginx-deployment-2035384211），並直接擴容到了 3 個 replica。
 
-当我们更新这个 Deployment 的时候，它会创建一个新的 Replica Set（nginx-deployment-1564180365），将它扩容到 1 个 replica，然后缩容原先的 Replica Set 到 2 个 replica，此时满足至少 2 个 Pod 是可用状态，同一时刻最多有 4 个 Pod 处于创建的状态。
+當我們更新這個 Deployment 的時候，它會創建一個新的 Replica Set（nginx-deployment-1564180365），將它擴容到 1 個 replica，然後縮容原先的 Replica Set 到 2 個 replica，此時滿足至少 2 個 Pod 是可用狀態，同一時刻最多有 4 個 Pod 處於創建的狀態。
 
-接着继续使用相同的 rolling update 策略扩容新的 Replica Set 和缩容旧的 Replica Set。最终，将会在新的 Replica Set 中有 3 个可用的 replica，旧的 Replica Set 的 replica 数目变成 0。
+接著繼續使用相同的 rolling update 策略擴容新的 Replica Set 和縮容舊的 Replica Set。最終，將會在新的 Replica Set 中有 3 個可用的 replica，舊的 Replica Set 的 replica 數目變成 0。
 
-### Rollover（多个 rollout 并行）
+### Rollover（多個 rollout 並行）
 
-每当 Deployment controller 观测到有新的 deployment 被创建时，如果没有已存在的 Replica Set 来创建期望个数的 Pod 的话，就会创建出一个新的 Replica Set 来做这件事。已存在的 Replica Set 控制 label 匹配 `.spec.selector` 但是 template 跟 `.spec.template` 不匹配的 Pod 缩容。最终，新的 Replica Set 将会扩容出 `.spec.replicas` 指定数目的 Pod，旧的 Replica Set 会缩容到 0。
+每當 Deployment controller 觀測到有新的 deployment 被創建時，如果沒有已存在的 Replica Set 來創建期望個數的 Pod 的話，就會創建出一個新的 Replica Set 來做這件事。已存在的 Replica Set 控制 label 匹配 `.spec.selector` 但是 template 跟 `.spec.template` 不匹配的 Pod 縮容。最終，新的 Replica Set 將會擴容出 `.spec.replicas` 指定數目的 Pod，舊的 Replica Set 會縮容到 0。
 
-如果你更新了一个的已存在并正在进行中的 Deployment，每次更新 Deployment 都会创建一个新的 Replica Set 并扩容它，同时回滚之前扩容的 Replica Set——将它添加到旧的 Replica Set 列表，开始缩容。
+如果你更新了一個的已存在並正在進行中的 Deployment，每次更新 Deployment 都會創建一個新的 Replica Set 並擴容它，同時回滾之前擴容的 Replica Set——將它添加到舊的 Replica Set 列表，開始縮容。
 
-例如，假如你创建了一个有 5 个 `niginx:1.7.9` replica 的 Deployment，但是当还只有 3 个 `nginx:1.7.9` 的 replica 创建出来的时候你就开始更新含有 5 个 `nginx:1.9.1` replica 的 Deployment。在这种情况下，Deployment 会立即杀掉已创建的 3 个 `nginx:1.7.9` 的 Pod，并开始创建 `nginx:1.9.1` 的 Pod。它不会等到所有的 5 个 `nginx:1.7.9` 的 Pod 都创建完成后才开始执行滚动更新。
+例如，假如你創建了一個有 5 個 `niginx:1.7.9` replica 的 Deployment，但是當還只有 3 個 `nginx:1.7.9` 的 replica 創建出來的時候你就開始更新含有 5 個 `nginx:1.9.1` replica 的 Deployment。在這種情況下，Deployment 會立即殺掉已創建的 3 個 `nginx:1.7.9` 的 Pod，並開始創建 `nginx:1.9.1` 的 Pod。它不會等到所有的 5 個 `nginx:1.7.9` 的 Pod 都創建完成後才開始執行滾動更新。
 
 ## 回退 Deployment
 
-有时候你可能想回退一个 Deployment，例如，当 Deployment 不稳定时，比如一直 crash looping。
+有時候你可能想回退一個 Deployment，例如，當 Deployment 不穩定時，比如一直 crash looping。
 
-默认情况下，kubernetes 会在系统中保存所有的 Deployment 的 rollout 历史记录，以便你可以随时回退（你可以修改 `revision history limit` 来更改保存的 revision 数）。
+默認情況下，kubernetes 會在系統中保存所有的 Deployment 的 rollout 歷史記錄，以便你可以隨時回退（你可以修改 `revision history limit` 來更改保存的 revision 數）。
 
-** 注意：** 只要 Deployment 的 rollout 被触发就会创建一个 revision。也就是说当且仅当 Deployment 的 Pod template（如 `.spec.template`）被更改，例如更新 template 中的 label 和容器镜像时，就会创建出一个新的 revision。
+** 注意：** 只要 Deployment 的 rollout 被觸發就會創建一個 revision。也就是說當且僅當 Deployment 的 Pod template（如 `.spec.template`）被更改，例如更新 template 中的 label 和容器鏡像時，就會創建出一個新的 revision。
 
-其他的更新，比如扩容 Deployment 不会创建 revision——因此我们可以很方便的手动或者自动扩容。这意味着当你回退到历史 revision 时，只有 Deployment 中的 Pod template 部分才会回退。
+其他的更新，比如擴容 Deployment 不會創建 revision——因此我們可以很方便的手動或者自動擴容。這意味著當你回退到歷史 revision 時，只有 Deployment 中的 Pod template 部分才會回退。
 
-假设我们在更新 Deployment 的时候犯了一个拼写错误，将镜像的名字写成了 `nginx:1.91`，而正确的名字应该是 `nginx:1.9.1`：
+假設我們在更新 Deployment 的時候犯了一個拼寫錯誤，將鏡像的名字寫成了 `nginx:1.91`，而正確的名字應該是 `nginx:1.9.1`：
 
 ```sh
 $ kubectl set image deployment/nginx-deployment nginx=nginx:1.91
 deployment "nginx-deployment" image updated
 ```
 
-Rollout 将会卡住。
+Rollout 將會卡住。
 
 ```sh
 $ kubectl rollout status deployments nginx-deployment
 Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
 ```
 
-按住 Ctrl-C 停止上面的 rollout 状态监控。
+按住 Ctrl-C 停止上面的 rollout 狀態監控。
 
-你会看到旧的 replicas（nginx-deployment-1564180365 和 nginx-deployment-2035384211）和新的 replicas （nginx-deployment-3066724191）数目都是 2 个。
+你會看到舊的 replicas（nginx-deployment-1564180365 和 nginx-deployment-2035384211）和新的 replicas （nginx-deployment-3066724191）數目都是 2 個。
 
 ```sh
 $ kubectl get rs
@@ -277,7 +277,7 @@ nginx-deployment-2035384211   0         0         0       36s
 nginx-deployment-3066724191   2         2         2       6s
 ```
 
-看下创建 Pod，你会看到有两个新的 Replica Set 创建的 Pod 处于 ImagePullBackOff 状态，循环拉取镜像。
+看下創建 Pod，你會看到有兩個新的 Replica Set 創建的 Pod 處於 ImagePullBackOff 狀態，循環拉取鏡像。
 
 ```sh
 $ kubectl get pods
@@ -288,7 +288,7 @@ nginx-deployment-3066724191-08mng   0/1       ImagePullBackOff   0          6s
 nginx-deployment-3066724191-eocby   0/1       ImagePullBackOff   0          6s
 ```
 
-注意，Deployment controller 会自动停止坏的 rollout，并停止扩容新的 Replica Set。
+注意，Deployment controller 會自動停止壞的 rollout，並停止擴容新的 Replica Set。
 
 ```sh
 $ kubectl describe deployment
@@ -317,11 +317,11 @@ Events:
   13s       13s         1       {deployment-controller}                Normal      ScalingReplicaSet   Scaled up replica set nginx-deployment-3066724191 to 2
 ```
 
-为了修复这个问题，我们需要回退到稳定的 Deployment revision。
+為了修復這個問題，我們需要回退到穩定的 Deployment revision。
 
-### 检查 Deployment 升级的历史记录
+### 檢查 Deployment 升級的歷史記錄
 
-首先，检查下 Deployment 的 revision：
+首先，檢查下 Deployment 的 revision：
 
 ```sh
 $ kubectl rollout history deployment/nginx-deployment
@@ -332,9 +332,9 @@ REVISION    CHANGE-CAUSE
 3           kubectl set image deployment/nginx-deployment nginx=nginx:1.91
 ```
 
-因为我们创建 Deployment 的时候使用了 `—recored` 参数可以记录命令，我们可以很方便的查看每次 revison 的变化。
+因為我們創建 Deployment 的時候使用了 `—recored` 參數可以記錄命令，我們可以很方便的查看每次 revison 的變化。
 
-查看单个 revision 的详细信息：
+查看單個 revision 的詳細信息：
 
 ```sh
 $ kubectl rollout history deployment/nginx-deployment --revision=2
@@ -353,25 +353,25 @@ deployments "nginx-deployment" revision 2
   No volumes.
 ```
 
-### 回退到历史版本
+### 回退到歷史版本
 
-现在，我们可以决定回退当前的 rollout 到之前的版本：
+現在，我們可以決定回退當前的 rollout 到之前的版本：
 
 ```sh
 $ kubectl rollout undo deployment/nginx-deployment
 deployment "nginx-deployment" rolled back
 ```
 
-也可以使用 `--to-revision` 参数指定某个历史版本：
+也可以使用 `--to-revision` 參數指定某個歷史版本：
 
 ```sh
 $ kubectl rollout undo deployment/nginx-deployment --to-revision=2
 deployment "nginx-deployment" rolled back
 ```
 
-与 rollout 相关的命令详细文档见 [kubectl rollout](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#rollout)。
+與 rollout 相關的命令詳細文檔見 [kubectl rollout](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#rollout)。
 
-该 Deployment 现在已经回退到了先前的稳定版本。如你所见，Deployment controller 产生了一个回退到 revison 2 的 `DeploymentRollback` 的 event。
+該 Deployment 現在已經回退到了先前的穩定版本。如你所見，Deployment controller 產生了一個回退到 revison 2 的 `DeploymentRollback` 的 event。
 
 ```sh
 $ kubectl get deployment
@@ -408,29 +408,29 @@ Events:
 
 ### 清理 Policy
 
-你可以通过设置 `.spec.revisonHistoryLimit` 项来指定 deployment 最多保留多少 revison 历史记录。默认的会保留所有的 revision；如果将该项设置为 0，Deployment 就不允许回退了。
+你可以通過設置 `.spec.revisonHistoryLimit` 項來指定 deployment 最多保留多少 revison 歷史記錄。默認的會保留所有的 revision；如果將該項設置為 0，Deployment 就不允許回退了。
 
-## Deployment 扩容
+## Deployment 擴容
 
-你可以使用以下命令扩容 Deployment：
+你可以使用以下命令擴容 Deployment：
 
 ```sh
 $ kubectl scale deployment nginx-deployment --replicas 10
 deployment "nginx-deployment" scaled
 ```
 
-假设你的集群中启用了 [horizontal pod autoscaling (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)，你可以给 Deployment 设置一个 autoscaler，基于当前 Pod 的 CPU 利用率选择最少和最多的 Pod 数。
+假設你的集群中啟用了 [horizontal pod autoscaling (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)，你可以給 Deployment 設置一個 autoscaler，基於當前 Pod 的 CPU 利用率選擇最少和最多的 Pod 數。
 
 ```sh
 $ kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
 deployment "nginx-deployment" autoscaled
 ```
 
-## 比例扩容
+## 比例擴容
 
-RollingUpdate Deployment 支持同时运行一个应用的多个版本。当你或者 autoscaler 扩容一个正在 rollout 中（进行中或者已经暂停）的 RollingUpdate Deployment 的时候，为了降低风险，Deployment controller 将会平衡已存在的 active 的 ReplicaSets（有 Pod 的 ReplicaSets）和新加入的 replicas。这被称为比例扩容。
+RollingUpdate Deployment 支持同時運行一個應用的多個版本。當你或者 autoscaler 擴容一個正在 rollout 中（進行中或者已經暫停）的 RollingUpdate Deployment 的時候，為了降低風險，Deployment controller 將會平衡已存在的 active 的 ReplicaSets（有 Pod 的 ReplicaSets）和新加入的 replicas。這被稱為比例擴容。
 
-例如，你正在运行中含有 10 个 replica 的 Deployment。maxSurge=3，maxUnavailable=2。
+例如，你正在運行中含有 10 個 replica 的 Deployment。maxSurge=3，maxUnavailable=2。
 
 ```sh
 $ kubectl get deploy
@@ -438,14 +438,14 @@ NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment     10        10        10           10          50s
 ```
 
-你更新了一个镜像，而在集群内部无法解析。
+你更新了一個鏡像，而在集群內部無法解析。
 
 ```sh
 $ kubectl set image deploy/nginx-deployment nginx=nginx:sometag
 deployment "nginx-deployment" image updated
 ```
 
-镜像更新启动了一个包含 ReplicaSet nginx-deployment-1989198191 的新的 rollout，但是它被阻塞了，因为我们上面提到的 maxUnavailable。
+鏡像更新啟動了一個包含 ReplicaSet nginx-deployment-1989198191 的新的 rollout，但是它被阻塞了，因為我們上面提到的 maxUnavailable。
 
 ```sh
 $ kubectl get rs
@@ -454,9 +454,9 @@ nginx-deployment-1989198191   5         5         0         9s
 nginx-deployment-618515232    8         8         8         1m
 ```
 
-然后发起了一个新的 Deployment 扩容请求。autoscaler 将 Deployment 的 replica 数目增加到了 15 个。Deployment controller 需要判断在哪里增加这 5 个新的 replica。如果我们没有使用比例扩容，所有的 5 个 replica 都会加到一个新的 ReplicaSet 中。如果使用比例扩容，新添加的 replica 将传播到所有的 ReplicaSet 中。大的部分加入 replica 数最多的 ReplicaSet 中，小的部分加入到 replica 数少的 ReplciaSet 中。0 个 replica 的 ReplicaSet 不会被扩容。
+然後發起了一個新的 Deployment 擴容請求。autoscaler 將 Deployment 的 replica 數目增加到了 15 個。Deployment controller 需要判斷在哪裡增加這 5 個新的 replica。如果我們沒有使用比例擴容，所有的 5 個 replica 都會加到一個新的 ReplicaSet 中。如果使用比例擴容，新添加的 replica 將傳播到所有的 ReplicaSet 中。大的部分加入 replica 數最多的 ReplicaSet 中，小的部分加入到 replica 數少的 ReplciaSet 中。0 個 replica 的 ReplicaSet 不會被擴容。
 
-在我们上面的例子中，3 个 replica 将添加到旧的 ReplicaSet 中，2 个 replica 将添加到新的 ReplicaSet 中。rollout 进程最终会将所有的 replica 移动到新的 ReplicaSet 中，假设新的 replica 成为健康状态。
+在我們上面的例子中，3 個 replica 將添加到舊的 ReplicaSet 中，2 個 replica 將添加到新的 ReplicaSet 中。rollout 進程最終會將所有的 replica 移動到新的 ReplicaSet 中，假設新的 replica 成為健康狀態。
 
 ```sh
 $ kubectl get deploy
@@ -468,11 +468,11 @@ nginx-deployment-1989198191   7         7         0         7m
 nginx-deployment-618515232    11        11        11        7m
 ```
 
-## 暂停和恢复 Deployment
+## 暫停和恢復 Deployment
 
-你可以在触发一次或多次更新前暂停一个 Deployment，然后再恢复它。这样你就能多次暂停和恢复 Deployment，在此期间进行一些修复工作，而不会触发不必要的 rollout。
+你可以在觸發一次或多次更新前暫停一個 Deployment，然後再恢復它。這樣你就能多次暫停和恢復 Deployment，在此期間進行一些修復工作，而不會觸發不必要的 rollout。
 
-例如使用刚刚创建 Deployment：
+例如使用剛剛創建 Deployment：
 
 ```sh
 $ kubectl get deploy
@@ -483,21 +483,21 @@ NAME               DESIRED   CURRENT   READY     AGE
 nginx-2142116321   3         3         3         1m
 ```
 
-使用以下命令暂停 Deployment：
+使用以下命令暫停 Deployment：
 
 ```sh
 $ kubectl rollout pause deployment/nginx-deployment
 deployment "nginx-deployment" paused
 ```
 
-然后更新 Deplyment 中的镜像：
+然後更新 Deplyment 中的鏡像：
 
 ```sh
 $ kubectl set image deploy/nginx nginx=nginx:1.9.1
 deployment "nginx-deployment" image updated
 ```
 
-注意没有启动新的 rollout：
+注意沒有啟動新的 rollout：
 
 ```sh
 $ kubectl rollout history deploy/nginx
@@ -510,16 +510,16 @@ NAME               DESIRED   CURRENT   READY     AGE
 nginx-2142116321   3         3         3         2m
 ```
 
-你可以进行任意多次更新，例如更新使用的资源：
+你可以進行任意多次更新，例如更新使用的資源：
 
 ```sh
 $ kubectl set resources deployment nginx -c=nginx --limits=cpu=200m,memory=512Mi
 deployment "nginx" resource requirements updated
 ```
 
-Deployment 暂停前的初始状态将继续它的功能，而不会对 Deployment 的更新产生任何影响，只要 Deployment 是暂停的。
+Deployment 暫停前的初始狀態將繼續它的功能，而不會對 Deployment 的更新產生任何影響，只要 Deployment 是暫停的。
 
-最后，恢复这个 Deployment，观察完成更新的 ReplicaSet 已经创建出来了：
+最後，恢復這個 Deployment，觀察完成更新的 ReplicaSet 已經創建出來了：
 
 ```sh
 $ kubectl rollout resume deploy nginx
@@ -547,32 +547,32 @@ nginx-2142116321   0         0         0         2m
 nginx-3926361531   3         3         3         28s
 ```
 
-** 注意：** 在恢复 Deployment 之前你无法回退一个暂停了的 Deployment。
+** 注意：** 在恢復 Deployment 之前你無法回退一個暫停了的 Deployment。
 
-## Deployment 状态
+## Deployment 狀態
 
-Deployment 在生命周期中有多种状态。在创建一个新的 ReplicaSet 的时候它可以是 [progressing](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progressing-deployment) 状态， [complete](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#complete-deployment) 状态，或者 [fail to progress](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#failed-deployment) 状态。
+Deployment 在生命週期中有多種狀態。在創建一個新的 ReplicaSet 的時候它可以是 [progressing](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progressing-deployment) 狀態， [complete](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#complete-deployment) 狀態，或者 [fail to progress](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#failed-deployment) 狀態。
 
 ### Progressing Deployment
 
-Kubernetes 将执行过下列任务之一的 Deployment 标记为 *progressing* 状态：
+Kubernetes 將執行過下列任務之一的 Deployment 標記為 *progressing* 狀態：
 
-- Deployment 正在创建新的 ReplicaSet 过程中。
-- Deployment 正在扩容一个已有的 ReplicaSet。
-- Deployment 正在缩容一个已有的 ReplicaSet。
-- 有新的可用的 pod 出现。
+- Deployment 正在創建新的 ReplicaSet 過程中。
+- Deployment 正在擴容一個已有的 ReplicaSet。
+- Deployment 正在縮容一個已有的 ReplicaSet。
+- 有新的可用的 pod 出現。
 
-你可以使用 `kubectl rollout status` 命令监控 Deployment 的进度。
+你可以使用 `kubectl rollout status` 命令監控 Deployment 的進度。
 
 ### Complete Deployment
 
-Kubernetes 将包括以下特性的 Deployment 标记为 *complete* 状态：
+Kubernetes 將包括以下特性的 Deployment 標記為 *complete* 狀態：
 
-- Deployment 最小可用。最小可用意味着 Deployment 的可用 replica 个数等于或者超过 Deployment 策略中的期望个数。
-- 所有与该 Deployment 相关的 replica 都被更新到了你指定版本，也就说更新完成。
-- 该 Deployment 中没有旧的 Pod 存在。
+- Deployment 最小可用。最小可用意味著 Deployment 的可用 replica 個數等於或者超過 Deployment 策略中的期望個數。
+- 所有與該 Deployment 相關的 replica 都被更新到了你指定版本，也就說更新完成。
+- 該 Deployment 中沒有舊的 Pod 存在。
 
-你可以用 `kubectl rollout status` 命令查看 Deployment 是否完成。如果 rollout 成功完成，`kubectl rollout status` 将返回一个 0 值的 Exit Code。
+你可以用 `kubectl rollout status` 命令查看 Deployment 是否完成。如果 rollout 成功完成，`kubectl rollout status` 將返回一個 0 值的 Exit Code。
 
 ```sh
 $ kubectl rollout status deploy/nginx
@@ -584,37 +584,37 @@ $ echo $?
 
 ### Failed Deployment
 
-你的 Deployment 在尝试部署新的 ReplicaSet 的时候可能卡住，永远也不会完成。这可能是因为以下几个因素引起的：
+你的 Deployment 在嘗試部署新的 ReplicaSet 的時候可能卡住，永遠也不會完成。這可能是因為以下幾個因素引起的：
 
-- 无效的引用
-- 不可读的 probe failure
-- 镜像拉取错误
-- 权限不够
-- 范围限制
-- 程序运行时配置错误
+- 無效的引用
+- 不可讀的 probe failure
+- 鏡像拉取錯誤
+- 權限不夠
+- 範圍限制
+- 程序運行時配置錯誤
 
-探测这种情况的一种方式是，在你的 Deployment spec 中指定 [`spec.progressDeadlineSeconds`](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds)。`spec.progressDeadlineSeconds` 表示 Deployment controller 等待多少秒才能确定（通过 Deployment status）Deployment 进程是卡住的。
+探測這種情況的一種方式是，在你的 Deployment spec 中指定 [`spec.progressDeadlineSeconds`](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds)。`spec.progressDeadlineSeconds` 表示 Deployment controller 等待多少秒才能確定（通過 Deployment status）Deployment 進程是卡住的。
 
-下面的 `kubectl` 命令设置 `progressDeadlineSeconds` 使 controller 在 Deployment 在进度卡住 10 分钟后报告：
+下面的 `kubectl` 命令設置 `progressDeadlineSeconds` 使 controller 在 Deployment 在進度卡住 10 分鐘後報告：
 
 ```sh
 $ kubectl patch deployment/nginx-deployment -p '{"spec":{"progressDeadlineSeconds":600}}'
 "nginx-deployment" patched
 ```
 
-当超过截止时间后，Deployment controller 会在 Deployment 的 `status.conditions` 中增加一条 DeploymentCondition，它包括如下属性：
+當超過截止時間後，Deployment controller 會在 Deployment 的 `status.conditions` 中增加一條 DeploymentCondition，它包括如下屬性：
 
 - Type=Progressing
 - Status=False
 - Reason=ProgressDeadlineExceeded
 
-浏览 [Kubernetes API conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#typical-status-properties) 查看关于 status conditions 的更多信息。
+瀏覽 [Kubernetes API conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#typical-status-properties) 查看關於 status conditions 的更多信息。
 
-**注意:** kubernetes 除了报告 `Reason=ProgressDeadlineExceeded` 状态信息外不会对卡住的 Deployment 做任何操作。更高层次的协调器可以利用它并采取相应行动，例如，回滚 Deployment 到之前的版本。
+**注意:** kubernetes 除了報告 `Reason=ProgressDeadlineExceeded` 狀態信息外不會對卡住的 Deployment 做任何操作。更高層次的協調器可以利用它並採取相應行動，例如，回滾 Deployment 到之前的版本。
 
-** 注意：** 如果你暂停了一个 Deployment，在暂停的这段时间内 kubernetnes 不会检查你指定的 deadline。你可以在 Deployment 的 rollout 途中安全的暂停它，然后再恢复它，这不会触发超过 deadline 的状态。
+** 注意：** 如果你暫停了一個 Deployment，在暫停的這段時間內 kubernetnes 不會檢查你指定的 deadline。你可以在 Deployment 的 rollout 途中安全的暫停它，然後再恢復它，這不會觸發超過 deadline 的狀態。
 
-你可能在使用 Deployment 的时候遇到一些短暂的错误，这些可能是由于你设置了太短的 timeout，也有可能是因为各种其他错误导致的短暂错误。例如，假设你使用了无效的引用。当你 Describe Deployment 的时候可能会注意到如下信息：
+你可能在使用 Deployment 的時候遇到一些短暫的錯誤，這些可能是由於你設置了太短的 timeout，也有可能是因為各種其他錯誤導致的短暫錯誤。例如，假設你使用了無效的引用。當你 Describe Deployment 的時候可能會注意到如下信息：
 
 ```sh
 $ kubectl describe deployment nginx-deployment
@@ -628,7 +628,7 @@ Conditions:
 <...>
 ```
 
-执行 `kubectl get deployment nginx-deployment -o yaml`，Deployement 的状态可能看起来像这个样子：
+執行 `kubectl get deployment nginx-deployment -o yaml`，Deployement 的狀態可能看起來像這個樣子：
 
 ```yaml
 status:
@@ -658,7 +658,7 @@ status:
   unavailableReplicas: 2
 ```
 
-最终，一旦超过 Deployment 进程的 deadline，kuberentes 会更新状态和导致 Progressing 状态的原因：
+最終，一旦超過 Deployment 進程的 deadline，kuberentes 會更新狀態和導致 Progressing 狀態的原因：
 
 ```sh
 Conditions:
@@ -670,7 +670,7 @@ Conditions:
 
 ```
 
-你可以通过缩容 Deployment 的方式解决配额不足的问题，或者增加你的 namespace 的配额。如果你满足了配额条件后，Deployment controller 就会完成你的 Deployment rollout，你将看到 Deployment 的状态更新为成功状态（`Status=True` 并且 `Reason=NewReplicaSetAvailable`）。
+你可以通過縮容 Deployment 的方式解決配額不足的問題，或者增加你的 namespace 的配額。如果你滿足了配額條件後，Deployment controller 就會完成你的 Deployment rollout，你將看到 Deployment 的狀態更新為成功狀態（`Status=True` 並且 `Reason=NewReplicaSetAvailable`）。
 
 ```sh
 Conditions:
@@ -681,10 +681,10 @@ Conditions:
 
 ```
 
-`Type=Available`、 `Status=True` 意味着你的 Deployment 有最小可用性。 最小可用性是在 Deployment 策略中指定的参数。
-`Type=Progressing` 、 `Status=True` 意味着你的 Deployment 或者在部署过程中，或者已经成功部署，达到了期望的最少的可用 replica 数量（查看特定状态的 Reason——在我们的例子中 `Reason=NewReplicaSetAvailable` 意味着 Deployment 已经完成）。
+`Type=Available`、 `Status=True` 意味著你的 Deployment 有最小可用性。 最小可用性是在 Deployment 策略中指定的參數。
+`Type=Progressing` 、 `Status=True` 意味著你的 Deployment 或者在部署過程中，或者已經成功部署，達到了期望的最少的可用 replica 數量（查看特定狀態的 Reason——在我們的例子中 `Reason=NewReplicaSetAvailable` 意味著 Deployment 已經完成）。
 
-你可以使用 `kubectl rollout status` 命令查看 Deployment 进程是否失败。当 Deployment 过程超过了 deadline，`kubectl rollout status` 将返回非 0 的 exit code。
+你可以使用 `kubectl rollout status` 命令查看 Deployment 進程是否失敗。當 Deployment 過程超過了 deadline，`kubectl rollout status` 將返回非 0 的 exit code。
 
 ```sh
 $ kubectl rollout status deploy/nginx
@@ -694,25 +694,25 @@ $ echo $?
 1
 ```
 
-### 操作失败的 Deployment
+### 操作失敗的 Deployment
 
-所有对完成的 Deployment 的操作都适用于失败的 Deployment。你可以对它扩／缩容，回退到历史版本，你甚至可以多次暂停它来应用 Deployment pod template。
+所有對完成的 Deployment 的操作都適用於失敗的 Deployment。你可以對它擴／縮容，回退到歷史版本，你甚至可以多次暫停它來應用 Deployment pod template。
 
 ## 清理 Policy
 
-你可以设置 Deployment 中的 `.spec.revisionHistoryLimit` 项来指定保留多少旧的 ReplicaSet。 余下的将在后台被当作垃圾收集。默认的，所有的 revision 历史都会被保留。在未来的版本中，将会更改为 2。
+你可以設置 Deployment 中的 `.spec.revisionHistoryLimit` 項來指定保留多少舊的 ReplicaSet。 餘下的將在後臺被當作垃圾收集。默認的，所有的 revision 歷史都會被保留。在未來的版本中，將會更改為 2。
 
-**注意：** 将该值设置为 0，将导致该 Deployment 的所有历史记录都被清除，也就无法回退了。
+**注意：** 將該值設置為 0，將導致該 Deployment 的所有歷史記錄都被清除，也就無法回退了。
 
 ## 用例
 
 ### Canary Deployment
 
-如果你想要使用 Deployment 对部分用户或服务器发布 release，你可以创建多个 Deployment，每个对一个 release，参照 [managing resources](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 中对 canary 模式的描述。
+如果你想要使用 Deployment 對部分用戶或服務器發佈 release，你可以創建多個 Deployment，每個對一個 release，參照 [managing resources](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 中對 canary 模式的描述。
 
-## 编写 Deployment Spec
+## 編寫 Deployment Spec
 
-在所有的 Kubernetes 配置中，Deployment 也需要 `apiVersion`，`kind` 和 `metadata` 这些配置项。配置文件的通用使用说明查看 [部署应用](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)，配置容器，和[使用 kubeclt 管理资源](https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/) 文档。
+在所有的 Kubernetes 配置中，Deployment 也需要 `apiVersion`，`kind` 和 `metadata` 這些配置項。配置文件的通用使用說明查看 [部署應用](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)，配置容器，和[使用 kubeclt 管理資源](https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/) 文檔。
 
 Deployment 也需要 [`.spec` section](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#spec-and-status).
 
@@ -720,84 +720,84 @@ Deployment 也需要 [`.spec` section](https://github.com/kubernetes/community/b
 
  `.spec.template` 是 `.spec` 中唯一要求的字段。
 
-`.spec.template` 是 [pod template](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/#pod-template). 它跟 [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) 有一模一样的 schema，除了它是嵌套的并且不需要 `apiVersion` 和 `kind` 字段。
+`.spec.template` 是 [pod template](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/#pod-template). 它跟 [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) 有一模一樣的 schema，除了它是嵌套的並且不需要 `apiVersion` 和 `kind` 字段。
 
-另外为了划分 Pod 的范围，Deployment 中的 pod template 必须指定适当的 label（不要跟其他 controller 重复了，参考 [selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/controllers/deployment.md#selector)）和适当的重启策略。
+另外為了劃分 Pod 的範圍，Deployment 中的 pod template 必須指定適當的 label（不要跟其他 controller 重複了，參考 [selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/controllers/deployment.md#selector)）和適當的重啟策略。
 
-[`.spec.template.spec.restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/) 可以设置为 `Always` , 如果不指定的话这就是默认配置。
+[`.spec.template.spec.restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/) 可以設置為 `Always` , 如果不指定的話這就是默認配置。
 
 ### Replicas
 
-`.spec.replicas` 是可以选字段，指定期望的 pod 数量，默认是 1。
+`.spec.replicas` 是可以選字段，指定期望的 pod 數量，默認是 1。
 
 ### Selector
 
-`.spec.selector` 是可选字段，用来指定 [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) ，圈定 Deployment 管理的 pod 范围。
+`.spec.selector` 是可選字段，用來指定 [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) ，圈定 Deployment 管理的 pod 範圍。
 
-如果被指定， `.spec.selector` 必须匹配 `.spec.template.metadata.labels`，否则它将被 API 拒绝。如果 `.spec.selector` 没有被指定， `.spec.selector.matchLabels` 默认是 `.spec.template.metadata.labels`。
+如果被指定， `.spec.selector` 必須匹配 `.spec.template.metadata.labels`，否則它將被 API 拒絕。如果 `.spec.selector` 沒有被指定， `.spec.selector.matchLabels` 默認是 `.spec.template.metadata.labels`。
 
-在 Pod 的 template 跟 `.spec.template` 不同或者数量超过了 `.spec.replicas` 规定的数量的情况下，Deployment 会杀掉 label 跟 selector 不同的 Pod。
+在 Pod 的 template 跟 `.spec.template` 不同或者數量超過了 `.spec.replicas` 規定的數量的情況下，Deployment 會殺掉 label 跟 selector 不同的 Pod。
 
-** 注意：** 你不应该再创建其他 label 跟这个 selector 匹配的 pod，或者通过其他 Deployment，或者通过其他 Controller，例如 ReplicaSet 和 ReplicationController。否则该 Deployment 会被把它们当成都是自己创建的。Kubernetes 不会阻止你这么做。
+** 注意：** 你不應該再創建其他 label 跟這個 selector 匹配的 pod，或者通過其他 Deployment，或者通過其他 Controller，例如 ReplicaSet 和 ReplicationController。否則該 Deployment 會被把它們當成都是自己創建的。Kubernetes 不會阻止你這麼做。
 
-如果你有多个 controller 使用了重复的 selector，controller 们就会互相打架并导致不正确的行为。
+如果你有多個 controller 使用了重複的 selector，controller 們就會互相打架並導致不正確的行為。
 
 ### 策略
 
-`.spec.strategy` 指定新的 Pod 替换旧的 Pod 的策略。 `.spec.strategy.type` 可以是 "Recreate" 或者是 "RollingUpdate"。"RollingUpdate" 是默认值。
+`.spec.strategy` 指定新的 Pod 替換舊的 Pod 的策略。 `.spec.strategy.type` 可以是 "Recreate" 或者是 "RollingUpdate"。"RollingUpdate" 是默認值。
 
 #### Recreate Deployment
 
-`.spec.strategy.type==Recreate` 时，在创建出新的 Pod 之前会先杀掉所有已存在的 Pod。
+`.spec.strategy.type==Recreate` 時，在創建出新的 Pod 之前會先殺掉所有已存在的 Pod。
 
 #### Rolling Update Deployment
 
-`.spec.strategy.type==RollingUpdate` 时，Deployment 使用 [rolling update](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 的方式更新 Pod 。你可以指定 `maxUnavailable` 和 `maxSurge` 来控制 rolling update 进程。
+`.spec.strategy.type==RollingUpdate` 時，Deployment 使用 [rolling update](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 的方式更新 Pod 。你可以指定 `maxUnavailable` 和 `maxSurge` 來控制 rolling update 進程。
 
 ##### Max Unavailable
 
-`.spec.strategy.rollingUpdate.maxUnavailable` 是可选配置项，用来指定在升级过程中不可用 Pod 的最大数量。该值可以是一个绝对值（例如 5），也可以是期望 Pod 数量的百分比（例如 10%）。通过计算百分比的绝对值向下取整。如果 `.spec.strategy.rollingUpdate.maxSurge` 为 0 时，这个值不可以为 0。默认值是 1。
+`.spec.strategy.rollingUpdate.maxUnavailable` 是可選配置項，用來指定在升級過程中不可用 Pod 的最大數量。該值可以是一個絕對值（例如 5），也可以是期望 Pod 數量的百分比（例如 10%）。通過計算百分比的絕對值向下取整。如果 `.spec.strategy.rollingUpdate.maxSurge` 為 0 時，這個值不可以為 0。默認值是 1。
 
-例如，该值设置成 30%，启动 rolling update 后旧的 ReplicatSet 将会立即缩容到期望的 Pod 数量的 70%。新的 Pod ready 后，随着新的 ReplicaSet 的扩容，旧的 ReplicaSet 会进一步缩容，确保在升级的所有时刻可以用的 Pod 数量至少是期望 Pod 数量的 70%。
+例如，該值設置成 30%，啟動 rolling update 後舊的 ReplicatSet 將會立即縮容到期望的 Pod 數量的 70%。新的 Pod ready 後，隨著新的 ReplicaSet 的擴容，舊的 ReplicaSet 會進一步縮容，確保在升級的所有時刻可以用的 Pod 數量至少是期望 Pod 數量的 70%。
 
 ##### Max Surge
 
-`.spec.strategy.rollingUpdate.maxSurge` 是可选配置项，用来指定可以超过期望的 Pod 数量的最大个数。该值可以是一个绝对值（例如 5）或者是期望的 Pod 数量的百分比（例如 10%）。当 `MaxUnavailable` 为 0 时该值不可以为 0。通过百分比计算的绝对值向上取整。默认值是 1。
+`.spec.strategy.rollingUpdate.maxSurge` 是可選配置項，用來指定可以超過期望的 Pod 數量的最大個數。該值可以是一個絕對值（例如 5）或者是期望的 Pod 數量的百分比（例如 10%）。當 `MaxUnavailable` 為 0 時該值不可以為 0。通過百分比計算的絕對值向上取整。默認值是 1。
 
-例如，该值设置成 30%，启动 rolling update 后新的 ReplicatSet 将会立即扩容，新老 Pod 的总数不能超过期望的 Pod 数量的 130%。旧的 Pod 被杀掉后，新的 ReplicaSet 将继续扩容，旧的 ReplicaSet 会进一步缩容，确保在升级的所有时刻所有的 Pod 数量和不会超过期望 Pod 数量的 130%。
+例如，該值設置成 30%，啟動 rolling update 後新的 ReplicatSet 將會立即擴容，新老 Pod 的總數不能超過期望的 Pod 數量的 130%。舊的 Pod 被殺掉後，新的 ReplicaSet 將繼續擴容，舊的 ReplicaSet 會進一步縮容，確保在升級的所有時刻所有的 Pod 數量和不會超過期望 Pod 數量的 130%。
 
 ### Progress Deadline Seconds
 
-`.spec.progressDeadlineSeconds` 是可选配置项，用来指定在系统报告 Deployment 的 [failed progressing](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#failed-deployment) ——表现为 resource 的状态中 `type=Progressing`、`Status=False`、 `Reason=ProgressDeadlineExceeded` 前可以等待的 Deployment 进行的秒数。Deployment controller 会继续重试该 Deployment。未来，在实现了自动回滚后， deployment controller 在观察到这种状态时就会自动回滚。
+`.spec.progressDeadlineSeconds` 是可選配置項，用來指定在系統報告 Deployment 的 [failed progressing](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#failed-deployment) ——表現為 resource 的狀態中 `type=Progressing`、`Status=False`、 `Reason=ProgressDeadlineExceeded` 前可以等待的 Deployment 進行的秒數。Deployment controller 會繼續重試該 Deployment。未來，在實現了自動回滾後， deployment controller 在觀察到這種狀態時就會自動回滾。
 
-如果设置该参数，该值必须大于 `.spec.minReadySeconds`。
+如果設置該參數，該值必須大於 `.spec.minReadySeconds`。
 
 ### Min Ready Seconds
 
-`.spec.minReadySeconds` 是一个可选配置项，用来指定没有任何容器 crash 的 Pod 并被认为是可用状态的最小秒数。默认是 0（Pod 在 ready 后就会被认为是可用状态）。进一步了解什么时候 Pod 会被认为是 ready 状态，参阅 [Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes)。
+`.spec.minReadySeconds` 是一個可選配置項，用來指定沒有任何容器 crash 的 Pod 並被認為是可用狀態的最小秒數。默認是 0（Pod 在 ready 後就會被認為是可用狀態）。進一步瞭解什麼時候 Pod 會被認為是 ready 狀態，參閱 [Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes)。
 
 ### Rollback To
 
-`.spec.rollbackTo` 是一个可以选配置项，用来配置 Deployment 回退的配置。设置该参数将触发回退操作，每次回退完成后，该值就会被清除。
+`.spec.rollbackTo` 是一個可以選配置項，用來配置 Deployment 回退的配置。設置該參數將觸發回退操作，每次回退完成後，該值就會被清除。
 
 #### Revision
 
-`.spec.rollbackTo.revision` 是一个可选配置项，用来指定回退到的 revision。默认是 0，意味着回退到上一个 revision。
+`.spec.rollbackTo.revision` 是一個可選配置項，用來指定回退到的 revision。默認是 0，意味著回退到上一個 revision。
 
 ### Revision History Limit
 
-Deployment revision history 存储在它控制的 ReplicaSets 中。
+Deployment revision history 存儲在它控制的 ReplicaSets 中。
 
-`.spec.revisionHistoryLimit` 是一个可选配置项，用来指定可以保留的旧的 ReplicaSet 数量。该理想值取决于新 Deployment 的频率和稳定性。如果该值没有设置的话，默认所有旧的 Replicaset 或会被保留，将资源存储在 etcd 中，使用 `kubectl get rs` 查看输出。每个 Deployment 的该配置都保存在 ReplicaSet 中，然而，一旦你删除的旧的 RepelicaSet，你的 Deployment 就无法再回退到那个 revison 了。
+`.spec.revisionHistoryLimit` 是一個可選配置項，用來指定可以保留的舊的 ReplicaSet 數量。該理想值取決於新 Deployment 的頻率和穩定性。如果該值沒有設置的話，默認所有舊的 Replicaset 或會被保留，將資源存儲在 etcd 中，使用 `kubectl get rs` 查看輸出。每個 Deployment 的該配置都保存在 ReplicaSet 中，然而，一旦你刪除的舊的 RepelicaSet，你的 Deployment 就無法再回退到那個 revison 了。
 
-如果你将该值设置为 0，所有具有 0 个 replica 的 ReplicaSet 都会被删除。在这种情况下，新的 Deployment rollout 无法撤销，因为 revision history 都被清理掉了。
+如果你將該值設置為 0，所有具有 0 個 replica 的 ReplicaSet 都會被刪除。在這種情況下，新的 Deployment rollout 無法撤銷，因為 revision history 都被清理掉了。
 
 ### Paused
 
-`.spec.paused` 是可选配置项，boolean 值。用来指定暂停和恢复 Deployment。Paused 和非 paused 的 Deployment 之间的唯一区别就是，所有对 paused deployment 中的 PodTemplateSpec 的修改都不会触发新的 rollout。Deployment 被创建之后默认是非 paused。
+`.spec.paused` 是可選配置項，boolean 值。用來指定暫停和恢復 Deployment。Paused 和非 paused 的 Deployment 之間的唯一區別就是，所有對 paused deployment 中的 PodTemplateSpec 的修改都不會觸發新的 rollout。Deployment 被創建之後默認是非 paused。
 
 ## Alternative to Deployments
 
 ### kubectl rolling update
 
-[Kubectl rolling update](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 虽然使用类似的方式更新 Pod 和 ReplicationController。但是我们推荐使用 Deployment，因为它是声明式的，客户端侧，具有附加特性，例如即使滚动升级结束后也可以回滚到任何历史版本。
+[Kubectl rolling update](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 雖然使用類似的方式更新 Pod 和 ReplicationController。但是我們推薦使用 Deployment，因為它是聲明式的，客戶端側，具有附加特性，例如即使滾動升級結束後也可以回滾到任何歷史版本。

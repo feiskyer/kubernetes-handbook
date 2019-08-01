@@ -29,7 +29,7 @@
         },
         "editlink": {
             "base": "https://github.com/feiskyer/kubernetes-handbook/blob/master",
-            "label": "编辑本页"
+            "label": "編輯本頁"
         },
         "tbfed-pagefooter": {
           "copyright":"&copy Pengfei Ni",

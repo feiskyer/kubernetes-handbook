@@ -1,10 +1,10 @@
 # 核心原理
 
-介绍 Kubernetes 架构以及核心组件，包括
+介紹 Kubernetes 架構以及核心組件，包括
 
-- [架构原理](architecture.md)
-- [设计理念](concepts.md)
-- [核心组件](../components/index.md)
+- [架構原理](architecture.md)
+- [設計理念](concepts.md)
+- [核心組件](../components/index.md)
   - [etcd](../components/etcd.md)
   - [kube-apiserver](../components/apiserver.md)
   - [kube-scheduler](../components/scheduler.md)

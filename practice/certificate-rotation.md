@@ -1,6 +1,6 @@
-# 证书轮换
+# 證書輪換
 
-## 检查证书过期时间
+## 檢查證書過期時間
 
 ```sh
 # For kubeadm provisioned clusters
@@ -10,17 +10,17 @@ kubeadm alpha certs check-expiration
 openssl x509 -noout -dates -in /etc/kubernetes/pki/apiserver.crt
 ```
 
-## 更新过期时间
+## 更新過期時間
 
-根据集群的不同，可以选择如下几种方法来更新证书过期时间（任选一种即可）。
+根據集群的不同，可以選擇如下幾種方法來更新證書過期時間（任選一種即可）。
 
-### 方法1: 使用 kubeadm 升级集群自动轮换证书
+### 方法1: 使用 kubeadm 升級集群自動輪換證書
 
 ```sh
 kubeadm upgrade apply --certificate-renewal v1.15.0
 ```
 
-### 方法2:  使用 kubeadm 手动生成并替换证书
+### 方法2:  使用 kubeadm 手動生成並替換證書
 
 ```sh
 # Step 1): Backup old certs and kubeconfigs
@@ -46,13 +46,13 @@ kubeadm alpha kubeconfig user --client-name system:kube-scheduler > /etc/kuberne
 
 ### 方法3: 非 kubeadm 集群
 
-非 kubeadm 集群请参考 [配置 CA 并创建 TLS 证书](../deploy/kubernetes-the-hard-way/04-certificate-authority.md) 重新生成证书，并重启各个 Kubernetes 服务。
+非 kubeadm 集群請參考 [配置 CA 並創建 TLS 證書](../deploy/kubernetes-the-hard-way/04-certificate-authority.md) 重新生成證書，並重啟各個 Kubernetes 服務。
 
-## kubelet 证书自动轮换
+## kubelet 證書自動輪換
 
-Kubelet 从 v1.8.0 开始支持[证书轮换](https://kubernetes.io/docs/tasks/tls/certificate-rotation/)，当证书过期时，可以自动生成新的密钥，并从 Kubernetes API 申请新的证书。
+Kubelet 從 v1.8.0 開始支持[證書輪換](https://kubernetes.io/docs/tasks/tls/certificate-rotation/)，當證書過期時，可以自動生成新的密鑰，並從 Kubernetes API 申請新的證書。
 
-证书轮换的开启方法如下：
+證書輪換的開啟方法如下：
 
 ```sh
 # Step 1): Config kube-controller-manager
@@ -71,24 +71,24 @@ kubelet --feature-gates=RotateKubeletClientCertificate=true \
                 ...
 ```
 
-## 撤销证书
+## 撤銷證書
 
-Kubernetes 目前还不支持通过 [Certificate Rovocation List (CRL)](https://en.wikipedia.org/wiki/Certificate_revocation_list) 来[撤销证书](https://github.com/kubernetes/kubernetes/issues/18982)。所以，目前撤销证书的唯一方法就是使用新的 CA 重新生成所有证书，然后再重启所有服务。
+Kubernetes 目前還不支持通過 [Certificate Rovocation List (CRL)](https://en.wikipedia.org/wiki/Certificate_revocation_list) 來[撤銷證書](https://github.com/kubernetes/kubernetes/issues/18982)。所以，目前撤銷證書的唯一方法就是使用新的 CA 重新生成所有證書，然後再重啟所有服務。
 
-为了避免这个问题，推荐为客户端配置 [OIDC](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens) 认证，比如可以使用 [dex](https://github.com/dexidp/dex) 项目来实现。
+為了避免這個問題，推薦為客戶端配置 [OIDC](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens) 認證，比如可以使用 [dex](https://github.com/dexidp/dex) 項目來實現。
 
-> 注：Etcd 支持 CRL 撤销证书，具体实现可以参考[这里](https://github.com/etcd-io/etcd/blob/master/pkg/transport/listener_tls.go#L169-L190)。
+> 注：Etcd 支持 CRL 撤銷證書，具體實現可以參考[這裡](https://github.com/etcd-io/etcd/blob/master/pkg/transport/listener_tls.go#L169-L190)。
 
-## 附: 名词解释
+## 附: 名詞解釋
 
-- CA (Certificate Authority)：根证书签发机构，用于签发证书（即证明证书是合法的）。
-  - CA 拥有私钥 (ca.key) 和证书 (ca.crt，包含公钥)。对于自签名 CA 来说， ca.crt 需要分发给所有客户端。
-  - ca.crt 会自动挂载到 Pod 中`/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`
-- key (Public key or Private key)：即公钥或者私钥。
-- csr (Certificate Signing Request)：证书签名请求，用于向权威证书颁发机构获得签名证书的申请，申请中通常包含公钥（私钥自己保存）。
-- crt/cer (Certificate)：已签发的证书，一般是 PEM 格式（也支持 DER 格式）。
+- CA (Certificate Authority)：根證書籤發機構，用於簽發證書（即證明證書是合法的）。
+  - CA 擁有私鑰 (ca.key) 和證書 (ca.crt，包含公鑰)。對於自簽名 CA 來說， ca.crt 需要分發給所有客戶端。
+  - ca.crt 會自動掛載到 Pod 中`/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`
+- key (Public key or Private key)：即公鑰或者私鑰。
+- csr (Certificate Signing Request)：證書籤名請求，用於向權威證書頒發機構獲得簽名證書的申請，申請中通常包含公鑰（私鑰自己保存）。
+- crt/cer (Certificate)：已簽發的證書，一般是 PEM 格式（也支持 DER 格式）。
 
-## 参考文档
+## 參考文檔
 
 - [Certificate Management with kubeadm](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/)
 - [Manage TLS Certificates in a Cluster](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/)

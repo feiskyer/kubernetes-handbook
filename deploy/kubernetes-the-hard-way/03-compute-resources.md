@@ -1,24 +1,24 @@
-# 准备计算资源
+# 準備計算資源
 
-Kubernetes 需要一些机器去搭建管理 Kubernetes 的控制平台, 也需要一些工作节点（work node）来运行容器。在这个实验中你将会创建一些虚拟机，并利用 GCE [Compute Zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) 来运行安全且高可用的 Kubernetes 集群。
+Kubernetes 需要一些機器去搭建管理 Kubernetes 的控制平臺, 也需要一些工作節點（work node）來運行容器。在這個實驗中你將會創建一些虛擬機，並利用 GCE [Compute Zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) 來運行安全且高可用的 Kubernetes 集群。
 
-> 请确定默认 Compute Zone 和 Region 已按照 [事前准备](01-prerequisites.md#set-a-default-compute-region-and-zone) 的设定步骤完成。
+> 請確定默認 Compute Zone 和 Region 已按照 [事前準備](01-prerequisites.md#set-a-default-compute-region-and-zone) 的設定步驟完成。
 
-## 网络
+## 網絡
 
-Kubernetes [网络模型](https://kubernetes.io/docs/concepts/cluster-administration/networking/#kubernetes-model) 假设使用扁平网路能让每个容器与节点都可以相互通信。 在这里我们先忽略用于控制容器网络隔离的 Network policies（Network Policies 不在本指南的范围内）。
+Kubernetes [網絡模型](https://kubernetes.io/docs/concepts/cluster-administration/networking/#kubernetes-model) 假設使用扁平網路能讓每個容器與節點都可以相互通信。 在這裡我們先忽略用於控制容器網絡隔離的 Network policies（Network Policies 不在本指南的範圍內）。
 
-### 虚拟私有网络（VPC）
+### 虛擬私有網絡（VPC）
 
-本节将会创建一个专用的 [Virtual Private Cloud](https://cloud.google.com/compute/docs/networks-and-firewalls#networks) (VPC) 网络来搭建我们的 Kubernetes 集群。
+本節將會創建一個專用的 [Virtual Private Cloud](https://cloud.google.com/compute/docs/networks-and-firewalls#networks) (VPC) 網絡來搭建我們的 Kubernetes 集群。
 
-首先创建一个名为 kubernetes-the-hard-way 的 VPC 网络：
+首先創建一個名為 kubernetes-the-hard-way 的 VPC 網絡：
 
 ```sh
 gcloud compute networks create kubernetes-the-hard-way --subnet-mode custom
 ```
 
-为了给 Kubernetes 集群的每个节点分配私有 IP 地址，需要创建一个含有足够大 IP 地址池的子网。 在 `kubernetes-the-hard-way` VPC 网络中创建 `kubernetes` 子网：
+為了給 Kubernetes 集群的每個節點分配私有 IP 地址，需要創建一個含有足夠大 IP 地址池的子網。 在 `kubernetes-the-hard-way` VPC 網絡中創建 `kubernetes` 子網：
 
 ```sh
 gcloud compute networks subnets create kubernetes \
@@ -26,11 +26,11 @@ gcloud compute networks subnets create kubernetes \
   --range 10.240.0.0/24
 ```
 
-> `10.240.0.0/24` IP 地址范围, 可以分配 254 个计算节点。
+> `10.240.0.0/24` IP 地址範圍, 可以分配 254 個計算節點。
 
-### 防火墙规则
+### 防火牆規則
 
-创建一个防火墙规则允许内部网路通过所有协议进行通信：
+創建一個防火牆規則允許內部網路通過所有協議進行通信：
 
 ```sh
 gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal \
@@ -39,7 +39,7 @@ gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal \
   --source-ranges 10.240.0.0/24,10.200.0.0/16
 ```
 
-创建一个防火墙规则允许外部 SSH、ICMP 以及 HTTPS 等通信：
+創建一個防火牆規則允許外部 SSH、ICMP 以及 HTTPS 等通信：
 
 ```sh
 gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external \
@@ -48,15 +48,15 @@ gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external \
   --source-ranges 0.0.0.0/0
 ```
 
->  [外部负载均衡器](https://cloud.google.com/compute/docs/load-balancing/network/) 被用来暴露 Kubernetes API Servers 给远端客户端。
+>  [外部負載均衡器](https://cloud.google.com/compute/docs/load-balancing/network/) 被用來暴露 Kubernetes API Servers 給遠端客戶端。
 
-列出在 `kubernetes-the-hard-way` VPC 网络中的防火墙规则：
+列出在 `kubernetes-the-hard-way` VPC 網絡中的防火牆規則：
 
 ```sh
 gcloud compute firewall-rules list --filter="network:kubernetes-the-hard-way"
 ```
 
-> 输出为
+> 輸出為
 
 ```sh
 NAME                                    NETWORK                  DIRECTION  PRIORITY  ALLOW                 DENY
@@ -64,35 +64,35 @@ kubernetes-the-hard-way-allow-external  kubernetes-the-hard-way  INGRESS    1000
 kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000      tcp,udp,icmp
 ```
 
-### Kubernetes 公网 IP 地址
+### Kubernetes 公網 IP 地址
 
-分配固定的 IP 地址, 被用来连接外部的负载平衡器至 Kubernetes API Servers:
+分配固定的 IP 地址, 被用來連接外部的負載平衡器至 Kubernetes API Servers:
 
 ```sh
 gcloud compute addresses create kubernetes-the-hard-way \
   --region $(gcloud config get-value compute/region)
 ```
 
-验证 `kubernetes-the-hard-way` 固定 IP 地址已经在默认的 Compute Region 中创建出来：
+驗證 `kubernetes-the-hard-way` 固定 IP 地址已經在默認的 Compute Region 中創建出來：
 
 ```sh
 gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"
 ```
 
-> 输出为
+> 輸出為
 
 ```sh
 NAME                     REGION    ADDRESS        STATUS
 kubernetes-the-hard-way  us-west1  XX.XXX.XXX.XX  RESERVED
 ```
 
-## 计算实例
+## 計算實例
 
-本节将会创建基于 [Ubuntu Server 18.04](https://www.ubuntu.com/server) 的计算实例，原因是它对 [containerd](https://github.com/containerd/containerd) 容器引擎有很好的支持。每个虚拟机将会分配一个私有 IP 地址用以简化 Kubernetes 的设置。
+本節將會創建基於 [Ubuntu Server 18.04](https://www.ubuntu.com/server) 的計算實例，原因是它對 [containerd](https://github.com/containerd/containerd) 容器引擎有很好的支持。每個虛擬機將會分配一個私有 IP 地址用以簡化 Kubernetes 的設置。
 
-### Kubernetes 控制节点
+### Kubernetes 控制節點
 
-建立三个计算节点用以配置 Kubernetes 控制平面：
+建立三個計算節點用以配置 Kubernetes 控制平面：
 
 ```sh
 for i in 0 1 2; do
@@ -110,13 +110,13 @@ for i in 0 1 2; do
 done
 ```
 
-### Kubernetes 工作节点
+### Kubernetes 工作節點
 
-每台 worker 节点都需要从 Kubernetes 集群 CIDR 范围中分配一个 Pod 子网。 Pod 子网分配将会在之后的容器网路章节做练习。在 worker 节点内部可以通过 `pod-cidr` 元数据来获得 Pod 子网的分配结果。
+每臺 worker 節點都需要從 Kubernetes 集群 CIDR 範圍中分配一個 Pod 子網。 Pod 子網分配將會在之後的容器網路章節做練習。在 worker 節點內部可以通過 `pod-cidr` 元數據來獲得 Pod 子網的分配結果。
 
-> Kubernetes 集群 CIDR 的范围可以通过 Controller Manager 的 `--cluster-cidr` 参数来设定。在本次教学中我们会设置为 `10.200.0.0/16`，它支持 254 个子网。
+> Kubernetes 集群 CIDR 的範圍可以通過 Controller Manager 的 `--cluster-cidr` 參數來設定。在本次教學中我們會設置為 `10.200.0.0/16`，它支持 254 個子網。
 
-创建三个计算节点用来作为 Kubernetes Worker 节点：
+創建三個計算節點用來作為 Kubernetes Worker 節點：
 
 ```sh
 for i in 0 1 2; do
@@ -135,15 +135,15 @@ for i in 0 1 2; do
 done
 ```
 
-### 验证
+### 驗證
 
-列出所有在默认 Compute Zone 的计算节点：
+列出所有在默認 Compute Zone 的計算節點：
 
 ```sh
 gcloud compute instances list
 ```
 
-输出为：
+輸出為：
 
 ```sh
 NAME          ZONE        MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
@@ -157,15 +157,15 @@ worker-2      us-west1-c  n1-standard-1               10.240.0.22  XXX.XXX.XX.XX
 
 ## 配置 SSH
 
-本教程使用 SSH 来配置控制节点和工作节点。当通过 `gcloud compute ssh` 第一次连接计算实例时，会自动生成 SSH 证书，并[保存在项目或者实例的元数据中](https://cloud.google.com/compute/docs/instances/connecting-to-instance)。
+本教程使用 SSH 來配置控制節點和工作節點。當通過 `gcloud compute ssh` 第一次連接計算實例時，會自動生成 SSH 證書，並[保存在項目或者實例的元數據中](https://cloud.google.com/compute/docs/instances/connecting-to-instance)。
 
-验证 `controller-0` 的 SSH 访问
+驗證 `controller-0` 的 SSH 訪問
 
 ```sh
 gcloud compute ssh controller-0
 ```
 
-因为这是第一次访问，此时会生成 SSH 证书。按照提示操作
+因為這是第一次訪問，此時會生成 SSH 證書。按照提示操作
 
 ```sh
 WARNING: The public SSH key file for gcloud does not exist.
@@ -177,7 +177,7 @@ Enter passphrase (empty for no passphrase):
 Enter same passphrase again:
 ```
 
-此时，SSH 证书回保存在你的项目中：
+此時，SSH 證書回保存在你的項目中：
 
 ```sh
 Your identification has been saved in /home/$USER/.ssh/google_compute_engine.
@@ -201,7 +201,7 @@ Updating project ssh metadata...done.
 Waiting for SSH key to propagate.
 ```
 
-SSH 证书更新后，你就可以登录到 `controller-0` 实例中了：
+SSH 證書更新後，你就可以登錄到 `controller-0` 實例中了：
 
 ```sh
 Welcome to Ubuntu 18.04 LTS (GNU/Linux 4.15.0-1006-gcp x86_64)
@@ -211,4 +211,4 @@ Welcome to Ubuntu 18.04 LTS (GNU/Linux 4.15.0-1006-gcp x86_64)
 Last login: Sun May 13 14:34:27 2018 from XX.XXX.XXX.XX
 ```
 
-下一步：[配置 CA 和创建 TLS 证书](04-certificate-authority.md)
+下一步：[配置 CA 和創建 TLS 證書](04-certificate-authority.md)

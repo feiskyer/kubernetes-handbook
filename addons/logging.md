@@ -1,16 +1,16 @@
-# Kubernetes 日志
+# Kubernetes 日誌
 
-ELK 可谓是容器日志收集、处理和搜索的黄金搭档:
+ELK 可謂是容器日誌收集、處理和搜索的黃金搭檔:
 
-- Logstash（或者 Fluentd）负责收集日志
-- Elasticsearch 存储日志并提供搜索
-- Kibana 负责日志查询和展示
+- Logstash（或者 Fluentd）負責收集日誌
+- Elasticsearch 存儲日誌並提供搜索
+- Kibana 負責日誌查詢和展示
 
-注意：Kubernetes 默认使用 fluentd（以 DaemonSet 的方式启动）来收集日志，并将收集的日志发送给 elasticsearch。
+注意：Kubernetes 默認使用 fluentd（以 DaemonSet 的方式啟動）來收集日誌，並將收集的日誌發送給 elasticsearch。
 
 **小提示**
 
-在使用 `cluster/kube-up.sh` 部署集群的时候，可以设置 `KUBE_LOGGING_DESTINATION` 环境变量自动部署 Elasticsearch 和 Kibana，并使用 fluentd 收集日志 (配置参考 [addons/fluentd-elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch))：
+在使用 `cluster/kube-up.sh` 部署集群的時候，可以設置 `KUBE_LOGGING_DESTINATION` 環境變量自動部署 Elasticsearch 和 Kibana，並使用 fluentd 收集日誌 (配置參考 [addons/fluentd-elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch))：
 
 ```sh
 KUBE_LOGGING_DESTINATION=elasticsearch
@@ -18,19 +18,19 @@ KUBE_ENABLE_NODE_LOGGING=true
 cluster/kube-up.sh
 ```
 
-如果使用 GCE 或者 GKE 的话，还可以 [将日志发送给 Google Cloud Logging](https://kubernetes.io/docs/user-guide/logging/stackdriver/)，并可以集成 Google Cloud Storage 和 BigQuery。
+如果使用 GCE 或者 GKE 的話，還可以 [將日誌發送給 Google Cloud Logging](https://kubernetes.io/docs/user-guide/logging/stackdriver/)，並可以集成 Google Cloud Storage 和 BigQuery。
 
-如果需要集成其他的日志方案，还可以自定义 docker 的 log driver，将日志发送到 splunk 或者 awslogs 等。
+如果需要集成其他的日誌方案，還可以自定義 docker 的 log driver，將日誌發送到 splunk 或者 awslogs 等。
 
 ## 部署方法
 
-由于 Fluentd daemonset 只会调度到带有标签 `kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true` 的 Node 上，需要给 Node 设置标签
+由於 Fluentd daemonset 只會調度到帶有標籤 `kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true` 的 Node 上，需要給 Node 設置標籤
 
 ```sh
 kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true
 ```
 
-然后下载 manifest 部署：
+然後下載 manifest 部署：
 
 ```sh
 $ git clone https://github.com/kubernetes/kubernetes
@@ -49,41 +49,41 @@ deployment "kibana-logging" configured
 service "kibana-logging" configured
 ```
 
-注意：Kibana 容器第一次启动的时候会用较长的时间（Optimizing and caching bundles for kibana and statusPage. This may take a few minutes），可以通过日志观察初始化的情况
+注意：Kibana 容器第一次啟動的時候會用較長的時間（Optimizing and caching bundles for kibana and statusPage. This may take a few minutes），可以通過日誌觀察初始化的情況
 
 ```sh
 $ kubectl -n kube-system logs kibana-logging-1237565573-p88lm -f
 ```
 
-## 访问 Kibana
+## 訪問 Kibana
 
-可以从 `kubectl cluster-info` 的输出中找到 Kibana 服务的访问地址，注意需要在浏览器中导入 apiserver 证书才可以认证：
+可以從 `kubectl cluster-info` 的輸出中找到 Kibana 服務的訪問地址，注意需要在瀏覽器中導入 apiserver 證書才可以認證：
 
 ```sh
 $ kubectl cluster-info | grep Kibana
 Kibana is running at https://10.0.4.3:6443/api/v1/namespaces/kube-system/services/kibana-logging/proxy
 ```
 
-这里采用另外一种方式，使用 kubectl 代理来访问（不需要导入证书）：
+這裡採用另外一種方式，使用 kubectl 代理來訪問（不需要導入證書）：
 
 ```sh
-# 启动代理
+# 啟動代理
 kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 ```
 
-然后打开 `http://<master-ip>:8080/api/v1/proxy/namespaces/kube-system/services/kibana-logging/app/kibana#`。在 Settings -> Indices 页面创建一个 index，选中 Index contains time-based events，使用默认的 `logstash-*` pattern，点击 Create。
+然後打開 `http://<master-ip>:8080/api/v1/proxy/namespaces/kube-system/services/kibana-logging/app/kibana#`。在 Settings -> Indices 頁面創建一個 index，選中 Index contains time-based events，使用默認的 `logstash-*` pattern，點擊 Create。
 
 ![](images/kibana.png)
 
 ## Filebeat
 
-除了 Fluentd 和 Logstash，还可以使用 [Filebeat](https://www.elastic.co/products/beats/filebeat) 来收集日志:
+除了 Fluentd 和 Logstash，還可以使用 [Filebeat](https://www.elastic.co/products/beats/filebeat) 來收集日誌:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/elastic/beats/master/deploy/kubernetes/filebeat-kubernetes.yaml
 ```
 
-注意，默认假设 Elasticsearch 可通过 `elasticsearch:9200` 访问，如果不同的话，需要先修改再部署
+注意，默認假設 Elasticsearch 可通過 `elasticsearch:9200` 訪問，如果不同的話，需要先修改再部署
 
 ```sh
 - name: ELASTICSEARCH_HOST
@@ -96,7 +96,7 @@ kubectl apply -f https://raw.githubusercontent.com/elastic/beats/master/deploy/k
   value: changeme
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Logging Agent For Elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch)
 - [Logging Using Elasticsearch and Kibana](https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/)

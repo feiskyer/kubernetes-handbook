@@ -1,17 +1,17 @@
-# Network Policy 扩展
+# Network Policy 擴展
 
-[Network Policy](../concepts/network-policy.md) 提供了基于策略的网络控制，用于隔离应用并减少攻击面。它使用标签选择器模拟传统的分段网络，并通过策略控制它们之间的流量以及来自外部的流量。Network Policy 需要网络插件来监测这些策略和 Pod 的变更，并为 Pod 配置流量控制。
+[Network Policy](../concepts/network-policy.md) 提供了基於策略的網絡控制，用於隔離應用並減少攻擊面。它使用標籤選擇器模擬傳統的分段網絡，並通過策略控制它們之間的流量以及來自外部的流量。Network Policy 需要網絡插件來監測這些策略和 Pod 的變更，併為 Pod 配置流量控制。
 
-## 如何开发 Network Policy 扩展
+## 如何開發 Network Policy 擴展
 
-实现一个支持 Network Policy 的网络扩展需要至少包含两个组件
+實現一個支持 Network Policy 的網絡擴展需要至少包含兩個組件
 
-- CNI 网络插件：负责给 Pod 配置网络接口
-- Policy controller：监听 Network Policy 的变化，并将 Policy 应用到相应的网络接口
+- CNI 網絡插件：負責給 Pod 配置網絡接口
+- Policy controller：監聽 Network Policy 的變化，並將 Policy 應用到相應的網絡接口
 
 ![](images/policy-controller.jpg)
 
-## 支持 Network Policy 的网络插件
+## 支持 Network Policy 的網絡插件
 
 - [Calico](https://www.projectcalico.org/)
 - [Romana](https://github.com/romana/romana)
@@ -21,4 +21,4 @@
 
 ## Network Policy 使用方法
 
-具体 Network Policy 的使用方法可以参考 [这里](../concepts/network-policy.md)。
+具體 Network Policy 的使用方法可以參考 [這裡](../concepts/network-policy.md)。

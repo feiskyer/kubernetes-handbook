@@ -1,6 +1,6 @@
 # kube-proxy via ipvs
 
-Kubernetes v1.8已经支持ipvs负载均衡模式（alpha版），只需要配置kube-proxy `--proxy-mode=ipvs`即可启用。
+Kubernetes v1.8已經支持ipvs負載均衡模式（alpha版），只需要配置kube-proxy `--proxy-mode=ipvs`即可啟用。
 
 ![](ipvs.png)
 

@@ -1,10 +1,10 @@
 # Flannel
 
-[Flannel](https://github.com/coreos/flannel)通过给每台宿主机分配一个子网的方式为容器提供虚拟网络，它基于Linux TUN/TAP，使用UDP封装IP包来创建overlay网络，并借助etcd维护网络的分配情况。
+[Flannel](https://github.com/coreos/flannel)通過給每臺宿主機分配一個子網的方式為容器提供虛擬網絡，它基於Linux TUN/TAP，使用UDP封裝IP包來創建overlay網絡，並藉助etcd維護網絡的分配情況。
 
 ## Flannel原理
 
-控制平面上host本地的flanneld负责从远端的ETCD集群同步本地和其它host上的subnet信息，并为POD分配IP地址。数据平面flannel通过Backend（比如UDP封装）来实现L3 Overlay，既可以选择一般的TUN设备又可以选择VxLAN设备。
+控制平面上host本地的flanneld負責從遠端的ETCD集群同步本地和其它host上的subnet信息，併為POD分配IP地址。數據平面flannel通過Backend（比如UDP封裝）來實現L3 Overlay，既可以選擇一般的TUN設備又可以選擇VxLAN設備。
 
 ```json
 {
@@ -21,14 +21,14 @@
 
 ![](flannel.png)
 
-除了UDP，Flannel还支持很多其他的Backend：
+除了UDP，Flannel還支持很多其他的Backend：
 
-- udp：使用用户态udp封装，默认使用8285端口。由于是在用户态封装和解包，性能上有较大的损失
-- vxlan：vxlan封装，需要配置VNI，Port（默认8472）和[GBP](https://github.com/torvalds/linux/commit/3511494ce2f3d3b77544c79b87511a4ddb61dc89)
-- host-gw：直接路由的方式，将容器网络的路由信息直接更新到主机的路由表中，仅适用于二层直接可达的网络
-- aws-vpc：使用 Amazon VPC route table 创建路由，适用于AWS上运行的容器
-- gce：使用Google Compute Engine Network创建路由，所有instance需要开启IP forwarding，适用于GCE上运行的容器
-- ali-vpc：使用阿里云VPC route table 创建路由，适用于阿里云上运行的容器
+- udp：使用用戶態udp封裝，默認使用8285端口。由於是在用戶態封裝和解包，性能上有較大的損失
+- vxlan：vxlan封裝，需要配置VNI，Port（默認8472）和[GBP](https://github.com/torvalds/linux/commit/3511494ce2f3d3b77544c79b87511a4ddb61dc89)
+- host-gw：直接路由的方式，將容器網絡的路由信息直接更新到主機的路由表中，僅適用於二層直接可達的網絡
+- aws-vpc：使用 Amazon VPC route table 創建路由，適用於AWS上運行的容器
+- gce：使用Google Compute Engine Network創建路由，所有instance需要開啟IP forwarding，適用於GCE上運行的容器
+- ali-vpc：使用阿里雲VPC route table 創建路由，適用於阿里雲上運行的容器
 
 ## Docker集成
 
@@ -39,7 +39,7 @@ docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} &
 
 ## CNI集成
 
-CNI flannel插件会将flannel网络配置转换为bridge插件配置，并调用bridge插件给容器netns配置网络。比如下面的flannel配置
+CNI flannel插件會將flannel網絡配置轉換為bridge插件配置，並調用bridge插件給容器netns配置網絡。比如下面的flannel配置
 
 ```json
 {
@@ -52,7 +52,7 @@ CNI flannel插件会将flannel网络配置转换为bridge插件配置，并调�
 }
 ```
 
-会被cni flannel插件转换为
+會被cni flannel插件轉換為
 
 ```json
 {
@@ -76,7 +76,7 @@ CNI flannel插件会将flannel网络配置转换为bridge插件配置，并调�
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
-这会启动flanneld容器，并配置CNI网络插件：
+這會啟動flanneld容器，並配置CNI網絡插件：
 
 ```sh
 $ ps -ef | grep flannel | grep -v grep
@@ -95,7 +95,7 @@ $ cat /etc/cni/net.d/10-flannel.conf
 
 ![](flannel-components.png)
 
-flanneld自动连接kubernetes API，根据`node.Spec.PodCIDR`配置本地的flannel网络子网，并为容器创建vxlan和相关的子网路由。
+flanneld自動連接kubernetes API，根據`node.Spec.PodCIDR`配置本地的flannel網絡子網，併為容器創建vxlan和相關的子網路由。
 
 ```sh
 $ cat /run/flannel/subnet.env
@@ -112,20 +112,20 @@ $ ip -d link show flannel.1
 
 ![](flannel-network.png)
 
-## 优点
+## 優點
 
-- 配置安装简单，使用方便
-- 与云平台集成较好，VPC的方式没有额外的性能损失
+- 配置安裝簡單，使用方便
+- 與雲平臺集成較好，VPC的方式沒有額外的性能損失
 
-## 缺点
+## 缺點
 
-- VXLAN模式对zero-downtime restarts支持不好
+- VXLAN模式對zero-downtime restarts支持不好
 
 > When running with a backend other than udp, the kernel is providing the data path with flanneld acting as the control plane. As such, flanneld can be restarted (even to do an upgrade) without disturbing existing flows. However in the case of vxlan backend, this needs to be done within a few seconds as ARP entries can start to timeout requiring the flannel daemon to refresh them. Also, to avoid interruptions during restart, the configuration must not be changed (e.g. VNI, --iface values).
 
 
 
-**参考文档**
+**參考文檔**
 
 - <https://github.com/coreos/flannel>
 - <https://coreos.com/flannel/docs/latest/>

@@ -1,19 +1,19 @@
 # keepalived-vip
 
-Kubernetes 使用 [keepalived](http://www.keepalived.org) 来产生虚拟 IP address
+Kubernetes 使用 [keepalived](http://www.keepalived.org) 來產生虛擬 IP address
 
-我们将探讨如何利用 [IPVS - The Linux Virtual Server Project](http://www.linuxvirtualserver.org/software/ipvs.html)" 来 kubernetes 配置 VIP
+我們將探討如何利用 [IPVS - The Linux Virtual Server Project](http://www.linuxvirtualserver.org/software/ipvs.html)" 來 kubernetes 配置 VIP
 
 
 ## 前言
 
-kubernetes v1.6 版提供了三种方式去暴露 Service：
+kubernetes v1.6 版提供了三種方式去暴露 Service：
 
 1. **L4 的 LoadBalacncer** : 只能在 [cloud providers](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/) 上被使用 像是 GCE 或 AWS
-2. **NodePort** : [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) 允许在每个节点上开启一个 port 口, 借由这个 port 口会再将请求导向到随机的 pod 上
-3. **L7 Ingress** :[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) 为一个 LoadBalancer(例: nginx, HAProxy, traefik, vulcand) 会将 HTTP/HTTPS 的各个请求导向到相对应的 service endpoint
+2. **NodePort** : [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) 允許在每個節點上開啟一個 port 口, 藉由這個 port 口會再將請求導向到隨機的 pod 上
+3. **L7 Ingress** :[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) 為一個 LoadBalancer(例: nginx, HAProxy, traefik, vulcand) 會將 HTTP/HTTPS 的各個請求導向到相對應的 service endpoint
 
-有了这些方式, 为何我们还需要 _keepalived_ ?
+有了這些方式, 為何我們還需要 _keepalived_ ?
 
 ```
                                                   ___________________
@@ -32,17 +32,17 @@ Public ----(example.com = 10.4.0.3/4/5)----|-----| Host IP: 10.4.0.4 |
                                                  |___________________|
 ```
 
-我们假设 Ingress 运行在 3 个 kubernetes 节点上, 并对外暴露 `10.4.0.x` 的 IP 去做 loadbalance
+我們假設 Ingress 運行在 3 個 kubernetes 節點上, 並對外暴露 `10.4.0.x` 的 IP 去做 loadbalance
 
-DNS Round Robin (RR) 将对应到 `example.com` 的请求轮循给这 3 个节点, 如果 `10.4.0.3` 掛了, 仍有三分之一的流量会导向 `10.4.0.3`, 这样就会有一段 downtime, 直到 DNS 发现 `10.4.0.3` 掛了并修正导向
+DNS Round Robin (RR) 將對應到 `example.com` 的請求輪循給這 3 個節點, 如果 `10.4.0.3` 掛了, 仍有三分之一的流量會導向 `10.4.0.3`, 這樣就會有一段 downtime, 直到 DNS 發現 `10.4.0.3` 掛了並修正導向
 
-严格来说, 这并没有真正的做到 High Availability (HA)
+嚴格來說, 這並沒有真正的做到 High Availability (HA)
 
-这边 IPVS 可以帮助我们解决这件事, 这个想法是虚拟 IP(VIP) 对应到每个 service 上, 并将 VIP 暴露到 kubernetes 群集之外
+這邊 IPVS 可以幫助我們解決這件事, 這個想法是虛擬 IP(VIP) 對應到每個 service 上, 並將 VIP 暴露到 kubernetes 群集之外
 
-### 与 [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) 或 [ingress-nginx](https://github.com/kubernetes/ingress-nginx) 的区别
+### 與 [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) 或 [ingress-nginx](https://github.com/kubernetes/ingress-nginx) 的區別
 
-我们看到以下的图
+我們看到以下的圖
 
 ```sh
                                                ___________________
@@ -67,15 +67,15 @@ Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.3 |
                                               |___________________|
 ```
 
-我们可以看到只有一个 node 被选为 Master(透过 VRRP 选择的), 而我们的 VIP 是 `10.4.0.50`, 如果 `10.4.0.3` 掛掉了, 那会从剩余的节点中选一个成为 Master 并接手 VIP, 这样我们就可以确保落实真正的 HA
+我們可以看到只有一個 node 被選為 Master(透過 VRRP 選擇的), 而我們的 VIP 是 `10.4.0.50`, 如果 `10.4.0.3` 掛掉了, 那會從剩餘的節點中選一個成為 Master 並接手 VIP, 這樣我們就可以確保落實真正的 HA
 
-## 环境需求
+## 環境需求
 
-只需要确认要运行 keepalived-vip 的 kubernetes 群集 [DaemonSets](../concepts/daemonset.md) 功能是正常的就行了
+只需要確認要運行 keepalived-vip 的 kubernetes 群集 [DaemonSets](../concepts/daemonset.md) 功能是正常的就行了
 
 ### RBAC
 
-由于 kubernetes 在 1.6 后引进了 RBAC 的概念, 所以我们要先去设定 rule, 至於有关 RBAC 的详情请至 [说明](../plugins/rbac.md)。
+由於 kubernetes 在 1.6 後引進了 RBAC 的概念, 所以我們要先去設定 rule, 至於有關 RBAC 的詳情請至 [說明](../plugins/rbac.md)。
 
 vip-rbac.yaml
 
@@ -141,7 +141,7 @@ $ kubectl create -f clusterrolebinding.yaml
 
 
 
-先建立一个简单的 service
+先建立一個簡單的 service
 
 
 nginx-deployment.yaml
@@ -181,13 +181,13 @@ spec:
     app: nginx
 ```
 
-主要功能就是 pod 去监听听 80 port, 再开启 service NodePort 监听 30320
+主要功能就是 pod 去監聽聽 80 port, 再開啟 service NodePort 監聽 30320
 
 
 ```sh
 $ kubecrl create -f nginx-deployment.yaml
 ```
-接下来我们要做的是 config map
+接下來我們要做的是 config map
 
 
 ```sh
@@ -200,10 +200,10 @@ data:
 ```
 
 
-注意, 这边的 ```10.87.2.50``` 必须换成你自己同网段下无使用的 IP e.g. 10.87.2.X
-后面 ```nginx``` 为 service 的 name, 这边可以自行更换
+注意, 這邊的 ```10.87.2.50``` 必須換成你自己同網段下無使用的 IP e.g. 10.87.2.X
+後面 ```nginx``` 為 service 的 name, 這邊可以自行更換
 
-接着确认一下
+接著確認一下
 ```sh
 $kubectl get configmap
 NAME            DATA      AGE
@@ -211,7 +211,7 @@ vip-configmap   1         23h
 
 ```
 
-再来就是设置 keepalived-vip
+再來就是設置 keepalived-vip
 
 ```yaml
 
@@ -272,7 +272,7 @@ NAME                  DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NOD
 kube-keepalived-vip   5         5         5         5            5
 ```
 
-检查一下配置状态
+檢查一下配置狀態
 
 ```sh
 kubectl get pod -o wide |grep keepalive
@@ -282,7 +282,7 @@ kube-keepalived-vip-psdp9         1/1       Running            0          23h   
 kube-keepalived-vip-xfmxg         1/1       Running            0          23h       10.87.2.12   10.87.2.12
 kube-keepalived-vip-zjts7         1/1       Running            3          23h       10.87.2.4    10.87.2.4
 ```
-可以随机挑一个 pod, 去看里面的配置
+可以隨機挑一個 pod, 去看裡面的配置
 
 ```sh
  $ kubectl exec kube-keepalived-vip-c4sxw cat /etc/keepalived/keepalived.conf
@@ -314,7 +314,7 @@ vrrp_instance vips {
 
 
 # Service: default/nginx
-virtual_server 10.87.2.50 80 { // 此为 service 开的口
+virtual_server 10.87.2.50 80 { // 此為 service 開的口
   delay_loop 5
   lvs_sched wlc
   lvs_method NAT
@@ -322,7 +322,7 @@ virtual_server 10.87.2.50 80 { // 此为 service 开的口
   protocol TCP
 
 
-  real_server 10.2.49.30 8080 { // 这里说明 pod 的真实状况
+  real_server 10.2.49.30 8080 { // 這裡說明 pod 的真實狀況
     weight 1
     TCP_CHECK {
       connect_port 80
@@ -334,7 +334,7 @@ virtual_server 10.87.2.50 80 { // 此为 service 开的口
 
 ```
 
-最后我们去测试这功能
+最後我們去測試這功能
 
 ```sh
 $ curl  10.87.2.50
@@ -366,12 +366,12 @@ Commercial support is available at
 
 ```
 
-10.87.2.50:80(我们假设的 VIP, 实际上其实没有 node 是用这 IP) 即可帮我们导向这个 service
+10.87.2.50:80(我們假設的 VIP, 實際上其實沒有 node 是用這 IP) 即可幫我們導向這個 service
 
 
-以上的程式代码都在 [github](https://github.com/kubernetes/contrib/tree/master/keepalived-vip) 上可以找到。
+以上的程式代碼都在 [github](https://github.com/kubernetes/contrib/tree/master/keepalived-vip) 上可以找到。
 
-## 参考文档
+## 參考文檔
 
 - [kweisamx/kubernetes-keepalived-vip](https://github.com/kweisamx/kubernetes-keepalived-vip)
 - [kubernetes/keepalived-vip](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)

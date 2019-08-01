@@ -1,16 +1,16 @@
 # 配置和生成 Kubernetes 配置文件
 
-本部分内容将会创建 [kubeconfig 配置文件](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)，它们是 Kubernetes 客户端与 API Server 认证与鉴权的保证。
+本部分內容將會創建 [kubeconfig 配置文件](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)，它們是 Kubernetes 客戶端與 API Server 認證與鑑權的保證。
 
-## 客户端认证配置
+## 客戶端認證配置
 
-本节将会创建用于 `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 的 kubeconfig 文件。
+本節將會創建用於 `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 的 kubeconfig 文件。
 
 ### Kubernetes 公有 IP 地址
 
-每一个 kubeconfig 文件都需要一个 Kuberntes API Server 的 IP 地址。为了保证高可用性，我们将该 IP 分配给 API Server 之前的外部负载均衡器。
+每一個 kubeconfig 文件都需要一個 Kuberntes API Server 的 IP 地址。為了保證高可用性，我們將該 IP 分配給 API Server 之前的外部負載均衡器。
 
-查询 `kubernetes-the-hard-way` 的静态 IP 地址：
+查詢 `kubernetes-the-hard-way` 的靜態 IP 地址：
 
 ```sh
 KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
@@ -20,9 +20,9 @@ KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-har
 
 ### kubelet 配置文件
 
-为了确保 [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/) 授权，Kubelet 配置文件中的客户端证书必需匹配 Node 名字。
+為了確保 [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/) 授權，Kubelet 配置文件中的客戶端證書必需匹配 Node 名字。
 
-为每个 worker 节点创建 kubeconfig 配置：
+為每個 worker 節點創建 kubeconfig 配置：
 
 ```sh
 for instance in worker-0 worker-1 worker-2; do
@@ -47,7 +47,7 @@ for instance in worker-0 worker-1 worker-2; do
 done
 ```
 
-结果将会生成以下 3 个文件：
+結果將會生成以下 3 個文件：
 
 ```sh
 worker-0.kubeconfig
@@ -57,7 +57,7 @@ worker-2.kubeconfig
 
 ### kube-proxy 配置文件
 
-为 kube-proxy 服务生成 kubeconfig 配置文件：
+為 kube-proxy 服務生成 kubeconfig 配置文件：
 
 ```sh
 {
@@ -157,9 +157,9 @@ worker-2.kubeconfig
 }
 ```
 
-### 分发配置文件
+### 分發配置文件
 
-将 `kubelet` 与 `kube-proxy` kubeconfig 配置文件复制到每个 worker 节点上：
+將 `kubelet` 與 `kube-proxy` kubeconfig 配置文件複製到每個 worker 節點上：
 
 ```sh
 for instance in worker-0 worker-1 worker-2; do
@@ -167,7 +167,7 @@ for instance in worker-0 worker-1 worker-2; do
 done
 ```
 
-将 `admin`、`kube-controller-manager` 与 `kube-scheduler` kubeconfig 配置文件复制到每个 controller 节点上：
+將 `admin`、`kube-controller-manager` 與 `kube-scheduler` kubeconfig 配置文件複製到每個 controller 節點上：
 
 ```sh
 for instance in controller-0 controller-1 controller-2; do
@@ -175,4 +175,4 @@ for instance in controller-0 controller-1 controller-2; do
 done
 ```
 
-下一步：[配置和生成密钥](06-data-encryption-keys.md)。
+下一步：[配置和生成密鑰](06-data-encryption-keys.md)。

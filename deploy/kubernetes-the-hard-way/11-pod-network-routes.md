@@ -1,16 +1,16 @@
-# 配置 Pod 网络路由
+# 配置 Pod 網絡路由
 
-每个 Pod 都会从所在 Node 的 Pod CIDR 中分配一个 IP 地址。由于网络 [路由](https://cloud.google.com/compute/docs/vpc/routes) 还没有配置，跨节点的 Pod 之间还无法通信。
+每個 Pod 都會從所在 Node 的 Pod CIDR 中分配一個 IP 地址。由於網絡 [路由](https://cloud.google.com/compute/docs/vpc/routes) 還沒有配置，跨節點的 Pod 之間還無法通信。
 
-本部分将为每个 worker 节点创建一条路由，将匹配 Pod CIDR 的网络请求路由到 Node 的内网 IP 地址上。
+本部分將為每個 worker 節點創建一條路由，將匹配 Pod CIDR 的網絡請求路由到 Node 的內網 IP 地址上。
 
-> 也可以选择 [其他方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this) 来实现 Kubernetes 网络模型。
+> 也可以選擇 [其他方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this) 來實現 Kubernetes 網絡模型。
 
 ## 路由表
 
-本节将为创建 `kubernetes-the-hard-way` VPC 路由收集必要的信息。
+本節將為創建 `kubernetes-the-hard-way` VPC 路由收集必要的信息。
 
-列出每个 worker 节点的内部 IP 地址和 Pod CIDR 范围:
+列出每個 worker 節點的內部 IP 地址和 Pod CIDR 範圍:
 
 ```sh
 for instance in worker-0 worker-1 worker-2; do
@@ -19,7 +19,7 @@ for instance in worker-0 worker-1 worker-2; do
 done
 ```
 
-输出为
+輸出為
 
 ```sh
 10.240.0.20 10.200.0.0/24
@@ -29,7 +29,7 @@ done
 
 ## 路由
 
-为每个 worker 节点创建网络路由:
+為每個 worker 節點創建網絡路由:
 
 ```sh
 for i in 0 1 2; do
@@ -40,13 +40,13 @@ for i in 0 1 2; do
 done
 ```
 
-列出 `kubernetes-the-hard-way` VPC 网络的路由表:
+列出 `kubernetes-the-hard-way` VPC 網絡的路由表:
 
 ```sh
 gcloud compute routes list --filter "network: kubernetes-the-hard-way"
 ```
 
-输出为
+輸出為
 
 ```sh
 NAME                            NETWORK                  DEST_RANGE     NEXT_HOP                  PRIORITY
@@ -57,4 +57,4 @@ kubernetes-route-10-200-1-0-24  kubernetes-the-hard-way  10.200.1.0/24  10.240.0
 kubernetes-route-10-200-2-0-24  kubernetes-the-hard-way  10.200.2.0/24  10.240.0.22               1000
 ```
 
-下一步：[部署 DNS 扩展](12-dns-addon.md)。
+下一步：[部署 DNS 擴展](12-dns-addon.md)。

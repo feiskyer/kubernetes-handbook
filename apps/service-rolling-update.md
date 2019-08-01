@@ -1,46 +1,46 @@
-# 服务滚动升级
+# 服務滾動升級
 
-当有镜像发布新版本，新版本服务上线时如何实现服务的滚动和平滑升级？
+當有鏡像發佈新版本，新版本服務上線時如何實現服務的滾動和平滑升級？
 
-如果你使用 **ReplicationController** 创建的 pod 可以使用 `kubectl rollingupdate` 命令滚动升级，如果使用的是 **Deployment** 创建的 Pod 可以直接修改 yaml 文件后执行 `kubectl apply` 即可。
+如果你使用 **ReplicationController** 創建的 pod 可以使用 `kubectl rollingupdate` 命令滾動升級，如果使用的是 **Deployment** 創建的 Pod 可以直接修改 yaml 文件後執行 `kubectl apply` 即可。
 
-Deployment 已经内置了 RollingUpdate strategy，因此不用再调用 `kubectl rollingupdate` 命令，升级的过程是先创建新版的 pod 将流量导入到新 pod 上后销毁原来的旧的 pod。
+Deployment 已經內置了 RollingUpdate strategy，因此不用再調用 `kubectl rollingupdate` 命令，升級的過程是先創建新版的 pod 將流量導入到新 pod 上後銷燬原來的舊的 pod。
 
-Rolling Update 适用于 `Deployment`、`Replication Controller`，官方推荐使用 Deployment 而不再使用 Replication Controller。
+Rolling Update 適用於 `Deployment`、`Replication Controller`，官方推薦使用 Deployment 而不再使用 Replication Controller。
 
-使用 ReplicationController 时的滚动升级请参考官网说明：https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/
+使用 ReplicationController 時的滾動升級請參考官網說明：https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/
 
-## ReplicationController 与 Deployment 的关系
+## ReplicationController 與 Deployment 的關係
 
-ReplicationController 和 Deployment 的 RollingUpdate 命令有些不同，但是实现的机制是一样的，关于这两个 kind 的关系我引用了 [ReplicationController 与 Deployment 的区别](https://segmentfault.com/a/1190000008232770) 中的部分内容如下，详细区别请查看原文。
+ReplicationController 和 Deployment 的 RollingUpdate 命令有些不同，但是實現的機制是一樣的，關於這兩個 kind 的關係我引用了 [ReplicationController 與 Deployment 的區別](https://segmentfault.com/a/1190000008232770) 中的部分內容如下，詳細區別請查看原文。
 
 ### ReplicationController
 
-Replication Controller 为 Kubernetes 的一个核心内容，应用托管到 Kubernetes 之后，需要保证应用能够持续的运行，Replication Controller 就是这个保证的 key，主要的功能如下：
+Replication Controller 為 Kubernetes 的一個核心內容，應用託管到 Kubernetes 之後，需要保證應用能夠持續的運行，Replication Controller 就是這個保證的 key，主要的功能如下：
 
-- 确保 pod 数量：它会确保 Kubernetes 中有指定数量的 Pod 在运行。如果少于指定数量的 pod，Replication Controller 会创建新的，反之则会删除掉多余的以保证 Pod 数量不变。
-- 确保 pod 健康：当 pod 不健康，运行出错或者无法提供服务时，Replication Controller 也会杀死不健康的 pod，重新创建新的。
-- 弹性伸缩 ：在业务高峰或者低峰期的时候，可以通过 Replication Controller 动态的调整 pod 的数量来提高资源的利用率。同时，配置相应的监控功能（Hroizontal Pod Autoscaler），会定时自动从监控平台获取 Replication Controller 关联 pod 的整体资源使用情况，做到自动伸缩。
-- 滚动升级：滚动升级为一种平滑的升级方式，通过逐步替换的策略，保证整体系统的稳定，在初始化升级的时候就可以及时发现和解决问题，避免问题不断扩大。
+- 確保 pod 數量：它會確保 Kubernetes 中有指定數量的 Pod 在運行。如果少於指定數量的 pod，Replication Controller 會創建新的，反之則會刪除掉多餘的以保證 Pod 數量不變。
+- 確保 pod 健康：當 pod 不健康，運行出錯或者無法提供服務時，Replication Controller 也會殺死不健康的 pod，重新創建新的。
+- 彈性伸縮 ：在業務高峰或者低峰期的時候，可以通過 Replication Controller 動態的調整 pod 的數量來提高資源的利用率。同時，配置相應的監控功能（Hroizontal Pod Autoscaler），會定時自動從監控平臺獲取 Replication Controller 關聯 pod 的整體資源使用情況，做到自動伸縮。
+- 滾動升級：滾動升級為一種平滑的升級方式，通過逐步替換的策略，保證整體系統的穩定，在初始化升級的時候就可以及時發現和解決問題，避免問題不斷擴大。
 
 ### Deployment
 
-Deployment 同样为 Kubernetes 的一个核心内容，主要职责同样是为了保证 pod 的数量和健康，90% 的功能与 Replication Controller 完全一样，可以看做新一代的 Replication Controller。但是，它又具备了 Replication Controller 之外的新特性：
+Deployment 同樣為 Kubernetes 的一個核心內容，主要職責同樣是為了保證 pod 的數量和健康，90% 的功能與 Replication Controller 完全一樣，可以看做新一代的 Replication Controller。但是，它又具備了 Replication Controller 之外的新特性：
 
-- Replication Controller 全部功能：Deployment 继承了上面描述的 Replication Controller 全部功能。
-- 事件和状态查看：可以查看 Deployment 的升级详细进度和状态。
-- 回滚：当升级 pod 镜像或者相关参数的时候发现问题，可以使用回滚操作回滚到上一个稳定的版本或者指定的版本。
-- 版本记录: 每一次对 Deployment 的操作，都能保存下来，给予后续可能的回滚使用。
-- 暂停和启动：对于每一次升级，都能够随时暂停和启动。
-- 多种升级方案：Recreate：删除所有已存在的 pod, 重新创建新的; RollingUpdate：滚动升级，逐步替换的策略，同时滚动升级时，支持更多的附加参数，例如设置最大不可用 pod 数量，最小升级间隔时间等等。
+- Replication Controller 全部功能：Deployment 繼承了上面描述的 Replication Controller 全部功能。
+- 事件和狀態查看：可以查看 Deployment 的升級詳細進度和狀態。
+- 回滾：當升級 pod 鏡像或者相關參數的時候發現問題，可以使用回滾操作回滾到上一個穩定的版本或者指定的版本。
+- 版本記錄: 每一次對 Deployment 的操作，都能保存下來，給予後續可能的回滾使用。
+- 暫停和啟動：對於每一次升級，都能夠隨時暫停和啟動。
+- 多種升級方案：Recreate：刪除所有已存在的 pod, 重新創建新的; RollingUpdate：滾動升級，逐步替換的策略，同時滾動升級時，支持更多的附加參數，例如設置最大不可用 pod 數量，最小升級間隔時間等等。
 
-## 创建测试镜像
+## 創建測試鏡像
 
-我们来创建一个特别简单的 web 服务，当你访问网页时，将输出一句版本信息。通过区分这句版本信息输出我们就可以断定升级是否完成。
+我們來創建一個特別簡單的 web 服務，當你訪問網頁時，將輸出一句版本信息。通過區分這句版本信息輸出我們就可以斷定升級是否完成。
 
-所有配置和代码见 [manifests/test/rolling-update-test](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/test/rolling-update-test) 目录。
+所有配置和代碼見 [manifests/test/rolling-update-test](https://github.com/feiskyer/kubernetes-handbook/tree/master/manifests/test/rolling-update-test) 目錄。
 
-**Web 服务的代码 main.go**
+**Web 服務的代碼 main.go**
 
 ```go
 package main
@@ -52,20 +52,20 @@ import (
 )
 
 func sayhello(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintf(w, "This is version 1.") // 这个写入到 w 的是输出到客户端的
+  fmt.Fprintf(w, "This is version 1.") // 這個寫入到 w 的是輸出到客戶端的
 }
 
 func main() {
-  http.HandleFunc("/", sayhello) // 设置访问的路由
+  http.HandleFunc("/", sayhello) // 設置訪問的路由
   log.Println("This is version 1.")
-  err := http.ListenAndServe(":9090", nil) // 设置监听的端口
+  err := http.ListenAndServe(":9090", nil) // 設置監聽的端口
   if err != nil {
     log.Fatal("ListenAndServe:", err)
   }
 }
 ```
 
-**创建 Dockerfile**
+**創建 Dockerfile**
 
 ```Dockerfile
 FROM alpine:3.5
@@ -73,13 +73,13 @@ ADD hellov2 /
 ENTRYPOINT ["/hellov2"]
 ```
 
-注意修改添加的文件的名称。
+注意修改添加的文件的名稱。
 
-** 创建 Makefile**
+** 創建 Makefile**
 
-修改镜像仓库的地址为你自己的私有镜像仓库地址。
+修改鏡像倉庫的地址為你自己的私有鏡像倉庫地址。
 
-修改 `Makefile` 中的 `TAG` 为新的版本号。
+修改 `Makefile` 中的 `TAG` 為新的版本號。
 
 ```cmake
 all: build push clean
@@ -101,17 +101,17 @@ clean:
   rm -f hello${TAG}
 ```
 
-** 编译 **
+** 編譯 **
 
 ```Shell
 make all
 ```
 
-分别修改 main.go 中的输出语句、Dockerfile 中的文件名称和 Makefile 中的 TAG，创建两个版本的镜像。
+分別修改 main.go 中的輸出語句、Dockerfile 中的文件名稱和 Makefile 中的 TAG，創建兩個版本的鏡像。
 
-## 测试
+## 測試
 
-我们使用 Deployment 部署服务来测试。
+我們使用 Deployment 部署服務來測試。
 
 配置文件 `rolling-update-test.yaml`：
 
@@ -168,55 +168,55 @@ kubectl create -f rolling-update-test.yaml
           servicePort: 9090
 ```
 
-修改本地的 host 配置，增加一条配置：
+修改本地的 host 配置，增加一條配置：
 
 ```
 172.20.0.119 rolling-update-test.traefik.io
 ```
 
-注意：172.20.0.119 是我们之前使用 keepalived 创建的 VIP。
+注意：172.20.0.119 是我們之前使用 keepalived 創建的 VIP。
 
-打开浏览器访问 `http://rolling-update-test.traefik.io` 将会看到以下输出：
+打開瀏覽器訪問 `http://rolling-update-test.traefik.io` 將會看到以下輸出：
 
 ```
 This is version 1.
 ```
 
-** 滚动升级 **
+** 滾動升級 **
 
-只需要将 `rolling-update-test.yaml` 文件中的 `image` 改成新版本的镜像名，然后执行：
+只需要將 `rolling-update-test.yaml` 文件中的 `image` 改成新版本的鏡像名，然後執行：
 
 ```shell
 kubectl apply -f rolling-update-test.yaml
 ```
 
-也可以参考 [Kubernetes Deployment Concept](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 中的方法，直接设置新的镜像。
+也可以參考 [Kubernetes Deployment Concept](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) 中的方法，直接設置新的鏡像。
 
 ```
 kubectl set image deployment/rolling-update-test rolling-update-test=sz-pg-oam-docker-hub-001.tendcloud.com/library/hello:v2
 ```
 
-或者使用 `kubectl edit deployment/rolling-update-test` 修改镜像名称后保存。
+或者使用 `kubectl edit deployment/rolling-update-test` 修改鏡像名稱後保存。
 
-使用以下命令查看升级进度：
+使用以下命令查看升級進度：
 
 ```
 kubectl rollout status deployment/rolling-update-test
 ```
 
-升级完成后在浏览器中刷新 `http://rolling-update-test.traefik.io` 将会看到以下输出：
+升級完成後在瀏覽器中刷新 `http://rolling-update-test.traefik.io` 將會看到以下輸出：
 
 ```
 This is version 2.
 ```
 
-说明滚动升级成功。
+說明滾動升級成功。
 
-## 使用 ReplicationController 创建的 Pod 如何 RollingUpdate
+## 使用 ReplicationController 創建的 Pod 如何 RollingUpdate
 
-以上讲解使用 **Deployment** 创建的 Pod 的 RollingUpdate 方式，那么如果使用传统的 **ReplicationController** 创建的 Pod 如何 Update 呢？
+以上講解使用 **Deployment** 創建的 Pod 的 RollingUpdate 方式，那麼如果使用傳統的 **ReplicationController** 創建的 Pod 如何 Update 呢？
 
-举个例子：
+舉個例子：
 
 ```bash
 $ kubectl -n spark-cluster rolling-update zeppelin-controller --image sz-pg-oam-docker-hub-001.tendcloud.com/library/zeppelin:0.7.1
@@ -229,11 +229,11 @@ Renaming zeppelin-controller-99be89dbbe5cd5b8d6feab8f57a04a8b to zeppelin-contro
 replicationcontroller "zeppelin-controller" rolling updated
 ```
 
-只需要指定新的镜像即可，当然你可以配置 RollingUpdate 的策略。
+只需要指定新的鏡像即可，當然你可以配置 RollingUpdate 的策略。
 
-## 参考
+## 參考
 
-- [Rolling update 机制解析](http://dockone.io/article/328)
+- [Rolling update 機制解析](http://dockone.io/article/328)
 - [Running a Stateless Application Using a Deployment](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)
 - [Simple Rolling Update](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/cli/simple-rolling-update.md)
-- [使用 kubernetes 的 deployment 进行 RollingUpdate](https://segmentfault.com/a/1190000008232770)
+- [使用 kubernetes 的 deployment 進行 RollingUpdate](https://segmentfault.com/a/1190000008232770)

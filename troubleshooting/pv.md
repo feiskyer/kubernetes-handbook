@@ -1,8 +1,8 @@
-# PV 异常排错
+# PV 異常排錯
 
-本章介绍持久化存储异常（PV、PVC、StorageClass等）的排错方法。
+本章介紹持久化存儲異常（PV、PVC、StorageClass等）的排錯方法。
 
-一般来说，无论 PV 处于什么异常状态，都可以执行 `kubectl describe pv/pvc <pod-name>` 命令来查看当前 PV 的事件。这些事件通常都会有助于排查 PV 或 PVC 发生的问题。
+一般來說，無論 PV 處於什麼異常狀態，都可以執行 `kubectl describe pv/pvc <pod-name>` 命令來查看當前 PV 的事件。這些事件通常都會有助於排查 PV 或 PVC 發生的問題。
 
 ```sh
 kubectl get pv

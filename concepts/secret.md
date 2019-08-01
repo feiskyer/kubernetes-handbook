@@ -1,17 +1,17 @@
 # Secret
 
-Secret 解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者 Pod Spec 中。Secret 可以以 Volume 或者环境变量的方式使用。
+Secret 解決了密碼、token、密鑰等敏感數據的配置問題，而不需要把這些敏感數據暴露到鏡像或者 Pod Spec 中。Secret 可以以 Volume 或者環境變量的方式使用。
 
-## Secret 类型
+## Secret 類型
 
-Secret 有三种类型：
-* Opaque：base64 编码格式的 Secret，用来存储密码、密钥等；但数据也通过 base64 --decode 解码得到原始数据，所有加密性很弱。
-* `kubernetes.io/dockerconfigjson`：用来存储私有 docker registry 的认证信息。
-* `kubernetes.io/service-account-token`： 用于被 serviceaccount 引用。serviceaccout 创建时 Kubernetes 会默认创建对应的 secret。Pod 如果使用了 serviceaccount，对应的 secret 会自动挂载到 Pod 的 `/run/secrets/kubernetes.io/serviceaccount` 目录中。
+Secret 有三種類型：
+* Opaque：base64 編碼格式的 Secret，用來存儲密碼、密鑰等；但數據也通過 base64 --decode 解碼得到原始數據，所有加密性很弱。
+* `kubernetes.io/dockerconfigjson`：用來存儲私有 docker registry 的認證信息。
+* `kubernetes.io/service-account-token`： 用於被 serviceaccount 引用。serviceaccout 創建時 Kubernetes 會默認創建對應的 secret。Pod 如果使用了 serviceaccount，對應的 secret 會自動掛載到 Pod 的 `/run/secrets/kubernetes.io/serviceaccount` 目錄中。
 
-备注：serviceaccount 用来使得 Pod 能够访问 Kubernetes API
+備註：serviceaccount 用來使得 Pod 能夠訪問 Kubernetes API
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 | Core API 版本 |
 | --------------- | ------------- |
@@ -19,7 +19,7 @@ Secret 有三种类型：
 
 ## Opaque Secret
 
-Opaque 类型的数据是一个 map 类型，要求 value 是 base64 编码格式：
+Opaque 類型的數據是一個 map 類型，要求 value 是 base64 編碼格式：
 
 ```sh
 $ echo -n "admin" | base64
@@ -41,16 +41,16 @@ data:
   username: YWRtaW4=
 ```
 
-创建 secret：`kubectl create -f secrets.yml`。
+創建 secret：`kubectl create -f secrets.yml`。
 ```sh
 # kubectl get secret
 NAME                  TYPE                                  DATA      AGE
 default-token-cty7p   kubernetes.io/service-account-token   3         45d
 mysecret              Opaque                                2         7s
 ```
-注意：其中 default-token-cty7p 为创建集群时默认创建的 secret，被 serviceacount/default 引用。
+注意：其中 default-token-cty7p 為創建集群時默認創建的 secret，被 serviceacount/default 引用。
 
-如果是从文件创建 secret，则可以用更简单的 kubectl 命令，比如创建 tls 的 secret：
+如果是從文件創建 secret，則可以用更簡單的 kubectl 命令，比如創建 tls 的 secret：
 
 ```sh
 $ kubectl create secret generic helloworld-tls \
@@ -60,12 +60,12 @@ $ kubectl create secret generic helloworld-tls \
 
 ## Opaque Secret 的使用
 
-创建好 secret 之后，有两种方式来使用它：
+創建好 secret 之後，有兩種方式來使用它：
 
 * 以 Volume 方式
-* 以环境变量方式
+* 以環境變量方式
 
-### 将 Secret 挂载到 Volume 中
+### 將 Secret 掛載到 Volume 中
 
 ```yml
 apiVersion: v1
@@ -92,7 +92,7 @@ spec:
       hostPort: 5432
 ```
 
-查看 Pod 中对应的信息：
+查看 Pod 中對應的信息：
 ```sh
 # ls /etc/secrets
 password  username
@@ -102,7 +102,7 @@ admin
 1f2d1e2e67df
 ```
 
-### 将 Secret 导出到环境变量中
+### 將 Secret 導出到環境變量中
 
 
 ```yml
@@ -138,7 +138,7 @@ spec:
               key: password
 ```
 
-### 将 Secret 挂载指定的 key
+### 將 Secret 掛載指定的 key
 ```yml
 apiVersion: v1
 kind: Pod
@@ -170,7 +170,7 @@ spec:
       containerPort: 80
       hostPort: 5432
 ```
-创建 Pod 成功后，可以在对应的目录看到：
+創建 Pod 成功後，可以在對應的目錄看到：
 ```sh
 # kubectl exec db ls /etc/secrets/tst
 psd
@@ -179,8 +179,8 @@ usr
 
 ** 注意 **：
 
-1、`kubernetes.io/dockerconfigjson` 和 `kubernetes.io/service-account-token` 类型的 secret 也同样可以被挂载成文件 (目录)。
-如果使用 `kubernetes.io/dockerconfigjson` 类型的 secret 会在目录下创建一个. dockercfg 文件
+1、`kubernetes.io/dockerconfigjson` 和 `kubernetes.io/service-account-token` 類型的 secret 也同樣可以被掛載成文件 (目錄)。
+如果使用 `kubernetes.io/dockerconfigjson` 類型的 secret 會在目錄下創建一個. dockercfg 文件
 ```sh
 root@db:/etc/secrets# ls -al
 total 4
@@ -190,12 +190,12 @@ drwxr-xr-x  2 root root   60 Aug  5 16:06 ..8988_06_08_00_06_52.433429084
 lrwxrwxrwx  1 root root   31 Aug  5 16:06 ..data -> ..8988_06_08_00_06_52.433429084
 lrwxrwxrwx  1 root root   17 Aug  5 16:06 .dockercfg -> ..data/.dockercfg
 ```
-如果使用 `kubernetes.io/service-account-token` 类型的 secret 则会创建 ca.crt，namespace，token 三个文件
+如果使用 `kubernetes.io/service-account-token` 類型的 secret 則會創建 ca.crt，namespace，token 三個文件
 ```sh
 root@db:/etc/secrets# ls
 ca.crt	namespace  token
 ```
-2、secrets 使用时被挂载到一个临时目录，Pod 被删除后 secrets 挂载时生成的文件也会被删除。
+2、secrets 使用時被掛載到一個臨時目錄，Pod 被刪除後 secrets 掛載時生成的文件也會被刪除。
 ```sh
 root@db:/etc/secrets# df
 Filesystem     1K-blocks    Used Available Use% Mounted on
@@ -207,9 +207,9 @@ tmpfs            1957660      12   1957648   1% /etc/secrets
 /dev/vdb       123723748 4983104 112432804   5% /etc/hostname
 shm                65536       0     65536   0% /dev/shm
 ```
-但如果在 Pod 运行的时候，在 Pod 部署的节点上还是可以看到：
+但如果在 Pod 運行的時候，在 Pod 部署的節點上還是可以看到：
 ```sh
-# 查看 Pod 中容器 Secret 的相关信息，其中 4392b02d-79f9-11e7-a70a-525400bc11f0 为 Pod 的 UUID
+# 查看 Pod 中容器 Secret 的相關信息，其中 4392b02d-79f9-11e7-a70a-525400bc11f0 為 Pod 的 UUID
 "Mounts": [
   {
     "Source": "/var/lib/kubelet/pods/4392b02d-79f9-11e7-a70a-525400bc11f0/volumes/kubernetes.io~secret/secrets",
@@ -219,7 +219,7 @@ shm                65536       0     65536   0% /dev/shm
     "Propagation": "rprivate"
   }
 ]
-#在 Pod 部署的节点查看
+#在 Pod 部署的節點查看
 root@VM-0-178-ubuntu:/var/lib/kubelet/pods/4392b02d-79f9-11e7-a70a-525400bc11f0/volumes/kubernetes.io~secret/secrets# ls -al
 total 4
 drwxrwxrwt 3 root root  140 Aug  6 00:15 .
@@ -233,13 +233,13 @@ lrwxrwxrwx 1 root root   12 Aug  6 00:15 token -> ..data/token
 
 ## kubernetes.io/dockerconfigjson
 
-可以直接用 kubectl 命令来创建用于 docker registry 认证的 secret：
+可以直接用 kubectl 命令來創建用於 docker registry 認證的 secret：
 
 ```sh
 $ kubectl create secret docker-registry myregistrykey --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
 secret "myregistrykey" created.
 ```
-查看 secret 的内容：
+查看 secret 的內容：
 ```sh
 # kubectl get secret myregistrykey  -o yaml
 apiVersion: v1
@@ -256,20 +256,20 @@ metadata:
 type: kubernetes.io/dockercfg
 ```
 
-通过 base64 对 secret 中的内容解码：
+通過 base64 對 secret 中的內容解碼：
 ```sh
 # echo "eyJjY3IuY2NzLnRlbmNlbnR5dW4uY29tL3RlbmNlbnR5dW4iOnsidXNlcm5hbWUiOiIzMzIxMzM3OTk0IiwicGFzc3dvcmQiOiIxMjM0NTYuY29tIiwiZW1haWwiOiIzMzIxMzM3OTk0QHFxLmNvbSIsImF1dGgiOiJNek15TVRNek56azVORG94TWpNME5UWXVZMjl0XXXX" | base64 --decode
 {"ccr.ccs.tencentyun.com/XXXXXXX":{"username":"3321337XXX","password":"123456.com","email":"3321337XXX@qq.com","auth":"MzMyMTMzNzk5NDoxMjM0NTYuY29t"}}
 ```
 
-也可以直接读取 `~/.dockercfg` 的内容来创建：
+也可以直接讀取 `~/.dockercfg` 的內容來創建：
 
 ```sh
 $ kubectl create secret docker-registry myregistrykey \
   --from-file="~/.dockercfg"
 ```
 
-在创建 Pod 的时候，通过 `imagePullSecrets` 来引用刚创建的 `myregistrykey`:
+在創建 Pod 的時候，通過 `imagePullSecrets` 來引用剛創建的 `myregistrykey`:
 
 ```yaml
 apiVersion: v1
@@ -286,7 +286,7 @@ spec:
 
 ### kubernetes.io/service-account-token
 
-`kubernetes.io/service-account-token`： 用于被 serviceaccount 引用。serviceaccout 创建时 Kubernetes 会默认创建对应的 secret。Pod 如果使用了 serviceaccount，对应的 secret 会自动挂载到 Pod 的 `/run/secrets/kubernetes.io/serviceaccount` 目录中。
+`kubernetes.io/service-account-token`： 用於被 serviceaccount 引用。serviceaccout 創建時 Kubernetes 會默認創建對應的 secret。Pod 如果使用了 serviceaccount，對應的 secret 會自動掛載到 Pod 的 `/run/secrets/kubernetes.io/serviceaccount` 目錄中。
 
 ```sh
 $ kubectl run nginx --image nginx
@@ -300,9 +300,9 @@ namespace
 token
 ```
 
-## 存储加密
+## 存儲加密
 
-v1.7 + 版本支持将 Secret 数据加密存储到 etcd 中，只需要在 apiserver 启动时配置 `--experimental-encryption-provider-config`。加密配置格式为
+v1.7 + 版本支持將 Secret 數據加密存儲到 etcd 中，只需要在 apiserver 啟動時配置 `--experimental-encryption-provider-config`。加密配置格式為
 
 ```yaml
 kind: EncryptionConfig
@@ -332,20 +332,20 @@ resources:
 
 其中
 
-- resources.resources 是 Kubernetes 的资源名
-- resources.providers 是加密方法，支持以下几种
+- resources.resources 是 Kubernetes 的資源名
+- resources.providers 是加密方法，支持以下幾種
   - identity：不加密
   - aescbc：AES-CBC 加密
   - secretbox：XSalsa20 和 Poly1305 加密
   - aesgcm：AES-GCM 加密
 
-Secret 是在写存储的时候加密，因而可以对已有的 secret 执行 update 操作来保证所有的 secrets 都加密
+Secret 是在寫存儲的時候加密，因而可以對已有的 secret 執行 update 操作來保證所有的 secrets 都加密
 
 ```sh
 kubectl get secrets -o json | kubectl update -f -
 ```
 
-如果想取消 secret 加密的话，只需要把 `identity` 放到 providers 的第一个位置即可（aescbc 还要留着以便访问已存储的 secret）：
+如果想取消 secret 加密的話，只需要把 `identity` 放到 providers 的第一個位置即可（aescbc 還要留著以便訪問已存儲的 secret）：
 
 ```yaml
 kind: EncryptionConfig
@@ -363,23 +363,23 @@ resources:
           secret: dGhpcyBpcyBwYXNzd29yZA==
 ```
 
-## Secret 与 ConfigMap 对比
+## Secret 與 ConfigMap 對比
 
-相同点：
+相同點：
 - key/value 的形式
-- 属于某个特定的 namespace
-- 可以导出到环境变量
-- 可以通过目录 / 文件形式挂载 (支持挂载所有 key 和部分 key)
+- 屬於某個特定的 namespace
+- 可以導出到環境變量
+- 可以通過目錄 / 文件形式掛載 (支持掛載所有 key 和部分 key)
 
-不同点：
-- Secret 可以被 ServerAccount 关联 (使用)
-- Secret 可以存储 register 的鉴权信息，用在 ImagePullSecret 参数中，用于拉取私有仓库的镜像
+不同點：
+- Secret 可以被 ServerAccount 關聯 (使用)
+- Secret 可以存儲 register 的鑑權信息，用在 ImagePullSecret 參數中，用於拉取私有倉庫的鏡像
 - Secret 支持 Base64 加密
-- Secret 分为 Opaque，kubernetes.io/Service Account，kubernetes.io/dockerconfigjson 三种类型, Configmap 不区分类型
-- Secret 文件存储在 tmpfs 文件系统中，Pod 删除后 Secret 文件也会对应的删除。
+- Secret 分為 Opaque，kubernetes.io/Service Account，kubernetes.io/dockerconfigjson 三種類型, Configmap 不區分類型
+- Secret 文件存儲在 tmpfs 文件系統中，Pod 刪除後 Secret 文件也會對應的刪除。
 
 
-## 参考文档
+## 參考文檔
 
 - [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 - [Specifying ImagePullSecrets on a Pod](https://kubernetes.io/docs/concepts/configuration/secret/)

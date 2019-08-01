@@ -1,14 +1,14 @@
-# 备份恢复
+# 備份恢復
 
-[Velero](https://velero.io/) 是一个提供 Kubernetes 集群和持久卷的备份、迁移以及灾难恢复等的开源工具。
+[Velero](https://velero.io/) 是一個提供 Kubernetes 集群和持久卷的備份、遷移以及災難恢復等的開源工具。
 
-## 安装
+## 安裝
 
-从 <https://github.com/heptio/velero/releases> 下载最新的稳定版。
+從 <https://github.com/heptio/velero/releases> 下載最新的穩定版。
 
-以 Azure 为例，安装 Velero 需要以下步骤：
+以 Azure 為例，安裝 Velero 需要以下步驟：
 
-（1） 创建存储账户
+（1） 創建存儲賬戶
 
 ```sh
 AZURE_BACKUP_RESOURCE_GROUP=Velero_Backups
@@ -28,7 +28,7 @@ BLOB_CONTAINER=velero
 az storage container create -n $BLOB_CONTAINER --public-access off --account-name $AZURE_STORAGE_ACCOUNT_ID
 ```
 
-（2）创建 service principal
+（2）創建 service principal
 
 ```sh
 AZURE_RESOURCE_GROUP=<NAME_OF_RESOURCE_GROUP>
@@ -46,7 +46,7 @@ AZURE_RESOURCE_GROUP=${AZURE_RESOURCE_GROUP}
 EOF
 ```
 
-（3）启动 Velero
+（3）啟動 Velero
 
 ```sh
 velero install \
@@ -57,15 +57,15 @@ velero install \
     --snapshot-location-config apiTimeout=<YOUR_TIMEOUT>
 ```
 
-## 备份
+## 備份
 
-创建定期备份：
+創建定期備份：
 
 ```sh
 velero schedule create <SCHEDULE NAME> --schedule "0 7 * * *"
 ```
 
-## 灾难恢复
+## 災難恢復
 
 ```sh
 # Update your backup storage location to read-only mode 
@@ -84,15 +84,15 @@ kubectl patch backupstoragelocation <STORAGE LOCATION NAME> \
        --patch '{"spec":{"accessMode":"ReadWrite"}}'
 ```
 
-## 迁移
+## 遷移
 
-首先，在集群 1 中创建备份（默认 TTL 是 30 天，你可以使用 --ttl 来修改）：
+首先，在集群 1 中創建備份（默認 TTL 是 30 天，你可以使用 --ttl 來修改）：
 
 ```sh
 velero backup create <BACKUP-NAME>
 ```
 
-然后，为集群 2 配置 BackupStorageLocations 和 VolumeSnapshotLocations，指向与集群 1 相同的备份和快照路径，并确保 BackupStorageLocations 是只读的（使用 --access-mode=ReadOnly）。接下来，稍微等一会（默认的同步时间为 1 分钟），等待 Backup 对象创建成功。
+然後，為集群 2 配置 BackupStorageLocations 和 VolumeSnapshotLocations，指向與集群 1 相同的備份和快照路徑，並確保 BackupStorageLocations 是隻讀的（使用 --access-mode=ReadOnly）。接下來，稍微等一會（默認的同步時間為 1 分鐘），等待 Backup 對象創建成功。
 
 ```sh
 # The default sync interval is 1 minute, so make sure to wait before checking.
@@ -100,7 +100,7 @@ velero backup create <BACKUP-NAME>
 velero backup describe <BACKUP-NAME>
 ```
 
-最后，执行数据恢复：
+最後，執行數據恢復：
 
 ```sh
 velero restore create --from-backup <BACKUP-NAME>
@@ -108,7 +108,7 @@ velero restore get
 velero restore describe <RESTORE-NAME-FROM-GET-COMMAND>
 ```
 
-## 参考文档
+## 參考文檔
 
 - <https://velero.io/>
 

@@ -1,14 +1,14 @@
 # Namespace
 
-Namespace 是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或用户组。常见的 pod, service, replication controller 和 deployment 等都是属于某一个 namespace 的（默认是 default），而 node, persistent volume，namespace 等资源则不属于任何 namespace。
+Namespace 是對一組資源和對象的抽象集合，比如可以用來將系統內部的對象劃分為不同的項目組或用戶組。常見的 pod, service, replication controller 和 deployment 等都是屬於某一個 namespace 的（默認是 default），而 node, persistent volume，namespace 等資源則不屬於任何 namespace。
 
-Namespace 常用来隔离不同的用户，比如 Kubernetes 自带的服务一般运行在 `kube-system` namespace 中。
+Namespace 常用來隔離不同的用戶，比如 Kubernetes 自帶的服務一般運行在 `kube-system` namespace 中。
 
 ## Namespace 操作
 
-> `kubectl` 可以通过 `--namespace` 或者 `-n` 选项指定 namespace。如果不指定，默认为 default。查看操作下, 也可以通过设置 --all-namespace=true 来查看所有 namespace 下的资源。
+> `kubectl` 可以通過 `--namespace` 或者 `-n` 選項指定 namespace。如果不指定，默認為 default。查看操作下, 也可以通過設置 --all-namespace=true 來查看所有 namespace 下的資源。
 
-### 查询
+### 查詢
 
 ```sh
 $ kubectl get namespaces
@@ -17,16 +17,16 @@ default       Active    11d
 kube-system   Active    11d
 ```
 
-注意：namespace 包含两种状态 "Active" 和 "Terminating"。在 namespace 删除过程中，namespace 状态被设置成 "Terminating"。
+注意：namespace 包含兩種狀態 "Active" 和 "Terminating"。在 namespace 刪除過程中，namespace 狀態被設置成 "Terminating"。
 
 
-### 创建
+### 創建
 
 ```sh
-(1) 命令行直接创建
+(1) 命令行直接創建
 $ kubectl create namespace new-namespace
 
-(2) 通过文件创建
+(2) 通過文件創建
 $ cat my-namespace.yaml
 apiVersion: v1
 kind: Namespace
@@ -37,11 +37,11 @@ $ kubectl create -f ./my-namespace.yaml
 
 ```
 
-注意：命名空间名称满足正则表达式 `[a-z0-9]([-a-z0-9]*[a-z0-9])?`, 最大长度为 63 位
+注意：命名空間名稱滿足正則表達式 `[a-z0-9]([-a-z0-9]*[a-z0-9])?`, 最大長度為 63 位
 
 
 
-### 删除
+### 刪除
 
 ```sh
 $ kubectl delete namespaces new-namespace
@@ -49,11 +49,11 @@ $ kubectl delete namespaces new-namespace
 
 注意：
 
-1. 删除一个 namespace 会自动删除所有属于该 namespace 的资源。
-2. `default` 和 `kube-system` 命名空间不可删除。
-3. PersistentVolume 是不属于任何 namespace 的，但 PersistentVolumeClaim 是属于某个特定 namespace 的。
-4. Event 是否属于 namespace 取决于产生 event 的对象。
-5. v1.7 版本增加了 `kube-public` 命名空间，该命名空间用来存放公共的信息，一般以 ConfigMap 的形式存放。
+1. 刪除一個 namespace 會自動刪除所有屬於該 namespace 的資源。
+2. `default` 和 `kube-system` 命名空間不可刪除。
+3. PersistentVolume 是不屬於任何 namespace 的，但 PersistentVolumeClaim 是屬於某個特定 namespace 的。
+4. Event 是否屬於 namespace 取決於產生 event 的對象。
+5. v1.7 版本增加了 `kube-public` 命名空間，該命名空間用來存放公共的信息，一般以 ConfigMap 的形式存放。
 
 ```sh
 $ kubectl get configmap  -n=kube-public
@@ -61,7 +61,7 @@ NAME           DATA      AGE
 cluster-info   2         29d
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Kubernetes Namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Share a Cluster with Namespaces](https://kubernetes.io/docs/tasks/administer-cluster/namespaces/)

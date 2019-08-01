@@ -1,6 +1,6 @@
 # Spinnaker
 
-[Spinnaker](https://www.spinnaker.io/) 是 Google 与 Netflix 发布的企业级持续交付平台，具有多云部署、自动发布、权限控制以及应用最佳实践等诸多优点。
+[Spinnaker](https://www.spinnaker.io/) 是 Google 與 Netflix 發佈的企業級持續交付平臺，具有多雲部署、自動發佈、權限控制以及應用最佳實踐等諸多優點。
 
 ## 部署
 

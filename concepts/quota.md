@@ -1,35 +1,35 @@
 # Resource Quotas
 
-资源配额（Resource Quotas）是用来限制用户资源用量的一种机制。
+資源配額（Resource Quotas）是用來限制用戶資源用量的一種機制。
 
-它的工作原理为
+它的工作原理為
 
-- 资源配额应用在 Namespace 上，并且每个 Namespace 最多只能有一个 `ResourceQuota` 对象
-- 开启计算资源配额后，创建容器时必须配置计算资源请求或限制（也可以用 [LimitRange](https://kubernetes.io/docs/tasks/administer-cluster/cpu-memory-limit/) 设置默认值）
-- 用户超额后禁止创建新的资源
+- 資源配額應用在 Namespace 上，並且每個 Namespace 最多隻能有一個 `ResourceQuota` 對象
+- 開啟計算資源配額後，創建容器時必須配置計算資源請求或限制（也可以用 [LimitRange](https://kubernetes.io/docs/tasks/administer-cluster/cpu-memory-limit/) 設置默認值）
+- 用戶超額後禁止創建新的資源
 
-## 开启资源配额功能
+## 開啟資源配額功能
 
-- 首先，在 API Server 启动时配置准入控制 `--admission-control=ResourceQuota`
-- 然后，在 namespace 中创建一个 `ResourceQuota` 对象
+- 首先，在 API Server 啟動時配置准入控制 `--admission-control=ResourceQuota`
+- 然後，在 namespace 中創建一個 `ResourceQuota` 對象
 
-## 资源配额的类型
+## 資源配額的類型
 
-- 计算资源，包括 cpu 和 memory
+- 計算資源，包括 cpu 和 memory
   - cpu, limits.cpu, requests.cpu
   - memory, limits.memory, requests.memory
-- 存储资源，包括存储资源的总量以及指定 storage class 的总量
-  - requests.storage：存储资源总量，如 500Gi
-  - persistentvolumeclaims：pvc 的个数
+- 存儲資源，包括存儲資源的總量以及指定 storage class 的總量
+  - requests.storage：存儲資源總量，如 500Gi
+  - persistentvolumeclaims：pvc 的個數
   - <storage-class-name>.storageclass.storage.k8s.io/requests.storage
   - <storage-class-name>.storageclass.storage.k8s.io/persistentvolumeclaims
   - requests.ephemeral-storage 和 limits.ephemeral-storage （需要 v1.8+）
-- 对象数，即可创建的对象的个数
+- 對象數，即可創建的對象的個數
   - pods, replicationcontrollers, configmaps, secrets
   - resourcequotas, persistentvolumeclaims
   - services, services.loadbalancers, services.nodeports
 
-计算资源示例
+計算資源示例
 
 ```yaml
 apiVersion: v1
@@ -45,7 +45,7 @@ spec:
     limits.memory: 2Gi
 ```
 
-对象个数示例
+對象個數示例
 
 ```yaml
 apiVersion: v1
@@ -64,7 +64,7 @@ spec:
 
 ## LimitRange
 
-默认情况下，Kubernetes 中所有容器都没有任何 CPU 和内存限制。LimitRange 用来给 Namespace 增加一个资源限制，包括最小、最大和默认资源。比如
+默認情況下，Kubernetes 中所有容器都沒有任何 CPU 和內存限制。LimitRange 用來給 Namespace 增加一個資源限制，包括最小、最大和默認資源。比如
 
 ```yaml
 apiVersion: v1
@@ -109,13 +109,13 @@ Container   cpu           100m     2        200m                 300m           
 Container   memory        3Mi      1Gi      100Mi                200Mi              -
 ```
 
-## 配额范围
+## 配額範圍
 
-每个配额在创建时可以指定一系列的范围
+每個配額在創建時可以指定一系列的範圍
 
-| 范围 | 说明 |
+| 範圍 | 說明 |
 |---|----|
 |Terminating|podSpec.ActiveDeadlineSeconds>=0 的 Pod|
 |NotTerminating|podSpec.activeDeadlineSeconds=nil 的 Pod|
-|BestEffort | 所有容器的 requests 和 limits 都没有设置的 Pod（Best-Effort）|
-|NotBestEffort | 与 BestEffort 相反 |
+|BestEffort | 所有容器的 requests 和 limits 都沒有設置的 Pod（Best-Effort）|
+|NotBestEffort | 與 BestEffort 相反 |

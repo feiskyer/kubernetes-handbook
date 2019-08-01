@@ -1,28 +1,28 @@
 # Pod
 
-Pod 是一组紧密关联的容器集合，它们共享 IPC、Network 和 UTS namespace，是 Kubernetes 调度的基本单位。Pod 的设计理念是支持多个容器在一个 Pod 中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。
+Pod 是一組緊密關聯的容器集合，它們共享 IPC、Network 和 UTS namespace，是 Kubernetes 調度的基本單位。Pod 的設計理念是支持多個容器在一個 Pod 中共享網絡和文件系統，可以通過進程間通信和文件共享這種簡單高效的方式組合完成服務。
 
 ![pod](images/pod.png)
 
-Pod 的特征
+Pod 的特徵
 
-- 包含多个共享 IPC、Network 和 UTC namespace 的容器，可直接通过 localhost 通信
-- 所有 Pod 内容器都可以访问共享的 Volume，可以访问共享数据
-- 无容错性：直接创建的 Pod 一旦被调度后就跟 Node 绑定，即使 Node 挂掉也不会被重新调度（而是被自动删除），因此推荐使用 Deployment、Daemonset 等控制器来容错
-- 优雅终止：Pod 删除的时候先给其内的进程发送 SIGTERM，等待一段时间（grace period）后才强制停止依然还在运行的进程
-- 特权容器（通过 SecurityContext 配置）具有改变系统配置的权限（在网络插件中大量应用）
+- 包含多個共享 IPC、Network 和 UTC namespace 的容器，可直接通過 localhost 通信
+- 所有 Pod 內容器都可以訪問共享的 Volume，可以訪問共享數據
+- 無容錯性：直接創建的 Pod 一旦被調度後就跟 Node 綁定，即使 Node 掛掉也不會被重新調度（而是被自動刪除），因此推薦使用 Deployment、Daemonset 等控制器來容錯
+- 優雅終止：Pod 刪除的時候先給其內的進程發送 SIGTERM，等待一段時間（grace period）後才強制停止依然還在運行的進程
+- 特權容器（通過 SecurityContext 配置）具有改變系統配置的權限（在網絡插件中大量應用）
 
-> Kubernetes v1.8+ 还支持容器间共享 PID namespace，需要 docker >= 1.13.1，并配置 kubelet `--docker-disable-shared-pid=false`。
+> Kubernetes v1.8+ 還支持容器間共享 PID namespace，需要 docker >= 1.13.1，並配置 kubelet `--docker-disable-shared-pid=false`。
 
-## API 版本对照表
+## API 版本對照表
 
-| Kubernetes 版本 | Core API 版本 | 默认开启 |
+| Kubernetes 版本 | Core API 版本 | 默認開啟 |
 | --------------- | ------------- | -------- |
 | v1.5+           | core/v1       | 是       |
 
-## Pod 定义
+## Pod 定義
 
-通过 [yaml 或 json 描述 Pod](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#pod-v1-core) 和其内容器的运行环境以及期望状态，比如一个最简单的 nginx pod 可以定义为
+通過 [yaml 或 json 描述 Pod](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#pod-v1-core) 和其內容器的運行環境以及期望狀態，比如一個最簡單的 nginx pod 可以定義為
 
 ```yaml
 apiVersion: v1
@@ -39,76 +39,76 @@ spec:
     - containerPort: 80
 ```
 
-> 在生产环境中，推荐使用 Deployment、StatefulSet、Job 或者 CronJob 等控制器来创建 Pod，而不推荐直接创建 Pod。
+> 在生產環境中，推薦使用 Deployment、StatefulSet、Job 或者 CronJob 等控制器來創建 Pod，而不推薦直接創建 Pod。
 
-### Docker 镜像支持
+### Docker 鏡像支持
 
-目前，Kubernetes 仅支持使用 Docker 镜像来创建容器，但并非支持 [Dockerfile](https://docs.docker.com/engine/reference/builder/) 定义的所有行为。如下表所示
+目前，Kubernetes 僅支持使用 Docker 鏡像來創建容器，但並非支持 [Dockerfile](https://docs.docker.com/engine/reference/builder/) 定義的所有行為。如下表所示
 
-| Dockerfile 指令 | 描述                       | 支持 | 说明                                         |
+| Dockerfile 指令 | 描述                       | 支持 | 說明                                         |
 | --------------- | -------------------------- | ---- | -------------------------------------------- |
-| ENTRYPOINT      | 启动命令                   | 是   | containerSpec.command                        |
-| CMD             | 命令的参数列表             | 是   | containerSpec.args                           |
-| ENV             | 环境变量                   | 是   | containerSpec.env                            |
-| EXPOSE          | 对外开放的端口             | 否   | 使用 containerSpec.ports.containerPort 替代  |
-| VOLUME          | 数据卷                     | 是   | 使用 volumes 和 volumeMounts                 |
-| USER            | 进程运行用户以及用户组     | 是   | securityContext.runAsUser/supplementalGroups |
-| WORKDIR         | 工作目录                   | 是   | containerSpec.workingDir                     |
-| STOPSIGNAL      | 停止容器时给进程发送的信号 | 是   | SIGKILL                                      |
-| HEALTHCHECK     | 健康检查                   | 否   | 使用 livenessProbe 和 readinessProbe 替代    |
-| SHELL           | 运行启动命令的 SHELL       | 否   | 使用镜像默认 SHELL 启动命令                  |
+| ENTRYPOINT      | 啟動命令                   | 是   | containerSpec.command                        |
+| CMD             | 命令的參數列表             | 是   | containerSpec.args                           |
+| ENV             | 環境變量                   | 是   | containerSpec.env                            |
+| EXPOSE          | 對外開放的端口             | 否   | 使用 containerSpec.ports.containerPort 替代  |
+| VOLUME          | 數據卷                     | 是   | 使用 volumes 和 volumeMounts                 |
+| USER            | 進程運行用戶以及用戶組     | 是   | securityContext.runAsUser/supplementalGroups |
+| WORKDIR         | 工作目錄                   | 是   | containerSpec.workingDir                     |
+| STOPSIGNAL      | 停止容器時給進程發送的信號 | 是   | SIGKILL                                      |
+| HEALTHCHECK     | 健康檢查                   | 否   | 使用 livenessProbe 和 readinessProbe 替代    |
+| SHELL           | 運行啟動命令的 SHELL       | 否   | 使用鏡像默認 SHELL 啟動命令                  |
 
-## Pod 生命周期
+## Pod 生命週期
 
-Kubernetes 以 `PodStatus.Phase` 抽象 Pod 的状态（但并不直接反映所有容器的状态）。可能的 Phase 包括
+Kubernetes 以 `PodStatus.Phase` 抽象 Pod 的狀態（但並不直接反映所有容器的狀態）。可能的 Phase 包括
 
-- Pending: Pod 已经在 apiserver 中创建，但还没有调度到 Node 上面
-- Running: Pod 已经调度到 Node 上面，所有容器都已经创建，并且至少有一个容器还在运行或者正在启动
-- Succeeded: Pod 调度到 Node 上面后成功运行结束，并且不会重启
-- Failed: Pod 调度到 Node 上面后至少有一个容器运行失败（即退出码不为 0 或者被系统终止）
-- Unknonwn: 状态未知，通常是由于 apiserver 无法与 kubelet 通信导致
+- Pending: Pod 已經在 apiserver 中創建，但還沒有調度到 Node 上面
+- Running: Pod 已經調度到 Node 上面，所有容器都已經創建，並且至少有一個容器還在運行或者正在啟動
+- Succeeded: Pod 調度到 Node 上面後成功運行結束，並且不會重啟
+- Failed: Pod 調度到 Node 上面後至少有一個容器運行失敗（即退出碼不為 0 或者被系統終止）
+- Unknonwn: 狀態未知，通常是由於 apiserver 無法與 kubelet 通信導致
 
-可以用 kubectl 命令查询 Pod Phase：
+可以用 kubectl 命令查詢 Pod Phase：
 
 ```sh
 $ kubectl get pod reviews-v1-5bdc544bbd-5qgxj -o jsonpath="{.status.phase}"
 Running
 ```
 
-PodSpec 中的 `restartPolicy` 可以用来设置是否对退出的 Pod 重启，可选项包括 `Always`、`OnFailure`、以及 `Never`。比如
+PodSpec 中的 `restartPolicy` 可以用來設置是否對退出的 Pod 重啟，可選項包括 `Always`、`OnFailure`、以及 `Never`。比如
 
-- 单容器的 Pod，容器成功退出时，不同 `restartPolicy` 时的动作为
-  - Always: 重启 Container; Pod `phase` 保持 Running.
-  - OnFailure: Pod `phase` 变成 Succeeded.
-  - Never: Pod `phase` 变成 Succeeded.
-- 单容器的 Pod，容器失败退出时，不同 `restartPolicy` 时的动作为
-  - Always: 重启 Container; Pod `phase` 保持 Running.
-  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
-  - Never: Pod `phase` 变成 Failed.
-- 2个容器的 Pod，其中一个容器在运行而另一个失败退出时，不同 `restartPolicy` 时的动作为
-  - Always: 重启 Container; Pod `phase` 保持 Running.
-  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
-  - Never: 不重启 Container; Pod `phase` 保持 Running.
-- 2个容器的 Pod，其中一个容器停止而另一个失败退出时，不同 `restartPolicy` 时的动作为
-  - Always: 重启 Container; Pod `phase` 保持 Running.
-  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
-  - Never: Pod `phase` 变成 Failed.
-- 单容器的 Pod，容器内存不足（OOM），不同 `restartPolicy` 时的动作为
-  - Always: 重启 Container; Pod `phase` 保持 Running.
-  - OnFailure: 重启 Container; Pod `phase` 保持 Running.
-  - Never: 记录失败事件; Pod `phase` 变成 Failed.
-- Pod 还在运行，但磁盘不可访问时
-  - 终止所有容器
-  - Pod `phase` 变成 Failed
-  - 如果 Pod 是由某个控制器管理的，则重新创建一个 Pod 并调度到其他 Node 运行
-- Pod 还在运行，但由于网络分区故障导致 Node 无法访问
-  - Node controller等待 Node 事件超时
-  - Node controller 将 Pod `phase` 设置为 Failed.
-  - 如果 Pod 是由某个控制器管理的，则重新创建一个 Pod 并调度到其他 Node 运行
+- 單容器的 Pod，容器成功退出時，不同 `restartPolicy` 時的動作為
+  - Always: 重啟 Container; Pod `phase` 保持 Running.
+  - OnFailure: Pod `phase` 變成 Succeeded.
+  - Never: Pod `phase` 變成 Succeeded.
+- 單容器的 Pod，容器失敗退出時，不同 `restartPolicy` 時的動作為
+  - Always: 重啟 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重啟 Container; Pod `phase` 保持 Running.
+  - Never: Pod `phase` 變成 Failed.
+- 2個容器的 Pod，其中一個容器在運行而另一個失敗退出時，不同 `restartPolicy` 時的動作為
+  - Always: 重啟 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重啟 Container; Pod `phase` 保持 Running.
+  - Never: 不重啟 Container; Pod `phase` 保持 Running.
+- 2個容器的 Pod，其中一個容器停止而另一個失敗退出時，不同 `restartPolicy` 時的動作為
+  - Always: 重啟 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重啟 Container; Pod `phase` 保持 Running.
+  - Never: Pod `phase` 變成 Failed.
+- 單容器的 Pod，容器內存不足（OOM），不同 `restartPolicy` 時的動作為
+  - Always: 重啟 Container; Pod `phase` 保持 Running.
+  - OnFailure: 重啟 Container; Pod `phase` 保持 Running.
+  - Never: 記錄失敗事件; Pod `phase` 變成 Failed.
+- Pod 還在運行，但磁盤不可訪問時
+  - 終止所有容器
+  - Pod `phase` 變成 Failed
+  - 如果 Pod 是由某個控制器管理的，則重新創建一個 Pod 並調度到其他 Node 運行
+- Pod 還在運行，但由於網絡分區故障導致 Node 無法訪問
+  - Node controller等待 Node 事件超時
+  - Node controller 將 Pod `phase` 設置為 Failed.
+  - 如果 Pod 是由某個控制器管理的，則重新創建一個 Pod 並調度到其他 Node 運行
 
 ## 使用 Volume
 
-Volume 可以为容器提供持久化存储，比如
+Volume 可以為容器提供持久化存儲，比如
 
 ```yaml
 apiVersion: v1
@@ -127,13 +127,13 @@ spec:
     emptyDir: {}
 ```
 
-更多挂载存储卷的方法参考 [Volume](volume.md)。
+更多掛載存儲卷的方法參考 [Volume](volume.md)。
 
-## 私有镜像
+## 私有鏡像
 
-在使用私有镜像时，需要创建一个 docker registry secret，并在容器中引用。
+在使用私有鏡像時，需要創建一個 docker registry secret，並在容器中引用。
 
-创建 docker registry secret：
+創建 docker registry secret：
 
 ```sh
 kubectl create secret docker-registry regsecret --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
@@ -159,9 +159,9 @@ CLIENT_ID=$(az ad sp show --id http://$SERVICE_PRINCIPAL_NAME --query appId --ou
 kubectl create secret docker-registry acr-auth --docker-server $ACR_LOGIN_SERVER --docker-username $CLIENT_ID --docker-password $SP_PASSWD --docker-email local@local.domain
 ```
 
-在引用 docker registry secret 时，有两种可选的方法：
+在引用 docker registry secret 時，有兩種可選的方法：
 
-第一种是直接在 Pod 描述文件中引用该 secret：
+第一種是直接在 Pod 描述文件中引用該 secret：
 
 ```yaml
 apiVersion: v1
@@ -176,7 +176,7 @@ spec:
     - name: acr-auth
 ```
 
-第二种是把 secret 添加到 service account 中，再通过 service account 引用（一般是某个 namespace 的 default service account）：
+第二種是把 secret 添加到 service account 中，再通過 service account 引用（一般是某個 namespace 的 default service account）：
 
 ```sh
 $ kubectl get secrets myregistrykey
@@ -198,25 +198,25 @@ imagePullSecrets:
 
 ## RestartPolicy
 
-支持三种 RestartPolicy
+支持三種 RestartPolicy
 
-- Always：只要退出就重启
-- OnFailure：失败退出（exit code 不等于 0）时重启
-- Never：只要退出就不再重启
+- Always：只要退出就重啟
+- OnFailure：失敗退出（exit code 不等於 0）時重啟
+- Never：只要退出就不再重啟
 
-注意，这里的重启是指在 Pod 所在 Node 上面本地重启，并不会调度到其他 Node 上去。
+注意，這裡的重啟是指在 Pod 所在 Node 上面本地重啟，並不會調度到其他 Node 上去。
 
-## 环境变量
+## 環境變量
 
-环境变量为容器提供了一些重要的资源，包括容器和 Pod 的基本信息以及集群中服务的信息等：
+環境變量為容器提供了一些重要的資源，包括容器和 Pod 的基本信息以及集群中服務的信息等：
 
 (1) hostname
 
-`HOSTNAME` 环境变量保存了该 Pod 的 hostname。
+`HOSTNAME` 環境變量保存了該 Pod 的 hostname。
 
 （2）容器和 Pod 的基本信息
 
-Pod 的名字、命名空间、IP 以及容器的计算资源限制等可以以 [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/) 的方式获取并存储到环境变量中。
+Pod 的名字、命名空間、IP 以及容器的計算資源限制等可以以 [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/) 的方式獲取並存儲到環境變量中。
 
 ```yaml
 apiVersion: v1
@@ -281,9 +281,9 @@ spec:
   restartPolicy: Never
 ```
 
-(3) 集群中服务的信息
+(3) 集群中服務的信息
 
-容器的环境变量中还可以引用容器运行前创建的所有服务的信息，比如默认的 kubernetes 服务对应以下环境变量：
+容器的環境變量中還可以引用容器運行前創建的所有服務的信息，比如默認的 kubernetes 服務對應以下環境變量：
 
 ```sh
 KUBERNETES_PORT_443_TCP_ADDR=10.0.0.1
@@ -296,40 +296,40 @@ KUBERNETES_PORT_443_TCP_PROTO=tcp
 KUBERNETES_PORT_443_TCP_PORT=443
 ```
 
-由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用 [DNS](../components/kube-dns.md) 来解析服务。
+由於環境變量存在創建順序的侷限性（環境變量中不包含後來創建的服務），推薦使用 [DNS](../components/kube-dns.md) 來解析服務。
 
-## 镜像拉取策略
+## 鏡像拉取策略
 
-支持三种 ImagePullPolicy
+支持三種 ImagePullPolicy
 
-- Always：不管镜像是否存在都会进行一次拉取
-- Never：不管镜像是否存在都不会进行拉取
-- IfNotPresent：只有镜像不存在时，才会进行镜像拉取
+- Always：不管鏡像是否存在都會進行一次拉取
+- Never：不管鏡像是否存在都不會進行拉取
+- IfNotPresent：只有鏡像不存在時，才會進行鏡像拉取
 
 注意：
 
-- 默认为 `IfNotPresent`，但 `:latest` 标签的镜像默认为 `Always`。
-- 拉取镜像时 docker 会进行校验，如果镜像中的 MD5 码没有变，则不会拉取镜像数据。
-- 生产环境中应该尽量避免使用 `:latest` 标签，而开发环境中可以借助 `:latest` 标签自动拉取最新的镜像。
+- 默認為 `IfNotPresent`，但 `:latest` 標籤的鏡像默認為 `Always`。
+- 拉取鏡像時 docker 會進行校驗，如果鏡像中的 MD5 碼沒有變，則不會拉取鏡像數據。
+- 生產環境中應該儘量避免使用 `:latest` 標籤，而開發環境中可以藉助 `:latest` 標籤自動拉取最新的鏡像。
 
-## 访问 DNS 的策略
+## 訪問 DNS 的策略
 
-通过设置 dnsPolicy 参数，设置 Pod 中容器访问 DNS 的策略
+通過設置 dnsPolicy 參數，設置 Pod 中容器訪問 DNS 的策略
 
-- ClusterFirst：优先基于 cluster domain （如 `default.svc.cluster.local`） 后缀，通过 kube-dns 查询 (默认策略)
-- Default：优先从 Node 中配置的 DNS 查询
+- ClusterFirst：優先基於 cluster domain （如 `default.svc.cluster.local`） 後綴，通過 kube-dns 查詢 (默認策略)
+- Default：優先從 Node 中配置的 DNS 查詢
 
-## 使用主机的 IPC 命名空间
+## 使用主機的 IPC 命名空間
 
-通过设置 `spec.hostIPC` 参数为 true，使用主机的 IPC 命名空间，默认为 false。
+通過設置 `spec.hostIPC` 參數為 true，使用主機的 IPC 命名空間，默認為 false。
 
-## 使用主机的网络命名空间
+## 使用主機的網絡命名空間
 
-通过设置 `spec.hostNetwork` 参数为 true，使用主机的网络命名空间，默认为 false。
+通過設置 `spec.hostNetwork` 參數為 true，使用主機的網絡命名空間，默認為 false。
 
-## 使用主机的 PID 空间
+## 使用主機的 PID 空間
 
-通过设置 `spec.hostPID` 参数为 true，使用主机的 PID 命名空间，默认为 false。
+通過設置 `spec.hostPID` 參數為 true，使用主機的 PID 命名空間，默認為 false。
 
 ```yaml
 apiVersion: v1
@@ -350,15 +350,15 @@ spec:
     name: busybox
 ```
 
-## 设置 Pod 的 hostname
+## 設置 Pod 的 hostname
 
-通过 `spec.hostname` 参数实现，如果未设置默认使用 `metadata.name` 参数的值作为 Pod 的 hostname。
+通過 `spec.hostname` 參數實現，如果未設置默認使用 `metadata.name` 參數的值作為 Pod 的 hostname。
 
-## 设置 Pod 的子域名
+## 設置 Pod 的子域名
 
-通过 `spec.subdomain` 参数设置 Pod 的子域名，默认为空。
+通過 `spec.subdomain` 參數設置 Pod 的子域名，默認為空。
 
-比如，指定 hostname 为 busybox-2 和 subdomain 为 default-subdomain，完整域名为 `busybox-2.default-subdomain.default.svc.cluster.local`，也可以简写为 `busybox-2.default-subdomain.default`：
+比如，指定 hostname 為 busybox-2 和 subdomain 為 default-subdomain，完整域名為 `busybox-2.default-subdomain.default.svc.cluster.local`，也可以簡寫為 `busybox-2.default-subdomain.default`：
 
 ```yaml
 apiVersion: v1
@@ -380,8 +380,8 @@ spec:
 
 注意：
 
-- 默认情况下，DNS 为 Pod 生成的 A 记录格式为 `pod-ip-address.my-namespace.pod.cluster.local`，如 `1-2-3-4.default.pod.cluster.local`
-- 上面的示例还需要在 default namespace 中创建一个名为 `default-subdomain`（即 subdomain）的 headless service，否则其他 Pod 无法通过完整域名访问到该 Pod（只能自己访问到自己）
+- 默認情況下，DNS 為 Pod 生成的 A 記錄格式為 `pod-ip-address.my-namespace.pod.cluster.local`，如 `1-2-3-4.default.pod.cluster.local`
+- 上面的示例還需要在 default namespace 中創建一個名為 `default-subdomain`（即 subdomain）的 headless service，否則其他 Pod 無法通過完整域名訪問到該 Pod（只能自己訪問到自己）
 
 ```yaml
 kind: Service
@@ -398,13 +398,13 @@ spec:
     targetPort: 1234
 ```
 
-注意，必须为 headless service 设置至少一个服务端口（`spec.ports`，即便它看起来并不需要），否则 Pod 与 Pod 之间依然无法通过完整域名来访问。
+注意，必須為 headless service 設置至少一個服務端口（`spec.ports`，即便它看起來並不需要），否則 Pod 與 Pod 之間依然無法通過完整域名來訪問。
 
-## 设置 Pod 的 DNS 选项
+## 設置 Pod 的 DNS 選項
 
-从 v1.9 开始，可以在 kubelet 和 kube-apiserver 中设置 `--feature-gates=CustomPodDNS=true` 开启设置每个 Pod DNS 地址的功能。
+從 v1.9 開始，可以在 kubelet 和 kube-apiserver 中設置 `--feature-gates=CustomPodDNS=true` 開啟設置每個 Pod DNS 地址的功能。
 
-> 注意该功能在 v1.10 中为 Beta 版，v1.9 中为 Alpha 版。
+> 注意該功能在 v1.10 中為 Beta 版，v1.9 中為 Alpha 版。
 
 ```yaml
 apiVersion: v1
@@ -429,7 +429,7 @@ spec:
       - name: edns0
 ```
 
-对于旧版本的集群，可以使用 ConfigMap 来自定义 Pod 的 `/etc/resolv.conf`，如
+對於舊版本的集群，可以使用 ConfigMap 來自定義 Pod 的 `/etc/resolv.conf`，如
 
 ```yaml
 kind: ConfigMap
@@ -474,18 +474,18 @@ spec:
               path: resolv.conf
 ```
 
-## 资源限制
+## 資源限制
 
-Kubernetes 通过 cgroups 限制容器的 CPU 和内存等计算资源，包括 requests（请求，**调度器保证调度到资源充足的 Node 上，如果无法满足会调度失败**）和 limits（上限）等：
+Kubernetes 通過 cgroups 限制容器的 CPU 和內存等計算資源，包括 requests（請求，**調度器保證調度到資源充足的 Node 上，如果無法滿足會調度失敗**）和 limits（上限）等：
 
-- `spec.containers[].resources.limits.cpu`：CPU 上限，可以短暂超过，容器也不会被停止
-- `spec.containers[].resources.limits.memory`：内存上限，不可以超过；如果超过，容器可能会被终止或调度到其他资源充足的机器上
-- `spec.containers[].resources.limits.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir 等）的上限，超过后 Pod 会被驱逐
-- `spec.containers[].resources.requests.cpu`：CPU 请求，也是调度 CPU 资源的依据，可以超过
-- `spec.containers[].resources.requests.memory`：内存请求，也是调度内存资源的依据，可以超过；但如果超过，容器可能会在 Node 内存不足时清理
-- `spec.containers[].resources.requests.ephemeral-storage`：临时存储（容器可写层、日志以及 EmptyDir 等）的请求，调度容器存储的依据
+- `spec.containers[].resources.limits.cpu`：CPU 上限，可以短暫超過，容器也不會被停止
+- `spec.containers[].resources.limits.memory`：內存上限，不可以超過；如果超過，容器可能會被終止或調度到其他資源充足的機器上
+- `spec.containers[].resources.limits.ephemeral-storage`：臨時存儲（容器可寫層、日誌以及 EmptyDir 等）的上限，超過後 Pod 會被驅逐
+- `spec.containers[].resources.requests.cpu`：CPU 請求，也是調度 CPU 資源的依據，可以超過
+- `spec.containers[].resources.requests.memory`：內存請求，也是調度內存資源的依據，可以超過；但如果超過，容器可能會在 Node 內存不足時清理
+- `spec.containers[].resources.requests.ephemeral-storage`：臨時存儲（容器可寫層、日誌以及 EmptyDir 等）的請求，調度容器存儲的依據
 
-比如 nginx 容器请求 30% 的 CPU 和 56MB 的内存，但限制最多只用 50% 的 CPU 和 128MB 的内存：
+比如 nginx 容器請求 30% 的 CPU 和 56MB 的內存，但限制最多隻用 50% 的 CPU 和 128MB 的內存：
 
 ```yaml
 apiVersion: v1
@@ -509,26 +509,26 @@ spec:
 
 注意
 
-- CPU 的单位是 CPU 个数，可以用 `millicpu (m)` 表示少于 1 个 CPU 的情况，如 `500m = 500millicpu = 0.5cpu`，而一个 CPU 相当于
-  - AWS 上的一个 vCPU
-  - GCP 上的一个 Core
-  - Azure 上的一个 vCore
-  - 物理机上开启超线程时的一个超线程
-- 内存的单位则包括 `E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki` 等。
-- 从 v1.10 开始，可以设置 `kubelet ----cpu-manager-policy=static` 为 Guaranteed（即 requests.cpu 与 limits.cpu 相等）Pod 绑定 CPU（通过 cpuset cgroups）。
+- CPU 的單位是 CPU 個數，可以用 `millicpu (m)` 表示少於 1 個 CPU 的情況，如 `500m = 500millicpu = 0.5cpu`，而一個 CPU 相當於
+  - AWS 上的一個 vCPU
+  - GCP 上的一個 Core
+  - Azure 上的一個 vCore
+  - 物理機上開啟超線程時的一個超線程
+- 內存的單位則包括 `E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki` 等。
+- 從 v1.10 開始，可以設置 `kubelet ----cpu-manager-policy=static` 為 Guaranteed（即 requests.cpu 與 limits.cpu 相等）Pod 綁定 CPU（通過 cpuset cgroups）。
 
-## 健康检查
+## 健康檢查
 
-为了确保容器在部署后确实处在正常运行状态，Kubernetes 提供了两种探针（Probe）来探测容器的状态：
+為了確保容器在部署後確實處在正常運行狀態，Kubernetes 提供了兩種探針（Probe）來探測容器的狀態：
 
-- LivenessProbe：探测应用是否处于健康状态，如果不健康则删除并重新创建容器
-- ReadinessProbe：探测应用是否启动完成并且处于正常服务状态，如果不正常则不会接收来自 Kubernetes Service 的流量
+- LivenessProbe：探測應用是否處於健康狀態，如果不健康則刪除並重新創建容器
+- ReadinessProbe：探測應用是否啟動完成並且處於正常服務狀態，如果不正常則不會接收來自 Kubernetes Service 的流量
 
-Kubernetes 支持三种方式来执行探针：
+Kubernetes 支持三種方式來執行探針：
 
-- exec：在容器中执行一个命令，如果 [命令退出码](http://www.tldp.org/LDP/abs/html/exitcodes.html) 返回 `0` 则表示探测成功，否则表示失败
-- tcpSocket：对指定的容器 IP 及端口执行一个 TCP 检查，如果端口是开放的则表示探测成功，否则表示失败
-- httpGet：对指定的容器 IP、端口及路径执行一个 HTTP Get 请求，如果返回的 [状态码](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) 在 `[200,400)` 之间则表示探测成功，否则表示失败
+- exec：在容器中執行一個命令，如果 [命令退出碼](http://www.tldp.org/LDP/abs/html/exitcodes.html) 返回 `0` 則表示探測成功，否則表示失敗
+- tcpSocket：對指定的容器 IP 及端口執行一個 TCP 檢查，如果端口是開放的則表示探測成功，否則表示失敗
+- httpGet：對指定的容器 IP、端口及路徑執行一個 HTTP Get 請求，如果返回的 [狀態碼](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) 在 `[200,400)` 之間則表示探測成功，否則表示失敗
 
 ```yaml
 apiVersion: v1
@@ -576,11 +576,11 @@ spec:
 
 ## Init Container
 
-Pod 能够具有多个容器，应用运行在容器里面，但是它也可能有一个或多个先于应用容器启动的 Init 容器。Init 容器在所有容器运行之前执行（run-to-completion），常用来初始化配置。
+Pod 能夠具有多個容器，應用運行在容器裡面，但是它也可能有一個或多個先於應用容器啟動的 Init 容器。Init 容器在所有容器運行之前執行（run-to-completion），常用來初始化配置。
 
-如果为一个 Pod 指定了多个 Init 容器，那些容器会按顺序一次运行一个。 每个 Init 容器必须运行成功，下一个才能够运行。 当所有的 Init 容器运行完成时，Kubernetes 初始化 Pod 并像平常一样运行应用容器。
+如果為一個 Pod 指定了多個 Init 容器，那些容器會按順序一次運行一個。 每個 Init 容器必須運行成功，下一個才能夠運行。 當所有的 Init 容器運行完成時，Kubernetes 初始化 Pod 並像平常一樣運行應用容器。
 
-下面是一个 Init 容器的示例：
+下面是一個 Init 容器的示例：
 
 ```yaml
 apiVersion: v1
@@ -614,37 +614,37 @@ spec:
     emptyDir: {}
 ```
 
-因为 Init 容器具有与应用容器分离的单独镜像，使用 init 容器启动相关代码具有如下优势：
+因為 Init 容器具有與應用容器分離的單獨鏡像，使用 init 容器啟動相關代碼具有如下優勢：
 
-- 它们可以包含并运行实用工具，出于安全考虑，是不建议在应用容器镜像中包含这些实用工具的。
-- 它们可以包含使用工具和定制化代码来安装，但是不能出现在应用镜像中。例如，创建镜像没必要 FROM 另一个镜像，只需要在安装过程中使用类似 sed、 awk、 python 或 dig 这样的工具。
-- 应用镜像可以分离出创建和部署的角色，而没有必要联合它们构建一个单独的镜像。
-- 它们使用 Linux Namespace，所以对应用容器具有不同的文件系统视图。因此，它们能够具有访问 Secret 的权限，而应用容器不能够访问。
-- 它们在应用容器启动之前运行完成，然而应用容器并行运行，所以 Init 容器提供了一种简单的方式来阻塞或延迟应用容器的启动，直到满足了一组先决条件。
+- 它們可以包含並運行實用工具，出於安全考慮，是不建議在應用容器鏡像中包含這些實用工具的。
+- 它們可以包含使用工具和定製化代碼來安裝，但是不能出現在應用鏡像中。例如，創建鏡像沒必要 FROM 另一個鏡像，只需要在安裝過程中使用類似 sed、 awk、 python 或 dig 這樣的工具。
+- 應用鏡像可以分離出創建和部署的角色，而沒有必要聯合它們構建一個單獨的鏡像。
+- 它們使用 Linux Namespace，所以對應用容器具有不同的文件系統視圖。因此，它們能夠具有訪問 Secret 的權限，而應用容器不能夠訪問。
+- 它們在應用容器啟動之前運行完成，然而應用容器並行運行，所以 Init 容器提供了一種簡單的方式來阻塞或延遲應用容器的啟動，直到滿足了一組先決條件。
 
-Init 容器的资源计算，选择一下两者的较大值：
+Init 容器的資源計算，選擇一下兩者的較大值：
 
-- 所有 Init 容器中的资源使用的最大值
-- Pod 中所有容器资源使用的总和
+- 所有 Init 容器中的資源使用的最大值
+- Pod 中所有容器資源使用的總和
 
-Init 容器的重启策略：
+Init 容器的重啟策略：
 
-- 如果 Init 容器执行失败，Pod 设置的 restartPolicy 为 Never，则 pod 将处于 fail 状态。否则 Pod 将一直重新执行每一个 Init 容器直到所有的 Init 容器都成功。
-- 如果 Pod 异常退出，重新拉取 Pod 后，Init 容器也会被重新执行。所以在 Init 容器中执行的任务，需要保证是幂等的。
+- 如果 Init 容器執行失敗，Pod 設置的 restartPolicy 為 Never，則 pod 將處於 fail 狀態。否則 Pod 將一直重新執行每一個 Init 容器直到所有的 Init 容器都成功。
+- 如果 Pod 異常退出，重新拉取 Pod 後，Init 容器也會被重新執行。所以在 Init 容器中執行的任務，需要保證是冪等的。
 
-## 容器生命周期钩子
+## 容器生命週期鉤子
 
-容器生命周期钩子（Container Lifecycle Hooks）监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数。支持两种钩子：
+容器生命週期鉤子（Container Lifecycle Hooks）監聽容器生命週期的特定事件，並在事件發生時執行已註冊的回調函數。支持兩種鉤子：
 
-- postStart： 容器创建后立即执行，注意由于是异步执行，它无法保证一定在 ENTRYPOINT 之前运行。如果失败，容器会被杀死，并根据 RestartPolicy 决定是否重启
-- preStop：容器终止前执行，常用于资源清理。如果失败，容器同样也会被杀死
+- postStart： 容器創建後立即執行，注意由於是異步執行，它無法保證一定在 ENTRYPOINT 之前運行。如果失敗，容器會被殺死，並根據 RestartPolicy 決定是否重啟
+- preStop：容器終止前執行，常用於資源清理。如果失敗，容器同樣也會被殺死
 
-而钩子的回调函数支持两种方式：
+而鉤子的回調函數支持兩種方式：
 
-- exec：在容器内执行命令，如果命令的退出状态码是 `0` 表示执行成功，否则表示失败
-- httpGet：向指定 URL 发起 GET 请求，如果返回的 HTTP 状态码在 `[200, 400)` 之间表示请求成功，否则表示失败
+- exec：在容器內執行命令，如果命令的退出狀態碼是 `0` 表示執行成功，否則表示失敗
+- httpGet：向指定 URL 發起 GET 請求，如果返回的 HTTP 狀態碼在 `[200, 400)` 之間表示請求成功，否則表示失敗
 
-postStart 和 preStop 钩子示例：
+postStart 和 preStop 鉤子示例：
 
 ```yaml
 apiVersion: v1
@@ -667,9 +667,9 @@ spec:
 
 ## 使用 Capabilities
 
-默认情况下，容器都是以非特权容器的方式运行。比如，不能在容器中创建虚拟网卡、配置虚拟网络。
+默認情況下，容器都是以非特權容器的方式運行。比如，不能在容器中創建虛擬網卡、配置虛擬網絡。
 
-Kubernetes 提供了修改 [Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html) 的机制，可以按需要给容器增加或删除。比如下面的配置给容器增加了 `CAP_NET_ADMIN` 并删除了 `CAP_KILL`。
+Kubernetes 提供了修改 [Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html) 的機制，可以按需要給容器增加或刪除。比如下面的配置給容器增加了 `CAP_NET_ADMIN` 並刪除了 `CAP_KILL`。
 
 ```yaml
 apiVersion: v1
@@ -689,9 +689,9 @@ spec:
         - KILL
 ```
 
-## 限制网络带宽
+## 限制網絡帶寬
 
-可以通过给 Pod 增加 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 这两个 annotation 来限制 Pod 的网络带宽
+可以通過給 Pod 增加 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 這兩個 annotation 來限制 Pod 的網絡帶寬
 
 ```yaml
 apiVersion: v1
@@ -710,11 +710,11 @@ spec:
     - -s
 ```
 
-> **仅 kubenet 支持限制带宽**
+> **僅 kubenet 支持限制帶寬**
 >
-> 目前只有 kubenet 网络插件支持限制网络带宽，其他 CNI 网络插件暂不支持这个功能。
+> 目前只有 kubenet 網絡插件支持限制網絡帶寬，其他 CNI 網絡插件暫不支持這個功能。
 
-kubenet 的网络带宽限制其实是通过 tc 来实现的
+kubenet 的網絡帶寬限制其實是通過 tc 來實現的
 
 ```sh
 # setup qdisc (only once)
@@ -727,19 +727,19 @@ tc class add dev cbr0 parent 1: classid 1:3 htb rate 4Mbit
 tc filter add dev cbr0 protocol ip parent 1:0 prio 1 u32 match ip src 10.1.0.3/32 flowid 1:3
 ```
 
-## 调度到指定的 Node 上
+## 調度到指定的 Node 上
 
-可以通过 nodeSelector、nodeAffinity、podAffinity 以及 Taints 和 tolerations 等来将 Pod 调度到需要的 Node 上。
+可以通過 nodeSelector、nodeAffinity、podAffinity 以及 Taints 和 tolerations 等來將 Pod 調度到需要的 Node 上。
 
-也可以通过设置 nodeName 参数，将 Pod 调度到指定 node 节点上。
+也可以通過設置 nodeName 參數，將 Pod 調度到指定 node 節點上。
 
-比如，使用 nodeSelector，首先给 Node 加上标签：
+比如，使用 nodeSelector，首先給 Node 加上標籤：
 
 ```sh
 kubectl label nodes <your-node-name> disktype=ssd
 ```
 
-接着，指定该 Pod 只想运行在带有 `disktype=ssd` 标签的 Node 上：
+接著，指定該 Pod 只想運行在帶有 `disktype=ssd` 標籤的 Node 上：
 
 ```yaml
 apiVersion: v1
@@ -757,13 +757,13 @@ spec:
     disktype: ssd
 ```
 
-nodeAffinity、podAffinity 以及 Taints 和 tolerations 等的使用方法请参考 [调度器章节](../components/scheduler.md)。
+nodeAffinity、podAffinity 以及 Taints 和 tolerations 等的使用方法請參考 [調度器章節](../components/scheduler.md)。
 
-## 自定义 hosts
+## 自定義 hosts
 
-默认情况下，容器的 `/etc/hosts` 是 kubelet 自动生成的，并且仅包含 localhost 和 podName 等。不建议在容器内直接修改 `/etc/hosts` 文件，因为在 Pod 启动或重启时会被覆盖。
+默認情況下，容器的 `/etc/hosts` 是 kubelet 自動生成的，並且僅包含 localhost 和 podName 等。不建議在容器內直接修改 `/etc/hosts` 文件，因為在 Pod 啟動或重啟時會被覆蓋。
 
-默认的 `/etc/hosts` 文件格式如下，其中 `nginx-4217019353-fb2c5` 是 podName：
+默認的 `/etc/hosts` 文件格式如下，其中 `nginx-4217019353-fb2c5` 是 podName：
 
 ```sh
 $ kubectl exec nginx-4217019353-fb2c5 -- cat /etc/hosts
@@ -777,7 +777,7 @@ fe00::2	ip6-allrouters
 10.244.1.4	nginx-4217019353-fb2c5
 ```
 
-从 v1.7 开始，可以通过 `pod.Spec.HostAliases` 来增加 hosts 内容，如
+從 v1.7 開始，可以通過 `pod.Spec.HostAliases` 來增加 hosts 內容，如
 
 ```yaml
 apiVersion: v1
@@ -821,10 +821,10 @@ fe00::2	ip6-allrouters
 
 ## HugePages
 
-v1.8 + 支持给容器分配 HugePages，资源格式为 `hugepages-<size>`（如 `hugepages-2Mi`）。使用前要配置
+v1.8 + 支持給容器分配 HugePages，資源格式為 `hugepages-<size>`（如 `hugepages-2Mi`）。使用前要配置
 
-- 开启 `--feature-gates="HugePages=true"`
-- 在所有 Node 上面预分配好 HugePage ，以便 Kubelet 统计所在 Node 的 HugePage 容量
+- 開啟 `--feature-gates="HugePages=true"`
+- 在所有 Node 上面預分配好 HugePage ，以便 Kubelet 統計所在 Node 的 HugePage 容量
 
 使用示例
 
@@ -852,23 +852,23 @@ spec:
       medium: HugePages
 ```
 
-注意事项
+注意事項
 
-- HugePage 资源的请求和限制必须相同
-- HugePage 以 Pod 级别隔离，未来可能会支持容器级的隔离
-- 基于 HugePage 的 EmptyDir 存储卷最多只能使用请求的 HugePage 内存
-- 使用 `shmget()` 的 `SHM_HUGETLB` 选项时，应用必须运行在匹配 `proc/sys/vm/hugetlb_shm_group` 的用户组（supplemental group）中
+- HugePage 資源的請求和限制必須相同
+- HugePage 以 Pod 級別隔離，未來可能會支持容器級的隔離
+- 基於 HugePage 的 EmptyDir 存儲卷最多隻能使用請求的 HugePage 內存
+- 使用 `shmget()` 的 `SHM_HUGETLB` 選項時，應用必須運行在匹配 `proc/sys/vm/hugetlb_shm_group` 的用戶組（supplemental group）中
 
-## 优先级
+## 優先級
 
-从 v1.8 开始，可以为 Pod 设置一个优先级，保证高优先级的 Pod 优先调度。
+從 v1.8 開始，可以為 Pod 設置一個優先級，保證高優先級的 Pod 優先調度。
 
-优先级调度功能目前为 Beta 版，在 v1.11 版本中默认开启。对 v1.8-1.10 版本中使用前需要开启：
+優先級調度功能目前為 Beta 版，在 v1.11 版本中默認開啟。對 v1.8-1.10 版本中使用前需要開啟：
 
 - `--feature-gates=PodPriority=true`
 - `--runtime-config=scheduling.k8s.io/v1alpha1=true --admission-control=Controller-Foo,Controller-Bar,...,Priority`
 
-为 Pod 设置优先级前，先创建一个 PriorityClass，并设置优先级（数值越大优先级越高）：
+為 Pod 設置優先級前，先創建一個 PriorityClass，並設置優先級（數值越大優先級越高）：
 
 ```yaml
 apiVersion: scheduling.k8s.io/v1alpha1
@@ -880,9 +880,9 @@ globalDefault: false
 description: "This priority class should be used for XYZ service pods only."
 ```
 
-> Kubernetes 自动创建了 `system-cluster-critical` 和 `system-node-critical` 等两个 PriorityClass，用于 Kubernetes 核心组件。
+> Kubernetes 自動創建了 `system-cluster-critical` 和 `system-node-critical` 等兩個 PriorityClass，用於 Kubernetes 核心組件。
 
-为 Pod 指定优先级
+為 Pod 指定優先級
 
 ```yaml
 apiVersion: v1
@@ -899,13 +899,13 @@ spec:
   priorityClassName: high-priority
 ```
 
-当调度队列有多个 Pod 需要调度时，优先调度高优先级的 Pod。而当高优先级的 Pod 无法调度时，Kubernetes 会尝试先删除低优先级的 Pod 再将其调度到对应 Node 上（Preemption）。
+當調度隊列有多個 Pod 需要調度時，優先調度高優先級的 Pod。而當高優先級的 Pod 無法調度時，Kubernetes 會嘗試先刪除低優先級的 Pod 再將其調度到對應 Node 上（Preemption）。
 
-注意：**受限于 Kubernetes 的调度策略，抢占并不总是成功**。
+注意：**受限於 Kubernetes 的調度策略，搶佔並不總是成功**。
 
 ## PodDisruptionBudget
 
-[PodDisruptionBudget (PDB)](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) 用来保证一组 Pod 同时运行的数量，这些 Pod 需要使用 Deployment、ReplicationController、ReplicaSet 或者 StatefulSet 管理。
+[PodDisruptionBudget (PDB)](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) 用來保證一組 Pod 同時運行的數量，這些 Pod 需要使用 Deployment、ReplicationController、ReplicaSet 或者 StatefulSet 管理。
 
 ```yaml
 apiVersion: policy/v1beta1
@@ -921,13 +921,13 @@ spec:
 
 ## Sysctls
 
-Sysctls 允许容器设置内核参数，分为安全 Sysctls 和非安全 Sysctls：
+Sysctls 允許容器設置內核參數，分為安全 Sysctls 和非安全 Sysctls：
 
-- 安全 Sysctls：即设置后不影响其他 Pod 的内核选项，只作用在容器 namespace 中，默认开启。包括以下几种
+- 安全 Sysctls：即設置後不影響其他 Pod 的內核選項，只作用在容器 namespace 中，默認開啟。包括以下幾種
   - `kernel.shm_rmid_forced`
   - `net.ipv4.ip_local_port_range`
   - `net.ipv4.tcp_syncookies`
-- 非安全 Sysctls：即设置好有可能影响其他 Pod 和 Node 上其他服务的内核选项，默认禁止。如果使用，需要管理员在配置 kubelet 时开启，如 `kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,net.ipv4.route.min_pmtu'`
+- 非安全 Sysctls：即設置好有可能影響其他 Pod 和 Node 上其他服務的內核選項，默認禁止。如果使用，需要管理員在配置 kubelet 時開啟，如 `kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,net.ipv4.route.min_pmtu'`
 
 v1.6-v1.10 示例：
 
@@ -943,7 +943,7 @@ spec:
   ...
 ```
 
-从 v1.11 开始，Sysctls 升级为 Beta 版本，不再区分安全和非安全 sysctl，统一通过 podSpec.securityContext.sysctls 设置，如
+從 v1.11 開始，Sysctls 升級為 Beta 版本，不再區分安全和非安全 sysctl，統一通過 podSpec.securityContext.sysctls 設置，如
 
 ```yaml
 apiVersion: v1
@@ -962,9 +962,9 @@ spec:
   ...
 ```
 
-## Pod 时区
+## Pod 時區
 
-很多容器都是配置了 UTC 时区，与国内集群的 Node 所在时区有可能不一致，可以通过 HostPath 存储插件给容器配置与 Node 一样的时区：
+很多容器都是配置了 UTC 時區，與國內集群的 Node 所在時區有可能不一致，可以通過 HostPath 存儲插件給容器配置與 Node 一樣的時區：
 
 ```yaml
 apiVersion: v1
@@ -988,7 +988,7 @@ spec:
     name: time
 ```
 
-## 参考文档
+## 參考文檔
 
 - [What is Pod?](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes Pod Lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)

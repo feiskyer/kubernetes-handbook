@@ -1,10 +1,10 @@
-# 配置 CA 并创建 TLS 证书
+# 配置 CA 並創建 TLS 證書
 
-我们将使用 CloudFlare's PKI 工具 [cfssl](https://github.com/cloudflare/cfssl) 来配置 [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure)，然后使用它去创建 Certificate Authority（CA）， 并为 etcd、kube-apiserver、kubelet 以及 kube-proxy 创建 TLS 证书。
+我們將使用 CloudFlare's PKI 工具 [cfssl](https://github.com/cloudflare/cfssl) 來配置 [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure)，然後使用它去創建 Certificate Authority（CA）， 併為 etcd、kube-apiserver、kubelet 以及 kube-proxy 創建 TLS 證書。
 
 ## Certificate Authority
 
-本节创建用于生成其他 TLS 证书的 Certificate Authority。
+本節創建用於生成其他 TLS 證書的 Certificate Authority。
 
 新建 CA 配置文件
 
@@ -26,7 +26,7 @@ cat > ca-config.json <<EOF
 EOF
 ```
 
-新建 CA 凭证签发请求文件:
+新建 CA 憑證簽發請求文件:
 
 ```sh
 cat > ca-csr.json <<EOF
@@ -49,26 +49,26 @@ cat > ca-csr.json <<EOF
 EOF
 ```
 
-生成 CA 凭证和私钥:
+生成 CA 憑證和私鑰:
 
 ```sh
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
-结果将生成以下两个文件：
+結果將生成以下兩個文件：
 
 ```sh
 ca-key.pem
 ca.pem
 ```
 
-## client 与 server 凭证
+## client 與 server 憑證
 
-本节将创建用于 Kubernetes 组件的 client 与 server 凭证，以及一个用于 Kubernetes admin 用户的 client 凭证。
+本節將創建用於 Kubernetes 組件的 client 與 server 憑證，以及一個用於 Kubernetes admin 用戶的 client 憑證。
 
-### Admin 客户端凭证
+### Admin 客戶端憑證
 
-创建 `admin` client 凭证签发请求文件:
+創建 `admin` client 憑證簽發請求文件:
 
 ```sh
 cat > admin-csr.json <<EOF
@@ -91,7 +91,7 @@ cat > admin-csr.json <<EOF
 EOF
 ```
 
-创建 `admin` client 凭证和私钥:
+創建 `admin` client 憑證和私鑰:
 
 ```sh
 cfssl gencert \
@@ -102,19 +102,19 @@ cfssl gencert \
   admin-csr.json | cfssljson -bare admin
 ```
 
-结果将生成以下两个文件
+結果將生成以下兩個文件
 
 ```sh
 admin-key.pem
 admin.pem
 ```
 
-### Kubelet 客户端凭证
+### Kubelet 客戶端憑證
 
-Kubernetes 使用 [special-purpose authorization mode](https://kubernetes.io/docs/admin/authorization/node/)（被称作 Node Authorizer）授权来自 [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet)
-的 API 请求。为了通过 Node Authorizer 的授权, Kubelet 必须使用一个署名为 `system:node:<nodeName>` 的凭证来证明它属于 `system:nodes` 用户组。本节将会给每台 worker 节点创建符合 Node Authorizer 要求的凭证。
+Kubernetes 使用 [special-purpose authorization mode](https://kubernetes.io/docs/admin/authorization/node/)（被稱作 Node Authorizer）授權來自 [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet)
+的 API 請求。為了通過 Node Authorizer 的授權, Kubelet 必須使用一個署名為 `system:node:<nodeName>` 的憑證來證明它屬於 `system:nodes` 用戶組。本節將會給每臺 worker 節點創建符合 Node Authorizer 要求的憑證。
 
-给每台 worker 节点创建凭证和私钥：
+給每臺 worker 節點創建憑證和私鑰：
 
 ```sh
 for instance in worker-0 worker-1 worker-2; do
@@ -153,7 +153,7 @@ cfssl gencert \
 done
 ```
 
-结果将产生以下几个文件：
+結果將產生以下幾個文件：
 
 ```sh
 worker-0-key.pem
@@ -164,7 +164,7 @@ worker-2-key.pem
 worker-2.pem
 ```
 
-### Kube-controller-manager 客户端凭证
+### Kube-controller-manager 客戶端憑證
 
 ```sh
 cat > kube-controller-manager-csr.json <<EOF
@@ -194,14 +194,14 @@ cfssl gencert \
   kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
 ```
 
-结果将产生以下几个文件：
+結果將產生以下幾個文件：
 
 ```sh
 kube-controller-manager-key.pem
 kube-controller-manager.pem
 ```
 
-### Kube-proxy 客户端凭证
+### Kube-proxy 客戶端憑證
 
 ```sh
 cat > kube-proxy-csr.json <<EOF
@@ -231,14 +231,14 @@ cfssl gencert \
   kube-proxy-csr.json | cfssljson -bare kube-proxy
 ```
 
-结果将产生以下两个文件：
+結果將產生以下兩個文件：
 
 ```sh
 kube-proxy-key.pem
 kube-proxy.pem
 ```
 
-### kube-scheduler 证书
+### kube-scheduler 證書
 
 ```sh
 cat > kube-scheduler-csr.json <<EOF
@@ -268,18 +268,18 @@ cfssl gencert \
   kube-scheduler-csr.json | cfssljson -bare kube-scheduler
 ```
 
-结果将产生以下两个文件：
+結果將產生以下兩個文件：
 
 ```sh
 kube-scheduler-key.pem
 kube-scheduler.pem
 ```
 
-### Kubernetes API Server 证书
+### Kubernetes API Server 證書
 
-为了保证客户端与 Kubernetes API 的认证，Kubernetes API Server 凭证 中必需包含 `kubernetes-the-hard-way` 的静态 IP 地址。
+為了保證客戶端與 Kubernetes API 的認證，Kubernetes API Server 憑證 中必需包含 `kubernetes-the-hard-way` 的靜態 IP 地址。
 
-首先查询 `kubernetes-the-hard-way` 的静态 IP 地址:
+首先查詢 `kubernetes-the-hard-way` 的靜態 IP 地址:
 
 ```sh
 KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
@@ -287,7 +287,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-har
   --format 'value(address)')
 ```
 
-创建 Kubernetes API Server 凭证签发请求文件:
+創建 Kubernetes API Server 憑證簽發請求文件:
 
 ```sh
 cat > kubernetes-csr.json <<EOF
@@ -310,7 +310,7 @@ cat > kubernetes-csr.json <<EOF
 EOF
 ```
 
-创建 Kubernetes API Server 凭证与私钥:
+創建 Kubernetes API Server 憑證與私鑰:
 
 ```sh
 cfssl gencert \
@@ -322,14 +322,14 @@ cfssl gencert \
   kubernetes-csr.json | cfssljson -bare kubernetes
 ```
 
-结果产生以下两个文件:
+結果產生以下兩個文件:
 
 ```sh
 kubernetes-key.pem
 kubernetes.pem
 ```
 
-### Service Account 证书
+### Service Account 證書
 
 ```sh
 cat > service-account-csr.json <<EOF
@@ -359,16 +359,16 @@ cfssl gencert \
   service-account-csr.json | cfssljson -bare service-account
 ```
 
-结果将生成以下两个文件
+結果將生成以下兩個文件
 
 ```sh
 service-account-key.pem
 service-account.pem
 ```
 
-## 分发客户端和服务器证书
+## 分發客戶端和服務器證書
 
-将客户端凭证以及私钥复制到每个工作节点上:
+將客戶端憑證以及私鑰複製到每個工作節點上:
 
 ```sh
 for instance in worker-0 worker-1 worker-2; do
@@ -376,7 +376,7 @@ for instance in worker-0 worker-1 worker-2; do
 done
 ```
 
-将服务器凭证以及私钥复制到每个控制节点上:
+將服務器憑證以及私鑰複製到每個控制節點上:
 
 ```sh
 for instance in controller-0 controller-1 controller-2; do
@@ -385,6 +385,6 @@ for instance in controller-0 controller-1 controller-2; do
 done
 ```
 
-> `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 客户端凭证将会在下一节中用来创建客户端签发请求文件。
+> `kube-proxy`、`kube-controller-manager`、`kube-scheduler` 和 `kubelet` 客戶端憑證將會在下一節中用來創建客戶端簽發請求文件。
 
 下一步：[配置和生成 Kubernetes 配置文件](05-kubernetes-configuration-files.md)。

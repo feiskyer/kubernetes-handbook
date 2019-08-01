@@ -1,26 +1,26 @@
-# 部署 Kubernetes 控制节点
+# 部署 Kubernetes 控制節點
 
-本部分将会在三台控制节点上部署 Kubernetes 控制服务，并配置高可用的集群架构。并且还会创建一个用于外部访问的负载均衡器。每个控制节点上需要部署的服务包括：Kubernetes API Server、Scheduler 以及 Controller Manager 等。
+本部分將會在三臺控制節點上部署 Kubernetes 控制服務，並配置高可用的集群架構。並且還會創建一個用於外部訪問的負載均衡器。每個控制節點上需要部署的服務包括：Kubernetes API Server、Scheduler 以及 Controller Manager 等。
 
-## 事前准备
+## 事前準備
 
-以下命令需要在每台控制节点上面都运行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登录每个控制节点。例如:
+以下命令需要在每臺控制節點上面都運行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登錄每個控制節點。例如:
 
 ```sh
 gcloud compute ssh controller-0
 ```
 
-可以使用 tmux 同时登录到三点控制节点上，加快部署步骤。
+可以使用 tmux 同時登錄到三點控制節點上，加快部署步驟。
 
 ## 部署 Kubernetes 控制平面
 
-创建 Kubernetes 配置目录
+創建 Kubernetes 配置目錄
 
 ```sh
 sudo mkdir -p /etc/kubernetes/config
 ```
 
-### 下载并安装 Kubernetes Controller 二进制文件
+### 下載並安裝 Kubernetes Controller 二進制文件
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
@@ -43,7 +43,7 @@ sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
   encryption-config.yaml /var/lib/kubernetes/
 ```
 
-使用节点的内网 IP 地址作为 API server 与集群内部成员的广播地址。首先查询当前节点的内网 IP 地址：
+使用節點的內網 IP 地址作為 API server 與集群內部成員的廣播地址。首先查詢當前節點的內網 IP 地址：
 
 ```sh
 INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
@@ -164,7 +164,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### 启动控制器服务
+### 啟動控制器服務
 
 ```sh
 sudo systemctl daemon-reload
@@ -172,13 +172,13 @@ sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 ```
 
-> 请等待 10 秒以便 Kubernetes API Server 初始化。
+> 請等待 10 秒以便 Kubernetes API Server 初始化。
 
-### 开启 HTTP 健康检查
+### 開啟 HTTP 健康檢查
 
-[Google Network Load Balancer](https://cloud.google.com/compute/docs/load-balancing/network) 将用在在三个 API Server 之前作负载均衡，并可以终止 TLS 并验证客户端证书。但是该负载均衡仅支持 HTTP 健康检查，因而这里部署 nginx 来代理 API Server 的 `/healthz` 连接。
+[Google Network Load Balancer](https://cloud.google.com/compute/docs/load-balancing/network) 將用在在三個 API Server 之前作負載均衡，並可以終止 TLS 並驗證客戶端證書。但是該負載均衡僅支持 HTTP 健康檢查，因而這裡部署 nginx 來代理 API Server 的 `/healthz` 連接。
 
-> `/healthz` API 默认不需要认证。
+> `/healthz` API 默認不需要認證。
 
 ```sh
 sudo apt-get update
@@ -204,13 +204,13 @@ sudo systemctl restart nginx
 sudo systemctl enable nginx
 ```
 
-### 验证
+### 驗證
 
 ```sh
 kubectl get componentstatuses --kubeconfig admin.kubeconfig
 ```
 
-将输出结果
+將輸出結果
 
 ```sh
 NAME                 STATUS    MESSAGE              ERROR
@@ -221,13 +221,13 @@ etcd-0               Healthy   {"health": "true"}
 etcd-1               Healthy   {"health": "true"}
 ```
 
-验证 Nginx HTTP 健康检查
+驗證 Nginx HTTP 健康檢查
 
 ```sh
 curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
 ```
 
-将输出
+將輸出
 
 ```sh
 HTTP/1.1 200 OK
@@ -240,19 +240,19 @@ Connection: keep-alive
 ok
 ```
 
-> 记得在每台控制节点上面都运行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。
+> 記得在每臺控制節點上面都運行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。
 
-## Kubelet RBAC 授权
+## Kubelet RBAC 授權
 
-本节将会配置 API Server 访问 Kubelet API 的 RBAC 授权。访问 Kubelet API 是获取 metrics、日志以及执行容器命令所必需的。
+本節將會配置 API Server 訪問 Kubelet API 的 RBAC 授權。訪問 Kubelet API 是獲取 metrics、日誌以及執行容器命令所必需的。
 
-> 这里设置 Kubeket `--authorization-mode` 为 `Webhook` 模式。Webhook 模式使用 [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API 来决定授权。
+> 這裡設置 Kubeket `--authorization-mode` 為 `Webhook` 模式。Webhook 模式使用 [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API 來決定授權。
 
 ```sh
 gcloud compute ssh controller-0
 ```
 
-创建 `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) 以允许请求 Kubelet API 和执行许用来管理 Pods 的任务:
+創建 `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) 以允許請求 Kubelet API 和執行許用來管理 Pods 的任務:
 
 ```sh
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
@@ -278,9 +278,9 @@ rules:
 EOF
 ```
 
-Kubernetes API Server 使用客户端凭证授权 Kubelet 为 `kubernetes` 用户，此凭证用 `--kubelet-client-certificate` flag 来定义。
+Kubernetes API Server 使用客戶端憑證授權 Kubelet 為 `kubernetes` 用戶，此憑證用 `--kubelet-client-certificate` flag 來定義。
 
-绑定 `system:kube-apiserver-to-kubelet` ClusterRole 到 `kubernetes` 用户:
+綁定 `system:kube-apiserver-to-kubelet` ClusterRole 到 `kubernetes` 用戶:
 
 ```sh
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
@@ -300,13 +300,13 @@ subjects:
 EOF
 ```
 
-## Kubernetes 前端负载均衡器
+## Kubernetes 前端負載均衡器
 
-本节将会建立一个位于 Kubernetes API Servers 前端的外部负载均衡器。 `kubernetes-the-hard-way` 静态 IP 地址将会配置在这个负载均衡器上。
+本節將會建立一個位於 Kubernetes API Servers 前端的外部負載均衡器。 `kubernetes-the-hard-way` 靜態 IP 地址將會配置在這個負載均衡器上。
 
-> 本指南创建的虚拟机内部并没有操作负载均衡器的权限，需要到创建这些虚拟机的那台机器上去做下面的操作。
+> 本指南創建的虛擬機內部並沒有操作負載均衡器的權限，需要到創建這些虛擬機的那臺機器上去做下面的操作。
 
-创建外部负载均衡器网络资源：
+創建外部負載均衡器網絡資源：
 
 ```sh
 KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
@@ -336,9 +336,9 @@ gcloud compute forwarding-rules create kubernetes-forwarding-rule \
   --target-pool kubernetes-target-pool
 ```
 
-### 验证
+### 驗證
 
-查询 `kubernetes-the-hard-way` 静态 IP 地址:
+查詢 `kubernetes-the-hard-way` 靜態 IP 地址:
 
 ```sh
 KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
@@ -346,13 +346,13 @@ KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-har
   --format 'value(address)')
 ```
 
-发送一个查询 Kubernetes 版本信息的 HTTP 请求
+發送一個查詢 Kubernetes 版本信息的 HTTP 請求
 
 ```sh
 curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version
 ```
 
-结果为
+結果為
 
 ```json
 {
@@ -368,4 +368,4 @@ curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version
 }
 ```
 
-下一步：[部署 Kubernetes Worker 节点](09-bootstrapping-kubernetes-workers.md)。
+下一步：[部署 Kubernetes Worker 節點](09-bootstrapping-kubernetes-workers.md)。

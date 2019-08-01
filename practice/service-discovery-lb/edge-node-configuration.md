@@ -1,31 +1,31 @@
-# 边缘节点配置
+# 邊緣節點配置
 
 ## 前言
 
-为了配置kubernetes中的traefik ingress的高可用，对于kubernetes集群以外只暴露一个访问入口，需要使用keepalived排除单点问题。本文参考了[kube-keepalived-vip](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)，但并没有使用容器方式安装，而是直接在node节点上安装。
+為了配置kubernetes中的traefik ingress的高可用，對於kubernetes集群以外只暴露一個訪問入口，需要使用keepalived排除單點問題。本文參考了[kube-keepalived-vip](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)，但並沒有使用容器方式安裝，而是直接在node節點上安裝。
 
-## 定义
+## 定義
 
-首先解释下什么叫边缘节点（Edge Node），所谓的边缘节点即集群内部用来向集群外暴露服务能力的节点，集群外部的服务通过该节点来调用集群内部的服务，边缘节点是集群内外交流的一个Endpoint。
+首先解釋下什麼叫邊緣節點（Edge Node），所謂的邊緣節點即集群內部用來向集群外暴露服務能力的節點，集群外部的服務通過該節點來調用集群內部的服務，邊緣節點是集群內外交流的一個Endpoint。
 
-**边缘节点要考虑两个问题**
+**邊緣節點要考慮兩個問題**
 
-- 边缘节点的高可用，不能有单点故障，否则整个kubernetes集群将不可用
-- 对外的一致暴露端口，即只能有一个外网访问IP和端口
+- 邊緣節點的高可用，不能有單點故障，否則整個kubernetes集群將不可用
+- 對外的一致暴露端口，即只能有一個外網訪問IP和端口
 
-## 架构
+## 架構
 
-为了满足边缘节点的以上需求，我们使用[keepalived](http://www.keepalived.org/)来实现。
+為了滿足邊緣節點的以上需求，我們使用[keepalived](http://www.keepalived.org/)來實現。
 
-在Kubernetes集群外部配置nginx来访问边缘节点的VIP。
+在Kubernetes集群外部配置nginx來訪問邊緣節點的VIP。
 
-选择Kubernetes的三个node作为边缘节点，并安装keepalived。
+選擇Kubernetes的三個node作為邊緣節點，並安裝keepalived。
 
-![边缘节点架构](images/node-edge-arch.jpg)
+![邊緣節點架構](images/node-edge-arch.jpg)
 
-## 准备
+## 準備
 
-复用kubernetes测试集群的三台主机。
+複用kubernetes測試集群的三臺主機。
 
 172.20.0.113
 
@@ -33,37 +33,37 @@
 
 172.20.0.115
 
-## 安装
+## 安裝
 
-使用keepalived管理VIP，VIP是使用IPVS创建的，[IPVS](http://www.linux-vs.org)已经成为linux内核的模块，不需要安装
+使用keepalived管理VIP，VIP是使用IPVS創建的，[IPVS](http://www.linux-vs.org)已經成為linux內核的模塊，不需要安裝
 
-LVS的工作原理请参考：http://www.cnblogs.com/codebean/archive/2011/07/25/2116043.html
+LVS的工作原理請參考：http://www.cnblogs.com/codebean/archive/2011/07/25/2116043.html
 
-不使用镜像方式安装了，直接手动安装，指定三个节点为边缘节点（Edge node）。
+不使用鏡像方式安裝了，直接手動安裝，指定三個節點為邊緣節點（Edge node）。
 
-因为我们的测试集群一共只有三个node，所有在在三个node上都要安装keepalived和ipvsadmin。
+因為我們的測試集群一共只有三個node，所有在在三個node上都要安裝keepalived和ipvsadmin。
 
 ```Shell
 yum install keepalived ipvsadm
 ```
 
-## 配置说明
+## 配置說明
 
-需要对原先的traefik ingress进行改造，从以Deployment方式启动改成DeamonSet。还需要指定一个与node在同一网段的IP地址作为VIP，我们指定成172.20.0.119，配置keepalived前需要先保证这个IP没有被分配。。
+需要對原先的traefik ingress進行改造，從以Deployment方式啟動改成DeamonSet。還需要指定一個與node在同一網段的IP地址作為VIP，我們指定成172.20.0.119，配置keepalived前需要先保證這個IP沒有被分配。。
 
-- Traefik以DaemonSet的方式启动
-- 通过nodeSelector选择边缘节点
-- 通过hostPort暴露端口
-- 当前VIP漂移到了172.20.0.115上
-- Traefik根据访问的host和path配置，将流量转发到相应的service上
+- Traefik以DaemonSet的方式啟動
+- 通過nodeSelector選擇邊緣節點
+- 通過hostPort暴露端口
+- 當前VIP漂移到了172.20.0.115上
+- Traefik根據訪問的host和path配置，將流量轉發到相應的service上
 
 ## 配置keepalived
 
-参考[基于keepalived 实现VIP转移，lvs，nginx的高可用](http://limian.blog.51cto.com/7542175/1301776)，配置keepalived。
+參考[基於keepalived 實現VIP轉移，lvs，nginx的高可用](http://limian.blog.51cto.com/7542175/1301776)，配置keepalived。
 
-keepalived的官方配置文档见：http://keepalived.org/pdf/UserGuide.pdf
+keepalived的官方配置文檔見：http://keepalived.org/pdf/UserGuide.pdf
 
-配置文件`/etc/keepalived/keepalived.conf`文件内容如下：
+配置文件`/etc/keepalived/keepalived.conf`文件內容如下：
 
 ```
 ! Configuration File for keepalived
@@ -122,19 +122,19 @@ virtual_server 172.20.0.119 80{
 }
 ```
 
-`Realserver`的IP和端口即traefik供外网访问的IP和端口。
+`Realserver`的IP和端口即traefik供外網訪問的IP和端口。
 
-将以上配置分别拷贝到另外两台node的`/etc/keepalived`目录下。
+將以上配置分別拷貝到另外兩臺node的`/etc/keepalived`目錄下。
 
-我们使用转发效率最高的`lb_kind DR`直接路由方式转发，使用TCP_CHECK来检测real_server的health。
+我們使用轉發效率最高的`lb_kind DR`直接路由方式轉發，使用TCP_CHECK來檢測real_server的health。
 
-**启动keepalived**
+**啟動keepalived**
 
 ```
 systemctl start keepalived
 ```
 
-三台node都启动了keepalived后，观察eth0的IP，会在三台node的某一台上发现一个VIP是172.20.0.119。
+三臺node都啟動了keepalived後，觀察eth0的IP，會在三臺node的某一臺上發現一個VIP是172.20.0.119。
 
 ```bash
 $ ip addr show eth0
@@ -146,13 +146,13 @@ $ ip addr show eth0
        valid_lft forever preferred_lft forever
 ```
 
-关掉拥有这个VIP主机上的keepalived，观察VIP是否漂移到了另外两台主机的其中之一上。
+關掉擁有這個VIP主機上的keepalived，觀察VIP是否漂移到了另外兩臺主機的其中之一上。
 
 ## 改造Traefik
 
-在这之前我们启动的traefik使用的是deployment，只启动了一个pod，无法保证高可用（即需要将pod固定在某一台主机上，这样才能对外提供一个唯一的访问地址），现在使用了keepalived就可以通过VIP来访问traefik，同时启动多个traefik的pod保证高可用。
+在這之前我們啟動的traefik使用的是deployment，只啟動了一個pod，無法保證高可用（即需要將pod固定在某一臺主機上，這樣才能對外提供一個唯一的訪問地址），現在使用了keepalived就可以通過VIP來訪問traefik，同時啟動多個traefik的pod保證高可用。
 
-配置文件`traefik.yaml`内容如下：
+配置文件`traefik.yaml`內容如下：
 
 ```Yaml
 apiVersion: extensions/v1beta1
@@ -198,7 +198,7 @@ spec:
         edgenode: "true"
 ```
 
-注意，我们使用了`nodeSelector`选择边缘节点来调度traefik-ingress-lb运行在它上面，所有你需要使用：
+注意，我們使用了`nodeSelector`選擇邊緣節點來調度traefik-ingress-lb運行在它上面，所有你需要使用：
 
 ```
 kubectl label nodes 172.20.0.113 edgenode=true
@@ -206,9 +206,9 @@ kubectl label nodes 172.20.0.114 edgenode=true
 kubectl label nodes 172.20.0.115 edgenode=true
 ```
 
-给三个node打标签。
+給三個node打標籤。
 
-查看DaemonSet的启动情况：
+查看DaemonSet的啟動情況：
 
 ```Bash
 $ kubectl -n kube-system get ds
@@ -216,16 +216,16 @@ NAME                 DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE
 traefik-ingress-lb   3         3         3         3            3           edgenode=true                              2h
 ```
 
-现在就可以在外网通过172.20.0.119:80来访问到traefik ingress了。
+現在就可以在外網通過172.20.0.119:80來訪問到traefik ingress了。
 
-## 参考
+## 參考
 
 [kube-keepalived-vip](https://github.com/kubernetes/contrib/tree/master/keepalived-vip)
 
 http://www.keepalived.org/
 
-[keepalived工作原理与配置说明](http://outofmemory.cn/wiki/keepalived-configuration)
+[keepalived工作原理與配置說明](http://outofmemory.cn/wiki/keepalived-configuration)
 
-[LVS简介及使用](http://www.cnblogs.com/codebean/archive/2011/07/25/2116043.html)
+[LVS簡介及使用](http://www.cnblogs.com/codebean/archive/2011/07/25/2116043.html)
 
-[基于keepalived 实现VIP转移，lvs，nginx的高可用](http://limian.blog.51cto.com/7542175/1301776)
+[基於keepalived 實現VIP轉移，lvs，nginx的高可用](http://limian.blog.51cto.com/7542175/1301776)

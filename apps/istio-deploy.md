@@ -1,12 +1,12 @@
-# Istio 安装部署
+# Istio 安裝部署
 
-在安装 Istio 之前要确保 Kubernetes 集群（仅支持 v1.9.0 及以后版本）已部署并配置好本地的 kubectl 客户端。比如，使用 minikube：
+在安裝 Istio 之前要確保 Kubernetes 集群（僅支持 v1.9.0 及以後版本）已部署並配置好本地的 kubectl 客戶端。比如，使用 minikube：
 
 ```sh
 minikube start --memory=4096 --kubernetes-version=v1.11.1 --vm-driver=hyperkit
 ```
 
-## 下载 Istio
+## 下載 Istio
 
 ```sh
 curl -L https://git.io/getLatestIstio | sh -
@@ -16,7 +16,7 @@ cd istio-${ISTIO_VERSION}
 cp bin/istioctl /usr/local/bin
 ```
 
-## 部署 Istio 服务
+## 部署 Istio 服務
 
 初始化 Helm Tiller：
 
@@ -25,7 +25,7 @@ kubectl create -f install/kubernetes/helm/helm-service-account.yaml
 helm init --service-account tiller
 ```
 
-然后使用 Helm 部署：
+然後使用 Helm 部署：
 
 ```sh
 kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
@@ -42,7 +42,7 @@ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
   --set kiali.enabled=false
 ```
 
-部署完成后，可以检查 isotio-system namespace 中的服务是否正常运行：
+部署完成後，可以檢查 isotio-system namespace 中的服務是否正常運行：
 
 ```sh
 $  kubectl -n istio-system get pod
@@ -84,14 +84,14 @@ tracing                    ClusterIP      10.0.62.176    <none>         80/TCP  
 zipkin                     ClusterIP      10.0.158.231   <none>         9411/TCP                                                                                                    6m
 ```
 
-## 网格扩展
+## 網格擴展
 
-Istio 还支持管理非 Kubernetes 应用。此时需要在应用所在的 VM 或者物理中部署 Istio，具体步骤请参考 <https://istio.io/docs/setup/kubernetes/additional-setup/mesh-expansion/>。注意，在部署前需要满足以下条件
+Istio 還支持管理非 Kubernetes 應用。此時需要在應用所在的 VM 或者物理中部署 Istio，具體步驟請參考 <https://istio.io/docs/setup/kubernetes/additional-setup/mesh-expansion/>。注意，在部署前需要滿足以下條件
 
-- 待接入服务器必须能够通过 IP 接入网格中的服务端点。通常这需要 VPN 或者 VPC 的支持，或者容器网络为服务端点提供直接路由（非 NAT 或者防火墙屏蔽）。该服务器无需访问 Kubernetes 指派的集群 IP 地址。
-- Istio 控制平面服务（Pilot、Mixer、Citadel）以及 Kubernetes 的 DNS 服务器必须能够从虚拟机进行访问，通常会使用[内部负载均衡器](https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer)（也可以使用 NodePort）来满足这一要求，在虚拟机上运行 Istio 组件，或者使用自定义网络配置。
+- 待接入服務器必須能夠通過 IP 接入網格中的服務端點。通常這需要 VPN 或者 VPC 的支持，或者容器網絡為服務端點提供直接路由（非 NAT 或者防火牆屏蔽）。該服務器無需訪問 Kubernetes 指派的集群 IP 地址。
+- Istio 控制平面服務（Pilot、Mixer、Citadel）以及 Kubernetes 的 DNS 服務器必須能夠從虛擬機進行訪問，通常會使用[內部負載均衡器](https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer)（也可以使用 NodePort）來滿足這一要求，在虛擬機上運行 Istio 組件，或者使用自定義網絡配置。
 
-部署好后，就可以向 Istio 注册应用，如
+部署好後，就可以向 Istio 註冊應用，如
 
 ```sh
 # istioctl register servicename machine-ip portname:port
@@ -101,18 +101,18 @@ $ istioctl -n onprem register svc1 1.2.3.4 http:7000
 
 ## Prometheus、Grafana 和 Zipkin
 
-等所有 Pod 启动后，可以通过 NodePort、负载均衡服务的外网 IP 或者 `kubectl proxy` 来访问这些服务。比如通过 `kubectl proxy` 方式，先启动 kubectl proxy
+等所有 Pod 啟動後，可以通過 NodePort、負載均衡服務的外網 IP 或者 `kubectl proxy` 來訪問這些服務。比如通過 `kubectl proxy` 方式，先啟動 kubectl proxy
 
 ```sh
 $ kubectl proxy
 Starting to serve on 127.0.0.1:8001
 ```
 
-通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/grafana:3000/proxy/` 访问 Grafana 服务
+通過 `http://localhost:8001/api/v1/namespaces/istio-system/services/grafana:3000/proxy/` 訪問 Grafana 服務
 
 ![](images/grafana.png)
 
-通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/servicegraph:8088/proxy/` 访问 ServiceGraph 服务，展示服务之间调用关系图
+通過 `http://localhost:8001/api/v1/namespaces/istio-system/services/servicegraph:8088/proxy/` 訪問 ServiceGraph 服務，展示服務之間調用關係圖
 
 ![](images/servicegraph.png)
 
@@ -122,10 +122,10 @@ Starting to serve on 127.0.0.1:8001
 - `/d3graph` provides a JSON serialization for D3 visualization.
 - `/graph` provides a generic JSON serialization.
 
-通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/zipkin:9411/proxy/` 访问 Zipkin 跟踪页面
+通過 `http://localhost:8001/api/v1/namespaces/istio-system/services/zipkin:9411/proxy/` 訪問 Zipkin 跟蹤頁面
 
 ![](images/zipkin.png)
 
-通过 `http://localhost:8001/api/v1/namespaces/istio-system/services/prometheus:9090/proxy/` 访问 Prometheus 页面
+通過 `http://localhost:8001/api/v1/namespaces/istio-system/services/prometheus:9090/proxy/` 訪問 Prometheus 頁面
 
 ![](images/prometheus.png)

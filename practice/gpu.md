@@ -1,22 +1,22 @@
 # GPU
 
-Kubernetes 支持容器请求 GPU 资源（目前仅支持 NVIDIA GPU），在深度学习等场景中有大量应用。
+Kubernetes 支持容器請求 GPU 資源（目前僅支持 NVIDIA GPU），在深度學習等場景中有大量應用。
 
 ## 使用方法
 
 ### Kubernetes v1.8 及更新版本
 
-从 Kubernetes v1.8 开始，GPU 开始以 DevicePlugin 的形式实现。在使用之前需要配置
+從 Kubernetes v1.8 開始，GPU 開始以 DevicePlugin 的形式實現。在使用之前需要配置
 
 - kubelet/kube-apiserver/kube-controller-manager: `--feature-gates="DevicePlugins=true"`
-- 在所有的 Node 上安装 Nvidia 驱动，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
-- Kubelet 配置使用 docker 容器引擎（默认就是 docker），其他容器引擎暂不支持该特性
+- 在所有的 Node 上安裝 Nvidia 驅動，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
+- Kubelet 配置使用 docker 容器引擎（默認就是 docker），其他容器引擎暫不支持該特性
 
 #### NVIDIA 插件
 
 NVIDIA 需要 nvidia-docker。
 
-安装 nvidia-docker
+安裝 nvidia-docker
 
 ```sh
 # Install docker-ce
@@ -48,7 +48,7 @@ sudo pkill -SIGHUP dockerd
 docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
 ```
 
-设置 Docker 默认运行时为 nvidia
+設置 Docker 默認運行時為 nvidia
 
 ```sh
 # cat /etc/docker/daemon.json
@@ -63,7 +63,7 @@ docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
 }
 ```
 
-部署 NVDIA 设备插件
+部署 NVDIA 設備插件
 
 ```sh
 # For Kubernetes v1.8
@@ -75,7 +75,7 @@ kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.
 
 #### GCE/GKE GPU 插件
 
-该插件不需要 nvidia-docker，并且也支持 CRI 容器运行时。
+該插件不需要 nvidia-docker，並且也支持 CRI 容器運行時。
 
 ```sh
 # Install NVIDIA drivers on Container-Optimized OS:
@@ -88,7 +88,7 @@ kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/containe
 kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.9/cluster/addons/device-plugins/nvidia-gpu/daemonset.yaml
 ```
 
-#### 请求 `nvidia.com/gpu` 资源示例
+#### 請求 `nvidia.com/gpu` 資源示例
 
 ```yaml
 apiVersion: v1
@@ -108,15 +108,15 @@ spec:
 
 ### Kubernetes v1.6 和 v1.7
 
-> `alpha.kubernetes.io/nvidia-gpu` 已在 v1.10 中删除，新版本请使用 `nvidia.com/gpu`。
+> `alpha.kubernetes.io/nvidia-gpu` 已在 v1.10 中刪除，新版本請使用 `nvidia.com/gpu`。
 
-在 Kubernetes v1.6 和 v1.7 中使用 GPU 需要预先配置
+在 Kubernetes v1.6 和 v1.7 中使用 GPU 需要預先配置
 
-- 在所有的 Node 上安装 Nvidia 驱动，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
-- 在 apiserver 和 kubelet 上开启 `--feature-gates="Accelerators=true"`
-- Kubelet 配置使用 docker 容器引擎（默认就是 docker），其他容器引擎暂不支持该特性
+- 在所有的 Node 上安裝 Nvidia 驅動，包括 NVIDIA Cuda Toolkit 和 cuDNN 等
+- 在 apiserver 和 kubelet 上開啟 `--feature-gates="Accelerators=true"`
+- Kubelet 配置使用 docker 容器引擎（默認就是 docker），其他容器引擎暫不支持該特性
 
-使用资源名 `alpha.kubernetes.io/nvidia-gpu` 指定请求 GPU 的个数，如
+使用資源名 `alpha.kubernetes.io/nvidia-gpu` 指定請求 GPU 的個數，如
 
 ```yaml
 apiVersion: v1
@@ -193,16 +193,16 @@ physical_device_desc: "device: 0, name: Tesla K80, pci bus id: 0000:00:04.0"
 
 注意
 
-- GPU 资源必须在 `resources.limits` 中请求，`resources.requests` 中无效
-- 容器可以请求 1 个或多个 GPU，不能只请求一部分
-- 多个容器之间不能共享 GPU
-- 默认假设所有 Node 安装了相同型号的 GPU
+- GPU 資源必須在 `resources.limits` 中請求，`resources.requests` 中無效
+- 容器可以請求 1 個或多個 GPU，不能只請求一部分
+- 多個容器之間不能共享 GPU
+- 默認假設所有 Node 安裝了相同型號的 GPU
 
-## 多种型号的 GPU
+## 多種型號的 GPU
 
-如果集群 Node 中安装了多种型号的 GPU，则可以使用 Node Affinity 来调度 Pod 到指定 GPU 型号的 Node 上。
+如果集群 Node 中安裝了多種型號的 GPU，則可以使用 Node Affinity 來調度 Pod 到指定 GPU 型號的 Node 上。
 
-首先，在集群初始化时，需要给 Node 打上 GPU 型号的标签
+首先，在集群初始化時，需要給 Node 打上 GPU 型號的標籤
 
 ```sh
 # Label your nodes with the accelerator type they have.
@@ -210,7 +210,7 @@ kubectl label nodes <node-with-k80> accelerator=nvidia-tesla-k80
 kubectl label nodes <node-with-p100> accelerator=nvidia-tesla-p100
 ```
 
-然后，在创建 Pod 时设置 Node Affinity：
+然後，在創建 Pod 時設置 Node Affinity：
 
 ```yaml
 apiVersion: v1
@@ -230,9 +230,9 @@ spec:
     accelerator: nvidia-tesla-p100 # or nvidia-tesla-k80 etc.
 ```
 
-## 使用 CUDA 库
+## 使用 CUDA 庫
 
-NVIDIA Cuda Toolkit 和 cuDNN 等需要预先安装在所有 Node 上。为了访问 `/usr/lib/nvidia-375`，需要将 CUDA 库以 hostPath volume 的形式传给容器：
+NVIDIA Cuda Toolkit 和 cuDNN 等需要預先安裝在所有 Node 上。為了訪問 `/usr/lib/nvidia-375`，需要將 CUDA 庫以 hostPath volume 的形式傳給容器：
 
 ```yaml
 apiVersion: batch/v1
@@ -302,9 +302,9 @@ Fri Jun 16 19:49:53 2017
 +-----------------------------------------------------------------------------+
 ```
 
-## 附录：CUDA 安装方法
+## 附錄：CUDA 安裝方法
 
-安装 CUDA：
+安裝 CUDA：
 
 ```sh
 # Check for CUDA and try to install.
@@ -317,9 +317,9 @@ if ! dpkg-query -W cuda; then
 fi
 ```
 
-安装 cuDNN：
+安裝 cuDNN：
 
-首先到网站 <https://developer.nvidia.com/cudnn> 注册，并下载 cuDNN v5.1，然后运行命令安装
+首先到網站 <https://developer.nvidia.com/cudnn> 註冊，並下載 cuDNN v5.1，然後運行命令安裝
 
 ```sh
 tar zxvf cudnn-8.0-linux-x64-v5.1.tgz
@@ -329,7 +329,7 @@ sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda/lib64
 sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*
 ```
 
-安装完成后，可以运行 nvidia-smi 查看 GPU 设备的状态
+安裝完成後，可以運行 nvidia-smi 查看 GPU 設備的狀態
 
 ```sh
 $ nvidia-smi
@@ -352,7 +352,7 @@ Fri Jun 16 19:33:35 2017
 +-----------------------------------------------------------------------------+
 ```
 
-## 参考文档
+## 參考文檔
 
 - [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)
 - [Schedule GPUs on Kubernetes](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)

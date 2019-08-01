@@ -1,8 +1,8 @@
 # Argo
 
-Argo 是一个基于 Kubernetes 的工作流引擎，同时也支持 CI、CD 等丰富的功能。Argo 开源在 <https://github.com/argoproj>。
+Argo 是一個基於 Kubernetes 的工作流引擎，同時也支持 CI、CD 等豐富的功能。Argo 開源在 <https://github.com/argoproj>。
 
-## 安装 Argo
+## 安裝 Argo
 
 ### 使用 argo install
 
@@ -24,7 +24,7 @@ ACCESS_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 helm install --namespace argo --name argo-artifacts --set accessKey=$ACCESS_KEY,secretKey=$ACCESS_SECRET_KEY,service.type=LoadBalancer stable/minio
 ```
 
-创建名为 `argo-bucket` 的 Bucket（可以通过 `kubectl port-forward service/argo-artifacts-minio :9000` 访问 Minio UI 来操作）：
+創建名為 `argo-bucket` 的 Bucket（可以通過 `kubectl port-forward service/argo-artifacts-minio :9000` 訪問 Minio UI 來操作）：
 
 ```sh
 # download mc client
@@ -37,7 +37,7 @@ mc config host add argo-artifacts-minio-local http://$EXTERNAL_IP:9000 $ACCESS_K
 mc mb argo-artifacts-minio-local/argo-bucket
 ```
 
-然后修改 Argo 工作流控制器使用 Minio：
+然後修改 Argo 工作流控制器使用 Minio：
 
 ```sh
 $ kubectl -n argo create secret generic argo-artifacts-minio --from-literal=accesskey=$ACCESS_KEY --from-literal=secretkey=$ACCESS_SECRET_KEY
@@ -64,7 +64,7 @@ $ kubectl edit configmap workflow-controller-configmap -n argo
 
 ### 使用 Helm
 
-> 注意：当前 Helm Charts 使用的 Minio 版本较老，部署有可能会失败。
+> 注意：當前 Helm Charts 使用的 Minio 版本較老，部署有可能會失敗。
 
 ```sh
 # Download Argo.
@@ -77,26 +77,26 @@ kubectl create clusterrolebinding default-admin --clusterrole=cluster-admin --se
 helm install argo/argo-ci --name argo-ci --namespace=kube-system
 ```
 
-## 访问 Argo UI
+## 訪問 Argo UI
 
 ```sh
 $ kubectl -n argo port-forward service/argo-ui :80
 Forwarding from 127.0.0.1:52592 -> 8001
 Forwarding from [::1]:52592 -> 8001
 
-# 使用浏览器打开 127.0.0.1:52592
+# 使用瀏覽器打開 127.0.0.1:52592
 ```
 
 ## 工作流
 
-首先，给默认的 ServiceAccount 授予集群管理权限
+首先，給默認的 ServiceAccount 授予集群管理權限
 
 ```sh
 # Authz yourself if you are not admin.
 kubectl create clusterrolebinding default-admin --clusterrole=cluster-admin --serviceaccount=argo:default
 ```
 
-示例1： 最简单的工作流
+示例1： 最簡單的工作流
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -117,7 +117,7 @@ spec:
 argo -n argo submit https://raw.githubusercontent.com/argoproj/argo/master/examples/hello-world.yaml
 ```
 
-示例2：包含多个容器的工作流
+示例2：包含多個容器的工作流
 
 ```yaml
 # This example demonstrates the ability to pass artifacts
@@ -165,7 +165,7 @@ spec:
 argo -n argo submit https://raw.githubusercontent.com/argoproj/argo/master/examples/artifact-passing.yaml
 ```
 
-工作流创建完成后，可以查询它们的状态和日志，并在不需要时删除：
+工作流創建完成後，可以查詢它們的狀態和日誌，並在不需要時刪除：
 
 ```sh
 $ argo list
@@ -193,4 +193,4 @@ $ argo -n argo delete hello-world-4dhg8
 Workflow 'hello-world-4dhg8' deleted
 ```
 
-更多工作流 YAML 的格式见[官方文档](https://applatix.com/open-source/argo/docs/argo_v2_yaml.html)和[工作流示例](https://github.com/argoproj/argo/tree/master/examples)。
+更多工作流 YAML 的格式見[官方文檔](https://applatix.com/open-source/argo/docs/argo_v2_yaml.html)和[工作流示例](https://github.com/argoproj/argo/tree/master/examples)。

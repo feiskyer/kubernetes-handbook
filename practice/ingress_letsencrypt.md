@@ -1,8 +1,8 @@
 # Kubernetes Ingress Let's Encrypt
 
-## 申请域名
+## 申請域名
 
-在使用 Let's Encrypt 之前需要申请一个域名，比如可以到 GoDaddy、Name 等网站购买。具体步骤这里不再细说，可以参考网络教程操作。
+在使用 Let's Encrypt 之前需要申請一個域名，比如可以到 GoDaddy、Name 等網站購買。具體步驟這裡不再細說，可以參考網絡教程操作。
 
 ## 部署 Nginx Ingress Controller
 
@@ -12,7 +12,7 @@
 helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace=kube-system
 ```
 
-部署成功后，查询 Ingress 服务的公网 IP 地址（下文中假设该 IP 是 `6.6.6.6`）：
+部署成功後，查詢 Ingress 服務的公網 IP 地址（下文中假設該 IP 是 `6.6.6.6`）：
 
 ```sh
 $ kubectl -n kube-system get service nginx-ingress-controller
@@ -20,9 +20,9 @@ NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)
 nginx-ingress-controller   LoadBalancer   10.0.216.124   6.6.6.6         80:31935/TCP,443:31797/TCP   4d
 ```
 
-然后到域名注册服务商网站中，创建 A 记录，将需要的域名解析到 `6.6.6.6`。
+然後到域名註冊服務商網站中，創建 A 記錄，將需要的域名解析到 `6.6.6.6`。
 
-## 开启  Let's Encrypt
+## 開啟  Let's Encrypt
 
 ```sh
 # Install cert-manager
@@ -32,9 +32,9 @@ helm install --namespace=kube-system --name cert-manager stable/cert-manager --s
 kubectl apply -f https://raw.githubusercontent.com/feiskyer/kubernetes-handbook/master/manifests/ingress-nginx/cert-manager/cluster-issuer.yaml
 ```
 
-## 创建 Ingress
+## 創建 Ingress
 
-首先，创建一个 Secret，用于登录认证：
+首先，創建一個 Secret，用於登錄認證：
 
 ```sh
 $ htpasswd -c auth foo
@@ -43,7 +43,7 @@ $ kubectl -n kube-system create secret generic basic-auth --from-file=auth
 
 ### HTTP Ingress 示例
 
-为 nginx 服务（端口 80）创建 TLS Ingress，并且自动将 `http://echo-tls.example.com` 重定向到 `https://echo-tls.example.com`：
+為 nginx 服務（端口 80）創建 TLS Ingress，並且自動將 `http://echo-tls.example.com` 重定向到 `https://echo-tls.example.com`：
 
 ```sh
 cat <<EOF | kubectl create -f-
@@ -76,7 +76,7 @@ EOF
 
 ### TLS Ingress
 
-为 Kubernetes Dashboard 服务（端口443）创建 TLS Ingress，并且禁止该域名的 HTTP 访问：
+為 Kubernetes Dashboard 服務（端口443）創建 TLS Ingress，並且禁止該域名的 HTTP 訪問：
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -108,6 +108,6 @@ spec:
           servicePort: 443
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Nginx Ingress Controller Documentation](https://kubernetes.github.io/ingress-nginx/)

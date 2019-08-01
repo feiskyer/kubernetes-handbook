@@ -1,10 +1,10 @@
-# 附加组件
+# 附加組件
 
-部署 Kubernetes 集群后，还需要部署一系列的附加组件（addons），这些组件通常是保证集群功能正常运行必不可少的。
+部署 Kubernetes 集群后，還需要部署一系列的附加組件（addons），這些組件通常是保證集群功能正常運行必不可少的。
 
-通常使用 [addon-manager](addon-manager.md) 来管理集群中的附加组件。它运行在 Kubernetes 集群 Master 节点中，管理着 `$ADDON_PATH`（默认是 `/etc/kubernetes/addons/`）目录中的所有扩展，保证它们始终运行在期望状态。
+通常使用 [addon-manager](addon-manager.md) 來管理集群中的附加組件。它運行在 Kubernetes 集群 Master 節點中，管理著 `$ADDON_PATH`（默認是 `/etc/kubernetes/addons/`）目錄中的所有擴展，保證它們始終運行在期望狀態。
 
-常见的组件包括：
+常見的組件包括：
 
 - [addon-manager](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/addon-manager)
 - [cluster-loadbalancing](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/cluster-loadbalancing)
@@ -22,4 +22,4 @@
 - [prometheus](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/prometheus)
 - [storage-class](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/storage-class)
 
-更多的扩展组件可以参考 [Installing Addons](https://kubernetes.io/docs/concepts/cluster-administration/addons/) 和 [Legacy Addons](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)。
+更多的擴展組件可以參考 [Installing Addons](https://kubernetes.io/docs/concepts/cluster-administration/addons/) 和 [Legacy Addons](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)。

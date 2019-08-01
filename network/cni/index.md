@@ -1,25 +1,25 @@
 # CNI (Container Network Interface)
 
-Container Network Interface (CNI) 最早是由CoreOS发起的容器网络规范，是Kubernetes网络插件的基础。其基本思想为：Container Runtime在创建容器时，先创建好network namespace，然后调用CNI插件为这个netns配置网络，其后再启动容器内的进程。现已加入CNCF，成为CNCF主推的网络模型。
+Container Network Interface (CNI) 最早是由CoreOS發起的容器網絡規範，是Kubernetes網絡插件的基礎。其基本思想為：Container Runtime在創建容器時，先創建好network namespace，然後調用CNI插件為這個netns配置網絡，其後再啟動容器內的進程。現已加入CNCF，成為CNCF主推的網絡模型。
 
-CNI插件包括两部分：
+CNI插件包括兩部分：
 
-- CNI Plugin负责给容器配置网络，它包括两个基本的接口
-  - 配置网络: AddNetwork(net *NetworkConfig, rt *RuntimeConf) (types.Result, error)
-  - 清理网络: DelNetwork(net *NetworkConfig, rt *RuntimeConf) error
-- IPAM Plugin负责给容器分配IP地址，主要实现包括host-local和dhcp。
+- CNI Plugin負責給容器配置網絡，它包括兩個基本的接口
+  - 配置網絡: AddNetwork(net *NetworkConfig, rt *RuntimeConf) (types.Result, error)
+  - 清理網絡: DelNetwork(net *NetworkConfig, rt *RuntimeConf) error
+- IPAM Plugin負責給容器分配IP地址，主要實現包括host-local和dhcp。
 
-Kubernetes Pod 中的其他容器都是Pod所属pause容器的网络，创建过程为：
+Kubernetes Pod 中的其他容器都是Pod所屬pause容器的網絡，創建過程為：
 
-1. kubelet 先创建pause容器生成network namespace
-2. 调用网络CNI driver
-3. CNI driver 根据配置调用具体的cni 插件
-4. cni 插件给pause 容器配置网络
-5. pod 中其他的容器都使用 pause 容器的网络
+1. kubelet 先創建pause容器生成network namespace
+2. 調用網絡CNI driver
+3. CNI driver 根據配置調用具體的cni 插件
+4. cni 插件給pause 容器配置網絡
+5. pod 中其他的容器都使用 pause 容器的網絡
 
 ![](Chart_Container-Network-Interface-Drivers.png)
 
-所有CNI插件均支持通过环境变量和标准输入传入参数：
+所有CNI插件均支持通過環境變量和標準輸入傳入參數：
 
 ```sh
 $ echo '{"cniVersion": "0.3.1","name": "mynet","type": "macvlan","bridge": "cni0","isGateway": true,"ipMasq": true,"ipam": {"type": "host-local","subnet": "10.244.1.0/24","routes": [{ "dst": "0.0.0.0/0" }]}}' | sudo CNI_COMMAND=ADD CNI_NETNS=/var/run/netns/a CNI_PATH=./bin CNI_IFNAME=eth0 CNI_CONTAINERID=a CNI_VERSION=0.3.1 ./bin/bridge
@@ -27,21 +27,21 @@ $ echo '{"cniVersion": "0.3.1","name": "mynet","type": "macvlan","bridge": "cni0
 $ echo '{"cniVersion": "0.3.1","type":"IGNORED", "name": "a","ipam": {"type": "host-local", "subnet":"10.1.2.3/24"}}' | sudo CNI_COMMAND=ADD CNI_NETNS=/var/run/netns/a CNI_PATH=./bin CNI_IFNAME=a CNI_CONTAINERID=a CNI_VERSION=0.3.1 ./bin/host-local
 ```
 
-常见的CNI网络插件有
+常見的CNI網絡插件有
 
 ![](cni-plugins.png)
 
 **CNI Plugin Chains**
 
-CNI还支持Plugin Chains，即指定一个插件列表，由Runtime依次执行每个插件。这对支持端口映射（portmapping）、虚拟机等非常有帮助。配置方法可以参考后面的[端口映射示例](#端口映射示例)。
+CNI還支持Plugin Chains，即指定一個插件列表，由Runtime依次執行每個插件。這對支持端口映射（portmapping）、虛擬機等非常有幫助。配置方法可以參考後面的[端口映射示例](#端口映射示例)。
 
 ## Bridge
 
-Bridge是最简单的CNI网络插件，它首先在Host创建一个网桥，然后再通过veth pair连接该网桥到container netns。
+Bridge是最簡單的CNI網絡插件，它首先在Host創建一個網橋，然後再通過veth pair連接該網橋到container netns。
 
 ![](cni-bridge.png)
 
-注意：**Bridge模式下，多主机网络通信需要额外配置主机路由，或使用overlay网络**。可以借助[Flannel](../flannel/index.html)或者Quagga动态路由等来自动配置。比如overlay情况下的网络结构为
+注意：**Bridge模式下，多主機網絡通信需要額外配置主機路由，或使用overlay網絡**。可以藉助[Flannel](../flannel/index.html)或者Quagga動態路由等來自動配置。比如overlay情況下的網絡結構為
 
 ![](cni-overlay.png)
 
@@ -118,15 +118,15 @@ default via 10.10.0.1 dev eth0
 
 ### DHCP
 
-DHCP插件是最主要的IPAM插件之一，用来通过DHCP方式给容器分配IP地址，在macvlan插件中也会用到DHCP插件。
+DHCP插件是最主要的IPAM插件之一，用來通過DHCP方式給容器分配IP地址，在macvlan插件中也會用到DHCP插件。
 
-在使用DHCP插件之前，需要先启动dhcp daemon:
+在使用DHCP插件之前，需要先啟動dhcp daemon:
 
 ```sh
 /opt/cni/bin/dhcp daemon &
 ```
 
-然后配置网络使用dhcp作为IPAM插件
+然後配置網絡使用dhcp作為IPAM插件
 
 ```json
 {
@@ -139,7 +139,7 @@ DHCP插件是最主要的IPAM插件之一，用来通过DHCP方式给容器分�
 
 ### host-local
 
-host-local是最常用的CNI IPAM插件，用来给container分配IP地址。
+host-local是最常用的CNI IPAM插件，用來給container分配IP地址。
 
 IPv4:
 
@@ -179,7 +179,7 @@ IPv6:
 
 ## ptp
 
-ptp插件通过veth pair给容器和host创建点对点连接：veth pair一端在container netns内，另一端在host上。可以通过配置host端的IP和路由来让ptp连接的容器之前通信。
+ptp插件通過veth pair給容器和host創建點對點連接：veth pair一端在container netns內，另一端在host上。可以通過配置host端的IP和路由來讓ptp連接的容器之前通信。
 
 ```json
 {
@@ -197,22 +197,22 @@ ptp插件通过veth pair给容器和host创建点对点连接：veth pair一端�
 
 ## IPVLAN
 
-IPVLAN 和 MACVLAN 类似，都是从一个主机接口虚拟出多个虚拟网络接口。一个重要的区别就是所有的虚拟接口都有相同的 mac 地址，而拥有不同的 ip 地址。因为所有的虚拟接口要共享 mac 地址，所以有些需要注意的地方：
+IPVLAN 和 MACVLAN 類似，都是從一個主機接口虛擬出多個虛擬網絡接口。一個重要的區別就是所有的虛擬接口都有相同的 mac 地址，而擁有不同的 ip 地址。因為所有的虛擬接口要共享 mac 地址，所以有些需要注意的地方：
 
-- DHCP 协议分配 ip 的时候一般会用 mac 地址作为机器的标识。这个情况下，客户端动态获取 ip 的时候需要配置唯一的 ClientID 字段，并且 DHCP server 也要正确配置使用该字段作为机器标识，而不是使用 mac 地址
+- DHCP 協議分配 ip 的時候一般會用 mac 地址作為機器的標識。這個情況下，客戶端動態獲取 ip 的時候需要配置唯一的 ClientID 字段，並且 DHCP server 也要正確配置使用該字段作為機器標識，而不是使用 mac 地址
 
-IPVLAN支持两种模式：
+IPVLAN支持兩種模式：
 
-- L2 模式：此时跟macvlan bridge 模式工作原理很相似，父接口作为交换机来转发子接口的数据。同一个网络的子接口可以通过父接口来转发数据，而如果想发送到其他网络，报文则会通过父接口的路由转发出去。
-- L3 模式：此时ipvlan 有点像路由器的功能，它在各个虚拟网络和主机网络之间进行不同网络报文的路由转发工作。只要父接口相同，即使虚拟机/容器不在同一个网络，也可以互相 ping 通对方，因为 ipvlan 会在中间做报文的转发工作。注意 L3 模式下的虚拟接口 不会接收到多播或者广播的报文（这个模式下，所有的网络都会发送给父接口，所有的 ARP 过程或者其他多播报文都是在底层的父接口完成的）。另外外部网络默认情况下是不知道 ipvlan 虚拟出来的网络的，如果不在外部路由器上配置好对应的路由规则，ipvlan 的网络是不能被外部直接访问的。
+- L2 模式：此時跟macvlan bridge 模式工作原理很相似，父接口作為交換機來轉發子接口的數據。同一個網絡的子接口可以通過父接口來轉發數據，而如果想發送到其他網絡，報文則會通過父接口的路由轉發出去。
+- L3 模式：此時ipvlan 有點像路由器的功能，它在各個虛擬網絡和主機網絡之間進行不同網絡報文的路由轉發工作。只要父接口相同，即使虛擬機/容器不在同一個網絡，也可以互相 ping 通對方，因為 ipvlan 會在中間做報文的轉發工作。注意 L3 模式下的虛擬接口 不會接收到多播或者廣播的報文（這個模式下，所有的網絡都會發送給父接口，所有的 ARP 過程或者其他多播報文都是在底層的父接口完成的）。另外外部網絡默認情況下是不知道 ipvlan 虛擬出來的網絡的，如果不在外部路由器上配置好對應的路由規則，ipvlan 的網絡是不能被外部直接訪問的。
 
-创建ipvlan的简单方法为
+創建ipvlan的簡單方法為
 
 ```
 ip link add link <master-dev> <slave-dev> type ipvlan mode { l2 | L3 }
 ```
 
-cni配置格式为
+cni配置格式為
 
 ```
 {
@@ -228,25 +228,25 @@ cni配置格式为
 
 需要注意的是
 
-- ipvlan插件下，容器不能跟Host网络通信
-- 主机接口（也就是master interface）不能同时作为ipvlan和macvlan的master接口
+- ipvlan插件下，容器不能跟Host網絡通信
+- 主機接口（也就是master interface）不能同時作為ipvlan和macvlan的master接口
 
 ## MACVLAN
 
-MACVLAN可以从一个主机接口虚拟出多个macvtap，且每个macvtap设备都拥有不同的mac地址（对应不同的linux字符设备）。MACVLAN支持四种模式
+MACVLAN可以從一個主機接口虛擬出多個macvtap，且每個macvtap設備都擁有不同的mac地址（對應不同的linux字符設備）。MACVLAN支持四種模式
 
-- bridge模式：数据可以在同一master设备的子设备之间转发
-- vepa模式：VEPA 模式是对 802.1Qbg 标准中的 VEPA 机制的软件实现，MACVTAP 设备简单的将数据转发到master设备中，完成数据汇聚功能，通常需要外部交换机支持 Hairpin 模式才能正常工作
-- private模式：Private 模式和 VEPA 模式类似，区别是子 MACVTAP 之间相互隔离
-- passthrough模式：内核的 MACVLAN 数据处理逻辑被跳过，硬件决定数据如何处理，从而释放了 Host CPU 资源
+- bridge模式：數據可以在同一master設備的子設備之間轉發
+- vepa模式：VEPA 模式是對 802.1Qbg 標準中的 VEPA 機制的軟件實現，MACVTAP 設備簡單的將數據轉發到master設備中，完成數據匯聚功能，通常需要外部交換機支持 Hairpin 模式才能正常工作
+- private模式：Private 模式和 VEPA 模式類似，區別是子 MACVTAP 之間相互隔離
+- passthrough模式：內核的 MACVLAN 數據處理邏輯被跳過，硬件決定數據如何處理，從而釋放了 Host CPU 資源
 
-创建macvlan的简单方法为
+創建macvlan的簡單方法為
 
 ```sh
 ip link add link <master-dev> name macvtap0 type macvtap
 ```
 
-cni配置格式为
+cni配置格式為
 
 ```
 {
@@ -261,81 +261,81 @@ cni配置格式为
 
 需要注意的是
 
-- macvlan需要大量 mac 地址，每个虚拟接口都有自己的 mac 地址
-- 无法和 802.11(wireless) 网络一起工作
-- 主机接口（也就是master interface）不能同时作为ipvlan和macvlan的master接口
+- macvlan需要大量 mac 地址，每個虛擬接口都有自己的 mac 地址
+- 無法和 802.11(wireless) 網絡一起工作
+- 主機接口（也就是master interface）不能同時作為ipvlan和macvlan的master接口
 
 ## [Flannel](../flannel/index.md)
 
-[Flannel](https://github.com/coreos/flannel)通过给每台宿主机分配一个子网的方式为容器提供虚拟网络，它基于Linux TUN/TAP，使用UDP封装IP包来创建overlay网络，并借助etcd维护网络的分配情况。
+[Flannel](https://github.com/coreos/flannel)通過給每臺宿主機分配一個子網的方式為容器提供虛擬網絡，它基於Linux TUN/TAP，使用UDP封裝IP包來創建overlay網絡，並藉助etcd維護網絡的分配情況。
 
 ## [Weave Net](../weave/index.md)
 
-Weave Net是一个多主机容器网络方案，支持去中心化的控制平面，各个host上的wRouter间通过建立Full Mesh的TCP链接，并通过Gossip来同步控制信息。这种方式省去了集中式的K/V Store，能够在一定程度上减低部署的复杂性，Weave将其称为“data centric”，而非RAFT或者Paxos的“algorithm centric”。
+Weave Net是一個多主機容器網絡方案，支持去中心化的控制平面，各個host上的wRouter間通過建立Full Mesh的TCP鏈接，並通過Gossip來同步控制信息。這種方式省去了集中式的K/V Store，能夠在一定程度上減低部署的複雜性，Weave將其稱為“data centric”，而非RAFT或者Paxos的“algorithm centric”。
 
-数据平面上，Weave通过UDP封装实现L2 Overlay，封装支持两种模式，一种是运行在user space的sleeve mode，另一种是运行在kernal space的 fastpath mode。Sleeve mode通过pcap设备在Linux bridge上截获数据包并由wRouter完成UDP封装，支持对L2 traffic进行加密，还支持Partial Connection，但是性能损失明显。Fastpath mode即通过OVS的odp封装VxLAN并完成转发，wRouter不直接参与转发，而是通过下发odp 流表的方式控制转发，这种方式可以明显地提升吞吐量，但是不支持加密等高级功能。
+數據平面上，Weave通過UDP封裝實現L2 Overlay，封裝支持兩種模式，一種是運行在user space的sleeve mode，另一種是運行在kernal space的 fastpath mode。Sleeve mode通過pcap設備在Linux bridge上截獲數據包並由wRouter完成UDP封裝，支持對L2 traffic進行加密，還支持Partial Connection，但是性能損失明顯。Fastpath mode即通過OVS的odp封裝VxLAN並完成轉發，wRouter不直接參與轉發，而是通過下發odp 流表的方式控制轉發，這種方式可以明顯地提升吞吐量，但是不支持加密等高級功能。
 
 ## [Contiv](../contiv/index.md)
 
-[Contiv](http://contiv.github.io)是思科开源的容器网络方案，主要提供基于Policy的网络管理，并与主流容器编排系统集成。Contiv最主要的优势是直接提供了多租户网络，并支持L2(VLAN), L3(BGP), Overlay (VXLAN)以及思科自家的ACI。
+[Contiv](http://contiv.github.io)是思科開源的容器網絡方案，主要提供基於Policy的網絡管理，並與主流容器編排系統集成。Contiv最主要的優勢是直接提供了多租戶網絡，並支持L2(VLAN), L3(BGP), Overlay (VXLAN)以及思科自家的ACI。
 
 ## [Calico](../calico/index.md)
 
-[Calico](https://www.projectcalico.org/) 是一个基于BGP的纯三层的数据中心网络方案（不需要Overlay），并且与OpenStack、Kubernetes、AWS、GCE等IaaS和容器平台都有良好的集成。
+[Calico](https://www.projectcalico.org/) 是一個基於BGP的純三層的數據中心網絡方案（不需要Overlay），並且與OpenStack、Kubernetes、AWS、GCE等IaaS和容器平臺都有良好的集成。
 
-Calico在每一个计算节点利用Linux Kernel实现了一个高效的vRouter来负责数据转发，而每个vRouter通过BGP协议负责把自己上运行的workload的路由信息像整个Calico网络内传播——小规模部署可以直接互联，大规模下可通过指定的BGP route reflector来完成。 这样保证最终所有的workload之间的数据流量都是通过IP路由的方式完成互联的。Calico节点组网可以直接利用数据中心的网络结构（无论是L2或者L3），不需要额外的NAT，隧道或者Overlay Network。
+Calico在每一個計算節點利用Linux Kernel實現了一個高效的vRouter來負責數據轉發，而每個vRouter通過BGP協議負責把自己上運行的workload的路由信息像整個Calico網絡內傳播——小規模部署可以直接互聯，大規模下可通過指定的BGP route reflector來完成。 這樣保證最終所有的workload之間的數據流量都是通過IP路由的方式完成互聯的。Calico節點組網可以直接利用數據中心的網絡結構（無論是L2或者L3），不需要額外的NAT，隧道或者Overlay Network。
 
-此外，Calico基于iptables还提供了丰富而灵活的网络Policy，保证通过各个节点上的ACLs来提供Workload的多租户隔离、安全组以及其他可达性限制等功能。
+此外，Calico基於iptables還提供了豐富而靈活的網絡Policy，保證通過各個節點上的ACLs來提供Workload的多租戶隔離、安全組以及其他可達性限制等功能。
 
 ## [OVN](../ovn-kubernetes.md)
 
-[OVN (Open Virtual Network)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是OVS提供的原生虚拟化网络方案，旨在解决传统SDN架构（比如Neutron DVR）的性能问题。
+[OVN (Open Virtual Network)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是OVS提供的原生虛擬化網絡方案，旨在解決傳統SDN架構（比如Neutron DVR）的性能問題。
 
-OVN为Kubernetes提供了两种网络方案：
+OVN為Kubernetes提供了兩種網絡方案：
 
-* Overaly: 通过ovs overlay连接容器
-* Underlay: 将VM内的容器连到VM所在的相同网络（开发中）
+* Overaly: 通過ovs overlay連接容器
+* Underlay: 將VM內的容器連到VM所在的相同網絡（開發中）
 
-其中，容器网络的配置是通过OVN的CNI插件来实现。
+其中，容器網絡的配置是通過OVN的CNI插件來實現。
 
 ## SR-IOV
 
-Intel维护了一个SR-IOV的[CNI插件](https://github.com/Intel-Corp/sriov-cni)，fork自[hustcat/sriov-cni](https://github.com/hustcat/sriov-cni)，并扩展了DPDK的支持。
+Intel維護了一個SR-IOV的[CNI插件](https://github.com/Intel-Corp/sriov-cni)，fork自[hustcat/sriov-cni](https://github.com/hustcat/sriov-cni)，並擴展了DPDK的支持。
 
-项目主页见<https://github.com/Intel-Corp/sriov-cni>。
+項目主頁見<https://github.com/Intel-Corp/sriov-cni>。
 
 ## [Romana](../romana/index.md)
 
-Romana是Panic Networks在2016年提出的开源项目，旨在借鉴 route aggregation的思路来解决Overlay方案给网络带来的开销。
+Romana是Panic Networks在2016年提出的開源項目，旨在借鑑 route aggregation的思路來解決Overlay方案給網絡帶來的開銷。
 
 ## [OpenContrail](../opencontrail/index.md)
 
-OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为Contrail。其主要由控制器和vRouter组成：
+OpenContrail是Juniper推出的開源網絡虛擬化平臺，其商業版本為Contrail。其主要由控制器和vRouter組成：
 
-* 控制器提供虚拟网络的配置、控制和分析功能
-* vRouter提供分布式路由，负责虚拟路由器、虚拟网络的建立以及数据转发
+* 控制器提供虛擬網絡的配置、控制和分析功能
+* vRouter提供分佈式路由，負責虛擬路由器、虛擬網絡的建立以及數據轉發
 
-其中，vRouter支持三种模式
+其中，vRouter支持三種模式
 
-* Kernel vRouter：类似于ovs内核模块
-* DPDK vRouter：类似于ovs-dpdk
-* Netronome Agilio Solution (商业产品)：支持DPDK, SR-IOV and Express Virtio (XVIO)
+* Kernel vRouter：類似於ovs內核模塊
+* DPDK vRouter：類似於ovs-dpdk
+* Netronome Agilio Solution (商業產品)：支持DPDK, SR-IOV and Express Virtio (XVIO)
 
-[michaelhenkel/opencontrail-cni-plugin](https://github.com/michaelhenkel/opencontrail-cni-plugin)提供了一个OpenContrail的CNI插件。
+[michaelhenkel/opencontrail-cni-plugin](https://github.com/michaelhenkel/opencontrail-cni-plugin)提供了一個OpenContrail的CNI插件。
 
 ### Network Configuration Lists
 
-[CNI SPEC](https://github.com/containernetworking/cni/blob/master/SPEC.md#network-configuration-lists) 支持指定网络配置列表，包含多个网络插件，由 Runtime 依次执行。注意
+[CNI SPEC](https://github.com/containernetworking/cni/blob/master/SPEC.md#network-configuration-lists) 支持指定網絡配置列表，包含多個網絡插件，由 Runtime 依次執行。注意
 
-- ADD 操作，按顺序依次调用每个插件；而 DEL 操作调用顺序相反
-- ADD 操作，除最后一个插件，前面每个插件需要增加 `prevResult` 传递给其后的插件
-- 第一个插件必须要包含 ipam 插件
+- ADD 操作，按順序依次調用每個插件；而 DEL 操作調用順序相反
+- ADD 操作，除最後一個插件，前面每個插件需要增加 `prevResult` 傳遞給其後的插件
+- 第一個插件必須要包含 ipam 插件
 
 ### 端口映射示例
 
 下面的例子展示了 bridge+[portmap](https://github.com/containernetworking/plugins/tree/master/plugins/meta/portmap) 插件的用法。
 
-首先，配置 CNI 网络使用 bridge+portmap 插件：
+首先，配置 CNI 網絡使用 bridge+portmap 插件：
 
 ```sh
 # cat /root/mynet.conflist
@@ -364,7 +364,7 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 }
 ```
 
-然后通过 `CAP_ARGS` 设置端口映射参数：
+然後通過 `CAP_ARGS` 設置端口映射參數：
 
 ```sh
 # export CAP_ARGS='{
@@ -379,7 +379,7 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 }'
 ```
 
-测试添加网络接口：
+測試添加網絡接口：
 
 ```sh
 # ip netns add test
@@ -417,7 +417,7 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 }
 ```
 
-可以从 iptables 规则中看到添加的规则：
+可以從 iptables 規則中看到添加的規則：
 
 ```sh
 # iptables-save | grep 10.244.10.7
@@ -425,7 +425,7 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 -A CNI-SN-be1eedf7a76853f303ebd -s 127.0.0.1/32 -d 10.244.10.7/32 -p tcp -m tcp --dport 80 -j MASQUERADE
 ```
 
-最后，清理网络接口：
+最後，清理網絡接口：
 
 ```
 # CNI_PATH=/opt/cni/bin NETCONFPATH=/root ./cnitool del mynet /var/run/netns/test
@@ -435,20 +435,20 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 
 ### [Canal](https://github.com/tigera/canal)
 
-[Canal](https://github.com/tigera/canal)是Flannel和Calico联合发布的一个统一网络插件，提供CNI网络插件，并支持network policy。
+[Canal](https://github.com/tigera/canal)是Flannel和Calico聯合發佈的一個統一網絡插件，提供CNI網絡插件，並支持network policy。
 
 ### [kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes)
 
-[kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes)是OpenStack推出的集成Neutron网络插件，主要包括Controller和CNI插件两部分，并且也提供基于Neutron LBaaS的Service集成。
+[kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes)是OpenStack推出的集成Neutron網絡插件，主要包括Controller和CNI插件兩部分，並且也提供基於Neutron LBaaS的Service集成。
 
 ### [Cilium](https://github.com/cilium/cilium)
 
-[Cilium](https://github.com/cilium/cilium)是一个基于eBPF和XDP的高性能容器网络方案，提供了CNI和CNM插件。
+[Cilium](https://github.com/cilium/cilium)是一個基於eBPF和XDP的高性能容器網絡方案，提供了CNI和CNM插件。
 
-项目主页为<https://github.com/cilium/cilium>。
+項目主頁為<https://github.com/cilium/cilium>。
 
 ## [CNI-Genie](https://github.com/Huawei-PaaS/CNI-Genie)
 
-[CNI-Genie](https://github.com/Huawei-PaaS/CNI-Genie)是华为PaaS团队推出的同时支持多种网络插件（支持calico, canal, romana, weave等）的CNI插件。
+[CNI-Genie](https://github.com/Huawei-PaaS/CNI-Genie)是華為PaaS團隊推出的同時支持多種網絡插件（支持calico, canal, romana, weave等）的CNI插件。
 
-项目主页为<https://github.com/Huawei-PaaS/CNI-Genie>。
+項目主頁為<https://github.com/Huawei-PaaS/CNI-Genie>。

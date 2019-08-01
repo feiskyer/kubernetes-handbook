@@ -1,12 +1,12 @@
 # ReplicationController 和 ReplicaSet
 
-ReplicationController（也简称为 rc）用来确保容器应用的副本数始终保持在用户定义的副本数，即如果有容器异常退出，会自动创建新的 Pod 来替代；而异常多出来的容器也会自动回收。ReplicationController 的典型应用场景包括确保健康 Pod 的数量、弹性伸缩、滚动升级以及应用多版本发布跟踪等。
+ReplicationController（也簡稱為 rc）用來確保容器應用的副本數始終保持在用戶定義的副本數，即如果有容器異常退出，會自動創建新的 Pod 來替代；而異常多出來的容器也會自動回收。ReplicationController 的典型應用場景包括確保健康 Pod 的數量、彈性伸縮、滾動升級以及應用多版本發佈跟蹤等。
 
-在新版本的 Kubernetes 中建议使用 ReplicaSet（也简称为 rs）来取代 ReplicationController。ReplicaSet 跟 ReplicationController 没有本质的不同，只是名字不一样，并且 ReplicaSet 支持集合式的 selector（ReplicationController 仅支持等式）。
+在新版本的 Kubernetes 中建議使用 ReplicaSet（也簡稱為 rs）來取代 ReplicationController。ReplicaSet 跟 ReplicationController 沒有本質的不同，只是名字不一樣，並且 ReplicaSet 支持集合式的 selector（ReplicationController 僅支持等式）。
 
-虽然也 ReplicaSet 可以独立使用，但建议使用 Deployment 来自动管理 ReplicaSet，这样就无需担心跟其他机制的不兼容问题（比如 ReplicaSet 不支持 rolling-update 但 Deployment 支持），并且还支持版本记录、回滚、暂停升级等高级特性。Deployment 的详细介绍和使用方法见 [这里](deployment.md)。
+雖然也 ReplicaSet 可以獨立使用，但建議使用 Deployment 來自動管理 ReplicaSet，這樣就無需擔心跟其他機制的不兼容問題（比如 ReplicaSet 不支持 rolling-update 但 Deployment 支持），並且還支持版本記錄、回滾、暫停升級等高級特性。Deployment 的詳細介紹和使用方法見 [這裡](deployment.md)。
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 |   ReplicaSet API 版本   |   ReplicationController 版本   |
 | ------------- | ------------------ | ------------------ |

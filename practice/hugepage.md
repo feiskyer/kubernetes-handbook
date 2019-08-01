@@ -1,11 +1,11 @@
 # HugePage
 
-HugePage 是 v1.9 中引入的新特性（v1.9 Alpha，v1.10 Beta），允许在容器中直接使用 Node 上的 HugePage。
+HugePage 是 v1.9 中引入的新特性（v1.9 Alpha，v1.10 Beta），允許在容器中直接使用 Node 上的 HugePage。
 
 ## 配置
 
 - `--feature-gates=HugePages=true`
-- Node 节点上预先分配好 HugePage，如
+- Node 節點上預先分配好 HugePage，如
 
 ```sh
 mount -t hugetlbfs \
@@ -41,8 +41,8 @@ spec:
 
 注意
 
-- HugePage 请求和限制必须相等
-- HugePage 提供 Pod 级别的隔离，暂不支持容器级别的隔离
-- 基于 HugePage 的 EmptyDir 存储卷仅可使用请求的 HugePage 内存
-- 可以通过 ResourceQuota 限制 HugePage 的用量
-- 容器应用内使用 `shmget(SHM_HUGETLB)` 获取 HugePage 时，必需配置与 `proc/sys/vm/hugetlb_shm_group` 中一致的用户组（`securityContext.SupplementalGroups`）
+- HugePage 請求和限制必須相等
+- HugePage 提供 Pod 級別的隔離，暫不支持容器級別的隔離
+- 基於 HugePage 的 EmptyDir 存儲卷僅可使用請求的 HugePage 內存
+- 可以通過 ResourceQuota 限制 HugePage 的用量
+- 容器應用內使用 `shmget(SHM_HUGETLB)` 獲取 HugePage 時，必需配置與 `proc/sys/vm/hugetlb_shm_group` 中一致的用戶組（`securityContext.SupplementalGroups`）

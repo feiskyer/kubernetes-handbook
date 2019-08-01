@@ -1,20 +1,20 @@
 # ConfigMap
 
-在执行应用程式或是生产环境等等, 会有许多的情况需要做变更, 而我们不希望因应每一种需求就要准备一个镜像档, 这时就可以透过 ConfigMap 来帮我们做一个配置档或是命令参数的映射, 更加弹性化使用我们的服务或是应用程式。
+在執行應用程式或是生產環境等等, 會有許多的情況需要做變更, 而我們不希望因應每一種需求就要準備一個鏡像檔, 這時就可以透過 ConfigMap 來幫我們做一個配置檔或是命令參數的映射, 更加彈性化使用我們的服務或是應用程式。
 
-ConfigMap 用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap 跟 secret 很类似，但它可以更方便地处理不包含敏感信息的字符串。
+ConfigMap 用於保存配置數據的鍵值對，可以用來保存單個屬性，也可以用來保存配置文件。ConfigMap 跟 secret 很類似，但它可以更方便地處理不包含敏感信息的字符串。
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 | Core API 版本 |
 | --------------- | ------------- |
 | v1.5+           | core/v1       |
 
-## ConfigMap 创建
+## ConfigMap 創建
 
-可以使用 `kubectl create configmap` 从文件、目录或者 key-value 字符串创建等创建 ConfigMap。也可以通过 `kubectl create -f file` 创建。
+可以使用 `kubectl create configmap` 從文件、目錄或者 key-value 字符串創建等創建 ConfigMap。也可以通過 `kubectl create -f file` 創建。
 
-### 从 key-value 字符串创建
+### 從 key-value 字符串創建
 
 ```sh
 $ kubectl create configmap special-config --from-literal=special.how=very
@@ -23,7 +23,7 @@ $ kubectl get configmap special-config -o go-template='{{.data}}'
 map[special.how:very]
 ```
 
-### 从 env 文件创建
+### 從 env 文件創建
 
 ```sh
 $ echo -e "a=b\nc=d" | tee config.env
@@ -35,7 +35,7 @@ $ kubectl get configmap special-config -o go-template='{{.data}}'
 map[a:b c:d]
 ```
 
-### 从目录创建
+### 從目錄創建
 
 ```sh
 $ mkdir config
@@ -49,7 +49,7 @@ map[a:a
 ]
 ```
 
-### 从文件 Yaml/Json 文件创建
+### 從文件 Yaml/Json 文件創建
 
 ```yaml
 apiVersion: v1
@@ -69,22 +69,22 @@ configmap "special-config" created
 
 ## ConfigMap 使用
 
-ConfigMap 可以通过三种方式在 Pod 中使用，三种分别方式为：设置环境变量、设置容器命令行参数以及在 Volume 中直接挂载文件或目录。
+ConfigMap 可以通過三種方式在 Pod 中使用，三種分別方式為：設置環境變量、設置容器命令行參數以及在 Volume 中直接掛載文件或目錄。
 
 > **注意**
 >
-> - ConfigMap 必须在 Pod 引用它之前创建
-> - 使用 `envFrom` 时，将会自动忽略无效的键
-> - Pod 只能使用同一个命名空间内的 ConfigMap
+> - ConfigMap 必須在 Pod 引用它之前創建
+> - 使用 `envFrom` 時，將會自動忽略無效的鍵
+> - Pod 只能使用同一個命名空間內的 ConfigMap
 
-首先创建 ConfigMap：
+首先創建 ConfigMap：
 
 ```sh
 $ kubectl create configmap special-config --from-literal=special.how=very --from-literal=special.type=charm
 $ kubectl create configmap env-config --from-literal=log_level=INFO
 ```
 
-### 用作环境变量
+### 用作環境變量
 
 ```yaml
 apiVersion: v1
@@ -113,7 +113,7 @@ spec:
   restartPolicy: Never
 ```
 
-当 Pod 结束后会输出
+當 Pod 結束後會輸出
 
 ```
 SPECIAL_LEVEL_KEY=very
@@ -121,9 +121,9 @@ SPECIAL_TYPE_KEY=charm
 log_level=INFO
 ```
 
-### 用作命令行参数
+### 用作命令行參數
 
-将 ConfigMap 用作命令行参数时，需要先把 ConfigMap 的数据保存在环境变量中，然后通过 `$(VAR_NAME)` 的方式引用环境变量.
+將 ConfigMap 用作命令行參數時，需要先把 ConfigMap 的數據保存在環境變量中，然後通過 `$(VAR_NAME)` 的方式引用環境變量.
 
 ```yaml
 apiVersion: v1
@@ -149,15 +149,15 @@ spec:
   restartPolicy: Never
 ```
 
-当 Pod 结束后会输出
+當 Pod 結束後會輸出
 
 ```
 very charm
 ```
 
-### 使用 volume 将 ConfigMap 作为文件或目录直接挂载
+### 使用 volume 將 ConfigMap 作為文件或目錄直接掛載
 
-将创建的 ConfigMap 直接挂载至 Pod 的 / etc/config 目录下，其中每一个 key-value 键值对都会生成一个文件，key 为文件名，value 为内容
+將創建的 ConfigMap 直接掛載至 Pod 的 / etc/config 目錄下，其中每一個 key-value 鍵值對都會生成一個文件，key 為文件名，value 為內容
 
 ```yaml
 apiVersion: v1
@@ -179,13 +179,13 @@ spec:
   restartPolicy: Never
 ```
 
-当 Pod 结束后会输出
+當 Pod 結束後會輸出
 
 ```
 very
 ```
 
-将创建的 ConfigMap 中 special.how 这个 key 挂载到 / etc/config 目录下的一个相对路径 / keys/special.level。如果存在同名文件，直接覆盖。其他的 key 不挂载
+將創建的 ConfigMap 中 special.how 這個 key 掛載到 / etc/config 目錄下的一個相對路徑 / keys/special.level。如果存在同名文件，直接覆蓋。其他的 key 不掛載
 
 ```yaml
 apiVersion: v1
@@ -209,13 +209,13 @@ spec:
           path: keys/special.level
   restartPolicy: Never
 ```
-当 Pod 结束后会输出
+當 Pod 結束後會輸出
 
 ```
 very
 ```
 
-ConfigMap 支持同一个目录下挂载多个 key 和多个目录。例如下面将 special.how 和 special.type 通过挂载到 / etc/config 下。并且还将 special.how 同时挂载到 / etc/config2 下。
+ConfigMap 支持同一個目錄下掛載多個 key 和多個目錄。例如下面將 special.how 和 special.type 通過掛載到 / etc/config 下。並且還將 special.how 同時掛載到 / etc/config2 下。
 
 ```yaml
 apiVersion: v1
@@ -261,8 +261,8 @@ very
 charm
 ```
 
-### 使用 subpath 将 ConfigMap 作为单独的文件挂载到目录
-在一般情况下 configmap 挂载文件时，会先覆盖掉挂载目录，然后再将 congfigmap 中的内容作为文件挂载进行。如果想不对原来的文件夹下的文件造成覆盖，只是将 configmap 中的每个 key，按照文件的方式挂载到目录下，可以使用 subpath 参数。
+### 使用 subpath 將 ConfigMap 作為單獨的文件掛載到目錄
+在一般情況下 configmap 掛載文件時，會先覆蓋掉掛載目錄，然後再將 congfigmap 中的內容作為文件掛載進行。如果想不對原來的文件夾下的文件造成覆蓋，只是將 configmap 中的每個 key，按照文件的方式掛載到目錄下，可以使用 subpath 參數。
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -295,6 +295,6 @@ very
 root@dapi-test-pod:/#
 ```
 
-参考文档：
+參考文檔：
 
 * [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)

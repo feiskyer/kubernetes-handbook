@@ -1,27 +1,27 @@
 # Istio 安全管理
 
-Istio 提供了 RBAC 访问控制、双向 TLS 认证以及密钥管理等安全管理功能。
+Istio 提供了 RBAC 訪問控制、雙向 TLS 認證以及密鑰管理等安全管理功能。
 
 ## RBAC
 
-Istio Role-Based Access Control (RBAC) 提供了 namespace、service 以及 method 级别的访问控制。其特性包括
+Istio Role-Based Access Control (RBAC) 提供了 namespace、service 以及 method 級別的訪問控制。其特性包括
 
-- 简单易用：提供基于角色的语意
-- 支持认证：提供服务 - 服务和用户 - 服务的认证
-- 灵活：提供角色和角色绑定的自定义属性
+- 簡單易用：提供基於角色的語意
+- 支持認證：提供服務 - 服務和用戶 - 服務的認證
+- 靈活：提供角色和角色綁定的自定義屬性
 
 ![image-20180423202459184](images/istio-auth.png)
 
-### 开启 RBAC
+### 開啟 RBAC
 
-通过 `RbacConfig` 来启用 RBAC，其中 mode 支持如下选项：
+通過 `RbacConfig` 來啟用 RBAC，其中 mode 支持如下選項：
 
 - **OFF**: 停用 RBAC。
-- **ON**: 为网格中的所有服务启用 RBAC。
-- **ON_WITH_INCLUSION**: 只对 `inclusion` 字段中包含的命名空间和服务启用 RBAC。
-- **ON_WITH_EXCLUSION**: 对网格内的所有服务启用 RBAC，除 `exclusion` 字段中包含的命名空间和服务之外。
+- **ON**: 為網格中的所有服務啟用 RBAC。
+- **ON_WITH_INCLUSION**: 只對 `inclusion` 字段中包含的命名空間和服務啟用 RBAC。
+- **ON_WITH_EXCLUSION**: 對網格內的所有服務啟用 RBAC，除 `exclusion` 字段中包含的命名空間和服務之外。
 
-下面的例子为 `default` 命名空间开启 RBAC：
+下面的例子為 `default` 命名空間開啟 RBAC：
 
 ```yaml
 apiVersion: "config.istio.io/v1alpha2"
@@ -35,12 +35,12 @@ spec:
     namespaces: ["default"]
 ```
 
-### 访问控制
+### 訪問控制
 
-Istio RBAC 提供了 ServiceRole 和 ServiceRoleBinding 两种资源对象，并以 CustomResourceDefinition (CRD) 的方式管理。
+Istio RBAC 提供了 ServiceRole 和 ServiceRoleBinding 兩種資源對象，並以 CustomResourceDefinition (CRD) 的方式管理。
 
-- ServiceRole 定义了一个可访问特定资源（namespace 之内）的服务角色，并支持以前缀通配符和后缀通配符的形式匹配一组服务
-- ServiceRoleBinding 定义了赋予指定角色的绑定，即可以指定的角色和动作访问服务
+- ServiceRole 定義了一個可訪問特定資源（namespace 之內）的服務角色，並支持以前綴通配符和後綴通配符的形式匹配一組服務
+- ServiceRoleBinding 定義了賦予指定角色的綁定，即可以指定的角色和動作訪問服務
 
 ```yaml
 apiVersion: "rbac.istio.io/v1alpha1"
@@ -70,34 +70,34 @@ spec:
     name: "products-viewer"
 ```
 
-## 双向 TLS
+## 雙向 TLS
 
-双向 TLS 为服务间通信提供了 TLS 认证，并提供管理系统自动管理密钥和证书的生成、分发、替换以及撤销。
+雙向 TLS 為服務間通信提供了 TLS 認證，並提供管理系統自動管理密鑰和證書的生成、分發、替換以及撤銷。
 
 ![](images/istio-tls.png)
 
-### 实现原理
+### 實現原理
 
-Istio Auth 由三部分组成：
+Istio Auth 由三部分組成：
 
-- 身份（Identity）：Istio 使用 Kubernetes service account 来识别服务的身份，格式为 `spiffe://<*domain*>/ns/<*namespace*>/sa/<*serviceaccount*>`
-- 通信安全：端到端 TLS 通信通过服务器端和客户端的 Envoy 容器完成
-- 证书管理：Istio CA (Certificate Authority) 负责为每个 service account 生成 SPIFEE 密钥和证书、分发到 Pod（通过 Secret Volume Mount 的形式）、定期轮转（Rotate）以及必要时撤销。对于 Kuberentes 之外的服务，CA 配合 Istio node agent 共同完成整个过程。
+- 身份（Identity）：Istio 使用 Kubernetes service account 來識別服務的身份，格式為 `spiffe://<*domain*>/ns/<*namespace*>/sa/<*serviceaccount*>`
+- 通信安全：端到端 TLS 通信通過服務器端和客戶端的 Envoy 容器完成
+- 證書管理：Istio CA (Certificate Authority) 負責為每個 service account 生成 SPIFEE 密鑰和證書、分發到 Pod（通過 Secret Volume Mount 的形式）、定期輪轉（Rotate）以及必要時撤銷。對於 Kuberentes 之外的服務，CA 配合 Istio node agent 共同完成整個過程。
 
-这样，一个容器使用证书的流程为
+這樣，一個容器使用證書的流程為
 
-- 首先，Istio CA 监听 Kubernetes API，并为 service account 生成 SPIFFE 密钥及证书，再以 secret 形式存储到 Kubernetes 中
-- 然后，Pod 创建时，Kubernetes API Server 将 secret 挂载到容器中
-- 最后，Pilot 生成一个访问控制的配置，定义哪些 service account 可以访问服务，并分发给 Envoy
-- 而当容器间通信时，Pod 双方的 Envoy 就会基于访问控制配置来作认证
+- 首先，Istio CA 監聽 Kubernetes API，併為 service account 生成 SPIFFE 密鑰及證書，再以 secret 形式存儲到 Kubernetes 中
+- 然後，Pod 創建時，Kubernetes API Server 將 secret 掛載到容器中
+- 最後，Pilot 生成一個訪問控制的配置，定義哪些 service account 可以訪問服務，並分發給 Envoy
+- 而當容器間通信時，Pod 雙方的 Envoy 就會基於訪問控制配置來作認證
 
-### 最佳实践
+### 最佳實踐
 
-- 为不同团队创建不同 namespace 分别管理
-- 将 Istio CA 运行在单独的 namespace 中，并且仅授予管理员权限
+- 為不同團隊創建不同 namespace 分別管理
+- 將 Istio CA 運行在單獨的 namespace 中，並且僅授予管理員權限
 
-## 参考文档
+## 參考文檔
 
-- [Istio Security 文档](https://istio.io/docs/concepts/security/)
+- [Istio Security 文檔](https://istio.io/docs/concepts/security/)
 - [Istio Role-Based Access Control (RBAC)](https://istio.io/docs/concepts/security/)
-- [Istio 双向 TLS 文档](https://istio.io/docs/concepts/security/#mutual-tls-authentication)
+- [Istio 雙向 TLS 文檔](https://istio.io/docs/concepts/security/#mutual-tls-authentication)

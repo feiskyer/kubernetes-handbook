@@ -1,26 +1,26 @@
 # Persistent Volume
 
-PersistentVolume (PV) 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷：PV 提供网络存储资源，而 PVC 请求存储资源。这样，设置持久化的工作流包括配置底层文件系统或者云数据卷、创建持久性数据卷、最后创建 PVC 来将 Pod 跟数据卷关联起来。PV 和 PVC 可以将 pod 和数据卷解耦，pod 不需要知道确切的文件系统或者支持它的持久化引擎。
+PersistentVolume (PV) 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷：PV 提供網絡存儲資源，而 PVC 請求存儲資源。這樣，設置持久化的工作流包括配置底層文件系統或者雲數據卷、創建持久性數據卷、最後創建 PVC 來將 Pod 跟數據卷關聯起來。PV 和 PVC 可以將 pod 和數據卷解耦，pod 不需要知道確切的文件系統或者支持它的持久化引擎。
 
-## Volume 生命周期
+## Volume 生命週期
 
-Volume 的生命周期包括 5 个阶段
+Volume 的生命週期包括 5 個階段
 
-1. Provisioning，即 PV 的创建，可以直接创建 PV（静态方式），也可以使用 StorageClass 动态创建
-2. Binding，将 PV 分配给 PVC
-3. Using，Pod 通过 PVC 使用该 Volume，并可以通过准入控制 StorageObjectInUseProtection（1.9 及以前版本为 PVCProtection）阻止删除正在使用的 PVC
-4. Releasing，Pod 释放 Volume 并删除 PVC
-5. Reclaiming，回收 PV，可以保留 PV 以便下次使用，也可以直接从云存储中删除
-6. Deleting，删除 PV 并从云存储中删除后段存储
+1. Provisioning，即 PV 的創建，可以直接創建 PV（靜態方式），也可以使用 StorageClass 動態創建
+2. Binding，將 PV 分配給 PVC
+3. Using，Pod 通過 PVC 使用該 Volume，並可以通過准入控制 StorageObjectInUseProtection（1.9 及以前版本為 PVCProtection）阻止刪除正在使用的 PVC
+4. Releasing，Pod 釋放 Volume 並刪除 PVC
+5. Reclaiming，回收 PV，可以保留 PV 以便下次使用，也可以直接從雲存儲中刪除
+6. Deleting，刪除 PV 並從雲存儲中刪除後段存儲
 
-根据这 5 个阶段，Volume 的状态有以下 4 种
+根據這 5 個階段，Volume 的狀態有以下 4 種
 
 - Available：可用
-- Bound：已经分配给 PVC
-- Released：PVC 解绑但还未执行回收策略
-- Failed：发生错误
+- Bound：已經分配給 PVC
+- Released：PVC 解綁但還未執行回收策略
+- Failed：發生錯誤
 
-## API 版本对照表
+## API 版本對照表
 
 | Kubernetes 版本 | PV/PVC 版本 | StorageClass 版本      |
 | --------------- | ----------- | ---------------------- |
@@ -29,7 +29,7 @@ Volume 的生命周期包括 5 个阶段
 
 ## PV
 
-PersistentVolume（PV）是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PV 跟 Volume (卷) 类似，不过会有独立于 Pod 的生命周期。比如一个 NFS 的 PV 可以定义为
+PersistentVolume（PV）是集群之中的一塊網絡存儲。跟 Node 一樣，也是集群的資源。PV 跟 Volume (卷) 類似，不過會有獨立於 Pod 的生命週期。比如一個 NFS 的 PV 可以定義為
 
 ```yaml
 apiVersion: v1
@@ -47,30 +47,30 @@ spec:
     server: 172.17.0.2
 ```
 
-PV 的访问模式（accessModes）有三种：
+PV 的訪問模式（accessModes）有三種：
 
-* ReadWriteOnce（RWO）：是最基本的方式，可读可写，但只支持被单个节点挂载。
-* ReadOnlyMany（ROX）：可以以只读的方式被多个节点挂载。
-* ReadWriteMany（RWX）：这种存储可以以读写的方式被多个节点共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
+* ReadWriteOnce（RWO）：是最基本的方式，可讀可寫，但只支持被單個節點掛載。
+* ReadOnlyMany（ROX）：可以以只讀的方式被多個節點掛載。
+* ReadWriteMany（RWX）：這種存儲可以以讀寫的方式被多個節點共享。不是每一種存儲都支持這三種方式，像共享方式，目前支持的還比較少，比較常用的是 NFS。在 PVC 綁定 PV 時通常根據兩個條件來綁定，一個是存儲的大小，另一個就是訪問模式。
 
-PV 的回收策略（persistentVolumeReclaimPolicy，即 PVC 释放卷的时候 PV 该如何操作）也有三种
+PV 的回收策略（persistentVolumeReclaimPolicy，即 PVC 釋放卷的時候 PV 該如何操作）也有三種
 
-- Retain，不清理, 保留 Volume（需要手动清理）
-- Recycle，删除数据，即 `rm -rf /thevolume/*`（只有 NFS 和 HostPath 支持）
-- Delete，删除存储资源，比如删除 AWS EBS 卷（只有 AWS EBS, GCE PD, Azure Disk 和 Cinder 支持）
+- Retain，不清理, 保留 Volume（需要手動清理）
+- Recycle，刪除數據，即 `rm -rf /thevolume/*`（只有 NFS 和 HostPath 支持）
+- Delete，刪除存儲資源，比如刪除 AWS EBS 卷（只有 AWS EBS, GCE PD, Azure Disk 和 Cinder 支持）
 
 ## StorageClass
 
-上面通过手动的方式创建了一个 NFS Volume，这在管理很多 Volume 的时候不太方便。Kubernetes 还提供了 [StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses) 来动态创建 PV，不仅节省了管理员的时间，还可以封装不同类型的存储供 PVC 选用。
+上面通過手動的方式創建了一個 NFS Volume，這在管理很多 Volume 的時候不太方便。Kubernetes 還提供了 [StorageClass](https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses) 來動態創建 PV，不僅節省了管理員的時間，還可以封裝不同類型的存儲供 PVC 選用。
 
-StorageClass 包括四个部分
+StorageClass 包括四個部分
 
-- provisioner：指定 Volume 插件的类型，包括内置插件（如 `kubernetes.io/glusterfs`）和外部插件（如 [external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/ceph/cephfs) 提供的 `ceph.com/cephfs`）。
-- mountOptions：指定挂载选项，当 PV 不支持指定的选项时会直接失败。比如 NFS 支持 `hard` 和 `nfsvers=4.1` 等选项。
-- parameters：指定 provisioner 的选项，比如 `kubernetes.io/aws-ebs` 支持 `type`、`zone`、`iopsPerGB` 等参数。
+- provisioner：指定 Volume 插件的類型，包括內置插件（如 `kubernetes.io/glusterfs`）和外部插件（如 [external-storage](https://github.com/kubernetes-incubator/external-storage/tree/master/ceph/cephfs) 提供的 `ceph.com/cephfs`）。
+- mountOptions：指定掛載選項，當 PV 不支持指定的選項時會直接失敗。比如 NFS 支持 `hard` 和 `nfsvers=4.1` 等選項。
+- parameters：指定 provisioner 的選項，比如 `kubernetes.io/aws-ebs` 支持 `type`、`zone`、`iopsPerGB` 等參數。
 - reclaimPolicy：指定回收策略，同 PV 的回收策略。
 
-在使用 PVC 时，可以通过 `DefaultStorageClass` 准入控制设置默认 StorageClass, 即给未设置 storageClassName 的 PVC 自动添加默认的 StorageClass。而默认的 StorageClass 带有 annotation `storageclass.kubernetes.io/is-default-class=true`。
+在使用 PVC 時，可以通過 `DefaultStorageClass` 准入控制設置默認 StorageClass, 即給未設置 storageClassName 的 PVC 自動添加默認的 StorageClass。而默認的 StorageClass 帶有 annotation `storageclass.kubernetes.io/is-default-class=true`。
 
 | Volume Plugin        | Internal Provisioner | Config Example                           |
 | -------------------- | -------------------- | ---------------------------------------- |
@@ -95,15 +95,15 @@ StorageClass 包括四个部分
 | StorageOS            | ✓                    | [StorageOS](https://kubernetes.io/docs/concepts/storage/storage-classes/#storageos) |
 | Local                | -                    | [Local](https://kubernetes.io/docs/concepts/storage/storage-classes/#local) |
 
-#### 修改默认 StorageClass
+#### 修改默認 StorageClass
 
-取消原来的默认 StorageClass
+取消原來的默認 StorageClass
 
 ```sh
 kubectl patch storageclass <default-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 ```
 
-标记新的默认 StorageClass
+標記新的默認 StorageClass
 
 ```sh
 kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
@@ -111,7 +111,7 @@ kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"s
 
 #### GCE 示例
 
-> 单个 GCE 节点最大支持挂载 16 个 Google Persistent Disk。开启 `AttachVolumeLimit` 特性后，根据节点的类型最大可以挂载 128 个。
+> 單個 GCE 節點最大支持掛載 16 個 Google Persistent Disk。開啟 `AttachVolumeLimit` 特性後，根據節點的類型最大可以掛載 128 個。
 
 ```yaml
 kind: StorageClass
@@ -177,7 +177,7 @@ apiVersion: storage.k8s.io/v1
 
 ### Local Volume
 
-Local Volume 允许将 Node 本地的磁盘、分区或者目录作为持久化存储使用。注意，Local Volume 不支持动态创建，使用前需要预先创建好 PV。
+Local Volume 允許將 Node 本地的磁盤、分區或者目錄作為持久化存儲使用。注意，Local Volume 不支持動態創建，使用前需要預先創建好 PV。
 
 ```yaml
 apiVersion: v1
@@ -212,17 +212,17 @@ provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ```
 
-推荐配置
+推薦配置
 
-- 对于需要强 IO 隔离的场景，推荐使用整块磁盘作为 Volume
-- 对于需要容量隔离的场景，推荐使用分区作为 Volume
-- 避免在集群中重新创建同名的 Node（无法避免时需要先删除通过 Affinity 引用该 Node 的 PV）
-- 对于文件系统类型的本地存储，推荐使用 UUID （如 `ls -l /dev/disk/by-uuid`）作为系统挂载点
-- 对于无文件系统的块存储，推荐生成一个唯一 ID 作软链接（如 `/dev/dis/by-id`）。这可以保证 Volume 名字唯一，并不会与其他 Node 上面的同名 Volume 混淆
+- 對於需要強 IO 隔離的場景，推薦使用整塊磁盤作為 Volume
+- 對於需要容量隔離的場景，推薦使用分區作為 Volume
+- 避免在集群中重新創建同名的 Node（無法避免時需要先刪除通過 Affinity 引用該 Node 的 PV）
+- 對於文件系統類型的本地存儲，推薦使用 UUID （如 `ls -l /dev/disk/by-uuid`）作為系統掛載點
+- 對於無文件系統的塊存儲，推薦生成一個唯一 ID 作軟鏈接（如 `/dev/dis/by-id`）。這可以保證 Volume 名字唯一，並不會與其他 Node 上面的同名 Volume 混淆
 
 ## PVC
 
-PV 是存储资源，而 PersistentVolumeClaim (PVC) 是对 PV 的请求。PVC 跟 Pod 类似：Pod 消费 Node 资源，而 PVC 消费 PV 资源；Pod 能够请求 CPU 和内存资源，而 PVC 请求特定大小和访问模式的数据卷。
+PV 是存儲資源，而 PersistentVolumeClaim (PVC) 是對 PV 的請求。PVC 跟 Pod 類似：Pod 消費 Node 資源，而 PVC 消費 PV 資源；Pod 能夠請求 CPU 和內存資源，而 PVC 請求特定大小和訪問模式的數據卷。
 
 ```yaml
 kind: PersistentVolumeClaim
@@ -243,7 +243,7 @@ spec:
       - {key: environment, operator: In, values: [dev]}
 ```
 
-PVC 可以直接挂载到 Pod 中：
+PVC 可以直接掛載到 Pod 中：
 
 ```yaml
 kind: Pod
@@ -263,11 +263,11 @@ spec:
         claimName: myclaim
 ```
 
-## 扩展 PV 空间
+## 擴展 PV 空間
 
-> ExpandPersistentVolumes 在 v1.8 开始 Alpha，v1.11 升级为 Beta 版。
+> ExpandPersistentVolumes 在 v1.8 開始 Alpha，v1.11 升級為 Beta 版。
 
-v1.8 开始支持扩展 PV 空间，支持在不丢失数据和重启容器的情况下扩展 PV 的大小。注意，** 当前的实现仅支持不需要调整文件系统大小（XFS、Ext3、Ext4）的 PV，并且只支持以下几种存储插件 **：
+v1.8 開始支持擴展 PV 空間，支持在不丟失數據和重啟容器的情況下擴展 PV 的大小。注意，** 當前的實現僅支持不需要調整文件系統大小（XFS、Ext3、Ext4）的 PV，並且只支持以下幾種存儲插件 **：
 
 - AzureDisk
 - AzureFile
@@ -278,10 +278,10 @@ v1.8 开始支持扩展 PV 空间，支持在不丢失数据和重启容器的�
 - rbd
 - Portworx
 
-开启扩展 PV 空间的功能需要配置
+開啟擴展 PV 空間的功能需要配置
 
-- 开启 `ExpandPersistentVolumes` 功能，即配置 `--feature-gates=ExpandPersistentVolumes=true`
-- 开启准入控制插件 `PersistentVolumeClaimResize`，它只允许扩展明确配置 `allowVolumeExpansion=true` 的 StorageClass，比如
+- 開啟 `ExpandPersistentVolumes` 功能，即配置 `--feature-gates=ExpandPersistentVolumes=true`
+- 開啟准入控制插件 `PersistentVolumeClaimResize`，它只允許擴展明確配置 `allowVolumeExpansion=true` 的 StorageClass，比如
 
 ```yaml
 kind: StorageClass
@@ -297,15 +297,15 @@ parameters:
 allowVolumeExpansion: true
 ```
 
-这样，用户就可以修改 PVC 中请求存储的大小（如通过 `kubectl edit` 命令）请求更大的存储空间。
+這樣，用戶就可以修改 PVC 中請求存儲的大小（如通過 `kubectl edit` 命令）請求更大的存儲空間。
 
-## 块存储（Raw Block Volume）
+## 塊存儲（Raw Block Volume）
 
-Kubernetes v1.9 新增了 Alpha 版的 Raw Block Volume，可通过设置 `volumeMode: Block`（可选项为 `Filesystem` 和 `Block`）来使用块存储。
+Kubernetes v1.9 新增了 Alpha 版的 Raw Block Volume，可通過設置 `volumeMode: Block`（可選項為 `Filesystem` 和 `Block`）來使用塊存儲。
 
-> 注意：使用前需要为 kube-apiserver、kube-controller-manager 和 kubelet 开启 `BlockVolume` 特性，即添加命令行选项 `--feature-gates=BlockVolume=true,...`。
+> 注意：使用前需要為 kube-apiserver、kube-controller-manager 和 kubelet 開啟 `BlockVolume` 特性，即添加命令行選項 `--feature-gates=BlockVolume=true,...`。
 
-支持块存储的 PV 插件包括
+支持塊存儲的 PV 插件包括
 
 - Local Volume
 - fc
@@ -380,11 +380,11 @@ spec:
 
 > 准入控制 StorageObjectInUseProtection 在 v1.11 版本 GA。
 
-当开启准入控制 StorageObjectInUseProtection（`--admission-control=StorageObjectInUseProtection`）时，删除使用中的 PV 和 PVC 后，它们会等待使用者删除后才删除（而不是之前的立即删除）。而在使用者删除之前，它们会一直处于 Terminating 状态。
+當開啟准入控制 StorageObjectInUseProtection（`--admission-control=StorageObjectInUseProtection`）時，刪除使用中的 PV 和 PVC 後，它們會等待使用者刪除後才刪除（而不是之前的立即刪除）。而在使用者刪除之前，它們會一直處於 Terminating 狀態。
 
-## 拓扑感知动态调度
+## 拓撲感知動態調度
 
-拓扑感知动态存储卷调度（topology-aware dynamic provisioning）是 v1.12 版本的一个 Beta 特性，用来支持在多可用区集群中动态创建和调度持久化存储卷。目前的实现支持以下几种存储：
+拓撲感知動態存儲卷調度（topology-aware dynamic provisioning）是 v1.12 版本的一個 Beta 特性，用來支持在多可用區集群中動態創建和調度持久化存儲卷。目前的實現支持以下幾種存儲：
 
 - AWS EBS
 - Azure Disk
@@ -469,7 +469,7 @@ spec:
           storage: 1Gi
 ```
 
-然后查看 PV，可以发现它们创建在不同的可用区内
+然後查看 PV，可以發現它們創建在不同的可用區內
 
 ```sh
 $ kubectl get pv -o=jsonpath='{range .items[*]}{.spec.claimRef.name}{"\t"}{.metadata.labels.failure\-domain\.beta\.kubernetes\.io/zone}{"\n"}{end}'
@@ -479,9 +479,9 @@ www-web-1       us-central1-a
 logs-web-1      us-central1-a
 ```
 
-## 存储快照
+## 存儲快照
 
-存储快照是 v1.12 新增的 Alpha 特性，用来支持给存储卷创建快照。支持的插件包括
+存儲快照是 v1.12 新增的 Alpha 特性，用來支持給存儲卷創建快照。支持的插件包括
 
 - [GCE Persistent Disk CSI Driver](https://github.com/kubernetes-sigs/gcp-compute-persistent-disk-csi-driver)
 - [OpenSDS CSI Driver](https://github.com/opensds/nbp/tree/master/csi/server)
@@ -490,7 +490,7 @@ logs-web-1      us-central1-a
 
 ![image-20181014215558480](assets/image-20181014215558480.png)
 
-在使用前需要开启特性开关 VolumeSnapshotDataSource。
+在使用前需要開啟特性開關 VolumeSnapshotDataSource。
 
 使用示例：
 
@@ -540,7 +540,7 @@ spec:
       storage: 1Gi
 ```
 
-## 参考文档
+## 參考文檔
 
 - [Kubernetes Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 - [Kubernetes Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)

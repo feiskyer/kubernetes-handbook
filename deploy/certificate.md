@@ -1,14 +1,14 @@
-# 证书生成
+# 證書生成
 
-kubeadm 在部署 Kubernetes 时会自动生成 Kubernetes 所需要的证书，这里是手动生成这些证书的方法。
+kubeadm 在部署 Kubernetes 時會自動生成 Kubernetes 所需要的證書，這裡是手動生成這些證書的方法。
 
-安装 cfssl
+安裝 cfssl
 
 ```sh
 go get -u github.com/cloudflare/cfssl/cmd/...
 ```
 
-创建 CA 配置文件
+創建 CA 配置文件
 
 ```sh
 mkdir -p /etc/ssl/certs
@@ -57,13 +57,13 @@ cat >ca-csr.json <<EOF
 EOF
 ```
 
-创建 CA 证书和私钥
+創建 CA 證書和私鑰
 
 ```sh
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
-创建 Kubernetes 证书
+創建 Kubernetes 證書
 
 ```sh
 cat >kubernetes-csr.json <<EOF
@@ -101,7 +101,7 @@ EOF
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
 ```
 
-创建 Admin 证书
+創建 Admin 證書
 
 ```sh
 cat >admin-csr.json <<EOF

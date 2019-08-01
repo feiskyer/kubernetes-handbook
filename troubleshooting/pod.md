@@ -1,18 +1,18 @@
-# Pod 异常排错
+# Pod 異常排錯
 
-本章介绍 Pod 运行异常的排错方法。
+本章介紹 Pod 運行異常的排錯方法。
 
-一般来说，无论 Pod 处于什么异常状态，都可以执行以下命令来查看 Pod 的状态
+一般來說，無論 Pod 處於什麼異常狀態，都可以執行以下命令來查看 Pod 的狀態
 
-- `kubectl get pod <pod-name> -o yaml` 查看 Pod 的配置是否正确
+- `kubectl get pod <pod-name> -o yaml` 查看 Pod 的配置是否正確
 - `kubectl describe pod <pod-name>` 查看 Pod 的事件
-- `kubectl logs <pod-name> [-c <container-name>]` 查看容器日志
+- `kubectl logs <pod-name> [-c <container-name>]` 查看容器日誌
 
-这些事件和日志通常都会有助于排查 Pod 发生的问题。
+這些事件和日誌通常都會有助於排查 Pod 發生的問題。
 
-## Pod 一直处于 Pending 状态
+## Pod 一直處於 Pending 狀態
 
-Pending 说明 Pod 还没有调度到某个 Node 上面。可以通过 `kubectl describe pod <pod-name>` 命令查看到当前 Pod 的事件，进而判断为什么没有调度。如
+Pending 說明 Pod 還沒有調度到某個 Node 上面。可以通過 `kubectl describe pod <pod-name>` 命令查看到當前 Pod 的事件，進而判斷為什麼沒有調度。如
 
 ```sh
 $ kubectl describe pod mypod
@@ -25,12 +25,12 @@ Events:
 
 可能的原因包括
 
-- 资源不足，集群内所有的 Node 都不满足该 Pod 请求的 CPU、内存、GPU 或者临时存储空间等资源。解决方法是删除集群内不用的 Pod 或者增加新的 Node。
-- HostPort 端口已被占用，通常推荐使用 Service 对外开放服务端口
+- 資源不足，集群內所有的 Node 都不滿足該 Pod 請求的 CPU、內存、GPU 或者臨時存儲空間等資源。解決方法是刪除集群內不用的 Pod 或者增加新的 Node。
+- HostPort 端口已被佔用，通常推薦使用 Service 對外開放服務端口
 
-## Pod 一直处于 Waiting 或 ContainerCreating 状态
+## Pod 一直處於 Waiting 或 ContainerCreating 狀態
 
-首先还是通过 `kubectl describe pod <pod-name>` 命令查看到当前 Pod 的事件
+首先還是通過 `kubectl describe pod <pod-name>` 命令查看到當前 Pod 的事件
 
 ```sh
 $ kubectl -n kube-system describe pod nginx-pod
@@ -44,7 +44,7 @@ Events:
   Normal   SandboxChanged         1s (x4 over 46s)  kubelet, gpu13     Pod sandbox changed, it will be killed and re-created.
 ```
 
-可以发现，该 Pod 的 Sandbox 容器无法正常启动，具体原因需要查看 Kubelet 日志：
+可以發現，該 Pod 的 Sandbox 容器無法正常啟動，具體原因需要查看 Kubelet 日誌：
 
 ```sh
 $ journalctl -u kubelet
@@ -55,30 +55,30 @@ Mar 14 04:22:04 node1 kubelet[29801]: W0314 04:22:04.891337   29801 cni.go:258] 
 Mar 14 04:22:05 node1 kubelet[29801]: E0314 04:22:05.965801   29801 remote_runtime.go:91] RunPodSandbox from runtime service failed: rpc error: code = 2 desc = NetworkPlugin cni failed to set up pod "nginx-pod" network: failed to set bridge addr: "cni0" already has an IP address different from 10.244.4.1/24
 ```
 
-发现是 cni0 网桥配置了一个不同网段的 IP 地址导致，删除该网桥（网络插件会自动重新创建）即可修复
+發現是 cni0 網橋配置了一個不同網段的 IP 地址導致，刪除該網橋（網絡插件會自動重新創建）即可修復
 
 ```sh
 $ ip link set cni0 down
 $ brctl delbr cni0
 ```
 
-除了以上错误，其他可能的原因还有
+除了以上錯誤，其他可能的原因還有
 
-- 镜像拉取失败，比如
-  - 配置了错误的镜像
-  - Kubelet 无法访问镜像（国内环境访问 `gcr.io` 需要特殊处理）
-  - 私有镜像的密钥配置错误
-  - 镜像太大，拉取超时（可以适当调整 kubelet 的 `--image-pull-progress-deadline` 和 `--runtime-request-timeout` 选项）
-- CNI 网络错误，一般需要检查 CNI 网络插件的配置，比如
-  - 无法配置 Pod 网络
-  - 无法分配 IP 地址
-- 容器无法启动，需要检查是否打包了正确的镜像或者是否配置了正确的容器参数
+- 鏡像拉取失敗，比如
+  - 配置了錯誤的鏡像
+  - Kubelet 無法訪問鏡像（國內環境訪問 `gcr.io` 需要特殊處理）
+  - 私有鏡像的密鑰配置錯誤
+  - 鏡像太大，拉取超時（可以適當調整 kubelet 的 `--image-pull-progress-deadline` 和 `--runtime-request-timeout` 選項）
+- CNI 網絡錯誤，一般需要檢查 CNI 網絡插件的配置，比如
+  - 無法配置 Pod 網絡
+  - 無法分配 IP 地址
+- 容器無法啟動，需要檢查是否打包了正確的鏡像或者是否配置了正確的容器參數
 
 
 
-## Pod 处于 ImagePullBackOff 状态
+## Pod 處於 ImagePullBackOff 狀態
 
-这通常是镜像名称配置错误或者私有镜像的密钥配置错误导致。这种情况可以使用 `docker pull <image>` 来验证镜像是否可以正常拉取。
+這通常是鏡像名稱配置錯誤或者私有鏡像的密鑰配置錯誤導致。這種情況可以使用 `docker pull <image>` 來驗證鏡像是否可以正常拉取。
 
 ```sh
 $ kubectl describe pod mypod
@@ -96,13 +96,13 @@ Events:
   Warning  Failed                 1s (x6 over 25s)   kubelet, k8s-agentpool1-38622806-0  Error: ImagePullBackOff
 ```
 
-如果是私有镜像，需要首先创建一个 docker-registry 类型的 Secret
+如果是私有鏡像，需要首先創建一個 docker-registry 類型的 Secret
 
 ```sh
 kubectl create secret docker-registry my-secret --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
 ```
 
-然后在容器中引用这个 Secret
+然後在容器中引用這個 Secret
 
 ```yaml
 spec:
@@ -113,9 +113,9 @@ spec:
   - name: my-secret
 ```
 
-## Pod 一直处于 CrashLoopBackOff 状态
+## Pod 一直處於 CrashLoopBackOff 狀態
 
-CrashLoopBackOff 状态说明容器曾经启动了，但又异常退出了。此时 Pod 的 RestartCounts 通常是大于 0 的，可以先查看一下容器的日志
+CrashLoopBackOff 狀態說明容器曾經啟動了，但又異常退出了。此時 Pod 的 RestartCounts 通常是大於 0 的，可以先查看一下容器的日誌
 
 ```sh
 kubectl describe pod <pod-name>
@@ -123,10 +123,10 @@ kubectl logs <pod-name>
 kubectl logs --previous <pod-name>
 ```
 
-这里可以发现一些容器退出的原因，比如
+這裡可以發現一些容器退出的原因，比如
 
-- 容器进程退出
-- 健康检查失败退出
+- 容器進程退出
+- 健康檢查失敗退出
 - OOMKilled
 
 ```sh
@@ -156,13 +156,13 @@ Containers:
 ...
 ```
 
-如果此时如果还未发现线索，还可以到容器内执行命令来进一步查看退出原因
+如果此時如果還未發現線索，還可以到容器內執行命令來進一步查看退出原因
 
 ```sh
 kubectl exec cassandra -- cat /var/log/cassandra/system.log
 ```
 
-如果还是没有线索，那就需要 SSH 登录该 Pod 所在的 Node 上，查看 Kubelet 或者 Docker 的日志进一步排查了
+如果還是沒有線索，那就需要 SSH 登錄該 Pod 所在的 Node 上，查看 Kubelet 或者 Docker 的日誌進一步排查了
 
 ```sh
 # Query Node
@@ -172,24 +172,24 @@ kubectl get pod <pod-name> -o wide
 ssh <username>@<node-name>
 ```
 
-## Pod 处于 Error 状态
+## Pod 處於 Error 狀態
 
-通常处于 Error 状态说明 Pod 启动过程中发生了错误。常见的原因包括
+通常處於 Error 狀態說明 Pod 啟動過程中發生了錯誤。常見的原因包括
 
-- 依赖的 ConfigMap、Secret 或者 PV 等不存在
-- 请求的资源超过了管理员设置的限制，比如超过了 LimitRange 等
-- 违反集群的安全策略，比如违反了 PodSecurityPolicy 等
-- 容器无权操作集群内的资源，比如开启 RBAC 后，需要为 ServiceAccount 配置角色绑定
+- 依賴的 ConfigMap、Secret 或者 PV 等不存在
+- 請求的資源超過了管理員設置的限制，比如超過了 LimitRange 等
+- 違反集群的安全策略，比如違反了 PodSecurityPolicy 等
+- 容器無權操作集群內的資源，比如開啟 RBAC 後，需要為 ServiceAccount 配置角色綁定
 
-## Pod 处于 Terminating 或 Unknown 状态
+## Pod 處於 Terminating 或 Unknown 狀態
 
-从 v1.5 开始，Kubernetes 不会因为 Node 失联而删除其上正在运行的 Pod，而是将其标记为 Terminating 或 Unknown 状态。想要删除这些状态的 Pod 有三种方法：
+從 v1.5 開始，Kubernetes 不會因為 Node 失聯而刪除其上正在運行的 Pod，而是將其標記為 Terminating 或 Unknown 狀態。想要刪除這些狀態的 Pod 有三種方法：
 
-- 从集群中删除该 Node。使用公有云时，kube-controller-manager 会在 VM 删除后自动删除对应的 Node。而在物理机部署的集群中，需要管理员手动删除 Node（如 `kubectl delete node <node-name>`。
-- Node 恢复正常。Kubelet 会重新跟 kube-apiserver 通信确认这些 Pod 的期待状态，进而再决定删除或者继续运行这些 Pod。
-- 用户强制删除。用户可以执行 `kubectl delete pods <pod> --grace-period=0 --force` 强制删除 Pod。除非明确知道 Pod 的确处于停止状态（比如 Node 所在 VM 或物理机已经关机），否则不建议使用该方法。特别是 StatefulSet 管理的 Pod，强制删除容易导致脑裂或者数据丢失等问题。
+- 從集群中刪除該 Node。使用公有云時，kube-controller-manager 會在 VM 刪除後自動刪除對應的 Node。而在物理機部署的集群中，需要管理員手動刪除 Node（如 `kubectl delete node <node-name>`。
+- Node 恢復正常。Kubelet 會重新跟 kube-apiserver 通信確認這些 Pod 的期待狀態，進而再決定刪除或者繼續運行這些 Pod。
+- 用戶強制刪除。用戶可以執行 `kubectl delete pods <pod> --grace-period=0 --force` 強制刪除 Pod。除非明確知道 Pod 的確處於停止狀態（比如 Node 所在 VM 或物理機已經關機），否則不建議使用該方法。特別是 StatefulSet 管理的 Pod，強制刪除容易導致腦裂或者數據丟失等問題。
 
-如果 Kubelet 是以 Docker 容器的形式运行的，此时 kubelet 日志中可能会发现[如下的错误](https://github.com/kubernetes/kubernetes/issues/51835)：
+如果 Kubelet 是以 Docker 容器的形式運行的，此時 kubelet 日誌中可能會發現[如下的錯誤](https://github.com/kubernetes/kubernetes/issues/51835)：
 
 ```json
 {"log":"I0926 19:59:07.162477   54420 kubelet.go:1894] SyncLoop (DELETE, \"api\"): \"billcenter-737844550-26z3w_meipu(30f3ffec-a29f-11e7-b693-246e9607517c)\"\n","stream":"stderr","time":"2017-09-26T11:59:07.162748656Z"}
@@ -197,10 +197,10 @@ ssh <username>@<node-name>
 {"log":"E0926 19:59:39.977461   54420 nestedpendingoperations.go:262] Operation for \"\\\"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\\\" (\\\"30f3ffec-a29f-11e7-b693-246e9607517c\\\")\" failed. No retries permitted until 2017-09-26 19:59:41.977419403 +0800 CST (durationBeforeRetry 2s). Error: UnmountVolume.TearDown failed for volume \"default-token-6tpnm\" (UniqueName: \"kubernetes.io/secret/30f3ffec-a29f-11e7-b693-246e9607517c-default-token-6tpnm\") pod \"30f3ffec-a29f-11e7-b693-246e9607517c\" (UID: \"30f3ffec-a29f-11e7-b693-246e9607517c\") : remove /var/lib/kubelet/pods/30f3ffec-a29f-11e7-b693-246e9607517c/volumes/kubernetes.io~secret/default-token-6tpnm: device or resource busy\n","stream":"stderr","time":"2017-09-26T11:59:39.977728079Z"}
 ```
 
-如果是这种情况，则需要给 kubelet 容器设置 `--containerized` 参数并传入以下的存储卷
+如果是這種情況，則需要給 kubelet 容器設置 `--containerized` 參數並傳入以下的存儲卷
 
 ```sh
-# 以使用 calico 网络插件为例
+# 以使用 calico 網絡插件為例
       -v /:/rootfs:ro,shared \
       -v /sys:/sys:ro \
       -v /dev:/dev:rw \
@@ -218,7 +218,7 @@ ssh <username>@<node-name>
       -v /opt/cni/bin/:/opt/cni/bin/ \
 ```
 
-处于 `Terminating` 状态的 Pod 在 Kubelet 恢复正常运行后一般会自动删除。但有时也会出现无法删除的情况，并且通过 `kubectl delete pods <pod> --grace-period=0 --force` 也无法强制删除。此时一般是由于 `finalizers` 导致的，通过 `kubectl edit` 将 finalizers 删除即可解决。
+處於 `Terminating` 狀態的 Pod 在 Kubelet 恢復正常運行後一般會自動刪除。但有時也會出現無法刪除的情況，並且通過 `kubectl delete pods <pod> --grace-period=0 --force` 也無法強制刪除。此時一般是由於 `finalizers` 導致的，通過 `kubectl edit` 將 finalizers 刪除即可解決。
 
 ```yaml
 "finalizers": [
@@ -226,32 +226,32 @@ ssh <username>@<node-name>
 ]
 ```
 
-## Pod 行为异常
+## Pod 行為異常
 
-这里所说的行为异常是指 Pod 没有按预期的行为执行，比如没有运行 podSpec 里面设置的命令行参数。这一般是 podSpec yaml 文件内容有误，可以尝试使用 `--validate` 参数重建容器，比如
+這裡所說的行為異常是指 Pod 沒有按預期的行為執行，比如沒有運行 podSpec 裡面設置的命令行參數。這一般是 podSpec yaml 文件內容有誤，可以嘗試使用 `--validate` 參數重建容器，比如
 
 ```sh
 kubectl delete pod mypod
 kubectl create --validate -f mypod.yaml
 ```
 
-也可以查看创建后的 podSpec 是否是对的，比如
+也可以查看創建後的 podSpec 是否是對的，比如
 
 ```sh
 kubectl get pod mypod -o yaml
 ```
 
-## 修改静态 Pod 的 Manifest 后未自动重建
+## 修改靜態 Pod 的 Manifest 後未自動重建
 
-Kubelet 使用 inotify 机制检测 `/etc/kubernetes/manifests` 目录（可通过 Kubelet 的 `--pod-manifest-path` 选项指定）中静态 Pod 的变化，并在文件发生变化后重新创建相应的 Pod。但有时也会发生修改静态 Pod 的 Manifest 后未自动创建新 Pod 的情景，此时一个简单的修复方法是重启 Kubelet。
+Kubelet 使用 inotify 機制檢測 `/etc/kubernetes/manifests` 目錄（可通過 Kubelet 的 `--pod-manifest-path` 選項指定）中靜態 Pod 的變化，並在文件發生變化後重新創建相應的 Pod。但有時也會發生修改靜態 Pod 的 Manifest 後未自動創建新 Pod 的情景，此時一個簡單的修復方法是重啟 Kubelet。
 
-## Nginx 启动失败
+## Nginx 啟動失敗
 
-Nginx 启动失败，错误消息是 `nginx: [emerg] socket() [::]:8000 failed (97: Address family not supported by protocol)`。这是由于服务器未开启 IPv6 导致的，解决方法有两种：
+Nginx 啟動失敗，錯誤消息是 `nginx: [emerg] socket() [::]:8000 failed (97: Address family not supported by protocol)`。這是由於服務器未開啟 IPv6 導致的，解決方法有兩種：
 
-- 第一种方法，服务器开启 IPv6；
-- 或者，第二种方法，删除或者注释掉 `/etc/nginx/conf.d/default.conf` 文件中的 ` listen       [::]:80 default_server;`。
+- 第一種方法，服務器開啟 IPv6；
+- 或者，第二種方法，刪除或者註釋掉 `/etc/nginx/conf.d/default.conf` 文件中的 ` listen       [::]:80 default_server;`。
 
-### 参考文档
+### 參考文檔
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)

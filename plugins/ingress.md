@@ -1,12 +1,12 @@
-# Ingress Controller 扩展
+# Ingress Controller 擴展
 
-[Ingress](../concepts/ingress.md) 为 Kubernetes 集群中的服务提供了外部入口以及路由，而 Ingress Controller 监测 Ingress 和 Service 资源的变更并根据规则配置负载均衡、路由规则和 DNS 等并提供访问入口。
+[Ingress](../concepts/ingress.md) 為 Kubernetes 集群中的服務提供了外部入口以及路由，而 Ingress Controller 監測 Ingress 和 Service 資源的變更並根據規則配置負載均衡、路由規則和 DNS 等並提供訪問入口。
 
-## 如何开发 Ingress Controller 扩展
+## 如何開發 Ingress Controller 擴展
 
-[NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx) 和 [GLBC](https://github.com/kubernetes/ingress-gce) 提供了两个 Ingress Controller 的完整示例，可以在此基础上方便的开发新的 Ingress Controller。
+[NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx) 和 [GLBC](https://github.com/kubernetes/ingress-gce) 提供了兩個 Ingress Controller 的完整示例，可以在此基礎上方便的開發新的 Ingress Controller。
 
-## 常见 Ingress Controller
+## 常見 Ingress Controller
 
 * [Nginx Ingress](https://github.com/kubernetes/ingress-nginx)
 
@@ -28,4 +28,4 @@ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
 
 ## Ingress 使用方法
 
-具体 Ingress 的使用方法可以参考 [这里](../concepts/ingress.md)。
+具體 Ingress 的使用方法可以參考 [這裡](../concepts/ingress.md)。

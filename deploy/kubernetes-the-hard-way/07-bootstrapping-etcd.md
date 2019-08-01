@@ -1,31 +1,31 @@
 # 部署 etcd 群集
 
-Kubernetes 组件都是无状态的，所有的群集状态都储存在 [etcd](https://github.com/coreos/etcd) 集群中。
+Kubernetes 組件都是無狀態的，所有的群集狀態都儲存在 [etcd](https://github.com/coreos/etcd) 集群中。
 
-本部分内容将部署一套三节点的 etcd 群集，并配置高可用以及远程加密访问。
+本部分內容將部署一套三節點的 etcd 群集，並配置高可用以及遠程加密訪問。
 
-## 事前准备
+## 事前準備
 
-本部分的命令需要在每个控制节点上都运行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登录每个控制节点，比如
+本部分的命令需要在每個控制節點上都運行一遍，包括 `controller-0`、`controller-1` 和 `controller-2`。可以使用 `gcloud` 命令登錄每個控制節點，比如
 
 ```sh
 gcloud compute ssh controller-0
 ```
 
-可以使用 tmux 同时登录到三点控制节点上，加快部署步骤。
+可以使用 tmux 同時登錄到三點控制節點上，加快部署步驟。
 
-## 部署 etcd 集群成员
+## 部署 etcd 集群成員
 
-### 下载并安装 etcd 二进制文件
+### 下載並安裝 etcd 二進制文件
 
-从 [coreos/etcd](https://github.com/coreos/etcd) GitHub 中下载 etcd 发布文件：
+從 [coreos/etcd](https://github.com/coreos/etcd) GitHub 中下載 etcd 發佈文件：
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
   "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
 ```
 
-解压缩并安装 `etcd` 服务与 `etcdctl` 命令行工具：
+解壓縮並安裝 `etcd` 服務與 `etcdctl` 命令行工具：
 
 ```sh
 tar -xvf etcd-v3.3.9-linux-amd64.tar.gz
@@ -39,14 +39,14 @@ sudo mkdir -p /etc/etcd /var/lib/etcd
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
 ```
 
-使用虚拟机的内网 IP 地址来作为 etcd 集群的服务地址。查询当前节点的内网 IP 地址：
+使用虛擬機的內網 IP 地址來作為 etcd 集群的服務地址。查詢當前節點的內網 IP 地址：
 
 ```sh
 INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
   http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
 ```
 
-每个 etcd 成员必须有一个整集群中唯一的名字，使用 hostname 作为 etcd name：
+每個 etcd 成員必須有一個整集群中唯一的名字，使用 hostname 作為 etcd name：
 
 ```sh
 ETCD_NAME=$(hostname -s)
@@ -87,7 +87,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### 启动 etcd Server
+### 啟動 etcd Server
 
 ```sh
 sudo systemctl daemon-reload
@@ -95,11 +95,11 @@ sudo systemctl enable etcd
 sudo systemctl start etcd
 ```
 
-> 不要忘记在所有控制节点上都运行上述命令，包括 `controller-0`、`controller-1` 和 `controller-2` 等。
+> 不要忘記在所有控制節點上都運行上述命令，包括 `controller-0`、`controller-1` 和 `controller-2` 等。
 
-## 验证
+## 驗證
 
-列出 etcd 的群集成员:
+列出 etcd 的群集成員:
 
 ```sh
 sudo ETCDCTL_API=3 etcdctl member list \
@@ -109,7 +109,7 @@ sudo ETCDCTL_API=3 etcdctl member list \
   --key=/etc/etcd/kubernetes-key.pem
 ```
 
-> 输出
+> 輸出
 
 ```sh
 3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379
@@ -117,4 +117,4 @@ f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.24
 ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379
 ```
 
-下一步：[部署 Kubernetes 控制节点](08-bootstrapping-kubernetes-controllers.md)。
+下一步：[部署 Kubernetes 控制節點](08-bootstrapping-kubernetes-controllers.md)。

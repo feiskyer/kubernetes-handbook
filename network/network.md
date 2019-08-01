@@ -1,35 +1,35 @@
-# Kubernetes 网络模型
+# Kubernetes 網絡模型
 
-## 网络模型
+## 網絡模型
 
-- IP-per-Pod，每个 Pod 都拥有一个独立 IP 地址，Pod 内所有容器共享一个网络命名空间
-- 集群内所有 Pod 都在一个直接连通的扁平网络中，可通过 IP 直接访问
-  - 所有容器之间无需 NAT 就可以直接互相访问
-  - 所有 Node 和所有容器之间无需 NAT 就可以直接互相访问
-  - 容器自己看到的 IP 跟其他容器看到的一样
-- Service cluster IP 尽可在集群内部访问，外部请求需要通过 NodePort、LoadBalance 或者 Ingress 来访问
+- IP-per-Pod，每個 Pod 都擁有一個獨立 IP 地址，Pod 內所有容器共享一個網絡命名空間
+- 集群內所有 Pod 都在一個直接連通的扁平網絡中，可通過 IP 直接訪問
+  - 所有容器之間無需 NAT 就可以直接互相訪問
+  - 所有 Node 和所有容器之間無需 NAT 就可以直接互相訪問
+  - 容器自己看到的 IP 跟其他容器看到的一樣
+- Service cluster IP 儘可在集群內部訪問，外部請求需要通過 NodePort、LoadBalance 或者 Ingress 來訪問
 
 ## 官方插件
 
-目前，Kubernetes 支持以下两种插件：
+目前，Kubernetes 支持以下兩種插件：
 
-* kubenet：这是一个基于 CNI bridge 的网络插件（在 bridge 插件的基础上扩展了 port mapping 和 traffic shaping ），是目前推荐的默认插件
-* CNI：CNI 网络插件，需要用户将网络配置放到 `/etc/cni/net.d` 目录中，并将 CNI 插件的二进制文件放入 `/opt/cni/bin`
-* ~~exec：通过第三方的可执行文件来为容器配置网络，已在 v1.6 中移除，见 [kubernetes#39254](https://github.com/kubernetes/kubernetes/pull/39254)~~
+* kubenet：這是一個基於 CNI bridge 的網絡插件（在 bridge 插件的基礎上擴展了 port mapping 和 traffic shaping ），是目前推薦的默認插件
+* CNI：CNI 網絡插件，需要用戶將網絡配置放到 `/etc/cni/net.d` 目錄中，並將 CNI 插件的二進制文件放入 `/opt/cni/bin`
+* ~~exec：通過第三方的可執行文件來為容器配置網絡，已在 v1.6 中移除，見 [kubernetes#39254](https://github.com/kubernetes/kubernetes/pull/39254)~~
 
 ## kubenet
 
-kubenet 是一个基于 CNI bridge 的网络插件，它为每个容器建立一对 veth pair 并连接到 cbr0 网桥上。kubenet 在 bridge 插件的基础上拓展了很多功能，包括
+kubenet 是一個基於 CNI bridge 的網絡插件，它為每個容器建立一對 veth pair 並連接到 cbr0 網橋上。kubenet 在 bridge 插件的基礎上拓展了很多功能，包括
 
-- 使用 host-local IPAM 插件为容器分配 IP 地址， 并定期释放已分配但未使用的 IP 地址
+- 使用 host-local IPAM 插件為容器分配 IP 地址， 並定期釋放已分配但未使用的 IP 地址
 
-- 设置 sysctl `net.bridge.bridge-nf-call-iptables = 1`
+- 設置 sysctl `net.bridge.bridge-nf-call-iptables = 1`
 
-- 为 Pod IP 创建 SNAT 规则
+- 為 Pod IP 創建 SNAT 規則
 
   - `-A POSTROUTING ! -d 10.0.0.0/8 -m comment --comment "kubenet: SNAT for outbound traffic from cluster" -m addrtype ! --dst-type LOCAL -j MASQUERADE`
 
-- 开启网桥的 hairpin 和 promisc 模式，允许 Pod 访问它自己所在的 Service IP（即通过 NAT 后再访问 Pod 自己）
+- 開啟網橋的 hairpin 和 promisc 模式，允許 Pod 訪問它自己所在的 Service IP（即通過 NAT 後再訪問 Pod 自己）
 
   ```sh
   -A OUTPUT -j KUBE-DEDUP
@@ -37,25 +37,25 @@ kubenet 是一个基于 CNI bridge 的网络插件，它为每个容器建立一
   -A KUBE-DEDUP -p IPv4 -s a:58:a:f4:2:1 -o veth+ --ip-src 10.244.2.0/24 -j DROP
   ```
 
-- HostPort 管理以及设置端口映射
+- HostPort 管理以及設置端口映射
 
-- Traffic shaping，支持通过 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 等 Annotation 设置 Pod 网络带宽限制
+- Traffic shaping，支持通過 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 等 Annotation 設置 Pod 網絡帶寬限制
 
-下图是一个 Kubernetes on Azure 多节点的 Pod 之间相互通信的原理：
+下圖是一個 Kubernetes on Azure 多節點的 Pod 之間相互通信的原理：
 
 ![image-20190316183639488](assets/image-20190316183639488.png)
 
-跨节点 Pod 之间相互通信时，会通过云平台或者交换机配置的路由转发到正确的节点中：
+跨節點 Pod 之間相互通信時，會通過雲平臺或者交換機配置的路由轉發到正確的節點中：
 
 ![image-20190316183650404](assets/image-20190316183650404.png)
 
 
 
-未来 kubenet 插件会迁移到标准的 CNI 插件（如 ptp），具体计划见 [这里](https://docs.google.com/document/d/1glJLMHrE2eqwRrAN4fdsz4Vg3R1Iqt6bm5GJQ4GdjlQ/edit#)。
+未來 kubenet 插件會遷移到標準的 CNI 插件（如 ptp），具體計劃見 [這裡](https://docs.google.com/document/d/1glJLMHrE2eqwRrAN4fdsz4Vg3R1Iqt6bm5GJQ4GdjlQ/edit#)。
 
 ## CNI plugin
 
-安装 CNI：
+安裝 CNI：
 
 ```sh
 cat <<EOF> /etc/yum.repos.d/kubernetes.repo
@@ -101,11 +101,11 @@ cat >/etc/cni/net.d/99-loopback.conf <<-EOF
 EOF
 ```
 
-更多 CNI 网络插件的说明请参考 [CNI 网络插件](cni/index.md)。
+更多 CNI 網絡插件的說明請參考 [CNI 網絡插件](cni/index.md)。
 
 ## [Flannel](flannel/index.md)
 
-[Flannel](https://github.com/coreos/flannel/blob/master/Documentation/kube-flannel.yml) 是一个为 Kubernetes 提供 overlay network 的网络插件，它基于 Linux TUN/TAP，使用 UDP 封装 IP 包来创建 overlay 网络，并借助 etcd 维护网络的分配情况。
+[Flannel](https://github.com/coreos/flannel/blob/master/Documentation/kube-flannel.yml) 是一個為 Kubernetes 提供 overlay network 的網絡插件，它基於 Linux TUN/TAP，使用 UDP 封裝 IP 包來創建 overlay 網絡，並藉助 etcd 維護網絡的分配情況。
 
 ```sh
 kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel-rbac.yml
@@ -114,9 +114,9 @@ kubectl create -f https://github.com/coreos/flannel/raw/master/Documentation/kub
 
 ## [Weave Net](weave/index.md)
 
-Weave Net 是一个多主机容器网络方案，支持去中心化的控制平面，各个 host 上的 wRouter 间通过建立 Full Mesh 的 TCP 链接，并通过 Gossip 来同步控制信息。这种方式省去了集中式的 K/V Store，能够在一定程度上减低部署的复杂性，Weave 将其称为 “data centric”，而非 RAFT 或者 Paxos 的 “algorithm centric”。
+Weave Net 是一個多主機容器網絡方案，支持去中心化的控制平面，各個 host 上的 wRouter 間通過建立 Full Mesh 的 TCP 鏈接，並通過 Gossip 來同步控制信息。這種方式省去了集中式的 K/V Store，能夠在一定程度上減低部署的複雜性，Weave 將其稱為 “data centric”，而非 RAFT 或者 Paxos 的 “algorithm centric”。
 
-数据平面上，Weave 通过 UDP 封装实现 L2 Overlay，封装支持两种模式，一种是运行在 user space 的 sleeve mode，另一种是运行在 kernal space 的 fastpath mode。Sleeve mode 通过 pcap 设备在 Linux bridge 上截获数据包并由 wRouter 完成 UDP 封装，支持对 L2 traffic 进行加密，还支持 Partial Connection，但是性能损失明显。Fastpath mode 即通过 OVS 的 odp 封装 VxLAN 并完成转发，wRouter 不直接参与转发，而是通过下发 odp 流表的方式控制转发，这种方式可以明显地提升吞吐量，但是不支持加密等高级功能。
+數據平面上，Weave 通過 UDP 封裝實現 L2 Overlay，封裝支持兩種模式，一種是運行在 user space 的 sleeve mode，另一種是運行在 kernal space 的 fastpath mode。Sleeve mode 通過 pcap 設備在 Linux bridge 上截獲數據包並由 wRouter 完成 UDP 封裝，支持對 L2 traffic 進行加密，還支持 Partial Connection，但是性能損失明顯。Fastpath mode 即通過 OVS 的 odp 封裝 VxLAN 並完成轉發，wRouter 不直接參與轉發，而是通過下發 odp 流表的方式控制轉發，這種方式可以明顯地提升吞吐量，但是不支持加密等高級功能。
 
 ```sh
 kubectl apply -f https://git.io/weave-kube
@@ -124,11 +124,11 @@ kubectl apply -f https://git.io/weave-kube
 
 ## [Calico](calico/index.md)
 
-[Calico](https://www.projectcalico.org/) 是一个基于 BGP 的纯三层的数据中心网络方案（不需要 Overlay），并且与 OpenStack、Kubernetes、AWS、GCE 等 IaaS 和容器平台都有良好的集成。
+[Calico](https://www.projectcalico.org/) 是一個基於 BGP 的純三層的數據中心網絡方案（不需要 Overlay），並且與 OpenStack、Kubernetes、AWS、GCE 等 IaaS 和容器平臺都有良好的集成。
 
-Calico 在每一个计算节点利用 Linux Kernel 实现了一个高效的 vRouter 来负责数据转发，而每个 vRouter 通过 BGP 协议负责把自己上运行的 workload 的路由信息像整个 Calico 网络内传播——小规模部署可以直接互联，大规模下可通过指定的 BGP route reflector 来完成。 这样保证最终所有的 workload 之间的数据流量都是通过 IP 路由的方式完成互联的。Calico 节点组网可以直接利用数据中心的网络结构（无论是 L2 或者 L3），不需要额外的 NAT，隧道或者 Overlay Network。
+Calico 在每一個計算節點利用 Linux Kernel 實現了一個高效的 vRouter 來負責數據轉發，而每個 vRouter 通過 BGP 協議負責把自己上運行的 workload 的路由信息像整個 Calico 網絡內傳播——小規模部署可以直接互聯，大規模下可通過指定的 BGP route reflector 來完成。 這樣保證最終所有的 workload 之間的數據流量都是通過 IP 路由的方式完成互聯的。Calico 節點組網可以直接利用數據中心的網絡結構（無論是 L2 或者 L3），不需要額外的 NAT，隧道或者 Overlay Network。
 
-此外，Calico 基于 iptables 还提供了丰富而灵活的网络 Policy，保证通过各个节点上的 ACLs 来提供 Workload 的多租户隔离、安全组以及其他可达性限制等功能。
+此外，Calico 基於 iptables 還提供了豐富而靈活的網絡 Policy，保證通過各個節點上的 ACLs 來提供 Workload 的多租戶隔離、安全組以及其他可達性限制等功能。
 
 ```sh
 kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
@@ -136,98 +136,98 @@ kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/i
 
 ## [OVN](ovn-kubernetes.md)
 
-[OVN (Open Virtual Network)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是 OVS 提供的原生虚拟化网络方案，旨在解决传统 SDN 架构（比如 Neutron DVR）的性能问题。
+[OVN (Open Virtual Network)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是 OVS 提供的原生虛擬化網絡方案，旨在解決傳統 SDN 架構（比如 Neutron DVR）的性能問題。
 
-OVN 为 Kubernetes 提供了两种网络方案：
+OVN 為 Kubernetes 提供了兩種網絡方案：
 
-* Overaly: 通过 ovs overlay 连接容器
-* Underlay: 将 VM 内的容器连到 VM 所在的相同网络（开发中）
+* Overaly: 通過 ovs overlay 連接容器
+* Underlay: 將 VM 內的容器連到 VM 所在的相同網絡（開發中）
 
-其中，容器网络的配置是通过 OVN 的 CNI 插件来实现。
+其中，容器網絡的配置是通過 OVN 的 CNI 插件來實現。
 
 ## [Contiv](contiv/index.md)
 
-[Contiv](http://contiv.github.io) 是思科开源的容器网络方案，主要提供基于 Policy 的网络管理，并与主流容器编排系统集成。Contiv 最主要的优势是直接提供了多租户网络，并支持 L2(VLAN), L3(BGP), Overlay (VXLAN) 以及思科自家的 ACI。
+[Contiv](http://contiv.github.io) 是思科開源的容器網絡方案，主要提供基於 Policy 的網絡管理，並與主流容器編排系統集成。Contiv 最主要的優勢是直接提供了多租戶網絡，並支持 L2(VLAN), L3(BGP), Overlay (VXLAN) 以及思科自家的 ACI。
 
 ## [Romana](romana/index.md)
 
-Romana 是 Panic Networks 在 2016 年提出的开源项目，旨在借鉴 route aggregation 的思路来解决 Overlay 方案给网络带来的开销。
+Romana 是 Panic Networks 在 2016 年提出的開源項目，旨在借鑑 route aggregation 的思路來解決 Overlay 方案給網絡帶來的開銷。
 
 ## [OpenContrail](opencontrail/index.md)
 
-OpenContrail 是 Juniper 推出的开源网络虚拟化平台，其商业版本为 Contrail。其主要由控制器和 vRouter 组成：
+OpenContrail 是 Juniper 推出的開源網絡虛擬化平臺，其商業版本為 Contrail。其主要由控制器和 vRouter 組成：
 
-* 控制器提供虚拟网络的配置、控制和分析功能
-* vRouter 提供分布式路由，负责虚拟路由器、虚拟网络的建立以及数据转发
+* 控制器提供虛擬網絡的配置、控制和分析功能
+* vRouter 提供分佈式路由，負責虛擬路由器、虛擬網絡的建立以及數據轉發
 
-其中，vRouter 支持三种模式
+其中，vRouter 支持三種模式
 
-* Kernel vRouter：类似于 ovs 内核模块
-* DPDK vRouter：类似于 ovs-dpdk
-* Netronome Agilio Solution (商业产品)：支持 DPDK, SR-IOV and Express Virtio (XVIO)
+* Kernel vRouter：類似於 ovs 內核模塊
+* DPDK vRouter：類似於 ovs-dpdk
+* Netronome Agilio Solution (商業產品)：支持 DPDK, SR-IOV and Express Virtio (XVIO)
 
-[Juniper/contrail-kubernetes](https://github.com/Juniper/contrail-kubernetes) 提供了 Kubernetes 的集成，包括两部分：
+[Juniper/contrail-kubernetes](https://github.com/Juniper/contrail-kubernetes) 提供了 Kubernetes 的集成，包括兩部分：
 
-* kubelet network plugin 基于 kubernetes v1.6 已经删除的 [exec network plugin](https://github.com/kubernetes/kubernetes/pull/39254)
-* kube-network-manager 监听 kubernetes API，并根据 label 信息来配置网络策略
+* kubelet network plugin 基於 kubernetes v1.6 已經刪除的 [exec network plugin](https://github.com/kubernetes/kubernetes/pull/39254)
+* kube-network-manager 監聽 kubernetes API，並根據 label 信息來配置網絡策略
 
 ## [Midonet](midonet/index.md)
 
-[Midonet](https://www.midonet.org/) 是 Midokura 公司开源的 OpenStack 网络虚拟化方案。
+[Midonet](https://www.midonet.org/) 是 Midokura 公司開源的 OpenStack 網絡虛擬化方案。
 
-- 从组件来看，Midonet 以 Zookeeper+Cassandra 构建分布式数据库存储 VPC 资源的状态——Network State DB Cluster，并将 controller 分布在转发设备（包括 vswitch 和 L3 Gateway）本地——Midolman（L3 Gateway 上还有 quagga bgpd），设备的转发则保留了 ovs kernel 作为 fast datapath。可以看到，Midonet 和 DragonFlow、OVN 一样，在架构的设计上都是沿着 OVS-Neutron-Agent 的思路，将 controller 分布到设备本地，并在 neutron plugin 和设备 agent 间嵌入自己的资源数据库作为 super controller。
-- 从接口来看，NSDB 与 Neutron 间是 REST API，Midolman 与 NSDB 间是 RPC，这俩没什么好说的。Controller 的南向方面，Midolman 并没有用 OpenFlow 和 OVSDB，它干掉了 user space 中的 vswitchd 和 ovsdb-server，直接通过 linux netlink 机制操作 kernel space 中的 ovs datapath。
+- 從組件來看，Midonet 以 Zookeeper+Cassandra 構建分佈式數據庫存儲 VPC 資源的狀態——Network State DB Cluster，並將 controller 分佈在轉發設備（包括 vswitch 和 L3 Gateway）本地——Midolman（L3 Gateway 上還有 quagga bgpd），設備的轉發則保留了 ovs kernel 作為 fast datapath。可以看到，Midonet 和 DragonFlow、OVN 一樣，在架構的設計上都是沿著 OVS-Neutron-Agent 的思路，將 controller 分佈到設備本地，並在 neutron plugin 和設備 agent 間嵌入自己的資源數據庫作為 super controller。
+- 從接口來看，NSDB 與 Neutron 間是 REST API，Midolman 與 NSDB 間是 RPC，這倆沒什麼好說的。Controller 的南向方面，Midolman 並沒有用 OpenFlow 和 OVSDB，它幹掉了 user space 中的 vswitchd 和 ovsdb-server，直接通過 linux netlink 機制操作 kernel space 中的 ovs datapath。
 
 ## Host network
 
-最简单的网络模型就是让容器共享 Host 的 network namespace，使用宿主机的网络协议栈。这样，不需要额外的配置，容器就可以共享宿主的各种网络资源。
+最簡單的網絡模型就是讓容器共享 Host 的 network namespace，使用宿主機的網絡協議棧。這樣，不需要額外的配置，容器就可以共享宿主的各種網絡資源。
 
-优点
+優點
 
-- 简单，不需要任何额外配置
-- 高效，没有 NAT 等额外的开销
+- 簡單，不需要任何額外配置
+- 高效，沒有 NAT 等額外的開銷
 
-缺点
+缺點
 
-- 没有任何的网络隔离
-- 容器和 Host 的端口号容易冲突
-- 容器内任何网络配置都会影响整个宿主机
+- 沒有任何的網絡隔離
+- 容器和 Host 的端口號容易衝突
+- 容器內任何網絡配置都會影響整個宿主機
 
-> 注意：HostNetwork 是在 Pod 配置文件中设置的，kubelet 在启动时还是需要配置使用 CNI 或者 kubenet 插件（默认 kubenet）。
+> 注意：HostNetwork 是在 Pod 配置文件中設置的，kubelet 在啟動時還是需要配置使用 CNI 或者 kubenet 插件（默認 kubenet）。
 
 ## 其他
 
 ### [ipvs](ipvs/index.md)
 
-Kubernetes v1.8 已经支持 ipvs 负载均衡模式（alpha 版）。
+Kubernetes v1.8 已經支持 ipvs 負載均衡模式（alpha 版）。
 
 ### [Canal](https://github.com/tigera/canal)
 
-[Canal](https://github.com/tigera/canal) 是 Flannel 和 Calico 联合发布的一个统一网络插件，提供 CNI 网络插件，并支持 network policy。
+[Canal](https://github.com/tigera/canal) 是 Flannel 和 Calico 聯合發佈的一個統一網絡插件，提供 CNI 網絡插件，並支持 network policy。
 
 ### [kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes)
 
-[kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes) 是 OpenStack 推出的集成 Neutron 网络插件，主要包括 Controller 和 CNI 插件两部分，并且也提供基于 Neutron LBaaS 的 Service 集成。
+[kuryr-kubernetes](https://github.com/openstack/kuryr-kubernetes) 是 OpenStack 推出的集成 Neutron 網絡插件，主要包括 Controller 和 CNI 插件兩部分，並且也提供基於 Neutron LBaaS 的 Service 集成。
 
 ### [Cilium](https://github.com/cilium/cilium)
 
-[Cilium](https://github.com/cilium/cilium) 是一个基于 eBPF 和 XDP 的高性能容器网络方案，提供了 CNI 和 CNM 插件。
+[Cilium](https://github.com/cilium/cilium) 是一個基於 eBPF 和 XDP 的高性能容器網絡方案，提供了 CNI 和 CNM 插件。
 
-项目主页为 <https://github.com/cilium/cilium>。
+項目主頁為 <https://github.com/cilium/cilium>。
 
 ### [kope](https://github.com/kopeio/kope-routing)
 
-[kope](https://github.com/kopeio/kope-routing) 是一个旨在简化 Kubernetes 网络配置的项目，支持三种模式：
+[kope](https://github.com/kopeio/kope-routing) 是一個旨在簡化 Kubernetes 網絡配置的項目，支持三種模式：
 
-- Layer2：自动为每个 Node 配置路由
-- Vxlan：为主机配置 vxlan 连接，并建立主机和 Pod 的连接（通过 vxlan interface 和 ARP entry）
-- ipsec：加密链接
+- Layer2：自動為每個 Node 配置路由
+- Vxlan：為主機配置 vxlan 連接，並建立主機和 Pod 的連接（通過 vxlan interface 和 ARP entry）
+- ipsec：加密鏈接
 
-项目主页为 <https://github.com/kopeio/kope-routing>。
+項目主頁為 <https://github.com/kopeio/kope-routing>。
 
 ### [Kube-router](https://github.com/cloudnativelabs/kube-router)
 
-[Kube-router](https://github.com/cloudnativelabs/kube-router) 是一个基于 BGP 的网络插件，并提供了可选的 ipvs 服务发现（替代 kube-proxy）以及网络策略功能。
+[Kube-router](https://github.com/cloudnativelabs/kube-router) 是一個基於 BGP 的網絡插件，並提供了可選的 ipvs 服務發現（替代 kube-proxy）以及網絡策略功能。
 
 部署 Kube-router：
 
@@ -235,7 +235,7 @@ Kubernetes v1.8 已经支持 ipvs 负载均衡模式（alpha 版）。
 kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
 ```
 
-部署 Kube-router 并替换 kube-proxy（这个功能其实不需要了，kube-proxy 已经内置了 ipvs 模式的支持）：
+部署 Kube-router 並替換 kube-proxy（這個功能其實不需要了，kube-proxy 已經內置了 ipvs 模式的支持）：
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
