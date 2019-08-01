@@ -1,0 +1,9 @@
+*.md
+*.yml
+*.yaml
+*.txt
+*.json
+*.go
+*.sh
+*.puml
+*.conf
