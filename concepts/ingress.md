@@ -45,9 +45,10 @@ spec:
 
 ## API 版本对照表
 
-| Kubernetes 版本 | Extension 版本     |
-| --------------- | ------------------ |
-| v1.5+           | extensions/v1beta1 |
+| Kubernetes 版本 | Extension 版本            |
+| --------------- | ------------------------- |
+| v1.5-v1.17      | extensions/v1beta1        |
+| v1.8+           | networking.k8s.io/v1beta1 |
 
 ## Ingress 类型
 

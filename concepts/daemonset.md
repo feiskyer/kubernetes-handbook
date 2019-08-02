@@ -11,9 +11,9 @@ DaemonSet 保证在每个 Node 上都运行一个容器副本，常用来部署�
 | Kubernetes 版本 |   Deployment 版本   |
 | ------------- | ------------------ |
 |   v1.5-v1.6   | extensions/v1beta1 |
-| v1.7 | apps/v1beta1 |
-|     v1.8      |   apps/v1beta2     |
-|     v1.9      |      apps/v1       |
+| v1.7-v1.15 | apps/v1beta1 |
+|     v1.8-v1.15     |   apps/v1beta2     |
+|     v1.9+     |      apps/v1       |
 
 使用 Fluentd 收集日志的例子：
 

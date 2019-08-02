@@ -8,11 +8,12 @@ ReplicationController（也简称为 rc）用来确保容器应用的副本数�
 
 ## API 版本对照表
 
-| Kubernetes 版本 |   ReplicaSet API 版本   |   ReplicationController 版本   |
-| ------------- | ------------------ | ------------------ |
-|   v1.5-v1.7   | extensions/v1beta1 | core/v1 |
-|     v1.8      |   apps/v1beta2     | core/v1 |
-|     v1.9      |      apps/v1       |   core/v1   |
+| Kubernetes 版本 | Deployment 版本    |
+| --------------- | ------------------ |
+| v1.5-v1.6       | extensions/v1beta1 |
+| v1.7-v1.15      | apps/v1beta1       |
+| v1.8-v1.15      | apps/v1beta2       |
+| v1.9+           | apps/v1            |
 
 ## ReplicationController 示例
 

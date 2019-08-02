@@ -52,6 +52,13 @@ Pod Security Policies（PSP）是集群级的 Pod 安全策略，自动为集群
 
 使用 PSP 需要 API Server 开启 `extensions/v1beta1/podsecuritypolicy`，并且配置 `PodSecurityPolicy` admission 控制器。
 
+### API 版本对照表
+
+| Kubernetes 版本 | Extension 版本     |
+| --------------- | ------------------ |
+| v1.5-v1.15      | extensions/v1beta1 |
+| v1.10+          | policy/v1beta1     |
+
 ### 支持的控制项
 
 | 控制项 | 说明 |

@@ -9,9 +9,9 @@ Deployment 为 Pod 和 ReplicaSet 提供了一个声明式定义 (declarative) �
 | Kubernetes 版本 |   Deployment 版本 |
 | ------------- | ------------------- |
 |   v1.5-v1.6   | extensions/v1beta1  |
-|     v1.7      |   apps/v1beta1      |
-|     v1.8      |   apps/v1beta2      |
-|     v1.9      |      apps/v1        |
+|     v1.7-v1.15     |   apps/v1beta1      |
+|     v1.8-v1.15     |   apps/v1beta2      |
+|     v1.9+     |      apps/v1        |
 
 比如一个简单的 nginx 应用可以定义为
 

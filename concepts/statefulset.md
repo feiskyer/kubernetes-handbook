@@ -23,11 +23,12 @@ StatefulSet 中每个 Pod 的 DNS 格式为 `statefulSetName-{0..N-1}.serviceNam
 
 ## API 版本对照表
 
-| Kubernetes 版本 |   Apps 版本   |
-| ------------- | ------------------ |
-|   v1.6-v1.7   | apps/v1beta1 |
-|     v1.8      |   apps/v1beta2     |
-|     v1.9      |      apps/v1       |
+| Kubernetes 版本 | Deployment 版本    |
+| --------------- | ------------------ |
+| v1.5-v1.6       | extensions/v1beta1 |
+| v1.7-v1.15      | apps/v1beta1       |
+| v1.8-v1.15      | apps/v1beta2       |
+| v1.9+           | apps/v1            |
 
 ## 简单示例
 
