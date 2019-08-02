@@ -8,7 +8,7 @@ FlexVolume 是 Kubernetes v1.8+ 支持的一种存储插件扩展方式。类似
 
 实现一个 FlexVolume 包括两个步骤
 
-- 实现 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可参考 [lvm 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/lvm) 和 [NFS 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/nfs)）
+- 实现 [FlexVolume 插件接口](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-storage/flexvolume.md)，包括 `init/attach/detach/waitforattach/isattached/mountdevice/unmountdevice/mount/umount` 等命令（可参考 [lvm 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/lvm) 和 [NFS 示例](https://github.com/kubernetes/examples/blob/master/staging/volumes/flexvolume/nfs)）
 - 将插件放到 `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/<vendor~driver>/<driver>` 目录中
 
 FlexVolume 的接口包括
