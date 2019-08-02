@@ -30,6 +30,12 @@
 - 定期运行 [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/)，确保集群的配置或更新符合最佳的安全实践（使用 [kube-bench](https://github.com/aquasecurity/kube-bench) 和 [kube-hunter](https://github.com/aquasecurity/kube-hunter)）。
 - 在多租户场景中，还可以使用 Kata Containers、gVisor 等对容器进程进行强隔离，或者使用 Istio、Linkerd 等对容器应用之间的通信也进行自动加密。
 
+## TLS 安全
+
+为保障 TLS 安全，并避免 [Zombie POODLE and GOLDENDOODLE Vulnerabilities](https://blog.qualys.com/technology/2019/04/22/zombie-poodle-and-goldendoodle-vulnerabilities)，请为 TLS 1.2 禁止 CBC (Cipher Block Chaining) 模式。
+
+你可以使用 <https://www.ssllabs.com/> 来测试 TLS 的安全问题。
+
 ## Security Context 和 Pod Security Policy
 
 ```yaml
