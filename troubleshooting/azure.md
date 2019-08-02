@@ -232,6 +232,12 @@ spec:
 az ad sp credential reset --name <clientId> --password <clientSecret> --years <newYears>
 ```
 
+## Node 自动重启
+
+为了保护 AKS 群集，安全更新自动应用于所有的 Linux 节点。 这些更新包括 OS 安全修复项或内核更新，其中的部分更新需要重启节点才能完成。 AKS 不会自动重新启动这些 Linux 节点，但你可以参考[这里](https://docs.microsoft.com/zh-cn/azure/aks/node-updates-kured)配置 [kured](https://github.com/weaveworks/kured) 来自动重启节点。
+
+除此之外，如果你还想收到节点需要重启的通知，可以参考[Dashboard and notifications on AKS for required worker nodes reboots](https://medium.com/@denniszielke/dashboard-and-notifications-on-aks-for-required-worker-nodes-reboots-c883d08e9404) 进行配置。
+
 ## 参考文档
 
 * [AKS troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting)
@@ -240,4 +246,6 @@ az ad sp credential reset --name <clientId> --password <clientSecret> --years <n
 - [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
 - [Troubleshoot Azure Load Balancer](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)
 - [Troubleshooting CustomScriptExtension (CSE) and acs-engine](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/troubleshooting.md)
+- [Setting up azure firewall for analysing outgoing traffic in AKS](https://medium.com/@denniszielke/setting-up-azure-firewall-for-analysing-outgoing-traffic-in-aks-55759d188039)
+- [Dashboard and notifications on AKS for required worker nodes reboots](https://medium.com/@denniszielke/dashboard-and-notifications-on-aks-for-required-worker-nodes-reboots-c883d08e9404)
 
