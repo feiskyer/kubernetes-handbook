@@ -404,6 +404,6 @@ Locust模拟10万用户，每秒增长100个。
 
 [运用Kubernetes进行分布式负载测试](http://www.csdn.net/article/2015-07-07/2825155)
 
-[Kubemark User Guide](https://github.com/kubernetes/community/blob/master/contributors/devel/kubemark-guide.md)
+[Kubemark User Guide](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-scalability/kubemark-guide.md)
 
 [Flannel host-gw architecture](https://docs.openshift.com/container-platform/3.4/architecture/additional_concepts/flannel.html)

@@ -608,7 +608,7 @@ $ kubectl patch deployment/nginx-deployment -p '{"spec":{"progressDeadlineSecond
 - Status=False
 - Reason=ProgressDeadlineExceeded
 
-浏览 [Kubernetes API conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#typical-status-properties) 查看关于 status conditions 的更多信息。
+浏览 [Kubernetes API conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties) 查看关于 status conditions 的更多信息。
 
 **注意:** kubernetes 除了报告 `Reason=ProgressDeadlineExceeded` 状态信息外不会对卡住的 Deployment 做任何操作。更高层次的协调器可以利用它并采取相应行动，例如，回滚 Deployment 到之前的版本。
 
@@ -714,7 +714,7 @@ $ echo $?
 
 在所有的 Kubernetes 配置中，Deployment 也需要 `apiVersion`，`kind` 和 `metadata` 这些配置项。配置文件的通用使用说明查看 [部署应用](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)，配置容器，和[使用 kubeclt 管理资源](https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/) 文档。
 
-Deployment 也需要 [`.spec` section](https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#spec-and-status).
+Deployment 也需要 [`.spec` section](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status).
 
 ### Pod Template
 
