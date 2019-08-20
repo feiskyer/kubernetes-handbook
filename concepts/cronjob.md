@@ -62,7 +62,7 @@ $ kubectl logs $pods
 Mon Aug 29 21:34:09 UTC 2016
 Hello from the Kubernetes cluster
 
-# 注意，删除 cronjob 的时候不会自动删除 job，这些 job 可以用 kubectl delete job 来删除
+# 删除 cronjob 的时候会删除它创建的 job 和 pod，并停止正在创建的 job
 $ kubectl delete cronjob hello
 cronjob "hello" deleted
 ```
