@@ -6,7 +6,7 @@
 
 自定义调度器主要的功能是查询未调度的 Pod，按照自定义的调度策略选择新的 Node，并将其更新到 Pod 的 Node Binding 上。
 
-比如，一个最简单的调度器可以用 shell 来编写（假设 Kubernetes 监听在 `localhost:8001`）：
+比如，一个最简单的调度器可以用 shell 来编写（假设已经启动 `kubectl proxy` 并监听在 `localhost:8001`）：
 
 ```sh
 #!/bin/bash
