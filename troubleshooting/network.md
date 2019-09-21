@@ -1,73 +1,45 @@
-# 网络异常排错
+# Troubleshooting Network
 
-本章主要介绍各种常见的网络问题以及排错方法，包括 Pod 访问异常、Service 访问异常以及网络安全策略异常等。
+Network issues comes up frequently for new installations of Kubernetes or increasing Kubernetes load. This chapter introduces various network problems and troubleshooting method when using kubernetes.
 
-说到 Kubernetes 的网络，其实无非就是以下三种情况之一
+## Overview
 
-- Pod 访问容器外部网络
-- 从容器外部访问 Pod 网络
-- Pod 之间相互访问
+Kubernetes "IP-per-pod" model solves 4 distinct networking problems:
 
-当然，以上每种情况还都分别包括本地访问和跨主机访问两种场景，并且一般情况下都是通过 Service 间接访问 Pod。
+- Highly-coupled container-to-container communications: this is solved by pods and localhost communications.
+- Pod-to-Pod communications: this is solved by CNI network plugin
+- Pod-to-Service communications: this is solved by services
+- External-to-Service communications: this is solved by services
 
-排查网络问题基本上也是从这几种情况出发，定位出具体的网络异常点，再进而寻找解决方法。网络异常可能的原因比较多，常见的有
+And these are exactly the direction of what we should do when encountering network issues. Reasons include:
 
-- CNI 网络插件配置错误，导致多主机网络不通，比如
-  - IP 网段与现有网络冲突
-  - 插件使用了底层网络不支持的协议
-  - 忘记开启 IP 转发等
+- CNI network plugin configure error
+  - CIDR conflicts with existing ones
+  - using protocols not supported by underlying network (e.g. multicast may be disabled for clusters on public cloud)
+  - IP forward is not enabled
     - `sysctl net.ipv4.ip_forward`
     - `sysctl net.bridge.bridge-nf-call-iptables`
-- Pod 网络路由丢失，比如
-  - kubenet 要求网络中有 podCIDR 到主机 IP 地址的路由，这些路由如果没有正确配置会导致 Pod 网络通信等问题
-  - 在公有云平台上，kube-controller-manager 会自动为所有 Node 配置路由，但如果配置不当（如认证授权失败、超出配额等），也有可能导致无法配置路由
-- 主机内或者云平台的安全组、防火墙或者安全策略等阻止了 Pod 网络，比如
-  - 非 Kubernetes 管理的 iptables 规则禁止了 Pod 网络
-  - 公有云平台的安全组禁止了 Pod 网络（注意 Pod 网络有可能与 Node 网络不在同一个网段）
-  - 交换机或者路由器的 ACL 禁止了 Pod 网络
+- Missing route tables
+  - default kubenet plugin requires a network route for each podCIDR to node IP
+  - kube-controller-manager should configure the route table for all nodes, but if something is wrong (e.g. not authorized, exceed quota, etc), route may be missing
+- Forbidden by security groups or firewall rules
+  - iptables not managed by kubernetes may forbid kubernetes network connections
+  - security groups on public cloud may forbid kubernetes network connections
+  - ACL on switches or routers may also forbid kubernetes network connections
 
-## Flannel Pods 一直处于 Init:CrashLoopBackOff 状态
+## Pod failed to allocate IP address
 
-Flannel 网络插件非常容易部署，只要一条命令即可
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-```
-
-然而，部署完成后，Flannel Pod 有可能会碰到初始化失败的错误
-
-```sh
-$ kubectl -n kube-system get pod
-NAME                            READY     STATUS                  RESTARTS   AGE
-kube-flannel-ds-ckfdc           0/1       Init:CrashLoopBackOff   4          2m
-kube-flannel-ds-jpp96           0/1       Init:CrashLoopBackOff   4          2m
-```
-
-查看日志会发现
-
-```sh
-$ kubectl -n kube-system logs kube-flannel-ds-jpp96 -c install-cni
-cp: can't create '/etc/cni/net.d/10-flannel.conflist': Permission denied
-```
-
-这一般是由于 SELinux 开启导致的，关闭 SELinux 既可解决。有两种方法：
-
-- 修改 `/etc/selinux/config` 文件方法：`SELINUX=disabled`
-- 通过命令临时修改（重启会丢失）：`setenforce 0`
-
-## Pod 无法分配 IP
-
-Pod 一直处于 ContainerCreating 状态，查看事件发现网络插件无法为其分配 IP：
+Pod stuck on ContainerCreating state and its events report `Failed to allocate address` error:
 
 ```sh
   Normal   SandboxChanged          5m (x74 over 8m)    kubelet, k8s-agentpool-66825246-0  Pod sandbox changed, it will be killed and re-created.
   Warning  FailedCreatePodSandBox  21s (x204 over 8m)  kubelet, k8s-agentpool-66825246-0  Failed create pod sandbox: rpc error: code = Unknown desc = NetworkPlugin cni failed to set up pod "deployment-azuredisk6-56d8dcb746-487td_default" network: Failed to allocate address: Failed to delegate: Failed to allocate address: No available addresses
 ```
 
-查看网络插件的 IP 分配情况，进一步发现 IP 地址确实已经全部分配完，但真正处于 Running 状态的 Pod 数却很少：
+Check the allocated IP addresses in plugin IPAM store, you may find that all IP addresses have been allocated, but the number is much less that running Pods:
 
 ```sh
-# 详细路径取决于具体的网络插件，当使用 host-local IPAM 插件时，路径位于 /var/lib/cni/networks 下面
+# Kubenet for example. The real path of IPAM store file depends on network plugin implementation.
 $ cd /var/lib/cni/networks/kubenet
 $ ls -al|wc -l
 258
@@ -76,25 +48,26 @@ $ docker ps | grep POD | wc -l
 7
 ```
 
-这有两种可能的原因
+There are two possible reasons for such case, which include
 
-- 网络插件本身的问题，Pod 停止后其 IP 未释放
-- Pod 重新创建的速度比 Kubelet 调用 CNI 插件回收网络（垃圾回收时删除已停止 Pod 前会先调用 CNI 清理网络）的速度快
+* Bugs in network plugin, which forgets deallocating the IP address when Pod terminated
+* Pods creation is much more faster than garbage collection of terminated Pods
 
-对第一个问题，最好联系插件开发者询问修复方法或者临时性的解决方法。当然，如果对网络插件的工作原理很熟悉的话，也可以考虑手动释放未使用的 IP 地址，比如：
+For the first reason, contacting author of plugin for workaround or fixes is first choice. But you can also deallocate IP addresses manually if you are sure about what you are doing:
 
-* 停止 Kubelet
-* 找到 IPAM 插件保存已分配 IP 地址的文件，比如 `/var/lib/cni/networks/cbr0`（flannel）或者 `/var/run/azure-vnet-ipam.json`（Azure CNI）等
-* 查询容器已用的 IP 地址，比如 `kubectl get pod -o wide --all-namespaces | grep <node-name>`
-* 对比两个列表，从 IPAM 文件中删除未使用的 IP 地址，并手动删除相关的虚拟网卡和网络命名空间（如果有的话）
-* 重启启动 Kubelet
+* Stop Kubelet
+* Find the IPAM store file for the CNI plugin and get a list of all allocated IP addresses, e.g.  `/var/lib/cni/networks/cbr0` (flannel) and `/var/run/azure-vnet-ipam.json` (Azure CNI)
+
+- Get list of using IP addresses, e.g. by  `kubectl get pod -o wide --all-namespaces | grep <node-name>`
+- Compare the two list, remove the unused IP addresses from the store file, and then delete related netns or virtual nics (this requires deep understand of the network plugin)
+- Finally restart kubelet
 
 ```sh
 # Take kubenet for example to delete the unused IPs
 $ for hash in $(tail -n +1 * | grep '^[A-Za-z0-9]*$' | cut -c 1-8); do if [ -z $(docker ps -a | grep $hash | awk '{print $1}') ]; then grep -ilr $hash ./; fi; done | xargs rm
 ```
 
-而第二个问题则可以给 Kubelet 配置更快的垃圾回收，如
+For the second reason, a fast garbage collection could be configured for kubelet, e.g.
 
 ```sh
 --minimum-container-ttl-duration=15s
@@ -102,9 +75,38 @@ $ for hash in $(tail -n +1 * | grep '^[A-Za-z0-9]*$' | cut -c 1-8); do if [ -z $
 --maximum-dead-containers=100
 ```
 
-## Pod 无法解析 DNS
+## Flannel Pods stuck in `Init:CrashLoopBackOff`
 
-如果 Node 上安装的 Docker 版本大于 1.12，那么 Docker 会把默认的 iptables FORWARD 策略改为 DROP。这会引发 Pod 网络访问的问题。解决方法则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT`，比如
+When using Flannel network plugin, it is very easy to install for a fresh setup
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
+
+However, after a while, Flannel Pods may be stuck in `Init:CrashLoopBackOff` state and also result in not able to create other pods (because network ready is a requirement).
+
+```sh
+$ kubectl -n kube-system get pod
+NAME                            READY     STATUS                  RESTARTS   AGE
+kube-flannel-ds-ckfdc           0/1       Init:CrashLoopBackOff   4          2m
+kube-flannel-ds-jpp96           0/1       Init:CrashLoopBackOff   4          2m
+```
+
+Check logs of Pod `kube-flannel-ds-jpp96`
+
+```sh
+$ kubectl -n kube-system logs kube-flannel-ds-jpp96 -c install-cni
+cp: can't create '/etc/cni/net.d/10-flannel.conflist': Permission denied
+```
+
+This issue is usually caused by SELinux, close SELinux should solve the problem. There are two ways to do this:
+
+- Set `SELINUX=disabled` in file `/etc/selinux/config` (persistent even after reboot)
+- Execute command `setenforce 0` (not persistent after reboot)
+
+## DNS not work
+
+If your docker version is above 1.13+, then docker would change default iptables FORWARD policy to DROP (at each restart). This change may cause kube-dns not reaching upstream DNS servers. A solution is run `iptables -P FORWARD ACCEPT` on each nodes, e.g.
 
 ```sh
 echo "ExecStartPost=/sbin/iptables -P FORWARD ACCEPT" >> /etc/systemd/system/docker.service.d/exec_start.conf
@@ -112,11 +114,9 @@ systemctl daemon-reload
 systemctl restart docker
 ```
 
-如果使用了 flannel/weave 网络插件，更新为最新版本也可以解决这个问题。
+Or if you are using flannel or weave network plugin, upgrades to latest version could also solve the problem.
 
-除此之外，还有很多其他原因导致 DNS 无法解析：
-
-（1）DNS 无法解析也有可能是 kube-dns 服务异常导致的，可以通过下面的命令来检查 kube-dns 是否处于正常运行状态
+There is also possible that kube-dns is not running normally.
 
 ```sh
 $ kubectl get pods --namespace=kube-system -l k8s-app=kube-dns
@@ -126,9 +126,9 @@ kube-dns-v19-ezo1y      3/3       Running   0           1h
 ...
 ```
 
-如果 kube-dns 处于 CrashLoopBackOff 状态，那么可以参考 [Kube-dns/Dashboard CrashLoopBackOff 排错](cluster.md) 来查看具体排错方法。
+If kube-dns pods are in CrashLoopBackOff state, refer to [Troubleshooting kube-dns/dashboard CrashLoopBackOff](cluster.md) for troubleshooting kube-dns problem.
 
-（2）如果 kube-dns Pod 处于正常 Running 状态，则需要进一步检查是否正确配置了 kube-dns 服务：
+Or else, check whether kube-dns service and endpoints are normal:
 
 ```sh
 $ kubectl get svc kube-dns --namespace=kube-system
@@ -140,7 +140,7 @@ NAME       ENDPOINTS                       AGE
 kube-dns   10.180.3.17:53,10.180.3.17:53    1h
 ```
 
-如果 kube-dns service 不存在，或者 endpoints 列表为空，则说明 kube-dns service 配置错误，可以重新创建 [kube-dns service](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)，比如
+If kube-dns service doens't exist, or its endpoints are empty, then you should recreate [kube-dns service](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns), e.g.
 
 ```yaml
 apiVersion: v1
@@ -165,64 +165,35 @@ spec:
     protocol: TCP
 ```
 
-（3）如果 kube-dns Pod 和 Service 都正常，那么就需要检查 kube-proxy 是否正确为 kube-dns 配置了负载均衡的 iptables 规则。具体排查方法可以参考下面的 Service 无法访问部分。
+## Service not accessible within Pods
 
-## DNS解析缓慢
-
-由于内核的一个 [BUG](https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts)，连接跟踪模块会发生竞争，导致　DNS　解析缓慢。
-
-临时[解决方法](https://github.com/kubernetes/kubernetes/issues/56903)：为容器配置 `options single-request-reopen`
-
-```yaml
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - /bin/sh
-              - -c 
-              - "/bin/echo 'options single-request-reopen' >> /etc/resolv.conf"
-```
-
-修复方法：升级内核并保证包含以下两个补丁
-
-1. ["netfilter: nf_conntrack: resolve clash for matching conntracks"](http://patchwork.ozlabs.org/patch/937963/) fixes the 1st race (accepted).
-2. ["netfilter: nf_nat: return the same reply tuple for matching CTs"](http://patchwork.ozlabs.org/patch/952939/) fixes the 2nd race (waiting for a review).
-
-其他可能的原因和修复方法还有：
-
-* Kube-dns 和 CoreDNS 同时存在时也会有问题，只保留一个即可。
-* kube-dns 或者 CoreDNS 的资源限制太小时会导致 DNS 解析缓慢，这时候需要增大资源限制。
-
-更多 DNS 配置的方法可以参考 [Customizing DNS Service](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/)。
-
-## Service 无法访问
-
-访问 Service ClusterIP 失败时，可以首先确认是否有对应的 Endpoints
+The first step is checking whether endpoints have been created automatically for the service
 
 ```sh
 kubectl get endpoints <service-name>
 ```
 
-如果该列表为空，则有可能是该 Service 的 LabelSelector 配置错误，可以用下面的方法确认一下
+If you got an empty result, there is possible your service's label selector is wrong. Confirm it as follows:
 
 ```sh
-# 查询 Service 的 LabelSelector
+# Query Service LabelSelector
 kubectl get svc <service-name> -o jsonpath='{.spec.selector}'
-
-# 查询匹配 LabelSelector 的 Pod
+# Get Pods matching the LabelSelector and check whether they are running
 kubectl get pods -l key1=value1,key2=value2
 ```
 
-如果 Endpoints 正常，可以进一步检查
+If all of above steps are still ok, confirm further by
 
-* Pod 的 containerPort 与 Service 的 containerPort 是否对应
-* 直接访问 `podIP:containerPort` 是否正常
+- checking whether Pod containerPort is same with Service containerPort
+- checking whether `podIP:containerPort` is working
 
-再进一步，即使上述配置都正确无误，还有其他的原因会导致 Service 无法访问，比如
+Further, there are also other reasons could also cause service problems. Reasons include:
 
-* Pod 内的容器有可能未正常运行或者没有监听在指定的 containerPort 上
-* CNI 网络或主机路由异常也会导致类似的问题
-* kube-proxy 服务有可能未启动或者未正确配置相应的 iptables 规则，比如正常情况下名为 `hostnames` 的服务会配置以下 iptables 规则
+- container is not listening to specified containerPort (check pod description again)
+- CNI plugin error or network route error
+- kube-proxy is not running or iptables rules are not configured correctly
+
+Normally, following iptables should be created for a service named `hostnames`:
 
 ```sh
 $ iptables-save | grep hostnames
@@ -238,11 +209,15 @@ $ iptables-save | grep hostnames
 -A KUBE-SVC-NWV5X2332I4OT4T3 -m comment --comment "default/hostnames:" -j KUBE-SEP-57KPRZ3JQVENLNBR
 ```
 
-## Pod 无法通过 Service 访问自己
+There should be 1 rule in KUBE-SERVICES, 1 or 2 rules per endpoint in KUBE-SVC-(hash) (depending on SessionAffinity), one KUBE-SEP-(hash) chain per endpoint, and a few rules in each KUBE-SEP-(hash) chain. The exact rules will vary based on your exact config (including node-ports and load-balancers).
 
-这通常是 hairpin 配置错误导致的，可以通过 Kubelet 的 `--hairpin-mode` 选项配置，可选参数包括 "promiscuous-bridge"、"hairpin-veth" 和 "none"（默认为"promiscuous-bridge"）。
+## Pod cannot reach itself via Service IP
 
-对于 hairpin-veth 模式，可以通过以下命令来确认是否生效
+This can happen when the network is not properly configured for “hairpin” traffic, usually when kube-proxy is running in iptables mode and Pods are connected with bridge network.
+
+Kubelet exposes a `--hairpin-mode` option, which should be configured as `promiscuous-bridge` or `hairpin-veth` instead of `none` (default is `promiscuous-bridge`).
+
+Confirm `hairpin-veth` is working by:
 
 ```sh
 $ for intf in /sys/devices/virtual/net/cbr0/brif/*; do cat $intf/hairpin_mode; done
@@ -252,16 +227,16 @@ $ for intf in /sys/devices/virtual/net/cbr0/brif/*; do cat $intf/hairpin_mode; d
 1
 ```
 
-而对于 promiscuous-bridge 模式，可以通过以下命令来确认是否生效
+Confirm `promiscuous-bridge` is working by:
 
 ```sh
 $ ifconfig cbr0 |grep PROMISC
 UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1460  Metric:1
 ```
 
-## 无法访问 Kubernetes API
+## Can't access Kubernetes API
 
-很多扩展服务需要访问 Kubernetes API 查询需要的数据（比如 kube-dns、Operator 等）。通常在 Kubernetes API 无法访问时，可以首先通过下面的命令验证 Kubernetes API 是正常的：
+Many addons and containers need to access Kubernetes API for various data (e.g. kube-dns and operator containers). If such errors happened, then confirm whether Kubernetes API is accessible within Pods first:
 
 ```sh
 $ kubectl run curl  --image=appropriate/curl -i -t  --restart=Never --command -- sh
@@ -282,7 +257,7 @@ If you don't see a command prompt, try pressing enter.
  }
 ```
 
-如果出现超时错误，则需要进一步确认名为 `kubernetes` 的服务以及 endpoints 列表是正常的：
+If timeout error is reported, then confirm whether `kubernetes` service and its endpoints are normal or not:
 
 ```sh
 $ kubectl get service kubernetes
@@ -293,9 +268,18 @@ NAME         ENDPOINTS          AGE
 kubernetes   172.17.0.62:6443   25m
 ```
 
-然后可以直接访问 endpoints 查看 kube-apiserver 是否可以正常访问。无法访问时通常说明 kube-apiserver 未正常启动，或者有防火墙规则阻止了访问。
+If both are still OK, then it's probably kube-apiserver is not start or it is blocked by firewall. Check kube-apiserver status and its logs
 
-但如果出现了 `403 - Forbidden` 错误，则说明 Kubernetes 集群开启了访问授权控制（如 RBAC），此时就需要给 Pod 所用的 ServiceAccount 创建角色和角色绑定授权访问所需要的资源。比如 CoreDNS 就需要创建以下 ServiceAccount 以及角色绑定：
+```sh
+# Check kube-apiserver status
+kubectl -n kube-system get pod -l component=kube-apiserver
+
+# Get kube-apiserver logs
+PODNAME=$(kubectl -n kube-system get pod -l component=kube-apiserver -o jsonpath='{.items[0].metadata.name}')
+kubectl -n kube-system logs $PODNAME --tail 100
+```
+
+But if  `403 - Forbidden` error is reported, then it's probably kube-apiserver is configured with RBAC. And your container's serviceAccount is not authorized to resources. For such case, you should create proper RoleBindings and ClusterRoleBindings, e.g. to make CoreDNS container run, you need
 
 ```yaml
 # 1. service account
@@ -372,13 +356,8 @@ spec:
       ...
 ```
 
-## 内核导致的问题
-
-除了以上问题，还有可能碰到因内核问题导致的服务无法访问或者服务访问超时的错误，比如
-
-- [未设置 `--random-fully` 导致无法为 SNAT 分配端口，进而会导致服务访问超时](https://tech.xing.com/a-reason-for-unexplained-connection-timeouts-on-kubernetes-docker-abd041cf7e02)。注意， Kubernetes 暂时没有为 SNAT 设置 `--random-fully` 选项，如果碰到这个问题可以参考[这里](https://gist.github.com/maxlaverse/1fb3bfdd2509e317194280f530158c98) 配置。
-
-## 参考文档
+## References
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)
 - [Debug Services](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/)
+- [Kubernetes Cluster Networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/)

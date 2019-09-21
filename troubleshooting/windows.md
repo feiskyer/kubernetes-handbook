@@ -1,12 +1,10 @@
-# Windows 容器异常排错
+# Troubleshooting Windows containers
 
-本章介绍 Windows 容器异常的排错方法。
+This chapter is about Windows containers troubleshooting.
 
-## RDP 登录到 Node
+## SSH to Windows Node
 
-通常在排查 Windows 容器异常问题时需要通过 RDP 登录到 Windows Node上面查看 kubelet、docker、HNS 等的状态和日志。在使用云平台时，可以给相应的 VM 绑定一个公网 IP；而在物理机部署时，可以通过路由器上的端口映射来访问。
-
-除此之外，还有一种更简单的方法，即通过 Kubernetes Service 对外暴露 Node 的 3389 端口（注意替换为你自己的 node-ip）：
+When checking Windows container issues, a common step is RDP to nodes and check component status and logs. You could allocate a public IP to the Node or do a port forwarding from router. But a simpler way is via a RDP service (replace with your own node-ip):
 
 ```yaml
 # rdp.yaml
@@ -39,68 +37,79 @@ NAME      TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
 rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 ```
 
-接着，就可以通过 rdp 服务的外网 IP 来登录 Node，如 `mstsc.exe -v 52.52.52.52`。
+Then connect to the node via service rdp's external IP, e.g. `mstsc.exe -v 52.52.52.52`.
 
-在使用完后， 不要忘记删除 RDP 服务 `kubectl delete -f rdp.yaml`。
+Don't forget to delete the service after user: `kubectl delete -f rdp.yaml`.
 
-## Windows Pod 一直处于 ContainerCreating 状态
+## Windows Pod stuck in ContainerCreating
 
-一般有两种可能的原因
+Besides reasons introduced in [Troubleshooting Pod](pod.md), there are also other causes including:
 
-* Pause 镜像配置错误
-* 容器[镜像版本与 Windows 系统不兼容](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
+- the pause image is misconfigured
+- the container image is not [compatible with Windows](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility).
+  - Containers on Windows Server 1709 should use images with 1709 tags, e.g.
+    - `microsoft/aspnet:4.7.2-windowsservercore-1709`
+    - `microsoft/windowsservercore:1709`
+    - `microsoft/iis:windowsservercore-1709`
+  - Containers on Windows Server 1803 should use images with 1803 tags, e.g.
+    - `microsoft/aspnet:4.7.2-windowsservercore-1803`
+    - `microsoft/windowsservercore:1803`
+    - `microsoft/iis:windowsservercore-1803`
 
+## Windows Pod failed to resolve DNS
 
-
-在 Windows Server 1709 上面需要使用 1709 标签的镜像，比如
-
-    * `microsoft/aspnet:4.7.2-windowsservercore-1709`
-    * `microsoft/windowsservercore:1709`
-    * `microsoft/iis:windowsservercore-1709`
-
-
-
-在 Windows Server 1803 上面需要使用 1803 标签的镜像，比如
-
-    * `microsoft/aspnet:4.7.2-windowsservercore-1803`
-    * `microsoft/iis:windowsservercore-1803`
-    * `microsoft/windowsservercore:1803`
-
-
-## Windows Pod 内无法解析 DNS
-
-这是一个[已知问题](https://github.com/Azure/acs-engine/issues/2027)，有以下三种临时解决方法：
-
-（1）Windows 重启后，清空 HNS Policy 并重启 KubeProxy 服务：
+This is a [known issue](https://github.com/Azure/acs-engine/issues/2027). After Windows Node rebooted, HNS Policy need to be cleaned up (**Should do this for each rebooting**):
 
 ```powershell
+# On Windows Node
 Start-BitsTransfer -Source https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/hns.psm1
 Import-Module .\hns.psm1
 
 Stop-Service kubeproxy
 Stop-Service kubelet
-Get-HnsNetwork | ? Name -eq l2Bridge | Remove-HnsNetwork
+Get-HnsNetwork | ? Name -eq l2Bridge | Remove-HnsNetwork 
 Get-HnsPolicyList | Remove-HnsPolicyList
 Start-Service kubelet
 Start-Service kubeproxy
 ```
 
-（2）是为 Pod 直接配置 kube-dns Pod 的地址：
+Even with this, kube-dns clusterIP may be still not working. A workaround is configure kube-dns Pod's IP address to normal Pods, e.g.
 
 ```powershell
+# In Windows container, e.g. kubectl exec -i -t <pod-name> powershell
 $adapter=Get-NetAdapter
-Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.4,10.244.0.6
+Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.2,10.244.0.3
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
 ```
 
-（3）更简单的为每个 Windows Node [多运行一个 Pod](https://github.com/Azure/acs-engine/issues/2027#issuecomment-373767442)，即保证每台 Node 上面至少有两个 Pod 在运行。此时，DNS 解析也是正常的。
+The kube-dns Pod's IP could be got by
 
-如果 Windows Node 运行在 Azure 上面，并且部署 Kubernetes 时使用了[自定义 VNET](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/features.md#feat-custom-vnet)，那么需要[为该 VNET 添加路由表](https://github.com/Azure/acs-engine/blob/master/docs/custom-vnet.md#post-deployment-attach-cluster-route-table-to-vnet)：
+```sh
+$ kubectl -n kube-system describe endpoints kube-dns
+Name:         kube-dns
+Namespace:    kube-system
+Labels:       k8s-app=kube-dns
+              kubernetes.io/cluster-service=true
+              kubernetes.io/name=KubeDNS
+Annotations:  <none>
+Subsets:
+  Addresses:          10.244.0.2,10.244.0.3
+  NotReadyAddresses:  <none>
+  Ports:
+    Name     Port  Protocol
+    ----     ----  --------
+    dns      53    UDP
+    dns-tcp  53    TCP
+
+Events:  <none>
+```
+
+If your kubernetes cluster is deployed by acs-engine, then [acs-engine#2378](https://github.com/Azure/acs-engine/pull/2378) could help to fix this issue (redeploy the cluster with this patch or change existing files according to it).
+
+If kubernetes cluster is running on Azure and is using [custom VNET](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/features.md#feat-custom-vnet), then [the VNET should be attached with route table created by provisioning the cluster](https://github.com/Azure/acs-engine/blob/master/docs/custom-vnet.md#post-deployment-attach-cluster-route-table-to-vnet)：
 
 ```sh
 #!/bin/bash
-# KubernetesSubnet is the name of the vnet subnet
-# KubernetesCustomVNET is the name of the custom VNET itself
 rt=$(az network route-table list -g acs-custom-vnet -o json | jq -r '.[].id')
 az network vnet subnet update -n KubernetesSubnet \
 -g acs-custom-vnet \
@@ -108,9 +117,12 @@ az network vnet subnet update -n KubernetesSubnet \
 --route-table $rt
 ```
 
-如果 VNET 在不同的 ResourceGroup 里面，那么
+where `KubernetesSubnet` is the name of the vnet subnet, and `KubernetesCustomVNET` is the name of the custom VNET itself.
+
+An example in bash form if the VNET is in a separate ResourceGroup:
 
 ```sh
+#!/bin/bash
 rt=$(az network route-table list -g RESOURCE_GROUP_NAME_KUBE -o json | jq -r '.[].id')
 az network vnet subnet update \
 -g RESOURCE_GROUP_NAME_VNET \
@@ -120,7 +132,7 @@ az network vnet subnet update \
 
 ## Remote endpoint creation failed: HNS failed with error: The switch-port was not found
 
-这个错误发生在 kube-proxy 为服务配置负载均衡的时候，需要安装 [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848)：
+This is an error happened in kube-proxy when provisioning load balancer rules for kubernetes services. [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848) should be installed to fix this issue:
 
 ```powershell
 Start-BitsTransfer http://download.windowsupdate.com/d/msdownload/update/software/updt/2018/03/windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
@@ -128,7 +140,7 @@ wusa.exe windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
 Restart-Computer
 ```
 
-重启后确认更新安装成功：
+After the Node rebooted, recheck the fix has been installed:
 
 ```powershelgl
 PS C:\k> Get-HotFix
@@ -139,36 +151,20 @@ Source        Description      HotFixID      InstalledBy          InstalledOn
 27171k8s9000  Update           KB4089848     NT AUTHORITY\SYSTEM  4/4/2018 12:00:00 AM
 ```
 
-安装更新后，如果 DNS 解析还是有问题，可以按照上一节中的方法（1） 重启 kubelet 和 kube-proxy。
+If there are still DNS resolve issues, the steps in previous steps should be applied, e.g. restart kubelet/kube-proxy and setup DnsClientServerAddress.
 
-## Windows Pod 内无法访问 ServiceAccount Secret
+## Windows Pod failed to get ServiceAccount Secret
 
-这是老版本 Windows 的[已知问题](https://github.com/moby/moby/issues/28401)，升级 Windows 到 1803 即可解决，升级步骤见[这里](https://blogs.windows.com/windowsexperience/2018/04/30/how-to-get-the-windows-10-april-2018-update/)。
+This is a [known issue](https://github.com/moby/moby/issues/28401) for old Windows releases. The fix has been included in Windows 1803, please follow [here](https://blogs.windows.com/windowsexperience/2018/04/30/how-to-get-the-windows-10-april-2018-update/) to upgrade Windows.
 
-## Windows Pod 内无法访问 Kubernetes API
+## Windows Pod failed to access Kubernetes API
 
-如果使用了 Hyper-V 隔离容器，需要开启 MAC spoofing 。
+If you are using a Hyper-V virtual machine, ensure that MAC spoofing is enabled on the network adapter(s).
 
-## Windows Node 内无法访问 Service ClusterIP
+## Windows node cannot access services clusterIP
 
-这是个当前 Windows 网络协议栈的已知问题，只有在 Pod 内才可以访问 Service ClusterIP。
+This is a known limitation of the current networking stack on Windows. Only pods can refer to the Service ClusterIP.
 
-## Kubelet 无法启动
+## References
 
-使用 Docker 18.03 版本和 Kubelet v1.12.x 时，Kubelet 无法正常启动报错：
-
-```sh
-Error response from daemon: client version 1.38 is too new. Maximum supported API version is 1.37
-```
-
-解决方法是为 Windows 上面的 Docker 设置 API 版本的环境变量：
-
-```powershell
-[System.Environment]::SetEnvironmentVariable('DOCKER_API_VERSION', '1.37', [System.EnvironmentVariableTarget]::Machine)
-```
-
-## 参考文档
-
-- [Kubernetes On Windows - Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)
-- [Debug Networking issues on Windows](https://github.com/microsoft/SDN/tree/master/Kubernetes/windows/debug)
-
+- [Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)

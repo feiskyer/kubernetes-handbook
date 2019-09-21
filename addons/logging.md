@@ -77,24 +77,7 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 
 ## Filebeat
 
-除了 Fluentd 和 Logstash，还可以使用 [Filebeat](https://www.elastic.co/products/beats/filebeat) 来收集日志:
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/elastic/beats/master/deploy/kubernetes/filebeat-kubernetes.yaml
-```
-
-注意，默认假设 Elasticsearch 可通过 `elasticsearch:9200` 访问，如果不同的话，需要先修改再部署
-
-```sh
-- name: ELASTICSEARCH_HOST
-  value: elasticsearch
-- name: ELASTICSEARCH_PORT
-  value: "9200"
-- name: ELASTICSEARCH_USERNAME
-  value: elastic
-- name: ELASTICSEARCH_PASSWORD
-  value: changeme
-```
+除了 Fluentd 和 Logstash，还可以使用 [Filebeat](https://www.elastic.co/products/beats/filebeat) 来收集日志，使用方法可以参考 [使用 Filebeat 收集 Kubernetes 中的应用日志](http://rootsongjc.github.io/blogs/kubernetes-filebeat/)。
 
 ## 参考文档
 

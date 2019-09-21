@@ -1,48 +1,28 @@
-# Kubernetes 指南
+# Kubernetes Handbook
 
-[![star this repo](https://githubbadges.com/star.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook) [![fork this repo](https://githubbadges.com/fork.svg?user=feiskyer&repo=kubernetes-handbook&style=default)](https://github.com/feiskyer/kubernetes-handbook/fork) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/feiskyer/kubernetes-handbook/issues)
+Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
 
-Kubernetes 是谷歌开源的容器集群管理系统，是 Google 多年大规模容器管理技术 Borg 的开源版本，也是 CNCF 最重要的项目之一，主要功能包括：
+This handbook aims to provide a detailed guide of running and understanding both inside and outside of Kubernetes. Contents include
 
-- 基于容器的应用部署、维护和滚动升级
-- 负载均衡和服务发现
-- 跨机器和跨地区的集群调度
-- 自动伸缩
-- 无状态服务和有状态服务
-- 广泛的 Volume 支持
-- 插件机制保证扩展性
+- Introduction of Kubernetes
+- Basic concepts
+- Architecture and components
+- Deploying
+- Plugins
+- Applications
+- Troubleshooting
 
-Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kubernetes 的中文资料也非常丰富，但系统化和紧跟社区更新的则就比较少见了。《Kubernetes 指南》开源电子书旨在整理平时在开发和使用 Kubernetes 时的参考指南和实践总结，形成一个系统化的参考指南以方便查阅。欢迎大家关注和添加完善内容。
+> Note: Only troubleshooting part is translated yet. New translations are welcomed.
 
-## 在线阅读
+## Reading
 
-- 中文：
-  - Gitbook: <https://kubernetes.feisky.xyz/>（或者 [这里](https://feisky.xyz/kubernetes-handbook/)）
-  - [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
-  - [InfoQ](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)
-- [English](https://github.com/feiskyer/kubernetes-handbook/blob/master/en/SUMMARY.md)
-- PDF 电子书：点击 [这里](https://legacy.gitbook.com/download/pdf/book/feisky/kubernetes) 下载
+- English：[GitBook](https://kubernetes.feisky.xyz/v/en/) [Github](https://github.com/feiskyer/kubernetes-handbook/blob/en/SUMMARY.md)
+- 中文：[GitBook](https://kubernetes.feisky.xyz/) [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
 
-## 项目源码
+## Source Code
 
-项目源码存放于 Github 上，[https://github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook)。
+The source code of this handbook is on [https://github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook).
 
-### 本书版本更新记录
+## Contributing
 
-如无特殊说明，本指南所有文档仅适用于 Kubernetes v1.6 及以上版本。详细更新记录见 [CHANGELOG](https://github.com/feiskyer/kubernetes-handbook/blob/master/CHANGELOG.md)。
-
-## 微信公众号
-
-扫码关注微信公众号，回复关键字即可在微信中查看相关章节。
-
-<p align="center"> <img src="images/qrcode.jpg"></p>
-
-## 贡献者
-
-欢迎参与贡献和完善内容，贡献方法参考 [CONTRIBUTING](https://github.com/feiskyer/kubernetes-handbook/blob/master/CONTRIBUTING.md)。感谢所有的贡献者，贡献者列表见 [contributors](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)。
-
-## LICENSE
-
-![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
-
-[署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)。
+Any kinds of contributing are welcomed. Please send PRs or open issues on Github [https://github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook).

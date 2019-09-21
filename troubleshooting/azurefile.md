@@ -1,8 +1,10 @@
-# AzureFile 排错
+# Troubleshooting AzureFile
 
-[AzureFile](https://docs.microsoft.com/zh-cn/azure/storage/files/storage-files-introduction) 提供了基于 SMB 协议（也称 CIFS）托管文件共享服务。它支持 Windows 和 Linux 容器，并支持跨主机的共享，可用于多个 Pod 之间的共享存储。AzureFile 的缺点是性能[较差](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-scale-targets)（[AKS#223](https://github.com/Azure/AKS/issues/223)），并且不提供 Premium 存储。
+[AzureFile](https://docs.microsoft.com/zh-cn/azure/storage/files/storage-files-introduction) provides a fully managed file shares based on Server Message Block (SMB) protocol (also known as Common Internet File System or CIFS). Azure File shares can be mounted concurrently by cloud or on-premises deployments of Windows, Linux and macOS.
 
-推荐基于 StorageClass 来使用 AzureFile，即
+Compared to AzureDisk, AzureFile could be shared by many Pods on different nodes. But please notice that AzureFile doesn't provide same good [performance](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-scale-targets) as AzureDisks ([AKS#223](https://github.com/Azure/AKS/issues/223)).
+
+It is also recommended to use AzureFile by StorageClass, e.g.
 
 ```yaml
 kind: StorageClass
@@ -19,11 +21,11 @@ parameters:
   skuName: Standard_LRS
 ```
 
-## 访问权限
+## Access Mode
 
-AzureFile 使用 [mount.cifs](https://linux.die.net/man/8/mount.cifs) 将其远端存储挂载到 Node 上，而`fileMode` 和 `dirMode` 控制了挂载后文件和目录的访问权限。不同的 Kubernetes 版本，`fileMode` 和 `dirMode` 的默认选项是不同的
+In kubernetes, AzureFile is mounted to node by [mount.cifs](https://linux.die.net/man/8/mount.cifs). Meanwhile, `fileMode` and `dirMode` options are set to control access modes. But their default values are different for different kubernetes versions:
 
-| Kubernetes 版本 | fileMode和dirMode |
+| Kubernetes      | fileMode和dirMode |
 | --------------- | ----------------- |
 | v1.6.x, v1.7.x  | 0777              |
 | v1.8.0-v1.8.5   | 0700              |
@@ -31,10 +33,10 @@ AzureFile 使用 [mount.cifs](https://linux.die.net/man/8/mount.cifs) 将其远�
 | v1.9.0          | 0700              |
 | v1.9.1 or above | 0755              |
 
-按照默认的权限会导致非跟用户无法在目录中创建新的文件，解决方法为
+With those default values, some containers with regular user (non-root user) couldn't create new files in the mounted path. Mitigation of this issue is
 
-- v1.8.0-v1.8.5：设置容器以 root 用户运行，如设置 `spec.securityContext.runAsUser: 0`
-- v1.8.6 以及更新版本：在 AzureFile StorageClass 通过 mountOptions 设置默认权限，比如设置为 `0777` 的方法为
+- For v1.8.0-v1.8.5: run container as root user, e.g. `spec.securityContext.runAsUser: 0`
+- FOr v1.8.6 and later versions: set proper mountOptions in AzureFile StorageClass, e.g. to `0777`
 
 ```yaml
 kind: StorageClass
@@ -51,30 +53,30 @@ parameters:
   skuName: Standard_LRS
 ```
 
-## Windows Node 重启后无法访问 AzureFile
+## AzureFile not working after rebooting Windows Node
 
-Windows Node 重启后，挂载 AzureFile 的 Pod 可以看到如下错误（[#60624](https://github.com/kubernetes/kubernetes/issues/60624)）：
+After rebooting Windows Node, Pods with AzureFile may fail to start because of following errors ([#60624](https://github.com/kubernetes/kubernetes/issues/60624)):
 
 ```sh
 Warning  Failed                 1m (x7 over 1m)  kubelet, 77890k8s9010  Error: Error response from daemon: invalid bind mount spec "c:\\var\\lib\\kubelet\\pods\\07251c5c-1cfc-11e8-8f70-000d3afd4b43\\volumes\\kubernetes.io~azure-file\\pvc-fb6159f6-1cfb-11e8-8f70-000d3afd4b43:c:/mnt/azure": invalid volume specification: 'c:\var\lib\kubelet\pods\07251c5c-1cfc-11e8-8f70-000d3afd4b43\volumes\kubernetes.io~azure-file\pvc-fb6159f6-1cfb-11e8-8f70-000d3afd4b43:c:/mnt/azure': invalid mount config for type "bind": bind source path does not exist
   Normal   SandboxChanged         1m (x8 over 1m)  kubelet, 77890k8s9010  Pod sandbox changed, it will be killed and re-created.
 ```
 
-临时性解决方法为删除并重新创建使用了 AzureFile 的 Pod。当 Pod 使用控制器（如 Deployment、StatefulSet等）时，删除 Pod 后控制器会自动创建一个新的 Pod。
+This is because `New-SmbGlobalMapping` cmdlet has lost account name/key after reboot. A mitigation of this issue is recreate the Pod, e.g. if the Pod is managed by controllers (Deployment or StatefulSet), delete the Pod with `kubectl delete pod <pod-name>` and a new Pod with be created automatically by its controller.
 
-该问题的修复 [#60625](https://github.com/kubernetes/kubernetes/pull/60625) 包含在 v1.10 中。
+The fix of this issue [#60625](https://github.com/kubernetes/kubernetes/pull/60625) will be included in v1.10.
 
 ## AzureFile ProvisioningFailed
 
-Azure 文件共享的名字最大只允许 63 个字节，因而在集群名字较长的集群（Kubernetes v1.7.10 或者更老的集群）里面有可能会碰到 AzureFile 名字长度超限的情况，导致 AzureFile ProvisioningFailed：
+In Kubernetes v1.7.10 or older clusters, `ProvisioningFailed` error may occur because the name of AzureFile is too long (Azure only allows 63 in file share names):
 
 ```sh
 persistentvolume-controller    Warning    ProvisioningFailed Failed to provision volume with StorageClass "azurefile": failed to find a matching storage account
 ```
 
-碰到该问题时可以通过升级集群解决，其修复 [#48326](https://github.com/kubernetes/kubernetes/pull/48326) 已经包含在 v1.7.11、v1.8 以及更新版本中。
+The fix of this issue [#48326](https://github.com/kubernetes/kubernetes/pull/48326) is already inclued in v1.7.11 and v1.8. Upgrade cluster to newer version should solve this problem.
 
-在开启 RBAC 的集群中，由于 AzureFile 需要访问 Secret，而 kube-controller-manager 中并未为 AzureFile 自动授权，从而也会导致 ProvisioningFailed：
+If the cluster has enabled RBAC, when there may be another issue causing AzureFile ProvisioningFailed:
 
 ```sh
 Events:
@@ -85,7 +87,7 @@ m:persistent-volume-binder" cannot create secrets in the namespace "default"
   Warning  ProvisioningFailed  8s    persistentvolume-controller  Failed to provision volume with StorageClass "azurefile": failed to find a matching storage account
 ```
 
-解决方法是为 ServiceAccount `persistent-volume-binder` 授予 Secret 的访问权限：
+This is because kube-controller-manager is not authorized to Secrets by default. To solve this problem, authorize ServiceAccount `persistent-volume-binder` to Secret resources:
 
 ```yaml
 ---
@@ -109,14 +111,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: persistent-volume-binder
-  namespace: kube-system 
+  namespace: kube-system
 ```
 
-## Azure German Cloud 无法使用 AzureFile
+## AzureFile not supported in Azure German Cloud
 
-Azure German Cloud 仅在 v1.7.11+、v1.8+ 以及更新版本中支持（[#48460](https://github.com/kubernetes/kubernetes/pull/48460)），升级 Kubernetes 版本即可解决。
+Azure German Cloud is only supported in v1.7.11+, v1.8+ and later versions ([#48460](https://github.com/kubernetes/kubernetes/pull/48460)).
 
-## 参考文档
+## References
 
 - [Known kubernetes issues on Azure](https://github.com/andyzhangx/demo/tree/master/issues)
 - [Introduction of Azure File Storage](https://docs.microsoft.com/zh-cn/azure/storage/files/storage-files-introduction)

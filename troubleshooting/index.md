@@ -1,88 +1,87 @@
-# 排错概览
+# Kubernetes Troubleshooting
 
-Kubernetes 集群以及应用排错的一般方法，主要包括
+This part introduces how to troubleshoot various problems on Kubernetes, includes
 
-- [集群状态异常排错](cluster.md)
-- [Pod运行异常排错](pod.md)
-- [网络异常排错](network.md)
-- [持久化存储异常排错](pv.md)
-  - [AzureDisk 排错](azuredisk.md)
-  - [AzureFile 排错](azurefile.md)
-- [Windows容器排错](windows.md)
-- [云平台异常排错](cloud.md)
-  - [Azure 排错](azure.md)
-- [常用排错工具](tools.md)
+- [Troubleshooting Clusters](cluster.md)
+- [Troubleshooting Pods](pod.md)
+- [Troubleshooting Networking](network.md)
+- [Troubleshooting Persistent Volumes](pv.md)
+  - [AzureDisk](azuredisk.md)
+  - [AzureFile](azurefile.md)
+- [Troubleshooting Windows Containers](windows.md)
+- [Troubleshooting Cloud Provider](cloud.md)
+  - [Azure](azure.md)
+- [Tools for Troubleshooting](tools.md)
 
-在排错过程中，`kubectl`  是最重要的工具，通常也是定位错误的起点。这里也列出一些常用的命令，在后续的各种排错过程中都会经常用到。
+Remember `kubectl` is always the most important tool when starting to troubleshoot any problems.
 
-#### 查看 Pod 状态以及运行节点
-
-```sh
-kubectl get pods -o wide
-kubectl -n kube-system get pods -o wide
-```
-
-#### 查看 Pod 事件
-
-```sh
-kubectl describe pod <pod-name>
-```
-
-#### 查看 Node 状态
+## Listing Nodes
 
 ```sh
 kubectl get nodes
 kubectl describe node <node-name>
 ```
 
-#### kube-apiserver 日志
+## Listing Pods
+
+```sh
+kubectl get pods -o wide
+kubectl -n kube-system get pods -o wide
+```
+
+## Looking at Pod events
+
+```sh
+kubectl describe pod <pod-name>
+```
+
+## Looking at kube-apiserver logs
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-apiserver -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-以上命令操作假设控制平面以 Kubernetes 静态 Pod 的形式来运行。如果 kube-apiserver 是用 systemd 管理的，则需要登录到 master 节点上，然后使用 journalctl -u kube-apiserver 查看其日志。
+If kube-apiserver is not running as kubelet static Pods, then use `journalctl -u kube-apiserver` command instead.
 
-#### kube-controller-manager 日志
+## Looking at kube-controller-manager logs
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-以上命令操作假设控制平面以 Kubernetes 静态 Pod 的形式来运行。如果 kube-controller-manager 是用 systemd 管理的，则需要登录到 master 节点上，然后使用 journalctl -u kube-controller-manager 查看其日志。
+If kube-controller-manager is not running as kubelet static Pods, then use `journalctl -u kube-controller-manager` command instead.
 
-#### kube-scheduler 日志
+## Looking at kube-scheduler logs
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-scheduler -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
-以上命令操作假设控制平面以 Kubernetes 静态 Pod 的形式来运行。如果 kube-scheduler 是用 systemd 管理的，则需要登录到 master 节点上，然后使用 journalctl -u kube-scheduler 查看其日志。
+If kube-scheduler is not running as kubelet static Pods, then use `journalctl -u kube-scheduler` command instead.
 
-#### kube-dns 日志
+## Looking at kube-dns logs
 
-kube-dns 通常以 Addon 的方式部署，每个 Pod 包含三个容器，最关键的是 kubedns 容器的日志：
+Kube-dns is usually running as addons. Each kube-dns Pod contains three containers and `kubedns` container's log could be got by
 
 ```sh
 PODNAME=$(kubectl -n kube-system get pod -l k8s-app=kube-dns -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME -c kubedns
 ```
 
-#### Kubelet 日志
+## Looking at kubelet logs
 
-Kubelet 通常以 systemd 管理。查看 Kubelet 日志需要首先 SSH 登录到 Node 上，推荐使用 [kubectl-enter](https://github.com/kvaps/kubectl-enter) 插件而不是为每个节点分配公网 IP 地址。比如：
+SSH to the Node and then run
 
 ```sh
-kubectl enter <node-name>
 journalctl -l -u kubelet
 ```
 
-#### Kube-proxy 日志
+## Looking at kube-proxy logs
 
-Kube-proxy 通常以 DaemonSet 的方式部署，可以直接用 kubectl 查询其日志
+Kube-proxy is usually running as daemonsets, whose logs could be got by
 
 ```sh
 $ kubectl -n kube-system get pod -l component=kube-proxy
@@ -92,10 +91,3 @@ kube-proxy-7gd4p   1/1       Running   0          3d
 kube-proxy-87dbs   1/1       Running   0          4d
 $ kubectl -n kube-system logs kube-proxy-42zpn
 ```
-
-## 参考文档
-
-* [hjacobs/kubernetes-failure-stories](https://github.com/hjacobs/kubernetes-failure-stories) 整理了一些公开的 Kubernetes 异常案例。
-* <https://docs.microsoft.com/en-us/azure/aks/troubleshooting> 包含了 AKS 中排错的一般思路
-* <https://cloud.google.com/kubernetes-engine/docs/troubleshooting> 包含了 GKE 中问题排查的一般思路
-* <https://www.oreilly.com/ideas/kubernetes-recipes-maintenance-and-troubleshooting>

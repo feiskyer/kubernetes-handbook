@@ -1,27 +1,22 @@
-# 排错工具
+# Tools for Troubleshooting
 
-本章主要介绍在 Kubernetes 排错中常用的工具。
+This chapter is about tools for troubleshooting kubernetes.
 
-## 必备工具
+## Essential tools
 
-* `kubectl`：用于查看 Kubernetes 集群以及容器的状态，如 `kubectl describe pod <pod-name>`
-* `journalctl`：用于查看 Kubernetes 组件日志，如 `journalctl -u kubelet -l`
-* `iptables`和`ebtables`：用于排查 Service 是否工作，如 `iptables -t nat -nL` 查看 kube-proxy 配置的 iptables 规则是否正常
-* `tcpdump`：用于排查容器网络问题，如 `tcpdump -nn host 10.240.0.8`
-* `perf`：Linux 内核自带的性能分析工具，常用来排查性能问题，如 [Container Isolation Gone Wrong](https://dzone.com/articles/container-isolation-gone-wrong) 问题的排查
+- `kubectl`: for interacting with kubernetes cluster, e.g. `kubectl describe pod <pod-name>`
+- `journalctl`：for viewing logs, e.g. `journalctl -u kubelet -l`
+- `iptables` and `ebtables`：for debugging service problems, e.g. `iptables -t nat -nL` checks whether kube-proxy's iptables rules are expected
+- `tcpdump`：for debugging network problems, e.g. `tcpdump -nn host 10.240.0.8`
+- `perf`: for debugging performance issues, e.g. troubleshooting issues like [Container Isolation Gone Wrong](https://dzone.com/articles/container-isolation-gone-wrong) 
 
 ## sysdig
 
-sysdig 是一个容器排错工具，提供了开源和商业版本。对于常规排错来说，使用开源版本即可。
+[sysdig](https://www.sysdig.org/) is a container troubleshooting tools, which provides both opensource and commercial products. For regular troubleshooting, I believe opensourced version is enough.
 
-除了 sysdig，还可以使用其他两个辅助工具
+On top of sysdig, you can also use csysdig and [sysdig-inspect](https://github.com/draios/sysdig-inspect) as command line interface and GUI.
 
-* csysdig：与 sysdig 一起自动安装，提供了一个命令行界面
-
-
-* [sysdig-inspect](https://github.com/draios/sysdig-inspect)：为 sysdig 保存的跟踪文件（如 `sudo sysdig -w filename.scap`）提供了一个图形界面（非实时）
-
-### 安装
+### Setup
 
 ```sh
 # on Ubuntu
@@ -42,7 +37,7 @@ yum -y install sysdig
 brew install sysdig
 ```
 
-### 示例
+### Examples
 
 ```sh
 # Refer https://www.sysdig.org/wiki/sysdig-examples/.
@@ -76,24 +71,13 @@ sudo sysdig evt.type=open and fd.name
 sudo csysdig -pc
 ```
 
-更多示例和使用方法可以参考 [Sysdig User Guide](https://github.com/draios/sysdig/wiki/Sysdig-User-Guide)。
+More usages could be found at  [Sysdig User Guide](https://github.com/draios/sysdig/wiki/Sysdig-User-Guide).
 
 ## Weave Scope
 
-Weave Scope 是另外一款可视化容器监控和排错工具。与 sysdig 相比，它没有强大的命令行工具，但提供了一个简单易用的交互界面，自动描绘了整个集群的拓扑，并可以通过插件扩展其功能。从其官网的介绍来看，其提供的功能包括
+Weave Scope is another container monitoring and troubleshooting tool. Compared to sysdig, it provides a simple GUI which describes the entire topology of the cluster.
 
-- [交互式拓扑界面](https://www.weave.works/docs/scope/latest/features/#topology-mapping)
-- [图形模式和表格模式](https://www.weave.works/docs/scope/latest/features/#mode)
-- [过滤功能](https://www.weave.works/docs/scope/latest/features/#flexible-filtering)
-- [搜索功能](https://www.weave.works/docs/scope/latest/features/#powerful-search)
-- [实时度量](https://www.weave.works/docs/scope/latest/features/#real-time-app-and-container-metrics)
-- [容器排错](https://www.weave.works/docs/scope/latest/features/#interact-with-and-manage-containers)
-- [插件扩展](https://www.weave.works/docs/scope/latest/features/#custom-plugins)
-
-Weave Scope 由 [App 和 Probe 两部分](https://www.weave.works/docs/scope/latest/how-it-works)组成，它们
-
-- Probe 负责收集容器和宿主的信息，并发送给 App
-- App 负责处理这些信息，并生成相应的报告，并以交互界面的形式展示
+Weave Scope consists of two components: the app and the probe. The components are deployed as a single Docker container using the scope script. The probe is responsible for gathering information about the host on which it is running. This information is sent to the app in the form of a report. The app processes reports from the probe into usable topologies, serving the UI, as well as pushing these topologies to the UI.
 
 ```sh
                     +--Docker host----------+      +--Docker host----------+
@@ -112,30 +96,28 @@ Weave Scope 由 [App 和 Probe 两部分](https://www.weave.works/docs/scope/lat
                     +-----------------------+      +-----------------------+
 ```
 
-### 安装
+### Setup
 
 ```sh
 kubectl apply -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')&k8s-service-type=LoadBalancer"
 ```
 
-### 查看界面
-
-安装完成后，可以通过 weave-scope-app 来访问交互界面
+### Access GUI
 
 ```sh
 kubectl -n weave get service weave-scope-app
-kubectl -n weave port-forward service/weave-scope-app :80
+
 ```
 
 ![](images/weave-scope.png)
 
-点击 Pod，还可以查看该 Pod 所有容器的实时状态和度量数据：
+Pod details
 
 ![](images/scope-pod.png)
 
-### 已知问题
+### Known Issues
 
-在 Ubuntu 内核 4.4.0 上面开启 `--probe.ebpf.connections` 时（默认开启），Node 有可能会因为[内核问题而不停重启](https://github.com/weaveworks/scope/issues/3131)：
+When running scope on Ubuntu kernel 4.4.0 with option `--probe.ebpf.connections` (default is enabled), Node may panic because of a [kernel issue](https://github.com/weaveworks/scope/issues/3131):
 
 ```sh
 [ 263.736006] CPU: 0 PID: 6309 Comm: scope Not tainted 4.4.0-119-generic #143-Ubuntu
@@ -181,12 +163,12 @@ kubectl -n weave port-forward service/weave-scope-app :80
 [ 263.736006] [] entry_SYSCALL_64_fastpath+0x1c/0xbb
 ```
 
-解决方法有两种
+To fix this issue, you could either
 
-- 禁止 eBPF 探测，如 `--probe.ebpf.connections=false`
-- 升级内核，如升级到 4.13.0
+- Disable eBPF connections, e.g. `--probe.ebpf.connections=false`
+- Or, upgrade kernel to 4.13.0
 
-## 参考文档
+## References
 
 - [Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
 - [Monitoring Kuberietes with sysdig](https://sysdig.com/blog/kubernetes-service-discovery-docker/)

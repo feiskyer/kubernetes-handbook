@@ -1,20 +1,21 @@
-# AzureDisk 排错
+# Troubleshooting AzureDisk
 
-[AzureDisk](https://docs.microsoft.com/zh-cn/azure/virtual-machines/windows/about-disks-and-vhds) 为 Azure 上面运行的虚拟机提供了弹性块存储服务，它以 VHD 的形式挂载到虚拟机中，并可以在 Kubernetes 容器中使用。AzureDisk 有点是性能高，特别是 Premium Storage 提供了非常好的[性能](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/premium-storage)；其缺点是不支持共享，只可以用在单个 Pod 内。
+[AzureDisk](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/about-disks-and-vhds) provides a persistent block device for Azure VMs. All Azure virtual machines have at least two disks – an operating system disk and a temporary disk. Virtual machines also can have one or more data disks. All of those disks are virtual hard disks (VHDs) stored in an Azure storage account.
 
-根据配置的不同，Kubernetes 支持的 AzureDisk 可以分为以下几类
+AzureDisk provides has better performance compared to [AzureFile](azurefile.md), especially for [Premium](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/premium-storage) tiers. But it can't be shared by multiple VMs (while AzureFile could).
 
-- Managed Disks: 由 Azure 自动管理磁盘和存储账户
+## Types of AzureDisk
+
+There are two performance tiers for storage that you can choose from when creating your disks -- Standard Storage and Premium Storage. Also, there are two types of disks -- unmanaged and managed -- and they can reside in either performance tier.
+
+- Managed Disks: Managed Disks handles the storage account creation/management in the background for you, and ensures that you do not have to worry about the scalability limits of the storage account.
 - Blob Disks:
-  - Dedicated (默认)：为每个 AzureDisk 创建单独的存储账户，当删除 PVC 的时候删除该存储账户
-  - Shared：AzureDisk 共享 ResourceGroup 内的同一个存储账户，这时删除 PVC 不会删除该存储账户
+  - Dedicated (default): storage accounts are separate for each disks. After PVC is deleted, related storage account will be removed for that PV
+  - Shared: storage accounts are shared for all disks in same ResourceGroup. The storage account won't be deleted even after PVC removed
 
-> 注意：
-> - AzureDisk 的类型必须跟 VM OS Disk 类型一致，即要么都是 Manged Disks，要么都是 Blob Disks。当两者不一致时，AzureDisk PV 会报无法挂载的错误。
-> - 由于 Managed Disks 需要创建和管理存储账户，其创建过程会比 Blob Disks 慢（3 分钟 vs 1-2 分钟）。
-> - 但节点最大支持同时挂载 16 个 AzureDisk。
+> Note: **When using AzureDisk, please ensure its type is matched with VM's operating system disk. That is say, operating system disk and data disk should be both Managed Disks or both Blob Disks (unmanaged). If they are not matched, AzureDisk PV usage will fail with attach error.**
 
-使用 [acs-engine](https://github.com/Azure/acs-engine) 部署的 Kubernetes 集群，会自动创建两个 StorageClass，默认为managed-standard（即HDD）：
+If the kubernetes cluster is deployed by [acs-engine](https://github.com/Azure/acs-engine), two StorageClass for AzureDisk will be created automatically
 
 ```sh
 kubectl get storageclass
@@ -24,38 +25,40 @@ managed-premium     kubernetes.io/azure-disk   53d
 managed-standard    kubernetes.io/azure-disk   53d
 ```
 
-## AzureDisk 挂载失败
+## AzureDisk attach error
 
-在 AzureDisk 从一个 Pod 迁移到另一 Node 上面的 Pod 时或者同一台 Node 上面使用了多块 AzureDisk 时有可能会碰到这个问题。这是由于 kube-controller-manager 未对 AttachDisk 和 DetachDisk 操作加锁从而引发了竞争问题（[kubernetes#60101](https://github.com/kubernetes/kubernetes/issues/60101) [acs-engine#2002](https://github.com/Azure/acs-engine/issues/2002) [ACS#12](https://github.com/Azure/ACS/issues/12)）。
+In some corner case (detaching multiple disks on a node simultaneously), when scheduling a pod with azure disk mount from one node to another, there could be lots of disk attach error (no recovery) due to the disk not being released in time from the previous node ([kubernetes#60101](https://github.com/kubernetes/kubernetes/issues/60101) [acs-engine#2002](https://github.com/Azure/acs-engine/issues/2002) [ACS#12](https://github.com/Azure/ACS/issues/12)). This issue is due to lack of lock before DetachDisk operation.
 
-通过 kube-controller-manager 的日志，可以查看具体的错误原因。常见的错误日志为
+The error message could be found from kube-controller-manager logs:
 
 ```sh
 Cannot attach data disk 'cdb-dynamic-pvc-92972088-11b9-11e8-888f-000d3a018174' to VM 'kn-edge-0' because the disk is currently being detached or the last detach operation failed. Please wait until the disk is completely detached and then try again or delete/detach the disk explicitly again.
 ```
 
-临时性解决方法为
+Ways to mitigate the issue:
 
-（1）更新所有受影响的虚拟机状态
+(1) Fix Azure VM status if they are in Error state
 
 ```powershell
 $vm = Get-AzureRMVM -ResourceGroupName $rg -Name $vmname
 Update-AzureRmVM -ResourceGroupName $rg -VM $vm -verbose -debug
 ```
 
-（2）重启虚拟机
+(2) Drain the node and reboot VM
 
 - `kubectl cordon NODE`
-- 如果 Node 上运行有 StatefulSet，需要手动删除相应的 Pod
+- Remove Pods managed by StatefulSets `kubectl delete pod <pod-name>`
 - `kubectl drain NODE`
 - `Get-AzureRMVM -ResourceGroupName $rg -Name $vmname | Restart-AzureVM`
 - `kubectl uncordon NODE`
 
-该问题的修复 [#60183](https://github.com/kubernetes/kubernetes/pull/60183) 已包含在 v1.10 中。
+The fix to the issue will be included in v1.10+.
 
-## 挂载新的 AzureDisk 后，该 Node 中其他 Pod 已挂载的 AzureDisk 不可用
+## Disk unavailable after attach/detach a data disk on a node
 
-在 Kubernetes v1.7 中，AzureDisk 默认的缓存策略修改为 `ReadWrite`，这会导致在同一个 Node 中挂载超过 5 块 AzureDisk 时，已有 AzureDisk 的盘符会随机改变（[kubernetes#60344](https://github.com/kubernetes/kubernetes/issues/60344) [kubernetes#57444](https://github.com/kubernetes/kubernetes/issues/57444) [AKS#201](https://github.com/Azure/AKS/issues/201) [acs-engine#1918](https://github.com/Azure/acs-engine/issues/1918)）。比如，当挂载第六块 AzureDisk 后，原来 lun0 磁盘的挂载盘符有可能从 `sdc` 变成 `sdk`：
+From kubernetes v1.7, default host cache setting changed from `None` to `ReadWrite`, this change would lead to device name change after attach multiple disks (usually more than 5 disks) on a node, finally lead to disk unavailable from pod ([kubernetes#60344](https://github.com/kubernetes/kubernetes/issues/60344) [kubernetes#57444](https://github.com/kubernetes/kubernetes/issues/57444) [AKS#201](https://github.com/Azure/AKS/issues/201) [acs-engine#1918](https://github.com/Azure/acs-engine/issues/1918)).
+
+An example of the issue is when attaching the 6th data disk on the same node, `lun0`'s mount device changed from `sdc` to `sdk`:
 
 ```sh
 $ tree /dev/disk/azure
@@ -70,14 +73,14 @@ $ tree /dev/disk/azure
     â””â”€â”€ lun6 -> ../../../sdi
 ```
 
-这样，原来使用 lun0 磁盘的 Pod 就无法访问 AzureDisk 了
+In such case, Pod attaching `lun0` disk will not able to access its data:
 
 ```sh
 [root@admin-0 /]# ls /datadisk
 ls: reading directory .: Input/output error
 ```
 
-临时性解决方法是设置 AzureDisk StorageClass 的 `cachingmode: None`，如
+A mitigation of this issue is change `cachingmode` to `None` for all AzureDisk StorageClass, e.g.
 
 ```yaml
 kind: StorageClass
@@ -91,13 +94,15 @@ parameters:
   cachingmode: None
 ```
 
-该问题的修复 [#60346](https://github.com/kubernetes/kubernetes/pull/60346) 将包含在 v1.10 中。
+The fix of this issue [#60346](https://github.com/kubernetes/kubernetes/pull/60346) will be included in v1.10.
 
-## AzureDisk 挂载慢
+## Slow attaching of AzureDisk
 
-AzureDisk PVC 的挂载过程一般需要 1 分钟的时间，这些时间主要消耗在 Azure ARM API 的调用上（查询 VM 以及挂载 Disk）。[#57432](https://github.com/kubernetes/kubernetes/pull/57432) 为 Azure VM 增加了一个缓存，消除了 VM 的查询时间，将整个挂载过程缩短到大约 30 秒。该修复包含在v1.9.2+ 和 v1.10 中。
+The attaching process of AzureDisk usually takes 1 minutes for v1.9.1 and previous versions. The time are most on Azure ARM API calls, e.g. query the VM information and attach the disk to VM.
 
-另外，如果 Node 使用了 `Standard_B1s` 类型的虚拟机，那么 AzureDisk 的第一次挂载一般会超时，等再次重复时才会挂载成功。这是因为在 `Standard_B1s`  虚拟机中格式化 AzureDisk 就需要很长时间（如超过 70 秒）。
+After v1.9.2 and v1.10, a VM cache [#57432](https://github.com/kubernetes/kubernetes/pull/57432) is added and reduced the whole attaching time to about 30 seconds.
+
+If Node is using `Standard_B1s` VM, then the first time of mounting AzureDisk is probably tending to fail because of slow disk formating (usually more than 70s). Then it will success in next retry:
 
 ```sh
 $ kubectl describe pod <pod-name>
@@ -118,9 +123,9 @@ a2e"
   2m            2m              1       kubelet, aks-nodepool1-15012548-0       spec.containers{nginx-azuredisk}        Normal          Started                 Started container
 ```
 
-## Azure German Cloud 无法使用 AzureDisk
+## AzureDisk not supported in Azure German Cloud
 
-Azure German Cloud 仅在 v1.7.9+、v1.8.3+ 以及更新版本中支持（[#50673](https://github.com/kubernetes/kubernetes/pull/50673)），升级 Kubernetes 版本即可解决。
+Azure German Cloud is only supported in v1.7.9+, v1.8.3+ and newer versions ([#50673](https://github.com/kubernetes/kubernetes/pull/50673)).
 
 ## MountVolume.WaitForAttach failed
 
@@ -128,9 +133,21 @@ Azure German Cloud 仅在 v1.7.9+、v1.8.3+ 以及更新版本中支持（[#5067
 MountVolume.WaitForAttach failed for volume "pvc-f1562ecb-3e5f-11e8-ab6b-000d3af9f967" : azureDisk - Wait for attach expect device path as a lun number, instead got: /dev/disk/azure/scsi1/lun1 (strconv.Atoi: parsing "/dev/disk/azure/scsi1/lun1": invalid syntax)
 ```
 
-[该问题](https://github.com/kubernetes/kubernetes/issues/62540) 仅在 Kubernetes v1.10.0 和 v1.10.1 中存在，将在 v1.10.2 中修复。
+[The issue](https://github.com/kubernetes/kubernetes/issues/62540) only exists in Kubernetes v1.10.0 and v1.10.1, and will be fixed in v1.10.2.
 
-## 参考文档
+## mountDevice:FormatAndMount failed
+
+ If uid or gid is set on AzureDisk's `mountOptions`, e.g.  `uid=999,gid=999`, then FormatAndMount will fail with error:
+
+```sh
+azureDisk - mountDevice:FormatAndMount failed with exit status 32
+```
+
+This is because ext4 filesystem is used on AzureDisk by default, so git/uid mount options couldn't be set on mount time.
+
+To get rid of this issue, use Pod's security context instead, e.g. [runAsUser and fsGroup](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container).
+
+## References
 
 - [Known kubernetes issues on Azure](https://github.com/andyzhangx/demo/tree/master/issues)
 - [Introduction of AzureDisk](https://docs.microsoft.com/zh-cn/azure/virtual-machines/windows/about-disks-and-vhds)

@@ -4,18 +4,14 @@ Kubernetes 社区提供了一些列的工具来监控容器和集群的状态，
 
 - cAdvisor 负责单节点内部的容器和节点资源使用统计，内置在 Kubelet 内部，并通过 Kubelet `/metrics/cadvisor` 对外提供 API
 - [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/) 是一个开源分布式时序、事件和指标数据库；而 [Grafana](http://grafana.org/) 则是 InfluxDB 的 Dashboard，提供了强大的图表展示功能。它们常被组合使用展示图表化的监控数据。
-- [metrics-server](metrics.md) 提供了整个集群的资源监控数据，但要注意
-  - Metrics API 只可以查询当前的度量数据，并不保存历史数据
-  - Metrics API URI 为 `/apis/metrics.k8s.io/`，在 [k8s.io/metrics](https://github.com/kubernetes/metrics) 维护
-  - 必须部署 `metrics-server` 才能使用该 API，metrics-server 通过调用 Kubelet Summary API 获取数据
+- [Heapster](https://github.com/kubernetes/heapster) 提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB 等后端存储中。
 - [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) 提供了 Kubernetes 资源对象（如 DaemonSet、Deployments 等）的度量。
 - [Prometheus](https://prometheus.io) 是另外一个监控和时间序列数据库，还提供了告警的功能。
 - [Node Problem Detector](https://github.com/kubernetes/node-problem-detector) 监测 Node 本身的硬件、内核或者运行时等问题。
-- ~~[Heapster](https://github.com/kubernetes/heapster) 提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB 等后端存储中（已弃用）~~
 
 ## cAdvisor
 
-[cAdvisor](https://github.com/google/cadvisor) 是一个来自 Google 的容器监控工具，也是 Kubelet 内置的容器资源收集工具。它会自动收集本机容器 CPU、内存、网络和文件系统的资源占用情况，并对外提供 cAdvisor 原生的 API（默认端口为 `--cadvisor-port=4194`）。
+[cAdvisor](https://github.com/google/cadvisor) 是一个来自 Google 的容器监控工具，也是 Kubelet 内置的容器资源收集工具。它会自动收集本机容器 CPU、内存、网络和文件系统的资源占用情况，并对外提供 cAdvisor 原生的 API（默认端口为 `--cadvisor-port=4194`，未来可能会删除该端口）。
 
 ![](images/14842107270881.png)
 
@@ -24,13 +20,11 @@ Kubernetes 社区提供了一些列的工具来监控容器和集群的状态，
 - Kubelet metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics`
 - Cadvisor metrics: `http://127.0.0.1:8001/api/v1/proxy/nodes/<node-name>/metrics/cadvisor`
 
-这样，在 Prometheus 等工具中需要使用新的 Metrics API 来获取这些数据，比如下面的 Prometheus 自动配置了 cadvisor metrics API：
+然而 cadvisor metrics 通常是监控系统必需的数据。给 Prometheus 增加新的 target 可以解决这个问题，比如
 
 ```sh
 helm install stable/prometheus --set rbac.create=true --name prometheus --namespace monitoring
 ```
-
-注意：cadvisor 监听的端口将在 v1.12 中删除，建议所有外部工具使用 Kubelet Metrics API 替代。
 
 ## InfluxDB 和 Grafana
 
@@ -40,11 +34,7 @@ helm install stable/prometheus --set rbac.create=true --name prometheus --namesp
 
 ## Heapster
 
-Kubelet 内置的 cAdvisor 只提供了单机的容器资源占用情况，而 [Heapster](https://github.com/kubernetes/heapster) 则提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB、Google Cloud Monitoring 或者 [其他的存储后端](https://github.com/kubernetes/heapster)。注意：
-
-- 仅 Kubernetes v1.7.X 或者更老的集群推荐使用 Heapster。
-- 从 Kubernetes v1.8 开始，资源使用情况的度量（如容器的 CPU 和内存使用）就已经通过 Metrics API 获取，并且 HPA 也从 metrics-server 查询必要的数据。
-- **Heapster 已在 v1.11 中弃用，推荐 v1.8 及以上版本部署 [metrics-server](metrics.md) 替代 Heapster**
+Kubelet 内置的 cAdvisor 只提供了单机的容器资源占用情况，而 [Heapster](https://github.com/kubernetes/heapster) 则提供了整个集群的资源监控，并支持持久化数据存储到 InfluxDB、Google Cloud Monitoring 或者 [其他的存储后端](https://github.com/kubernetes/heapster)。
 
 Heapster 首先从 Kubernetes apiserver 查询所有 Node 的信息，然后再从 kubelet 提供的 API 采集节点和容器的资源占用，同时在 `/metrics` API 提供了 Prometheus 格式的数据。Heapster 采集到的数据可以推送到各种持久化的后端存储中，如 InfluxDB、Google Cloud Monitoring、OpenTSDB 等。
 
@@ -95,40 +85,26 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 推荐使用 [Prometheus Operator](https://github.com/coreos/prometheus-operator) 或 [Prometheus Chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus) 来部署和管理 Prometheus，比如
 
 ```sh
-# 使用 prometheus operator
-helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
-helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
+# 使用 prometheus charts
+# 注意：未开启 RBAC 时，需要设置 --set rbac.create=false
+helm install --name prometheus stable/prometheus --set rbac.create=true --namespace=monitoring
+helm install --name grafana stable/grafana --namespace=monitoring --set server.image=grafana/grafana:master
 ```
 
-使用端口转发的方式访问 Prometheus，如 `kubectl --namespace monitoring port-forward service/kube-prometheus-prometheus :9090`
+使用端口转发的方式访问 Prometheus，如 `kubectl port-forward -n monitoring service/prometheus-prometheus-server :80`
 
 ![prometheus-web](images/14842125295113.jpg)
-
-如果发现 exporter-kubelets 功能不正常，比如报 `server returned HTTP status 401 Unauthorized` 错误，则需要给 Kubelet 配置 webhook 认证：
-
-```sh
-kubelet --authentication-token-webhook=true --authorization-mode=Webhook
-```
-
-如果发现 K8SControllerManagerDown 和 K8SSchedulerDown 告警，则说明 kube-controller-manager 和 kube-scheduler 是以 Pod 的形式运行在集群中的，并且 prometheus 部署的监控服务与它们的标签不一致。可通过修改服务标签的方法解决，如
-
-```sh
-kubectl -n kube-system set selector service kube-prometheus-exporter-kube-controller-manager  component=kube-controller-manager
-kubectl -n kube-system set selector service kube-prometheus-exporter-kube-scheduler  component=kube-scheduler
-```
 
 查询 Grafana 的管理员密码
 
 ```sh
-kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.user}" | base64 --decode ; echo
-kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.password}" | base64 --decode ; echo
+kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
 ```
 
 然后，以端口转发的方式访问 Grafana 界面
 
 ```sh
-kubectl port-forward -n monitoring service/kube-prometheus-grafana :80
+kubectl port-forward -n monitoring service/grafana :80
 ```
 
 添加 Prometheus 类型的 Data Source，填入原地址 `http://prometheus-prometheus-server.monitoring`。
@@ -146,24 +122,6 @@ helm update
 
 # install packages
 helm install feisky/node-problem-detector --namespace kube-system --name npd
-```
-
-## Node 重启守护进程
-
-Kubernetres 集群中的节点通常会开启自动安全更新，这样有助于尽可能避免因系统漏洞带来的损失。但一般来说，涉及到内核的更新需要重启系统才可生效。此时，就需要手动或自动的方法来重启节点。
-
-[Kured (KUbernetes REboot Daemon)](https://github.com/weaveworks/kured) 就是这样一个守护进程，它会
-
-- 监控 `/var/run/reboot-required` 信号后重启节点
-- 通过 DaemonSet Annotation 的方式每次仅重启一台节点
-- 重启前驱逐节点，重启后恢复调度
-- 根据 Prometheus 告警 (`--alert-filter-regexp=^(RebootRequired|AnotherBenignAlert|...$`) 取消重启
-- Slack 通知
-
-部署方法
-
-```sh
-kubectl apply -f https://github.com/weaveworks/kured/releases/download/1.0.0/kured-ds.yaml
 ```
 
 ## 其他容器监控系统
