@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../practice/resource-management.html">
+            
+                <a href="../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/ha.html">
             
                 <a href="../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../practice/certificate-rotation.html">
+            
+                <a href="../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2634,7 +2660,7 @@
 openssl genrsa -out username.key 2048
 <span class="hljs-comment"># Create CSR (certificate signing request)</span>
 openssl req -new -key username.key -out username.csr -subj <span class="hljs-string">&quot;/CN=username/O=group&quot;</span>
-<span class="hljs-comment"># Create certificate from CSR using the cluster authority </span>
+<span class="hljs-comment"># Create certificate from CSR using the cluster authority</span>
 openssl x509 -req -in username.csr -CA <span class="hljs-variable">$CA_LOCATION</span>/ca.crt -CAkey <span class="hljs-variable">$CA_LOCATION</span>/ca.key -CAcreateserial -out username.crt -days 500
 </code></pre>
 <p>&#x63A5;&#x7740;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; username.key &#x548C; username.crt &#x6765;&#x8BBF;&#x95EE;&#x96C6;&#x7FA4;&#xFF1A;</p>
@@ -2801,7 +2827,7 @@ kubectl config use-context username
 <li><a href="https://medium.com/@while1eq1/single-sign-on-for-internal-apps-in-kubernetes-using-google-oauth-sso-2386a34bc433" target="_blank">Single Sign-On for Internal Apps in Kubernetes using Google Oauth / SSO</a> by William Broach</li>
 <li><a href="https://thenewstack.io/kubernetes-single-sign-one-less-identity/" target="_blank">Single Sign-On for Kubernetes: An Introduction</a> by Joel Speed</li>
 <li><a href="https://eng.fromatob.com/post/2017/02/lets-encrypt-oauth-2-and-kubernetes-ingress/" target="_blank">Let&#x2019;s Encrypt, OAuth 2, and Kubernetes Ingress</a> by Ian Chiles</li>
-<li><a href="https://medium.com/@etienne_24233/comparing-kubernetes-authentication-methods-6f538d834ca7by" target="_blank">Comparing Kubernetes Authentication Methods</a> by Etienne Dilocker</li>
+<li><a href="https://medium.com/@etienne_24233/comparing-kubernetes-authentication-methods-6f538d834ca7" target="_blank">Comparing Kubernetes Authentication Methods</a> by Etienne Dilocker</li>
 <li><a href="http://uptoknow.blogspot.com/2017/06/kubernetes-authentication-proxy-example.html" target="_blank">K8s auth proxy example</a></li>
 <li><a href="https://blog.conjur.org/kubernetes-authentication" target="_blank">K8s authentication with Conjur</a></li>
 <li><a href="https://www.youtube.com/watch?v=Nw1ymxcLIDI" target="_blank">Effective RBAC</a> by Jordan Liggitt</li>
@@ -2809,7 +2835,7 @@ kubectl config use-context username
 <li><a href="https://kubernetes.io/blog/2017/10/using-rbac-generally-available-18/" target="_blank">Using RBAC, Generally Available in Kubernetes v1.8</a> by Eric Chiang</li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -2853,7 +2879,7 @@ kubectl config use-context username
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"认证","level":"4.2.1","depth":2,"next":{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},"previous":{"title":"访问控制","level":"4.2","depth":1,"path":"plugins/auth.md","ref":"plugins/auth.md","articles":[{"title":"认证","level":"4.2.1","depth":2,"path":"plugins/authentication.md","ref":"plugins/authentication.md","articles":[]},{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},{"title":"准入控制","level":"4.2.3","depth":2,"path":"plugins/admission.md","ref":"plugins/admission.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/authentication.md","mtime":"2019-06-16T02:00:53.528Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"认证","level":"4.2.1","depth":2,"next":{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},"previous":{"title":"访问控制","level":"4.2","depth":1,"path":"plugins/auth.md","ref":"plugins/auth.md","articles":[{"title":"认证","level":"4.2.1","depth":2,"path":"plugins/authentication.md","ref":"plugins/authentication.md","articles":[]},{"title":"RBAC 授权","level":"4.2.2","depth":2,"path":"plugins/rbac.md","ref":"plugins/rbac.md","articles":[]},{"title":"准入控制","level":"4.2.3","depth":2,"path":"plugins/admission.md","ref":"plugins/admission.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"plugins/authentication.md","mtime":"2019-09-21T13:09:10.434Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../practice/resource-management.html">
+            
+                <a href="../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/ha.html">
             
                 <a href="../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../practice/certificate-rotation.html">
+            
+                <a href="../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2652,8 +2678,12 @@
 </thead>
 <tbody>
 <tr>
-<td>v1.5+</td>
+<td>v1.5-v1.17</td>
 <td>extensions/v1beta1</td>
+</tr>
+<tr>
+<td>v1.8+</td>
+<td>networking.k8s.io/v1beta1</td>
 </tr>
 </tbody>
 </table>
@@ -2757,7 +2787,7 @@ bar.foo.com --|                 |-&gt; bar.foo.com s2:80
 <span class="hljs-attr">    serviceName:</span> s1
 <span class="hljs-attr">    servicePort:</span> <span class="hljs-number">80</span>
 </code></pre>
-<p>&#x6CE8;&#x610F;&#xFF0C;&#x4E0D;&#x540C; Ingress controller &#x652F;&#x6301;&#x7684; TLS &#x529F;&#x80FD;&#x4E0D;&#x5C3D;&#x76F8;&#x540C;&#x3002; &#x8BF7;&#x53C2;&#x9605;&#x6709;&#x5173; <a href="https://github.com/kubernetes/ingress/blob/master/controllers/nginx/README.md#https" target="_blank">nginx</a>&#xFF0C;<a href="https://github.com/kubernetes/ingress/blob/master/controllers/gce/README.md#tls" target="_blank">GCE</a> &#x6216;&#x4EFB;&#x4F55;&#x5176;&#x4ED6; Ingress controller &#x7684;&#x6587;&#x6863;&#xFF0C;&#x4EE5;&#x4E86;&#x89E3; TLS &#x7684;&#x652F;&#x6301;&#x60C5;&#x51B5;&#x3002;</p>
+<p>&#x6CE8;&#x610F;&#xFF0C;&#x4E0D;&#x540C; Ingress controller &#x652F;&#x6301;&#x7684; TLS &#x529F;&#x80FD;&#x4E0D;&#x5C3D;&#x76F8;&#x540C;&#x3002; &#x8BF7;&#x53C2;&#x9605;&#x6709;&#x5173; <a href="https://kubernetes.github.io/ingress-nginx/" target="_blank">nginx</a>&#xFF0C;<a href="https://github.com/kubernetes/ingress-gce" target="_blank">GCE</a> &#x6216;&#x4EFB;&#x4F55;&#x5176;&#x4ED6; Ingress controller &#x7684;&#x6587;&#x6863;&#xFF0C;&#x4EE5;&#x4E86;&#x89E3; TLS &#x7684;&#x652F;&#x6301;&#x60C5;&#x51B5;&#x3002;</p>
 <h2 id="&#x66F4;&#x65B0;-ingress">&#x66F4;&#x65B0; Ingress</h2>
 <p>&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>kubectl edit ing name</code> &#x7684;&#x65B9;&#x6CD5;&#x6765;&#x66F4;&#x65B0; ingress&#xFF1A;</p>
 <pre><code class="lang-Bash">$ kubectl get ing
@@ -2819,7 +2849,7 @@ NAME      RULE          BACKEND   ADDRESS
 <li><a href="http://blog.kubernetes.io/2016/03/Kubernetes-1.2-and-simplifying-advanced-networking-with-Ingress.html" target="_blank">Kubernetes 1.2 and simplifying advanced networking with Ingress</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -2863,7 +2893,7 @@ NAME      RULE          BACKEND   ADDRESS
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ingress","level":"2.5.7","depth":2,"next":{"title":"Job","level":"2.5.8","depth":2,"path":"concepts/job.md","ref":"concepts/job.md","articles":[]},"previous":{"title":"Deployment","level":"2.5.6","depth":2,"path":"concepts/deployment.md","ref":"concepts/deployment.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"concepts/ingress.md","mtime":"2019-06-16T02:00:53.412Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ingress","level":"2.5.7","depth":2,"next":{"title":"Job","level":"2.5.8","depth":2,"path":"concepts/job.md","ref":"concepts/job.md","articles":[]},"previous":{"title":"Deployment","level":"2.5.6","depth":2,"path":"concepts/deployment.md","ref":"concepts/deployment.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"concepts/ingress.md","mtime":"2019-09-21T13:09:10.030Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../practice/resource-management.html">
+            
+                <a href="../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/ha.html">
             
                 <a href="../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../practice/certificate-rotation.html">
+            
+                <a href="../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2688,14 +2714,14 @@ kubectl config view
 </code></pre>
 <h2 id="&#x65E5;&#x5FD7;&#x67E5;&#x770B;">&#x65E5;&#x5FD7;&#x67E5;&#x770B;</h2>
 <p><code>kubectl logs</code> &#x7528;&#x4E8E;&#x663E;&#x793A; pod &#x8FD0;&#x884C;&#x4E2D;&#xFF0C;&#x5BB9;&#x5668;&#x5185;&#x7A0B;&#x5E8F;&#x8F93;&#x51FA;&#x5230;&#x6807;&#x51C6;&#x8F93;&#x51FA;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x8DDF; docker &#x7684; logs &#x547D;&#x4EE4;&#x7C7B;&#x4F3C;&#x3002;</p>
-<pre><code class="lang-sh">  <span class="hljs-comment"># Return snapshot logs from pod nginx with only one container</span>
-  kubectl logs nginx
+<pre><code class="lang-sh"><span class="hljs-comment"># Return snapshot logs from pod nginx with only one container</span>
+kubectl logs nginx
 
-  <span class="hljs-comment"># Return snapshot of previous terminated ruby container logs from pod web-1</span>
-  kubectl logs -p -c ruby web-1
+<span class="hljs-comment"># Return snapshot of previous terminated ruby container logs from pod web-1</span>
+kubectl logs -p -c ruby web-1
 
-  <span class="hljs-comment"># Begin streaming the logs of the ruby container in pod web-1</span>
-  kubectl logs <span class="hljs-_">-f</span> -c ruby web-1
+<span class="hljs-comment"># Begin streaming the logs of the ruby container in pod web-1</span>
+kubectl logs <span class="hljs-_">-f</span> -c ruby web-1
 </code></pre>
 <h2 id="&#x8FDE;&#x63A5;&#x5230;&#x4E00;&#x4E2A;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x5BB9;&#x5668;">&#x8FDE;&#x63A5;&#x5230;&#x4E00;&#x4E2A;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x5BB9;&#x5668;</h2>
 <p><code>kubectl attach</code> &#x7528;&#x4E8E;&#x8FDE;&#x63A5;&#x5230;&#x4E00;&#x4E2A;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x5BB9;&#x5668;&#x3002;&#x8DDF; docker &#x7684; attach &#x547D;&#x4EE4;&#x7C7B;&#x4F3C;&#x3002;</p>
@@ -2827,6 +2853,19 @@ Options:
 <pre><code class="lang-sh">Impersonate-User: superman
 Impersonate-Group: system:masters
 </code></pre>
+<h2 id="&#x67E5;&#x770B;&#x4E8B;&#x4EF6;&#xFF08;events&#xFF09;">&#x67E5;&#x770B;&#x4E8B;&#x4EF6;&#xFF08;events&#xFF09;</h2>
+<pre><code class="lang-sh"><span class="hljs-comment"># &#x67E5;&#x770B;&#x6240;&#x6709;&#x4E8B;&#x4EF6;</span>
+kubectl get events --all-namespaces
+
+<span class="hljs-comment"># &#x67E5;&#x770B;&#x540D;&#x4E3A;nginx&#x5BF9;&#x8C61;&#x7684;&#x4E8B;&#x4EF6;</span>
+kubectl get events --field-selector involvedObject.name=nginx,involvedObject.namespace=default
+
+<span class="hljs-comment"># &#x67E5;&#x770B;&#x540D;&#x4E3A;nginx&#x7684;&#x670D;&#x52A1;&#x4E8B;&#x4EF6;</span>
+kubectl get events --field-selector involvedObject.name=nginx,involvedObject.namespace=default,involvedObject.kind=Service
+
+<span class="hljs-comment"># &#x67E5;&#x770B;Pod&#x7684;&#x4E8B;&#x4EF6;</span>
+kubectl get events --field-selector involvedObject.name=nginx-85cb5867f-bs7pn,involvedObject.kind=Pod
+</code></pre>
 <h2 id="kubectl-&#x63D2;&#x4EF6;">kubectl &#x63D2;&#x4EF6;</h2>
 <p>kubectl &#x63D2;&#x4EF6;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x79CD;&#x6269;&#x5C55; kubectl &#x7684;&#x673A;&#x5236;&#xFF0C;&#x6BD4;&#x5982;&#x6DFB;&#x52A0;&#x65B0;&#x7684;&#x5B50;&#x547D;&#x4EE4;&#x3002;&#x63D2;&#x4EF6;&#x53EF;&#x4EE5;&#x4EE5;&#x4EFB;&#x4F55;&#x8BED;&#x8A00;&#x7F16;&#x5199;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x6EE1;&#x8DB3;&#x4EE5;&#x4E0B;&#x6761;&#x4EF6;&#x5373;&#x53EF;</p>
 <ul>
@@ -2870,7 +2909,7 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl <span 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl <span class="hljs-_">-s</span> https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/windows/amd64/kubectl.exe
 </code></pre>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -2914,7 +2953,7 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl <span 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"kubectl","level":"2.4.11","depth":2,"next":{"title":"资源对象","level":"2.5","depth":1,"path":"concepts/index.md","ref":"concepts/index.md","articles":[{"title":"Autoscaling","level":"2.5.1","depth":2,"path":"concepts/autoscaling.md","ref":"concepts/autoscaling.md","articles":[]},{"title":"ConfigMap","level":"2.5.2","depth":2,"path":"concepts/configmap.md","ref":"concepts/configmap.md","articles":[]},{"title":"CronJob","level":"2.5.3","depth":2,"path":"concepts/cronjob.md","ref":"concepts/cronjob.md","articles":[]},{"title":"CustomResourceDefinition","level":"2.5.4","depth":2,"path":"concepts/customresourcedefinition.md","ref":"concepts/customresourcedefinition.md","articles":[]},{"title":"DaemonSet","level":"2.5.5","depth":2,"path":"concepts/daemonset.md","ref":"concepts/daemonset.md","articles":[]},{"title":"Deployment","level":"2.5.6","depth":2,"path":"concepts/deployment.md","ref":"concepts/deployment.md","articles":[]},{"title":"Ingress","level":"2.5.7","depth":2,"path":"concepts/ingress.md","ref":"concepts/ingress.md","articles":[]},{"title":"Job","level":"2.5.8","depth":2,"path":"concepts/job.md","ref":"concepts/job.md","articles":[]},{"title":"LocalVolume","level":"2.5.9","depth":2,"path":"concepts/local-volume.md","ref":"concepts/local-volume.md","articles":[]},{"title":"Namespace","level":"2.5.10","depth":2,"path":"concepts/namespace.md","ref":"concepts/namespace.md","articles":[]},{"title":"NetworkPolicy","level":"2.5.11","depth":2,"path":"concepts/network-policy.md","ref":"concepts/network-policy.md","articles":[]},{"title":"Node","level":"2.5.12","depth":2,"path":"concepts/node.md","ref":"concepts/node.md","articles":[]},{"title":"PersistentVolume","level":"2.5.13","depth":2,"path":"concepts/persistent-volume.md","ref":"concepts/persistent-volume.md","articles":[]},{"title":"Pod","level":"2.5.14","depth":2,"path":"concepts/pod.md","ref":"concepts/pod.md","articles":[]},{"title":"PodPreset","level":"2.5.15","depth":2,"path":"concepts/podpreset.md","ref":"concepts/podpreset.md","articles":[]},{"title":"ReplicaSet","level":"2.5.16","depth":2,"path":"concepts/replicaset.md","ref":"concepts/replicaset.md","articles":[]},{"title":"Resource Quota","level":"2.5.17","depth":2,"path":"concepts/quota.md","ref":"concepts/quota.md","articles":[]},{"title":"Secret","level":"2.5.18","depth":2,"path":"concepts/secret.md","ref":"concepts/secret.md","articles":[]},{"title":"SecurityContext","level":"2.5.19","depth":2,"path":"concepts/security-context.md","ref":"concepts/security-context.md","articles":[]},{"title":"Service","level":"2.5.20","depth":2,"path":"concepts/service.md","ref":"concepts/service.md","articles":[]},{"title":"ServiceAccount","level":"2.5.21","depth":2,"path":"concepts/serviceaccount.md","ref":"concepts/serviceaccount.md","articles":[]},{"title":"StatefulSet","level":"2.5.22","depth":2,"path":"concepts/statefulset.md","ref":"concepts/statefulset.md","articles":[]},{"title":"Volume","level":"2.5.23","depth":2,"path":"concepts/volume.md","ref":"concepts/volume.md","articles":[]}]},"previous":{"title":"hyperkube","level":"2.4.10","depth":2,"path":"components/hyperkube.md","ref":"components/hyperkube.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kubectl.md","mtime":"2019-06-16T02:00:53.400Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"kubectl","level":"2.4.11","depth":2,"next":{"title":"资源对象","level":"2.5","depth":1,"path":"concepts/index.md","ref":"concepts/index.md","articles":[{"title":"Autoscaling","level":"2.5.1","depth":2,"path":"concepts/autoscaling.md","ref":"concepts/autoscaling.md","articles":[]},{"title":"ConfigMap","level":"2.5.2","depth":2,"path":"concepts/configmap.md","ref":"concepts/configmap.md","articles":[]},{"title":"CronJob","level":"2.5.3","depth":2,"path":"concepts/cronjob.md","ref":"concepts/cronjob.md","articles":[]},{"title":"CustomResourceDefinition","level":"2.5.4","depth":2,"path":"concepts/customresourcedefinition.md","ref":"concepts/customresourcedefinition.md","articles":[]},{"title":"DaemonSet","level":"2.5.5","depth":2,"path":"concepts/daemonset.md","ref":"concepts/daemonset.md","articles":[]},{"title":"Deployment","level":"2.5.6","depth":2,"path":"concepts/deployment.md","ref":"concepts/deployment.md","articles":[]},{"title":"Ingress","level":"2.5.7","depth":2,"path":"concepts/ingress.md","ref":"concepts/ingress.md","articles":[]},{"title":"Job","level":"2.5.8","depth":2,"path":"concepts/job.md","ref":"concepts/job.md","articles":[]},{"title":"LocalVolume","level":"2.5.9","depth":2,"path":"concepts/local-volume.md","ref":"concepts/local-volume.md","articles":[]},{"title":"Namespace","level":"2.5.10","depth":2,"path":"concepts/namespace.md","ref":"concepts/namespace.md","articles":[]},{"title":"NetworkPolicy","level":"2.5.11","depth":2,"path":"concepts/network-policy.md","ref":"concepts/network-policy.md","articles":[]},{"title":"Node","level":"2.5.12","depth":2,"path":"concepts/node.md","ref":"concepts/node.md","articles":[]},{"title":"PersistentVolume","level":"2.5.13","depth":2,"path":"concepts/persistent-volume.md","ref":"concepts/persistent-volume.md","articles":[]},{"title":"Pod","level":"2.5.14","depth":2,"path":"concepts/pod.md","ref":"concepts/pod.md","articles":[]},{"title":"PodPreset","level":"2.5.15","depth":2,"path":"concepts/podpreset.md","ref":"concepts/podpreset.md","articles":[]},{"title":"ReplicaSet","level":"2.5.16","depth":2,"path":"concepts/replicaset.md","ref":"concepts/replicaset.md","articles":[]},{"title":"Resource Quota","level":"2.5.17","depth":2,"path":"concepts/quota.md","ref":"concepts/quota.md","articles":[]},{"title":"Secret","level":"2.5.18","depth":2,"path":"concepts/secret.md","ref":"concepts/secret.md","articles":[]},{"title":"SecurityContext","level":"2.5.19","depth":2,"path":"concepts/security-context.md","ref":"concepts/security-context.md","articles":[]},{"title":"Service","level":"2.5.20","depth":2,"path":"concepts/service.md","ref":"concepts/service.md","articles":[]},{"title":"ServiceAccount","level":"2.5.21","depth":2,"path":"concepts/serviceaccount.md","ref":"concepts/serviceaccount.md","articles":[]},{"title":"StatefulSet","level":"2.5.22","depth":2,"path":"concepts/statefulset.md","ref":"concepts/statefulset.md","articles":[]},{"title":"Volume","level":"2.5.23","depth":2,"path":"concepts/volume.md","ref":"concepts/volume.md","articles":[]}]},"previous":{"title":"hyperkube","level":"2.4.10","depth":2,"path":"components/hyperkube.md","ref":"components/hyperkube.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kubectl.md","mtime":"2019-09-21T13:09:10.006Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

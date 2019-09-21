@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../practice/resource-management.html">
+            
+                <a href="../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/ha.html">
             
                 <a href="../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../practice/certificate-rotation.html">
+            
+                <a href="../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2684,8 +2710,8 @@ dnsmasq-nanny -v=2 -logtostderr -configDir=/etc/k8s/dns/dnsmasq-nanny -restartDn
 <span class="hljs-comment"># sidecar container</span>
 sidecar --v=2 --logtostderr --probe=kubedns,127.0.0.1:10053,kubernetes.default.svc.cluster.local.,5,A --probe=dnsmasq,127.0.0.1:53,kubernetes.default.svc.cluster.local.,5,A
 </code></pre>
-<p>Kubernetes v1.10 &#x4E5F;&#x652F;&#x6301; Beta &#x7248;&#x7684; CoreDNS&#xFF0C;&#x5176;&#x6027;&#x80FD;&#x8F83; kube-dns &#x66F4;&#x597D;&#x3002;&#x53EF;&#x4EE5;&#x4EE5;&#x6269;&#x5C55;&#x65B9;&#x5F0F;&#x90E8;&#x7F72;&#xFF0C;&#x5982;&#x628A; <a href="https://kubernetes.feisky.xyz/manifests/kubedns/coredns.yaml" target="_blank">coredns.yaml</a> &#x653E;&#x5230; Master &#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/addons</code> &#x76EE;&#x5F55;&#x4E2D;&#x3002;&#x5F53;&#x7136;&#x4E5F;&#x53EF;&#x4EE5;&#x624B;&#x52A8;&#x90E8;&#x7F72;&#xFF1A;</p>
-<pre><code class="lang-sh">kubectl apply <span class="hljs-_">-f</span> https://kubernetes.feisky.xyz/manifests/kubedns/coredns.yaml
+<p>Kubernetes v1.10 &#x4E5F;&#x652F;&#x6301; Beta &#x7248;&#x7684; CoreDNS&#xFF0C;&#x5176;&#x6027;&#x80FD;&#x8F83; kube-dns &#x66F4;&#x597D;&#x3002;&#x53EF;&#x4EE5;&#x4EE5;&#x6269;&#x5C55;&#x65B9;&#x5F0F;&#x90E8;&#x7F72;&#xFF0C;&#x5982;&#x628A; <a href="https://github.com/feiskyer/kubernetes-handbook/blob/master/manifests/kubedns/coredns.yaml" target="_blank">coredns.yaml</a> &#x653E;&#x5230; Master &#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/addons</code> &#x76EE;&#x5F55;&#x4E2D;&#x3002;&#x5F53;&#x7136;&#x4E5F;&#x53EF;&#x4EE5;&#x624B;&#x52A8;&#x90E8;&#x7F72;&#xFF1A;</p>
+<pre><code class="lang-sh">kubectl apply <span class="hljs-_">-f</span> https://github.com/feiskyer/kubernetes-handbook/raw/master/manifests/kubedns/coredns.yaml
 </code></pre>
 <h3 id="kube-dns-&#x5DE5;&#x4F5C;&#x539F;&#x7406;">kube-dns &#x5DE5;&#x4F5C;&#x539F;&#x7406;</h3>
 <p>&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF0C;kube-dns &#x7531;&#x4E09;&#x4E2A;&#x5BB9;&#x5668;&#x6784;&#x6210;&#xFF1A;</p>
@@ -2722,7 +2748,7 @@ sudo ln <span class="hljs-_">-s</span> /run/systemd/resolve/resolv.conf /etc/res
 <li><a href="https://github.com/coredns/coredns" target="_blank">coredns/coredns</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:09
 </span></footer>
                                 
                                 </section>
@@ -2766,7 +2792,7 @@ sudo ln <span class="hljs-_">-s</span> /run/systemd/resolve/resolv.conf /etc/res
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"kube-dns","level":"2.4.7","depth":2,"next":{"title":"Federation","level":"2.4.8","depth":2,"path":"components/federation.md","ref":"components/federation.md","articles":[]},"previous":{"title":"kube-proxy","level":"2.4.6","depth":2,"path":"components/kube-proxy.md","ref":"components/kube-proxy.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kube-dns.md","mtime":"2019-06-16T02:00:53.400Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"kube-dns","level":"2.4.7","depth":2,"next":{"title":"Federation","level":"2.4.8","depth":2,"path":"components/federation.md","ref":"components/federation.md","articles":[]},"previous":{"title":"kube-proxy","level":"2.4.6","depth":2,"path":"components/kube-proxy.md","ref":"components/kube-proxy.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kube-dns.md","mtime":"2019-09-21T13:09:09.998Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

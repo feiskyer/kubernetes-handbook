@@ -76,5 +76,5 @@ systemctl restart docker
 
 ## References
 
-- [Core metrics pipeline](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
+- [Core metrics pipeline](https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/)
 - [metrics-server](https://github.com/kubernetes-incubator/metrics-server)

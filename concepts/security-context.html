@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../practice/resource-management.html">
+            
+                <a href="../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/ha.html">
             
                 <a href="../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../practice/certificate-rotation.html">
+            
+                <a href="../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2618,7 +2644,7 @@
 <li>Pod Security Policies&#xFF08;PSP&#xFF09;&#xFF1A;&#x5E94;&#x7528;&#x5230;&#x96C6;&#x7FA4;&#x5185;&#x90E8;&#x6240;&#x6709; Pod &#x4EE5;&#x53CA; Volume</li>
 </ul>
 <h2 id="container-level-security-context">Container-level Security Context</h2>
-<p><a href="https://kubernetes.io/docs/api-reference/v1.6/#securitycontext-v1-core" target="_blank">Container-level Security Context</a> &#x4EC5;&#x5E94;&#x7528;&#x5230;&#x6307;&#x5B9A;&#x7684;&#x5BB9;&#x5668;&#x4E0A;&#xFF0C;&#x5E76;&#x4E14;&#x4E0D;&#x4F1A;&#x5F71;&#x54CD; Volume&#x3002;&#x6BD4;&#x5982;&#x8BBE;&#x7F6E;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x5728;&#x7279;&#x6743;&#x6A21;&#x5F0F;&#xFF1A;</p>
+<p><a href="https://kubernetes.io/docs/api-reference/v1.15/#securitycontext-v1-core" target="_blank">Container-level Security Context</a> &#x4EC5;&#x5E94;&#x7528;&#x5230;&#x6307;&#x5B9A;&#x7684;&#x5BB9;&#x5668;&#x4E0A;&#xFF0C;&#x5E76;&#x4E14;&#x4E0D;&#x4F1A;&#x5F71;&#x54CD; Volume&#x3002;&#x6BD4;&#x5982;&#x8BBE;&#x7F6E;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x5728;&#x7279;&#x6743;&#x6A21;&#x5F0F;&#xFF1A;</p>
 <pre><code class="lang-yaml"><span class="hljs-attr">apiVersion:</span> v1
 <span class="hljs-attr">kind:</span> Pod
 <span class="hljs-attr">metadata:</span>
@@ -2632,7 +2658,7 @@
 <span class="hljs-attr">        privileged:</span> <span class="hljs-literal">true</span>
 </code></pre>
 <h2 id="pod-level-security-context">Pod-level Security Context</h2>
-<p><a href="https://kubernetes.io/docs/api-reference/v1.6/#podsecuritycontext-v1-core" target="_blank">Pod-level Security Context</a> &#x5E94;&#x7528;&#x5230; Pod &#x5185;&#x6240;&#x6709;&#x5BB9;&#x5668;&#xFF0C;&#x5E76;&#x4E14;&#x8FD8;&#x4F1A;&#x5F71;&#x54CD; Volume&#xFF08;&#x5305;&#x62EC; fsGroup &#x548C; selinuxOptions&#xFF09;&#x3002;</p>
+<p><a href="https://kubernetes.io/docs/api-reference/v1.15/#podsecuritycontext-v1-core" target="_blank">Pod-level Security Context</a> &#x5E94;&#x7528;&#x5230; Pod &#x5185;&#x6240;&#x6709;&#x5BB9;&#x5668;&#xFF0C;&#x5E76;&#x4E14;&#x8FD8;&#x4F1A;&#x5F71;&#x54CD; Volume&#xFF08;&#x5305;&#x62EC; fsGroup &#x548C; selinuxOptions&#xFF09;&#x3002;</p>
 <pre><code class="lang-yaml"><span class="hljs-attr">apiVersion:</span> v1
 <span class="hljs-attr">kind:</span> Pod
 <span class="hljs-attr">metadata:</span>
@@ -2650,6 +2676,25 @@
 <h2 id="pod-security-policies&#xFF08;psp&#xFF09;">Pod Security Policies&#xFF08;PSP&#xFF09;</h2>
 <p>Pod Security Policies&#xFF08;PSP&#xFF09;&#x662F;&#x96C6;&#x7FA4;&#x7EA7;&#x7684; Pod &#x5B89;&#x5168;&#x7B56;&#x7565;&#xFF0C;&#x81EA;&#x52A8;&#x4E3A;&#x96C6;&#x7FA4;&#x5185;&#x7684; Pod &#x548C; Volume &#x8BBE;&#x7F6E; Security Context&#x3002;</p>
 <p>&#x4F7F;&#x7528; PSP &#x9700;&#x8981; API Server &#x5F00;&#x542F; <code>extensions/v1beta1/podsecuritypolicy</code>&#xFF0C;&#x5E76;&#x4E14;&#x914D;&#x7F6E; <code>PodSecurityPolicy</code> admission &#x63A7;&#x5236;&#x5668;&#x3002;</p>
+<h3 id="api-&#x7248;&#x672C;&#x5BF9;&#x7167;&#x8868;">API &#x7248;&#x672C;&#x5BF9;&#x7167;&#x8868;</h3>
+<table>
+<thead>
+<tr>
+<th>Kubernetes &#x7248;&#x672C;</th>
+<th>Extension &#x7248;&#x672C;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1.5-v1.15</td>
+<td>extensions/v1beta1</td>
+</tr>
+<tr>
+<td>v1.10+</td>
+<td>policy/v1beta1</td>
+</tr>
+</tbody>
+</table>
 <h3 id="&#x652F;&#x6301;&#x7684;&#x63A7;&#x5236;&#x9879;">&#x652F;&#x6301;&#x7684;&#x63A7;&#x5236;&#x9879;</h3>
 <table>
 <thead>
@@ -2770,7 +2815,7 @@
 <span class="hljs-attr">    rule:</span> RunAsAny
 <span class="hljs-attr">  volumes:</span>
 <span class="hljs-bullet">    -</span> flexVolume
-<span class="hljs-attr">  allowedFlexVolumes:</span> 
+<span class="hljs-attr">  allowedFlexVolumes:</span>
 <span class="hljs-attr">    - driver:</span> example/lvm
 <span class="hljs-attr">    - driver:</span> example/cifs
 </code></pre>
@@ -2828,7 +2873,7 @@ drwxr-xr-x. root root unconfined_u:object_r:svirt_sandbox_file_t:s0:c2,c3 kubern
 <li><a href="https://kubernetes.io/docs/concepts/policy/pod-security-policy/" target="_blank">Kubernetes Pod Security Policies</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -2872,7 +2917,7 @@ drwxr-xr-x. root root unconfined_u:object_r:svirt_sandbox_file_t:s0:c2,c3 kubern
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"SecurityContext","level":"2.5.19","depth":2,"next":{"title":"Service","level":"2.5.20","depth":2,"path":"concepts/service.md","ref":"concepts/service.md","articles":[]},"previous":{"title":"Secret","level":"2.5.18","depth":2,"path":"concepts/secret.md","ref":"concepts/secret.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"concepts/security-context.md","mtime":"2019-06-16T02:00:53.416Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"SecurityContext","level":"2.5.19","depth":2,"next":{"title":"Service","level":"2.5.20","depth":2,"path":"concepts/service.md","ref":"concepts/service.md","articles":[]},"previous":{"title":"Secret","level":"2.5.18","depth":2,"path":"concepts/secret.md","ref":"concepts/secret.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"concepts/security-context.md","mtime":"2019-09-21T13:09:10.034Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

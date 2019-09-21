@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../practice/resource-management.html">
+            
+                <a href="../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../practice/ha.html">
             
                 <a href="../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../practice/certificate-rotation.html">
+            
+                <a href="../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2626,8 +2652,8 @@
 </ol>
 </blockquote>
 <h2 id="&#x4E0B;&#x8F7D;">&#x4E0B;&#x8F7D;</h2>
-<p>&#x53EF;&#x4EE5;&#x4ECE; <a href="%3Chttps:/github.com/kubernetes/kubernetes/releases">&lt;https://github.com/kubernetes/kubernetes/releases</a> &#x4E0B;&#x8F7D;&#x5DF2;&#x53D1;&#x5E03;&#x7684;&#x7528;&#x4E8E; Windows &#x670D;&#x52A1;&#x5668;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#xFF0C;&#x5982;</p>
-<pre><code class="lang-sh">wget https://dl.k8s.io/v1.11.2/kubernetes-node-windows-amd64.tar.gz
+<p>&#x53EF;&#x4EE5;&#x4ECE; <a href="https://github.com/kubernetes/kubernetes/releases" target="_blank">https://github.com/kubernetes/kubernetes/releases</a> &#x4E0B;&#x8F7D;&#x5DF2;&#x53D1;&#x5E03;&#x7684;&#x7528;&#x4E8E; Windows &#x670D;&#x52A1;&#x5668;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#xFF0C;&#x5982;</p>
+<pre><code class="lang-sh">wget https://dl.k8s.io/v1.15.0/kubernetes-node-windows-amd64.tar.gz
 </code></pre>
 <p>&#x6216;&#x8005;&#x4ECE; Kubernetes &#x6E90;&#x7801;&#x7F16;&#x8BD1;</p>
 <pre><code class="lang-sh">go get -u k8s.io/kubernetes
@@ -2645,7 +2671,6 @@ KUBE_BUILD_PLATFORMS=windows/amd64 make WHAT=cmd/kube-proxy
 <p>Windows Server &#x4E2D;&#x652F;&#x6301;&#x4EE5;&#x4E0B;&#x51E0;&#x79CD;&#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#xFF08;&#x6CE8;&#x610F; Windows &#x8282;&#x70B9;&#x4E0A;&#x7684;&#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#x8981;&#x4E0E; Linux &#x8282;&#x70B9;&#x76F8;&#x540C;&#xFF09;</p>
 <ol>
 <li><a href="https://github.com/Microsoft/SDN/blob/master/Kubernetes/windows/cni/wincni.exe" target="_blank">wincni</a> &#x7B49; L3 &#x8DEF;&#x7531;&#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#xFF0C;&#x8DEF;&#x7531;&#x914D;&#x7F6E;&#x5728; TOR &#x4EA4;&#x6362;&#x673A;&#x3001;&#x8DEF;&#x7531;&#x5668;&#x6216;&#x8005;&#x4E91;&#x670D;&#x52A1;&#x4E2D;</li>
-<li><a href="https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/configuring-host-gateway-mode" target="_blank">Host Gateway</a> &#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#xFF0C;&#x8DDF;&#x4E0A;&#x9762;&#x7C7B;&#x4F3C;&#x4F46;&#x5C06; IP &#x8DEF;&#x7531;&#x914D;&#x7F6E;&#x5230;&#x6BCF;&#x53F0;&#x4E3B;&#x673A;&#x4E0A;&#x9762;</li>
 <li><a href="https://github.com/Azure/azure-container-networking/blob/master/docs/cni.md" target="_blank">Azure VNET CNI Plugin</a></li>
 <li><a href="https://github.com/openvswitch/ovn-kubernetes/" target="_blank">Open vSwitch (OVS) &amp; Open Virtual Network (OVN) with Overlay</a></li>
 <li>Flannel v0.10.0+</li>
@@ -2653,6 +2678,7 @@ KUBE_BUILD_PLATFORMS=windows/amd64 make WHAT=cmd/kube-proxy
 <li><a href="https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-bridge" target="_blank">win-bridge</a></li>
 <li><a href="https://github.com/containernetworking/plugins/tree/master/plugins/main/windows/win-overlay" target="_blank">win-overlay</a></li>
 </ol>
+<p>&#x66F4;&#x591A;&#x7F51;&#x7EDC;&#x62D3;&#x6251;&#x6A21;&#x5F0F;&#x8BF7;&#x53C2;&#x8003; <a href="https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/network-drivers-topologies" target="_blank">Windows container network drivers</a>&#x3002;</p>
 <h3 id="l3-&#x8DEF;&#x7531;&#x62D3;&#x6251;">L3 &#x8DEF;&#x7531;&#x62D3;&#x6251;</h3>
 <p><img src="images/upstreamrouting.png" alt=""></p>
 <p>wincni &#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#x914D;&#x7F6E;&#x793A;&#x4F8B;</p>
@@ -2995,10 +3021,13 @@ Install-Package -Name Docker -ProviderName DockerMsftProvider -Update -Force
 </code></pre>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
-<li><a href="https://kubernetes.io/docs/getting-started-guides/windows/" target="_blank">Using Windows Server Containers in Kubernetes</a></li>
+<li><a href="https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-nodes/" target="_blank">Guide for adding Windows Nodes in Kubernetes</a></li>
+<li><a href="https://kubernetes.io/docs/setup/production-environment/windows/intro-windows-in-kubernetes/" target="_blank">Intro to Windows support in Kubernetes</a></li>
+<li><a href="https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-containers/" target="_blank">Guide for scheduling Windows containers in Kubernetes</a></li>
+<li><a href="https://github.com/PatrickLang/KubernetesForWindowsTutorial" target="_blank">Kubernetes for Windows Walkthroughs</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -3042,7 +3071,7 @@ Install-Package -Name Docker -ProviderName DockerMsftProvider -Update -Force
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Windows","level":"3.7.5","depth":2,"next":{"title":"LinuxKit","level":"3.7.6","depth":2,"path":"deploy/k8s-linuxkit.md","ref":"deploy/k8s-linuxkit.md","articles":[]},"previous":{"title":"Azure","level":"3.7.4","depth":2,"path":"deploy/azure.md","ref":"deploy/azure.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/windows.md","mtime":"2019-06-16T02:00:53.428Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Windows","level":"3.7.5","depth":2,"next":{"title":"LinuxKit","level":"3.7.6","depth":2,"path":"deploy/k8s-linuxkit.md","ref":"deploy/k8s-linuxkit.md","articles":[]},"previous":{"title":"Azure","level":"3.7.4","depth":2,"path":"deploy/azure.md","ref":"deploy/azure.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/windows.md","mtime":"2019-09-21T13:09:10.078Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

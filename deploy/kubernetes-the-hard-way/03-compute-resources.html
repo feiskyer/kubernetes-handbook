@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="6.1.1" data-path="../../practice/ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="../../practice/resource-management.html">
+            
+                <a href="../../practice/resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../../practice/ha.html">
             
                 <a href="../../practice/ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="../../practice/debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="../../practice/debugging.html">
             
                 <a href="../../practice/debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="../../practice/portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="../../practice/portmap.html">
             
                 <a href="../../practice/portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="../../practice/portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="../../practice/portforward.html">
             
                 <a href="../../practice/portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="../../practice/gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="../../practice/gpu.html">
             
                 <a href="../../practice/gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="../../practice/hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="../../practice/hugepage.html">
             
                 <a href="../../practice/hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="../../practice/security.html">
+        <li class="chapter " data-level="6.1.8" data-path="../../practice/security.html">
             
                 <a href="../../practice/security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="../../practice/audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="../../practice/audit.html">
             
                 <a href="../../practice/audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="../../practice/backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="../../practice/backup.html">
             
                 <a href="../../practice/backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="../../practice/big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="../../practice/certificate-rotation.html">
+            
+                <a href="../../practice/certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="../../practice/big-cluster.html">
             
                 <a href="../../practice/big-cluster.html">
             
@@ -2619,7 +2645,7 @@
 <h3 id="&#x865A;&#x62DF;&#x79C1;&#x6709;&#x7F51;&#x7EDC;&#xFF08;vpc&#xFF09;">&#x865A;&#x62DF;&#x79C1;&#x6709;&#x7F51;&#x7EDC;&#xFF08;VPC&#xFF09;</h3>
 <p>&#x672C;&#x8282;&#x5C06;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x4E13;&#x7528;&#x7684; <a href="https://cloud.google.com/compute/docs/networks-and-firewalls#networks" target="_blank">Virtual Private Cloud</a> (VPC) &#x7F51;&#x7EDC;&#x6765;&#x642D;&#x5EFA;&#x6211;&#x4EEC;&#x7684; Kubernetes &#x96C6;&#x7FA4;&#x3002;</p>
 <p>&#x9996;&#x5148;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x540D;&#x4E3A; kubernetes-the-hard-way &#x7684; VPC &#x7F51;&#x7EDC;&#xFF1A;</p>
-<pre><code class="lang-sh">gcloud compute networks create kubernetes-the-hard-way --mode custom
+<pre><code class="lang-sh">gcloud compute networks create kubernetes-the-hard-way --subnet-mode custom
 </code></pre>
 <p>&#x4E3A;&#x4E86;&#x7ED9; Kubernetes &#x96C6;&#x7FA4;&#x7684;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x5206;&#x914D;&#x79C1;&#x6709; IP &#x5730;&#x5740;&#xFF0C;&#x9700;&#x8981;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x542B;&#x6709;&#x8DB3;&#x591F;&#x5927; IP &#x5730;&#x5740;&#x6C60;&#x7684;&#x5B50;&#x7F51;&#x3002; &#x5728; <code>kubernetes-the-hard-way</code> VPC &#x7F51;&#x7EDC;&#x4E2D;&#x521B;&#x5EFA; <code>kubernetes</code> &#x5B50;&#x7F51;&#xFF1A;</p>
 <pre><code class="lang-sh">gcloud compute networks subnets create kubernetes \
@@ -2765,7 +2791,7 @@ Last login: Sun May 13 14:34:27 2018 from XX.XXX.XXX.XX
 </code></pre>
 <p>&#x4E0B;&#x4E00;&#x6B65;&#xFF1A;<a href="04-certificate-authority.html">&#x914D;&#x7F6E; CA &#x548C;&#x521B;&#x5EFA; TLS &#x8BC1;&#x4E66;</a></p>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -2809,7 +2835,7 @@ Last login: Sun May 13 14:34:27 2018 from XX.XXX.XXX.XX
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"创建计算资源","level":"3.9.3","depth":2,"next":{"title":"配置创建证书","level":"3.9.4","depth":2,"path":"deploy/kubernetes-the-hard-way/04-certificate-authority.md","ref":"deploy/kubernetes-the-hard-way/04-certificate-authority.md","articles":[]},"previous":{"title":"安装必要工具","level":"3.9.2","depth":2,"path":"deploy/kubernetes-the-hard-way/02-client-tools.md","ref":"deploy/kubernetes-the-hard-way/02-client-tools.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/kubernetes-the-hard-way/03-compute-resources.md","mtime":"2019-06-16T02:00:53.428Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"创建计算资源","level":"3.9.3","depth":2,"next":{"title":"配置创建证书","level":"3.9.4","depth":2,"path":"deploy/kubernetes-the-hard-way/04-certificate-authority.md","ref":"deploy/kubernetes-the-hard-way/04-certificate-authority.md","articles":[]},"previous":{"title":"安装必要工具","level":"3.9.2","depth":2,"path":"deploy/kubernetes-the-hard-way/02-client-tools.md","ref":"deploy/kubernetes-the-hard-way/02-client-tools.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/kubernetes-the-hard-way/03-compute-resources.md","mtime":"2019-09-21T13:09:10.070Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

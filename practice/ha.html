@@ -68,7 +68,7 @@
     <link rel="next" href="debugging.html" />
     
     
-    <link rel="prev" href="./" />
+    <link rel="prev" href="resource-management.html" />
     
 
     </head>
@@ -2091,7 +2091,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="6.1.1" data-path="ha.html">
+        <li class="chapter " data-level="6.1.1" data-path="resource-management.html">
+            
+                <a href="resource-management.html">
+            
+                    
+                    资源控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="6.1.2" data-path="ha.html">
             
                 <a href="ha.html">
             
@@ -2104,7 +2117,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.2" data-path="debugging.html">
+        <li class="chapter " data-level="6.1.3" data-path="debugging.html">
             
                 <a href="debugging.html">
             
@@ -2117,7 +2130,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.3" data-path="portmap.html">
+        <li class="chapter " data-level="6.1.4" data-path="portmap.html">
             
                 <a href="portmap.html">
             
@@ -2130,7 +2143,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.4" data-path="portforward.html">
+        <li class="chapter " data-level="6.1.5" data-path="portforward.html">
             
                 <a href="portforward.html">
             
@@ -2143,7 +2156,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.5" data-path="gpu.html">
+        <li class="chapter " data-level="6.1.6" data-path="gpu.html">
             
                 <a href="gpu.html">
             
@@ -2156,7 +2169,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.6" data-path="hugepage.html">
+        <li class="chapter " data-level="6.1.7" data-path="hugepage.html">
             
                 <a href="hugepage.html">
             
@@ -2169,7 +2182,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.7" data-path="security.html">
+        <li class="chapter " data-level="6.1.8" data-path="security.html">
             
                 <a href="security.html">
             
@@ -2182,7 +2195,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.8" data-path="audit.html">
+        <li class="chapter " data-level="6.1.9" data-path="audit.html">
             
                 <a href="audit.html">
             
@@ -2195,7 +2208,7 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.9" data-path="backup.html">
+        <li class="chapter " data-level="6.1.10" data-path="backup.html">
             
                 <a href="backup.html">
             
@@ -2208,7 +2221,20 @@
             
         </li>
     
-        <li class="chapter " data-level="6.1.10" data-path="big-cluster.html">
+        <li class="chapter " data-level="6.1.11" data-path="certificate-rotation.html">
+            
+                <a href="certificate-rotation.html">
+            
+                    
+                    证书轮换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.12" data-path="big-cluster.html">
             
                 <a href="big-cluster.html">
             
@@ -2832,7 +2858,7 @@ systemctl start etcd
 </code></pre>
 </blockquote>
 <h2 id="kube-apiserver">kube-apiserver</h2>
-<p>&#x628A; <a href="https://kubernetes.io/docs/admin/high-availability/kube-apiserver.yaml" target="_blank">kube-apiserver.yaml</a> &#x653E;&#x5230;&#x6BCF;&#x53F0; Master &#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/manifests/</code>&#xFF0C;&#x5E76;&#x628A;&#x76F8;&#x5173;&#x7684;&#x914D;&#x7F6E;&#x653E;&#x5230; <code>/srv/kubernetes/</code>&#xFF0C;&#x5373;&#x53EF;&#x7531; kubelet &#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x5E76;&#x542F;&#x52A8; apiserver:</p>
+<p>&#x628A; <code>kube-apiserver.yaml</code> &#x653E;&#x5230;&#x6BCF;&#x53F0; Master &#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/manifests/</code>&#xFF0C;&#x5E76;&#x628A;&#x76F8;&#x5173;&#x7684;&#x914D;&#x7F6E;&#x653E;&#x5230; <code>/srv/kubernetes/</code>&#xFF0C;&#x5373;&#x53EF;&#x7531; kubelet &#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x5E76;&#x542F;&#x52A8; apiserver:</p>
 <ul>
 <li>basic_auth.csv - basic auth user and password</li>
 <li>ca.crt - Certificate Authority cert</li>
@@ -2954,7 +2980,7 @@ kubeadm alpha phase mark-master --config kubeadm-config.yaml
 <p>kube-controller manager &#x548C; kube-scheduler &#x9700;&#x8981;&#x4FDD;&#x8BC1;&#x4EFB;&#x4F55;&#x65F6;&#x523B;&#x90FD;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5B9E;&#x4F8B;&#x8FD0;&#x884C;&#xFF0C;&#x9700;&#x8981;&#x4E00;&#x4E2A;&#x9009;&#x4E3B;&#x7684;&#x8FC7;&#x7A0B;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x542F;&#x52A8;&#x65F6;&#x8981;&#x8BBE;&#x7F6E; <code>--leader-elect=true</code>&#xFF0C;&#x6BD4;&#x5982;</p>
 <pre><code>kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
-</code></pre><p>&#x628A;  <a href="https://kubernetes.io/docs/admin/high-availability/kube-scheduler.yaml" target="_blank">kube-scheduler.yaml</a> &#x548C; <a href="https://kubernetes.io/docs/admin/high-availability/kube-controller-manager.yaml" target="_blank">kube-controller-manager.yaml</a>  &#x653E;&#x5230;&#x6BCF;&#x53F0; master &#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/manifests/</code> &#x5373;&#x53EF;&#x3002;</p>
+</code></pre><p>&#x628A;  <code>kube-scheduler.yaml</code> &#x548C; <code>kube-controller-manager.yaml</code> &#x653E;&#x5230;&#x6BCF;&#x53F0; master &#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/manifests/</code> &#x5373;&#x53EF;&#x3002;</p>
 <h2 id="kube-dns">kube-dns</h2>
 <p>kube-dns &#x53EF;&#x4EE5;&#x901A;&#x8FC7; Deployment &#x7684;&#x65B9;&#x5F0F;&#x6765;&#x90E8;&#x7F72;&#xFF0C;&#x9ED8;&#x8BA4; kubeadm &#x4F1A;&#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x3002;&#x4F46;&#x5728;&#x5927;&#x89C4;&#x6A21;&#x96C6;&#x7FA4;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9700;&#x8981;&#x653E;&#x5BBD;&#x8D44;&#x6E90;&#x9650;&#x5236;&#xFF0C;&#x6BD4;&#x5982;</p>
 <pre><code>dns_replicas: 6
@@ -2985,6 +3011,7 @@ sudo systemctl restart kubelet
 </ul>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
+<li><a href="https://kubernetes.io/docs/tasks/administer-cluster/highly-available-master/" target="_blank">Set up High-Availability Kubernetes Masters</a></li>
 <li><a href="https://kubernetes.io/docs/setup/independent/high-availability/" target="_blank">Creating Highly Available Clusters with kubeadm</a></li>
 <li><a href="http://kubecloud.io/setup-ha-k8s-kops/" target="_blank">http://kubecloud.io/setup-ha-k8s-kops/</a></li>
 <li><a href="https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md" target="_blank">https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md</a></li>
@@ -2992,7 +3019,7 @@ sudo systemctl restart kubelet
 <li><a href="https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3" target="_blank">Scaling Kubernetes to Support 50000 Services</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-06-16 02:00:53
+2019-09-21 13:09:10
 </span></footer>
                                 
                                 </section>
@@ -3020,7 +3047,7 @@ sudo systemctl restart kubelet
 
             
                 
-                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 实践案例">
+                <a href="resource-management.html" class="navigation navigation-prev " aria-label="Previous page: 资源控制">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
@@ -3036,7 +3063,7 @@ sudo systemctl restart kubelet
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"高可用","level":"6.1.1","depth":2,"next":{"title":"调试","level":"6.1.2","depth":2,"path":"practice/debugging.md","ref":"practice/debugging.md","articles":[]},"previous":{"title":"实践案例","level":"6.1","depth":1,"path":"practice/index.md","ref":"practice/index.md","articles":[{"title":"高可用","level":"6.1.1","depth":2,"path":"practice/ha.md","ref":"practice/ha.md","articles":[]},{"title":"调试","level":"6.1.2","depth":2,"path":"practice/debugging.md","ref":"practice/debugging.md","articles":[]},{"title":"端口映射","level":"6.1.3","depth":2,"path":"practice/portmap.md","ref":"practice/portmap.md","articles":[]},{"title":"端口转发","level":"6.1.4","depth":2,"path":"practice/portforward.md","ref":"practice/portforward.md","articles":[]},{"title":"GPU","level":"6.1.5","depth":2,"path":"practice/gpu.md","ref":"practice/gpu.md","articles":[]},{"title":"HugePage","level":"6.1.6","depth":2,"path":"practice/hugepage.md","ref":"practice/hugepage.md","articles":[]},{"title":"安全","level":"6.1.7","depth":2,"path":"practice/security.md","ref":"practice/security.md","articles":[]},{"title":"审计","level":"6.1.8","depth":2,"path":"practice/audit.md","ref":"practice/audit.md","articles":[]},{"title":"备份恢复","level":"6.1.9","depth":2,"path":"practice/backup.md","ref":"practice/backup.md","articles":[]},{"title":"大规模集群","level":"6.1.10","depth":2,"path":"practice/big-cluster.md","ref":"practice/big-cluster.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/ha.md","mtime":"2019-06-16T02:00:53.532Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-16T02:02:37.757Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"高可用","level":"6.1.2","depth":2,"next":{"title":"调试","level":"6.1.3","depth":2,"path":"practice/debugging.md","ref":"practice/debugging.md","articles":[]},"previous":{"title":"资源控制","level":"6.1.1","depth":2,"path":"practice/resource-management.md","ref":"practice/resource-management.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/ha.md","mtime":"2019-09-21T13:09:10.442Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-21T13:10:50.355Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
