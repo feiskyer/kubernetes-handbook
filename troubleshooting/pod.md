@@ -252,6 +252,27 @@ Nginx 启动失败，错误消息是 `nginx: [emerg] socket() [::]:8000 failed (
 - 第一种方法，服务器开启 IPv6；
 - 或者，第二种方法，删除或者注释掉 `/etc/nginx/conf.d/default.conf` 文件中的 ` listen       [::]:80 default_server;`。
 
+## Namespace 一直处于 terminating 状态
+
+Namespace 一直处于 terminating 状态，一般有两种原因：
+
+- Namespace 中还有资源正在删除中
+- Namespace 的 Finalizer 未正常清理
+
+对第一个问题，可以执行下面的命令来查询所有的资源
+
+```sh
+kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found -n $NAMESPACE
+```
+
+而第二个问题则需要手动清理 Namespace 的 Finalizer 列表：
+
+```sh
+kubectl get namespaces $NAMESPACE -o json | jq '.spec.finalizers=[]' > /tmp/ns.json
+kubectl proxy &
+curl -k -H "Content-Type: application/json" -X PUT --data-binary @/tmp/ns.json http://127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
+```
+
 ### 参考文档
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)

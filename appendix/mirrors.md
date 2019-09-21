@@ -7,7 +7,7 @@
 示例
 
 ```sh
-docker pull rdockerhub.azk8s.cn/library/nginx
+docker pull dockerhub.azk8s.cn/library/nginx
 ```
 
 ## GCR（Google Container Registry）镜像

@@ -73,9 +73,10 @@ kubectl -n kube-system logs $PODNAME -c kubedns
 
 #### Kubelet 日志
 
-Kubelet 通常以 systemd 管理。查看 Kubelet 日志需要首先 SSH 登录到 Node 上。
+Kubelet 通常以 systemd 管理。查看 Kubelet 日志需要首先 SSH 登录到 Node 上，推荐使用 [kubectl-enter](https://github.com/kvaps/kubectl-enter) 插件而不是为每个节点分配公网 IP 地址。比如：
 
 ```sh
+kubectl enter <node-name>
 journalctl -l -u kubelet
 ```
 
