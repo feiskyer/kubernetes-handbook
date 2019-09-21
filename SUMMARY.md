@@ -1,6 +1,5 @@
 # Summary
 
-- Introduction
 - Concepts
 - Deployments
 - Devops
