@@ -365,6 +365,11 @@ sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:r
 $ sudo sysctl fs.inotify.max_user_watches=524288
 ```
 
+除此之外，社区也存在 [no space left on /sys/fs/cgroup](https://github.com/kubernetes/kubernetes/issues/70324) 以及 [Kubelet CPU/Memory Usage linearly increases using CronJob](https://github.com/kubernetes/kubernetes/issues/64137) 的问题。临时解决方法有两种：
+
+* 参考 [这里的 Gist](https://gist.github.com/reaperes/34ed7b07344ccc61b9570c46a3b4e564) 通过定时任务定期清理 systemd cgroup
+* 或者，参考 [这里](https://github.com/derekrprice/k8s-hacks/blob/master/systemd-cgroup-gc.yaml) 通过 Daemonset 定期清理 systemd cgroup
+
 ## 大量 ConfigMap/Secret 导致Kubernetes缓慢
 
 这是从 Kubernetes 1.12 开始才有的问题，Kubernetes issue: [#74412](https://github.com/kubernetes/kubernetes/issues/74412)。
