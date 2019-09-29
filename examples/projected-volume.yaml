@@ -17,6 +17,7 @@ data:
   configmap-data: configmap-value-1
 
 ---
+apiVersion: v1
 kind: Pod
 metadata:
   name: test
@@ -51,5 +52,4 @@ spec:
       - secret:
           name: mysecret
       - configMap:
-          name: configmap-value-1
-
+          name: example-config
