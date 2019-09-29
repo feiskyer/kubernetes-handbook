@@ -15,7 +15,7 @@
 - [核心原理](architecture/index.md)
 - [架构原理](architecture/architecture.md)
 - [设计理念](architecture/concepts.md)
-- [核心组件](components/index.md)
+- [核心组件](components/components.md)
   - [etcd](components/etcd.md)
   - [kube-apiserver](components/apiserver.md)
   - [kube-scheduler](components/scheduler.md)
