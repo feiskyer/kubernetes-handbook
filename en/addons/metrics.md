@@ -47,14 +47,14 @@ You can access [Metrics API](https://github.com/kubernetes/community/blob/master
 - `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/nodes`
 - `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/nodes/<node-name>`
 - `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/pods`
-- `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/namespace/<namespace-name>/pods/<pod-name>`
+- `http://127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/namespaces/<namespace-name>/pods/<pod-name>`
 
 Or it can be accessed by kubectl raw:
 
 - `kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes`
 - `kubectl get --raw /apis/metrics.k8s.io/v1beta1/pods`
 - `kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes/<node-name>`
-- `kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespace/<namespace-name>/pods/<pod-name>`
+- `kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespaces/<namespace-name>/pods/<pod-name>`
 
 ## Troubleshooting
 
