@@ -16,6 +16,14 @@ brew install kubernetes-helm
 helm init
 ```
 
+对于 Kubernetes v1.16.0 以上的版本，有可能会碰到 `Error: error installing: the server could not find the requested resource` 的错误。这是由于 `extensions/v1beta1` 已经被 `apps/v1` 替代，解决方法是
+
+```sh
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+helm init --service-account tiller --override spec.selector.matchLabels.'name'='tiller',spec.selector.matchLabels.'app'='helm' --output yaml | sed 's@apiVersion: extensions/v1beta1@apiVersion: apps/v1@' | kubectl apply -f -
+```
+
 更新 charts 列表
 
 ```sh

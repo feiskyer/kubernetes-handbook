@@ -25,6 +25,7 @@
 - [Kubernetes Learning Resources](https://docs.google.com/spreadsheets/d/10NltoF_6y3mBwUzQ4bcQLQfCE1BWSgUDcJXy-Qp2JEU/edit#gid=0)
 - [Kubernetes Best Practices](https://github.com/Azure/k8s-best-practices)
 - [The Azure Kubernetes Workshop](https://aksworkshop.io/)
+- [70 Best Kubernetes Tutorials](https://www.aquasec.com/wiki/display/containers/70+Best+Kubernetes+Tutorials)
 
 ## 电子书籍
 

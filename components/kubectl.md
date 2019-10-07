@@ -69,6 +69,14 @@ MacOS zsh
 source <(kubectl completion zsh)
 ```
 
+##  自定义输出列
+
+比如，查询所有 Pod 的资源请求和限制：
+
+```sh
+kubectl get pods --all-namespaces -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,"CPU(requests)":.spec.containers[*].resources.requests.cpu,"CPU(limits)":.spec.containers[*].resources.limits.cpu,"MEMORY(requests)":.spec.containers[*].resources.requests.memory,"MEMORY(limits)":.spec.containers[*].resources.limits.memory
+```
+
 ## 日志查看
 
 `kubectl logs` 用于显示 pod 运行中，容器内程序输出到标准输出的内容。跟 docker 的 logs 命令类似。

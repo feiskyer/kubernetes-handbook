@@ -10,7 +10,7 @@ Kubernetes 社区由三部分组成
 - [Special Interest Groups (SIG)](https://github.com/kubernetes/community/blob/master/sig-list.md)
 - [Working Groups (WG)](https://github.com/kubernetes/community/blob/master/sig-list.md#master-working-group-list)
 
-![](images/community.png)
+![SIG-diagram.png](assets/SIG-diagram.png)
 
 ## 提交 Pull Request 到主分支
 
