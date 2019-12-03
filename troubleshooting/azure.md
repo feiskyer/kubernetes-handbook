@@ -4,40 +4,31 @@
 
 使用 Azure Cloud Provider 后，Kubernetes 会为 LoadBalancer 类型的 Service 创建 Azure 负载均衡器以及相关的 公网 IP、BackendPool 和 Network Security Group (NSG)。注意目前 Azure Cloud Provider 仅支持 `Basic` SKU 的负载均衡，并将在 v1.11 中支持 Standard SKU。`Basic` 与 `Standard` SKU 负载均衡相比有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview)：
 
-| Load Balancer                     | Basic                                    | Standard                                 |
-| --------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| Back-end pool size                | up to 100                                | up to 1,000                              |
-| Back-end pool boundary            | Availability Set                         | virtual network, region                  |
-| Back-end pool design              | VMs in Availability Set, virtual machine scale set in Availability Set | Any VM instance in the virtual network   |
-| HA Ports                          | Not supported                            | Available                                |
-| Diagnostics                       | Limited, public only                     | Available                                |
-| VIP Availability                  | Not supported                            | Available                                |
-| Fast IP Mobility                  | Not supported                            | Available                                |
-| Availability Zones scenarios      | Zonal only                               | Zonal, Zone-redundant, Cross-zone load-balancing |
-| Outbound SNAT algorithm           | On-demand                                | Preallocated                             |
-| Outbound SNAT front-end selection | Not configurable, multiple candidates    | Optional configuration to reduce candidates |
-| Network Security Group            | Optional on NIC/subnet                   | Required                                 |
+| Load Balancer                     | Basic                                                                  | Standard                                         |
+| --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------ |
+| Back-end pool size                | up to 100                                                              | up to 1,000                                      |
+| Back-end pool boundary            | Availability Set                                                       | virtual network, region                          |
+| Back-end pool design              | VMs in Availability Set, virtual machine scale set in Availability Set | Any VM instance in the virtual network           |
+| HA Ports                          | Not supported                                                          | Available                                        |
+| Diagnostics                       | Limited, public only                                                   | Available                                        |
+| VIP Availability                  | Not supported                                                          | Available                                        |
+| Fast IP Mobility                  | Not supported                                                          | Available                                        |
+| Availability Zones scenarios      | Zonal only                                                             | Zonal, Zone-redundant, Cross-zone load-balancing |
+| Outbound SNAT algorithm           | On-demand                                                              | Preallocated                                     |
+| Outbound SNAT front-end selection | Not configurable, multiple candidates                                  | Optional configuration to reduce candidates      |
+| Network Security Group            | Optional on NIC/subnet                                                 | Required                                         |
 
 同样，对应的 Public IP 也是 Basic SKU，与 Standard SKU 相比也有一定的[局限](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview#sku-service-limits-and-abilities)：
 
-| Public IP                    | Basic           | Standard                                 |
-| ---------------------------- | --------------- | ---------------------------------------- |
+| Public IP                    | Basic           | Standard                                   |
+| ---------------------------- | --------------- | ------------------------------------------ |
 | Availability Zones scenarios | Zonal only      | Zone-redundant (default), zonal (optional) |
-| Fast IP Mobility             | Not supported   | Available                                |
-| VIP Availability             | Not supported   | Available                                |
-| Counters                     | Not supported   | Available                                |
-| Network Security Group       | Optional on NIC | Required                                 |
+| Fast IP Mobility             | Not supported   | Available                                  |
+| VIP Availability             | Not supported   | Available                                  |
+| Counters                     | Not supported   | Available                                  |
+| Network Security Group       | Optional on NIC | Required                                   |
 
-在创建 Service 时，可以通过 `metadata.annotation` 来自定义 Azure 负载均衡的行为，可选的选项包括
-
-| Annotation                               | 功能                                       |
-| ---------------------------------------- | ---------------------------------------- |
-| service.beta.kubernetes.io/azure-load-balancer-internal | 如果设置，则创建内网负载均衡                           |
-| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | 设置内网负载均衡 IP 使用的子网                        |
-| service.beta.kubernetes.io/azure-load-balancer-mode | 设置如何为负载均衡选择所属的 AvailabilitySet（之所以有该选项是因为在 Azure 的每个 AvailabilitySet 中只能创建最多一个外网负载均衡和一个内网负载均衡）。可选项为：（1）不设置或者设置为空，使用 `/etc/kubernetes/azure.json` 中设置的 `primaryAvailabilitySet`；（2）设置为 `auto`，选择负载均衡规则最少的 AvailabilitySet；（3）设置为`as1,as2`，指定 AvailabilitySet 列表 |
-| service.beta.kubernetes.io/azure-dns-label-name | 设置后为公网 IP 创建 外网 DNS                      |
-| service.beta.kubernetes.io/azure-shared-securityrule | 如果设置，则为多个 Service 共享相同的 NSG 规则。注意该选项需要 [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
-| service.beta.kubernetes.io/azure-load-balancer-resource-group | 当为 Service 指定公网 IP 并且该公网 IP 与 Kubernetes 集群不在同一个 Resource Group 时，需要使用该 Annotation 指定公网 IP 所在的 Resource Group |
+在创建 Service 时，可以通过 `metadata.annotation` 来自定义 Azure 负载均衡的行为，可选的 Annotation 列表请参考 [Cloud Provider Azure 文档](https://github.com/kubernetes-sigs/cloud-provider-azure/tree/master/docs/services)。
 
 在 Kubernetes 中，负载均衡的创建逻辑都在 kube-controller-manager 中，因而排查负载均衡相关的问题时，除了查看 Service 自身的状态，如
 
@@ -47,7 +38,7 @@ kubectl describe service <service-name>
 
 还需要查看 kube-controller-manager 是否有异常发生：
 
-```
+```sh
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
@@ -162,7 +153,7 @@ kube-svc-redirect-zjl7x   1/1       Running   1          2d
 
 如果它们不是处于 `Running` 状态或者 Exec/Logs/PortForward 等命令报 `net/http: TLS handshake timeout` 错误，删除 `tunnelfront` Pod，稍等一会就会自动创建新的出来，如：
 
-```
+```sh
 $ kubectl -n kube-system delete po -l component=tunnel
 pod "tunnelfront-7644cd56b7-l5jmc" deleted
 ```
@@ -238,14 +229,23 @@ az ad sp credential reset --name <clientId> --password <clientSecret> --years <n
 
 除此之外，如果你还想收到节点需要重启的通知，可以参考[Dashboard and notifications on AKS for required worker nodes reboots](https://medium.com/@denniszielke/dashboard-and-notifications-on-aks-for-required-worker-nodes-reboots-c883d08e9404) 进行配置。
 
+## AKS Periscope
+
+[AKS Periscope](https://github.com/Azure/aks-periscope) 是一个用于排查 AKS 集群问题的调试工具，开源在 <github.com/Azure/aks-periscope>。
+
+使用方法：
+
+```sh
+az extension add --name aks-preview
+az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+```
+
 ## 参考文档
 
-* [AKS troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting)
-
+- [AKS troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting)
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
 - [Virtual Kubelet - Missing Load Balancer IP addresses for services](https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services)
 - [Troubleshoot Azure Load Balancer](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm)
 - [Troubleshooting CustomScriptExtension (CSE) and acs-engine](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/troubleshooting.md)
 - [Setting up azure firewall for analysing outgoing traffic in AKS](https://medium.com/@denniszielke/setting-up-azure-firewall-for-analysing-outgoing-traffic-in-aks-55759d188039)
 - [Dashboard and notifications on AKS for required worker nodes reboots](https://medium.com/@denniszielke/dashboard-and-notifications-on-aks-for-required-worker-nodes-reboots-c883d08e9404)
-

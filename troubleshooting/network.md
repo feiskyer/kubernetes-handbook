@@ -169,9 +169,9 @@ spec:
 
 ## DNS解析缓慢
 
-由于内核的一个 [BUG](https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts)，连接跟踪模块会发生竞争，导致　DNS　解析缓慢。
+由于内核的一个 [BUG](https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts)，连接跟踪模块会发生竞争，导致　DNS　解析缓慢。社区跟踪 Issue 为 <https://github.com/kubernetes/kubernetes/issues/56903>。
 
-临时[解决方法](https://github.com/kubernetes/kubernetes/issues/56903)：为容器配置 `options single-request-reopen`
+临时[解决方法](https://github.com/kubernetes/kubernetes/issues/56903)：为容器配置 `options single-request-reopen`，避免相同五元组的并发 DNS 请求：
 
 ```yaml
         lifecycle:
@@ -183,6 +183,18 @@ spec:
               - "/bin/echo 'options single-request-reopen' >> /etc/resolv.conf"
 ```
 
+或者为 Pod 配置 dnsConfig：
+
+```yaml
+template:
+  spec:
+    dnsConfig:
+      options:
+        - name: single-request-reopen
+```
+
+> 注意：`single-request-reopen` 选项对 Alpine 无效，请使用 Debian 等其他的基础镜像，或者参考下面的修复方法。
+
 修复方法：升级内核并保证包含以下两个补丁
 
 1. ["netfilter: nf_conntrack: resolve clash for matching conntracks"](http://patchwork.ozlabs.org/patch/937963/) fixes the 1st race (accepted).
@@ -190,10 +202,13 @@ spec:
 
 其他可能的原因和修复方法还有：
 
-* Kube-dns 和 CoreDNS 同时存在时也会有问题，只保留一个即可。
-* kube-dns 或者 CoreDNS 的资源限制太小时会导致 DNS 解析缓慢，这时候需要增大资源限制。
+- Kube-dns 和 CoreDNS 同时存在时也会有问题，只保留一个即可。
+- kube-dns 或者 CoreDNS 的资源限制太小时会导致 DNS 解析缓慢，这时候需要增大资源限制。
+- 配置 DNS 选项 `use-vc`，强制使用 TCP 协议发送 DNS 查询。
+- 在每个节点上运行一个 DNS 缓存服务，然后把所有容器的 DNS nameserver 都指向该缓存。
 
-更多 DNS 配置的方法可以参考 [Customizing DNS Service](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/)。
+> Nodelocal DNS Cache 的部署步骤请参考 <https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns>。
+> 更多 DNS 配置的方法可以参考 [Customizing DNS Service](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/)。
 
 ## Service 无法访问
 
