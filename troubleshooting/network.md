@@ -197,8 +197,10 @@ template:
 
 修复方法：升级内核并保证包含以下两个补丁
 
-1. ["netfilter: nf_conntrack: resolve clash for matching conntracks"](http://patchwork.ozlabs.org/patch/937963/) fixes the 1st race (accepted).
-2. ["netfilter: nf_nat: return the same reply tuple for matching CTs"](http://patchwork.ozlabs.org/patch/952939/) fixes the 2nd race (waiting for a review).
+1. [netfilter: nf_nat: skip nat clash resolution for same-origin entries](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4e35c1cb9460240e983a01745b5f29fe3a4d8e39) (included since kernel v5.0)
+2. [netfilter: nf_conntrack: resolve clash for matching conntracks](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed07d9a021df6da53456663a76999189badc432a) (included since kernel v4.19)
+
+> 对于 Azure 来说，这个问题已经在 [v4.15.0-1030.31/v4.18.0-1006.6](https://bugs.launchpad.net/ubuntu/+source/linux-azure/+bug/1795493) 中修复了（[patch1](https://git.launchpad.net/~canonical-kernel/ubuntu/+source/linux-azure/commit/?id=6f4fe585e573d7edd4122e45f58ca3da5b478265), [patch2](https://git.launchpad.net/~canonical-kernel/ubuntu/+source/linux-azure/commit/?id=4c7917876cf9560492d6bc2732365cbbfecfe623)）。
 
 其他可能的原因和修复方法还有：
 
@@ -207,7 +209,8 @@ template:
 - 配置 DNS 选项 `use-vc`，强制使用 TCP 协议发送 DNS 查询。
 - 在每个节点上运行一个 DNS 缓存服务，然后把所有容器的 DNS nameserver 都指向该缓存。
 
-> Nodelocal DNS Cache 的部署步骤请参考 <https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns>。
+推荐部署 Nodelocal DNS Cache 扩展来解决这个问题，同时也提升 DNS 解析的性能。 Nodelocal DNS Cache 的部署步骤请参考 <https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns>。
+
 > 更多 DNS 配置的方法可以参考 [Customizing DNS Service](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/)。
 
 ## Service 无法访问
