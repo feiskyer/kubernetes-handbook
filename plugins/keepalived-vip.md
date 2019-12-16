@@ -55,14 +55,14 @@ DNS Round Robin (RR) 将对应到 `example.com` 的请求轮循给这 3 个节�
                                         |      ___________________
                                         |     |                   |
                                         |     | VIP: Unassigned   |
-Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.3 |
+Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.4 |
                                         |     | Role: Slave       |
                                         |     |___________________|
                                         |
                                         |      ___________________
                                         |     |                   |
                                         |     | VIP: Unassigned   |
-                                        |-----| Host IP: 10.4.0.3 |
+                                        |-----| Host IP: 10.4.0.5 |
                                               | Role: Slave       |
                                               |___________________|
 ```
