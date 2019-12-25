@@ -2746,48 +2746,15 @@
 </tr>
 </tbody>
 </table>
-<p>&#x5728;&#x521B;&#x5EFA; Service &#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>metadata.annotation</code> &#x6765;&#x81EA;&#x5B9A;&#x4E49; Azure &#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x53EF;&#x9009;&#x7684;&#x9009;&#x9879;&#x5305;&#x62EC;</p>
-<table>
-<thead>
-<tr>
-<th>Annotation</th>
-<th>&#x529F;&#x80FD;</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>service.beta.kubernetes.io/azure-load-balancer-internal</td>
-<td>&#x5982;&#x679C;&#x8BBE;&#x7F6E;&#xFF0C;&#x5219;&#x521B;&#x5EFA;&#x5185;&#x7F51;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</td>
-</tr>
-<tr>
-<td>service.beta.kubernetes.io/azure-load-balancer-internal-subnet</td>
-<td>&#x8BBE;&#x7F6E;&#x5185;&#x7F51;&#x8D1F;&#x8F7D;&#x5747;&#x8861; IP &#x4F7F;&#x7528;&#x7684;&#x5B50;&#x7F51;</td>
-</tr>
-<tr>
-<td>service.beta.kubernetes.io/azure-load-balancer-mode</td>
-<td>&#x8BBE;&#x7F6E;&#x5982;&#x4F55;&#x4E3A;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x9009;&#x62E9;&#x6240;&#x5C5E;&#x7684; AvailabilitySet&#xFF08;&#x4E4B;&#x6240;&#x4EE5;&#x6709;&#x8BE5;&#x9009;&#x9879;&#x662F;&#x56E0;&#x4E3A;&#x5728; Azure &#x7684;&#x6BCF;&#x4E2A; AvailabilitySet &#x4E2D;&#x53EA;&#x80FD;&#x521B;&#x5EFA;&#x6700;&#x591A;&#x4E00;&#x4E2A;&#x5916;&#x7F51;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x548C;&#x4E00;&#x4E2A;&#x5185;&#x7F51;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#xFF09;&#x3002;&#x53EF;&#x9009;&#x9879;&#x4E3A;&#xFF1A;&#xFF08;1&#xFF09;&#x4E0D;&#x8BBE;&#x7F6E;&#x6216;&#x8005;&#x8BBE;&#x7F6E;&#x4E3A;&#x7A7A;&#xFF0C;&#x4F7F;&#x7528; <code>/etc/kubernetes/azure.json</code> &#x4E2D;&#x8BBE;&#x7F6E;&#x7684; <code>primaryAvailabilitySet</code>&#xFF1B;&#xFF08;2&#xFF09;&#x8BBE;&#x7F6E;&#x4E3A; <code>auto</code>&#xFF0C;&#x9009;&#x62E9;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x89C4;&#x5219;&#x6700;&#x5C11;&#x7684; AvailabilitySet&#xFF1B;&#xFF08;3&#xFF09;&#x8BBE;&#x7F6E;&#x4E3A;<code>as1,as2</code>&#xFF0C;&#x6307;&#x5B9A; AvailabilitySet &#x5217;&#x8868;</td>
-</tr>
-<tr>
-<td>service.beta.kubernetes.io/azure-dns-label-name</td>
-<td>&#x8BBE;&#x7F6E;&#x540E;&#x4E3A;&#x516C;&#x7F51; IP &#x521B;&#x5EFA; &#x5916;&#x7F51; DNS</td>
-</tr>
-<tr>
-<td>service.beta.kubernetes.io/azure-shared-securityrule</td>
-<td>&#x5982;&#x679C;&#x8BBE;&#x7F6E;&#xFF0C;&#x5219;&#x4E3A;&#x591A;&#x4E2A; Service &#x5171;&#x4EAB;&#x76F8;&#x540C;&#x7684; NSG &#x89C4;&#x5219;&#x3002;&#x6CE8;&#x610F;&#x8BE5;&#x9009;&#x9879;&#x9700;&#x8981; <a href="https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules" target="_blank">Augmented Security Rules</a></td>
-</tr>
-<tr>
-<td>service.beta.kubernetes.io/azure-load-balancer-resource-group</td>
-<td>&#x5F53;&#x4E3A; Service &#x6307;&#x5B9A;&#x516C;&#x7F51; IP &#x5E76;&#x4E14;&#x8BE5;&#x516C;&#x7F51; IP &#x4E0E; Kubernetes &#x96C6;&#x7FA4;&#x4E0D;&#x5728;&#x540C;&#x4E00;&#x4E2A; Resource Group &#x65F6;&#xFF0C;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x8BE5; Annotation &#x6307;&#x5B9A;&#x516C;&#x7F51; IP &#x6240;&#x5728;&#x7684; Resource Group</td>
-</tr>
-</tbody>
-</table>
+<p>&#x5728;&#x521B;&#x5EFA; Service &#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>metadata.annotation</code> &#x6765;&#x81EA;&#x5B9A;&#x4E49; Azure &#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x53EF;&#x9009;&#x7684; Annotation &#x5217;&#x8868;&#x8BF7;&#x53C2;&#x8003; <a href="https://github.com/kubernetes-sigs/cloud-provider-azure/tree/master/docs/services" target="_blank">Cloud Provider Azure &#x6587;&#x6863;</a>&#x3002;</p>
 <p>&#x5728; Kubernetes &#x4E2D;&#xFF0C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x521B;&#x5EFA;&#x903B;&#x8F91;&#x90FD;&#x5728; kube-controller-manager &#x4E2D;&#xFF0C;&#x56E0;&#x800C;&#x6392;&#x67E5;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x76F8;&#x5173;&#x7684;&#x95EE;&#x9898;&#x65F6;&#xFF0C;&#x9664;&#x4E86;&#x67E5;&#x770B; Service &#x81EA;&#x8EAB;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x5982;</p>
 <pre><code class="lang-sh">kubectl describe service &lt;service-name&gt;
 </code></pre>
 <p>&#x8FD8;&#x9700;&#x8981;&#x67E5;&#x770B; kube-controller-manager &#x662F;&#x5426;&#x6709;&#x5F02;&#x5E38;&#x53D1;&#x751F;&#xFF1A;</p>
-<pre><code>PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath=&apos;{.items[0].metadata.name}&apos;)
-kubectl -n kube-system logs $PODNAME --tail 100
-</code></pre><h2 id="loadbalancer-service-&#x4E00;&#x76F4;&#x5904;&#x4E8E;-pending-&#x72B6;&#x6001;">LoadBalancer Service &#x4E00;&#x76F4;&#x5904;&#x4E8E; pending &#x72B6;&#x6001;</h2>
+<pre><code class="lang-sh">PODNAME=$(kubectl -n kube-system get pod <span class="hljs-_">-l</span> component=kube-controller-manager -o jsonpath=<span class="hljs-string">&apos;{.items[0].metadata.name}&apos;</span>)
+kubectl -n kube-system logs <span class="hljs-variable">$PODNAME</span> --tail 100
+</code></pre>
+<h2 id="loadbalancer-service-&#x4E00;&#x76F4;&#x5904;&#x4E8E;-pending-&#x72B6;&#x6001;">LoadBalancer Service &#x4E00;&#x76F4;&#x5904;&#x4E8E; pending &#x72B6;&#x6001;</h2>
 <p>&#x67E5;&#x770B; Service <code>kubectl describe service &lt;service-name&gt;</code> &#x6CA1;&#x6709;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#xFF0C;&#x4F46; EXTERNAL-IP &#x4E00;&#x76F4;&#x662F; <code>&lt;pending&gt;</code>&#xFF0C;&#x8BF4;&#x660E; Azure Cloud Provider &#x5728;&#x521B;&#x5EFA; LB/NSG/PublicIP &#x8FC7;&#x7A0B;&#x4E2D;&#x51FA;&#x9519;&#x3002;&#x4E00;&#x822C;&#x6309;&#x7167;&#x524D;&#x9762;&#x7684;&#x6B65;&#x9AA4;&#x67E5;&#x770B; kube-controller-manager &#x53EF;&#x4EE5;&#x67E5;&#x5230;&#x5177;&#x4F53;&#x5931;&#x8D25;&#x7684;&#x539F;&#x56E0;&#xFF0C;&#x53EF;&#x80FD;&#x7684;&#x56E0;&#x7D20;&#x5305;&#x62EC;</p>
 <ul>
 <li>clientId&#x3001;clientSecret&#x3001;tenandId &#x6216; subscriptionId &#x914D;&#x7F6E;&#x9519;&#x8BEF;&#x5BFC;&#x81F4; Azure API &#x8BA4;&#x8BC1;&#x5931;&#x8D25;&#xFF1A;&#x66F4;&#x65B0;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684; <code>/etc/kubernetes/azure.json</code> &#xFF0C;&#x4FEE;&#x590D;&#x9519;&#x8BEF;&#x7684;&#x914D;&#x7F6E;&#x5373;&#x53EF;&#x6062;&#x590D;&#x670D;&#x52A1;</li>
@@ -2867,9 +2834,10 @@ kube-svc-redirect-pq6kf   1/1       Running   0          2d
 kube-svc-redirect-x6sq5   1/1       Running   0          2d
 kube-svc-redirect-zjl7x   1/1       Running   1          2d
 </code></pre><p>&#x5982;&#x679C;&#x5B83;&#x4EEC;&#x4E0D;&#x662F;&#x5904;&#x4E8E; <code>Running</code> &#x72B6;&#x6001;&#x6216;&#x8005; Exec/Logs/PortForward &#x7B49;&#x547D;&#x4EE4;&#x62A5; <code>net/http: TLS handshake timeout</code> &#x9519;&#x8BEF;&#xFF0C;&#x5220;&#x9664; <code>tunnelfront</code> Pod&#xFF0C;&#x7A0D;&#x7B49;&#x4E00;&#x4F1A;&#x5C31;&#x4F1A;&#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x51FA;&#x6765;&#xFF0C;&#x5982;&#xFF1A;</p>
-<pre><code>$ kubectl -n kube-system delete po -l component=tunnel
-pod &quot;tunnelfront-7644cd56b7-l5jmc&quot; deleted
-</code></pre><h2 id="&#x4F7F;&#x7528;-virtual-kubelet-&#x540E;-loadbalancer-service-&#x65E0;&#x6CD5;&#x5206;&#x914D;&#x516C;&#x7F51;-ip">&#x4F7F;&#x7528; Virtual Kubelet &#x540E; LoadBalancer Service &#x65E0;&#x6CD5;&#x5206;&#x914D;&#x516C;&#x7F51; IP</h2>
+<pre><code class="lang-sh">$ kubectl -n kube-system delete po <span class="hljs-_">-l</span> component=tunnel
+pod <span class="hljs-string">&quot;tunnelfront-7644cd56b7-l5jmc&quot;</span> deleted
+</code></pre>
+<h2 id="&#x4F7F;&#x7528;-virtual-kubelet-&#x540E;-loadbalancer-service-&#x65E0;&#x6CD5;&#x5206;&#x914D;&#x516C;&#x7F51;-ip">&#x4F7F;&#x7528; Virtual Kubelet &#x540E; LoadBalancer Service &#x65E0;&#x6CD5;&#x5206;&#x914D;&#x516C;&#x7F51; IP</h2>
 <p>&#x4F7F;&#x7528; Virtual Kubelet &#x540E;&#xFF0C;LoadBalancer Service &#x53EF;&#x80FD;&#x4F1A;&#x4E00;&#x76F4;&#x5904;&#x4E8E; pending &#x72B6;&#x6001;&#xFF0C;&#x65E0;&#x6CD5;&#x5206;&#x914D; IP &#x5730;&#x5740;&#x3002;&#x67E5;&#x770B;&#x8BE5;&#x670D;&#x52A1;&#x7684;&#x4E8B;&#x4EF6;&#xFF08;&#x5982; <code>kubectl describe svc&#xFF09;</code>&#x4F1A;&#x53D1;&#x73B0;&#x9519;&#x8BEF; <code>CreatingLoadBalancerFailed  4m (x15 over 45m)  service-controller  Error creating load balancer (will retry): failed to ensure load balancer for service default/nginx: ensure(default/nginx): lb(kubernetes) - failed to ensure host in pool: &quot;instance not found&quot;</code>&#x3002;&#x8FD9;&#x662F;&#x7531;&#x4E8E; Virtual Kubelet &#x521B;&#x5EFA;&#x7684;&#x865A;&#x62DF; Node &#x5E76;&#x4E0D;&#x5B58;&#x5728;&#x4E8E; Azure &#x4E91;&#x5E73;&#x53F0;&#x4E2D;&#xFF0C;&#x56E0;&#x800C;&#x65E0;&#x6CD5;&#x5C06;&#x5176;&#x52A0;&#x5165;&#x5230; Azure Load Balancer &#x7684;&#x540E;&#x7AEF;&#x4E2D;&#x3002;</p>
 <p>&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x662F;&#x5F00;&#x542F; ServiceNodeExclusion &#x7279;&#x6027;&#xFF0C;&#x5373;&#x8BBE;&#x7F6E; <code>kube-controller-manager --feature-gates=ServiceNodeExclusion=true</code>&#x3002;&#x5F00;&#x542F;&#x540E;&#xFF0C;&#x6240;&#x6709;&#x5E26;&#x6709; <code>alpha.service-controller.kubernetes.io/exclude-balancer</code> &#x6807;&#x7B7E;&#x7684; Node &#x90FD;&#x4E0D;&#x4F1A;&#x52A0;&#x5165;&#x5230;&#x4E91;&#x5E73;&#x53F0;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x540E;&#x7AEF;&#x4E2D;&#x3002;</p>
 <p>&#x6CE8;&#x610F;&#x8BE5;&#x7279;&#x6027;&#x4EC5;&#x9002;&#x7528;&#x4E8E; Kubernetes 1.9 &#x53CA;&#x4EE5;&#x4E0A;&#x7248;&#x672C;&#x3002;</p>
@@ -2924,12 +2892,16 @@ pod &quot;tunnelfront-7644cd56b7-l5jmc&quot; deleted
 <h2 id="node-&#x81EA;&#x52A8;&#x91CD;&#x542F;">Node &#x81EA;&#x52A8;&#x91CD;&#x542F;</h2>
 <p>&#x4E3A;&#x4E86;&#x4FDD;&#x62A4; AKS &#x7FA4;&#x96C6;&#xFF0C;&#x5B89;&#x5168;&#x66F4;&#x65B0;&#x81EA;&#x52A8;&#x5E94;&#x7528;&#x4E8E;&#x6240;&#x6709;&#x7684; Linux &#x8282;&#x70B9;&#x3002; &#x8FD9;&#x4E9B;&#x66F4;&#x65B0;&#x5305;&#x62EC; OS &#x5B89;&#x5168;&#x4FEE;&#x590D;&#x9879;&#x6216;&#x5185;&#x6838;&#x66F4;&#x65B0;&#xFF0C;&#x5176;&#x4E2D;&#x7684;&#x90E8;&#x5206;&#x66F4;&#x65B0;&#x9700;&#x8981;&#x91CD;&#x542F;&#x8282;&#x70B9;&#x624D;&#x80FD;&#x5B8C;&#x6210;&#x3002; AKS &#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x91CD;&#x65B0;&#x542F;&#x52A8;&#x8FD9;&#x4E9B; Linux &#x8282;&#x70B9;&#xFF0C;&#x4F46;&#x4F60;&#x53EF;&#x4EE5;&#x53C2;&#x8003;<a href="https://docs.microsoft.com/zh-cn/azure/aks/node-updates-kured" target="_blank">&#x8FD9;&#x91CC;</a>&#x914D;&#x7F6E; <a href="https://github.com/weaveworks/kured" target="_blank">kured</a> &#x6765;&#x81EA;&#x52A8;&#x91CD;&#x542F;&#x8282;&#x70B9;&#x3002;</p>
 <p>&#x9664;&#x6B64;&#x4E4B;&#x5916;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x8FD8;&#x60F3;&#x6536;&#x5230;&#x8282;&#x70B9;&#x9700;&#x8981;&#x91CD;&#x542F;&#x7684;&#x901A;&#x77E5;&#xFF0C;&#x53EF;&#x4EE5;&#x53C2;&#x8003;<a href="https://medium.com/@denniszielke/dashboard-and-notifications-on-aks-for-required-worker-nodes-reboots-c883d08e9404" target="_blank">Dashboard and notifications on AKS for required worker nodes reboots</a> &#x8FDB;&#x884C;&#x914D;&#x7F6E;&#x3002;</p>
+<h2 id="aks-periscope">AKS Periscope</h2>
+<p><a href="https://github.com/Azure/aks-periscope" target="_blank">AKS Periscope</a> &#x662F;&#x4E00;&#x4E2A;&#x7528;&#x4E8E;&#x6392;&#x67E5; AKS &#x96C6;&#x7FA4;&#x95EE;&#x9898;&#x7684;&#x8C03;&#x8BD5;&#x5DE5;&#x5177;&#xFF0C;&#x5F00;&#x6E90;&#x5728; <github.com azure="" aks-periscope="">&#x3002;</github.com></p>
+<p>&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<pre><code class="lang-sh">az extension add --name aks-preview
+az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token <span class="hljs-string">&quot;MySasToken&quot;</span>
+</code></pre>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
-<li><p><a href="https://docs.microsoft.com/en-us/azure/aks/troubleshooting" target="_blank">AKS troubleshooting</a></p>
-</li>
-<li><p><a href="https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits" target="_blank">Azure subscription and service limits, quotas, and constraints</a></p>
-</li>
+<li><a href="https://docs.microsoft.com/en-us/azure/aks/troubleshooting" target="_blank">AKS troubleshooting</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits" target="_blank">Azure subscription and service limits, quotas, and constraints</a></li>
 <li><a href="https://github.com/virtual-kubelet/virtual-kubelet#missing-load-balancer-ip-addresses-for-services" target="_blank">Virtual Kubelet - Missing Load Balancer IP addresses for services</a></li>
 <li><a href="https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot#cause-4-accessing-the-internal-load-balancer-vip-from-the-participating-load-balancer-backend-pool-vm" target="_blank">Troubleshoot Azure Load Balancer</a></li>
 <li><a href="https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/troubleshooting.md" target="_blank">Troubleshooting CustomScriptExtension (CSE) and acs-engine</a></li>
@@ -2937,7 +2909,7 @@ pod &quot;tunnelfront-7644cd56b7-l5jmc&quot; deleted
 <li><a href="https://medium.com/@denniszielke/dashboard-and-notifications-on-aks-for-required-worker-nodes-reboots-c883d08e9404" target="_blank">Dashboard and notifications on AKS for required worker nodes reboots</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-10-12 14:34:50
+2019-12-25 07:04:21
 </span></footer>
                                 
                                 </section>
@@ -2981,7 +2953,7 @@ pod &quot;tunnelfront-7644cd56b7-l5jmc&quot; deleted
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Azure","level":"8.7.1","depth":2,"next":{"title":"排错工具","level":"8.8","depth":1,"path":"troubleshooting/tools.md","ref":"troubleshooting/tools.md","articles":[]},"previous":{"title":"云平台排错","level":"8.7","depth":1,"path":"troubleshooting/cloud.md","ref":"troubleshooting/cloud.md","articles":[{"title":"Azure","level":"8.7.1","depth":2,"path":"troubleshooting/azure.md","ref":"troubleshooting/azure.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/azure.md","mtime":"2019-10-12T14:34:50.791Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-12T14:36:08.075Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Azure","level":"8.7.1","depth":2,"next":{"title":"排错工具","level":"8.8","depth":1,"path":"troubleshooting/tools.md","ref":"troubleshooting/tools.md","articles":[]},"previous":{"title":"云平台排错","level":"8.7","depth":1,"path":"troubleshooting/cloud.md","ref":"troubleshooting/cloud.md","articles":[{"title":"Azure","level":"8.7.1","depth":2,"path":"troubleshooting/azure.md","ref":"troubleshooting/azure.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/azure.md","mtime":"2019-12-25T07:04:21.934Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-25T07:05:47.042Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

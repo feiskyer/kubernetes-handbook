@@ -2776,8 +2776,8 @@ kube-dns   10.180.3.17:53,10.180.3.17:53    1h
 </code></pre>
 <p>&#xFF08;3&#xFF09;&#x5982;&#x679C; kube-dns Pod &#x548C; Service &#x90FD;&#x6B63;&#x5E38;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x9700;&#x8981;&#x68C0;&#x67E5; kube-proxy &#x662F;&#x5426;&#x6B63;&#x786E;&#x4E3A; kube-dns &#x914D;&#x7F6E;&#x4E86;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684; iptables &#x89C4;&#x5219;&#x3002;&#x5177;&#x4F53;&#x6392;&#x67E5;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x4E0B;&#x9762;&#x7684; Service &#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x90E8;&#x5206;&#x3002;</p>
 <h2 id="dns&#x89E3;&#x6790;&#x7F13;&#x6162;">DNS&#x89E3;&#x6790;&#x7F13;&#x6162;</h2>
-<p>&#x7531;&#x4E8E;&#x5185;&#x6838;&#x7684;&#x4E00;&#x4E2A; <a href="https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts" target="_blank">BUG</a>&#xFF0C;&#x8FDE;&#x63A5;&#x8DDF;&#x8E2A;&#x6A21;&#x5757;&#x4F1A;&#x53D1;&#x751F;&#x7ADE;&#x4E89;&#xFF0C;&#x5BFC;&#x81F4;&#x3000;DNS&#x3000;&#x89E3;&#x6790;&#x7F13;&#x6162;&#x3002;</p>
-<p>&#x4E34;&#x65F6;<a href="https://github.com/kubernetes/kubernetes/issues/56903" target="_blank">&#x89E3;&#x51B3;&#x65B9;&#x6CD5;</a>&#xFF1A;&#x4E3A;&#x5BB9;&#x5668;&#x914D;&#x7F6E; <code>options single-request-reopen</code></p>
+<p>&#x7531;&#x4E8E;&#x5185;&#x6838;&#x7684;&#x4E00;&#x4E2A; <a href="https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts" target="_blank">BUG</a>&#xFF0C;&#x8FDE;&#x63A5;&#x8DDF;&#x8E2A;&#x6A21;&#x5757;&#x4F1A;&#x53D1;&#x751F;&#x7ADE;&#x4E89;&#xFF0C;&#x5BFC;&#x81F4;&#x3000;DNS&#x3000;&#x89E3;&#x6790;&#x7F13;&#x6162;&#x3002;&#x793E;&#x533A;&#x8DDF;&#x8E2A; Issue &#x4E3A; <a href="https://github.com/kubernetes/kubernetes/issues/56903" target="_blank">https://github.com/kubernetes/kubernetes/issues/56903</a>&#x3002;</p>
+<p>&#x4E34;&#x65F6;<a href="https://github.com/kubernetes/kubernetes/issues/56903" target="_blank">&#x89E3;&#x51B3;&#x65B9;&#x6CD5;</a>&#xFF1A;&#x4E3A;&#x5BB9;&#x5668;&#x914D;&#x7F6E; <code>options single-request-reopen</code>&#xFF0C;&#x907F;&#x514D;&#x76F8;&#x540C;&#x4E94;&#x5143;&#x7EC4;&#x7684;&#x5E76;&#x53D1; DNS &#x8BF7;&#x6C42;&#xFF1A;</p>
 <pre><code class="lang-yaml"><span class="hljs-attr">        lifecycle:</span>
 <span class="hljs-attr">          postStart:</span>
 <span class="hljs-attr">            exec:</span>
@@ -2786,17 +2786,35 @@ kube-dns   10.180.3.17:53,10.180.3.17:53    1h
 <span class="hljs-bullet">              -</span> -c 
 <span class="hljs-bullet">              -</span> <span class="hljs-string">&quot;/bin/echo &apos;options single-request-reopen&apos; &gt;&gt; /etc/resolv.conf&quot;</span>
 </code></pre>
+<p>&#x6216;&#x8005;&#x4E3A; Pod &#x914D;&#x7F6E; dnsConfig&#xFF1A;</p>
+<pre><code class="lang-yaml"><span class="hljs-attr">template:</span>
+<span class="hljs-attr">  spec:</span>
+<span class="hljs-attr">    dnsConfig:</span>
+<span class="hljs-attr">      options:</span>
+<span class="hljs-attr">        - name:</span> single-request-reopen
+</code></pre>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;<code>single-request-reopen</code> &#x9009;&#x9879;&#x5BF9; Alpine &#x65E0;&#x6548;&#xFF0C;&#x8BF7;&#x4F7F;&#x7528; Debian &#x7B49;&#x5176;&#x4ED6;&#x7684;&#x57FA;&#x7840;&#x955C;&#x50CF;&#xFF0C;&#x6216;&#x8005;&#x53C2;&#x8003;&#x4E0B;&#x9762;&#x7684;&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#x3002;</p>
+</blockquote>
 <p>&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#xFF1A;&#x5347;&#x7EA7;&#x5185;&#x6838;&#x5E76;&#x4FDD;&#x8BC1;&#x5305;&#x542B;&#x4EE5;&#x4E0B;&#x4E24;&#x4E2A;&#x8865;&#x4E01;</p>
 <ol>
-<li><a href="http://patchwork.ozlabs.org/patch/937963/" target="_blank">&quot;netfilter: nf_conntrack: resolve clash for matching conntracks&quot;</a> fixes the 1st race (accepted).</li>
-<li><a href="http://patchwork.ozlabs.org/patch/952939/" target="_blank">&quot;netfilter: nf_nat: return the same reply tuple for matching CTs&quot;</a> fixes the 2nd race (waiting for a review).</li>
+<li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4e35c1cb9460240e983a01745b5f29fe3a4d8e39" target="_blank">netfilter: nf_nat: skip nat clash resolution for same-origin entries</a> (included since kernel v5.0)</li>
+<li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed07d9a021df6da53456663a76999189badc432a" target="_blank">netfilter: nf_conntrack: resolve clash for matching conntracks</a> (included since kernel v4.19)</li>
 </ol>
+<blockquote>
+<p>&#x5BF9;&#x4E8E; Azure &#x6765;&#x8BF4;&#xFF0C;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x5DF2;&#x7ECF;&#x5728; <a href="https://bugs.launchpad.net/ubuntu/+source/linux-azure/+bug/1795493" target="_blank">v4.15.0-1030.31/v4.18.0-1006.6</a> &#x4E2D;&#x4FEE;&#x590D;&#x4E86;&#xFF08;<a href="https://git.launchpad.net/~canonical-kernel/ubuntu/+source/linux-azure/commit/?id=6f4fe585e573d7edd4122e45f58ca3da5b478265" target="_blank">patch1</a>, <a href="https://git.launchpad.net/~canonical-kernel/ubuntu/+source/linux-azure/commit/?id=4c7917876cf9560492d6bc2732365cbbfecfe623" target="_blank">patch2</a>&#xFF09;&#x3002;</p>
+</blockquote>
 <p>&#x5176;&#x4ED6;&#x53EF;&#x80FD;&#x7684;&#x539F;&#x56E0;&#x548C;&#x4FEE;&#x590D;&#x65B9;&#x6CD5;&#x8FD8;&#x6709;&#xFF1A;</p>
 <ul>
 <li>Kube-dns &#x548C; CoreDNS &#x540C;&#x65F6;&#x5B58;&#x5728;&#x65F6;&#x4E5F;&#x4F1A;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x53EA;&#x4FDD;&#x7559;&#x4E00;&#x4E2A;&#x5373;&#x53EF;&#x3002;</li>
 <li>kube-dns &#x6216;&#x8005; CoreDNS &#x7684;&#x8D44;&#x6E90;&#x9650;&#x5236;&#x592A;&#x5C0F;&#x65F6;&#x4F1A;&#x5BFC;&#x81F4; DNS &#x89E3;&#x6790;&#x7F13;&#x6162;&#xFF0C;&#x8FD9;&#x65F6;&#x5019;&#x9700;&#x8981;&#x589E;&#x5927;&#x8D44;&#x6E90;&#x9650;&#x5236;&#x3002;</li>
+<li>&#x914D;&#x7F6E; DNS &#x9009;&#x9879; <code>use-vc</code>&#xFF0C;&#x5F3A;&#x5236;&#x4F7F;&#x7528; TCP &#x534F;&#x8BAE;&#x53D1;&#x9001; DNS &#x67E5;&#x8BE2;&#x3002;</li>
+<li>&#x5728;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x8FD0;&#x884C;&#x4E00;&#x4E2A; DNS &#x7F13;&#x5B58;&#x670D;&#x52A1;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x6240;&#x6709;&#x5BB9;&#x5668;&#x7684; DNS nameserver &#x90FD;&#x6307;&#x5411;&#x8BE5;&#x7F13;&#x5B58;&#x3002;</li>
 </ul>
+<p>&#x63A8;&#x8350;&#x90E8;&#x7F72; Nodelocal DNS Cache &#x6269;&#x5C55;&#x6765;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x540C;&#x65F6;&#x4E5F;&#x63D0;&#x5347; DNS &#x89E3;&#x6790;&#x7684;&#x6027;&#x80FD;&#x3002; Nodelocal DNS Cache &#x7684;&#x90E8;&#x7F72;&#x6B65;&#x9AA4;&#x8BF7;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns" target="_blank">https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns</a>&#x3002;</p>
+<blockquote>
 <p>&#x66F4;&#x591A; DNS &#x914D;&#x7F6E;&#x7684;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/" target="_blank">Customizing DNS Service</a>&#x3002;</p>
+</blockquote>
 <h2 id="service-&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;">Service &#x65E0;&#x6CD5;&#x8BBF;&#x95EE;</h2>
 <p>&#x8BBF;&#x95EE; Service ClusterIP &#x5931;&#x8D25;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x9996;&#x5148;&#x786E;&#x8BA4;&#x662F;&#x5426;&#x6709;&#x5BF9;&#x5E94;&#x7684; Endpoints</p>
 <pre><code class="lang-sh">kubectl get endpoints &lt;service-name&gt;
@@ -2957,7 +2975,7 @@ kubernetes   172.17.0.62:6443   25m
 <li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/" target="_blank">Debug Services</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-10-12 14:34:50
+2019-12-25 07:04:21
 </span></footer>
                                 
                                 </section>
@@ -3001,7 +3019,7 @@ kubernetes   172.17.0.62:6443   25m
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"网络排错","level":"8.4","depth":1,"next":{"title":"PV 排错","level":"8.5","depth":1,"path":"troubleshooting/pv.md","ref":"troubleshooting/pv.md","articles":[{"title":"AzureDisk","level":"8.5.1","depth":2,"path":"troubleshooting/azuredisk.md","ref":"troubleshooting/azuredisk.md","articles":[]},{"title":"AzureFile","level":"8.5.2","depth":2,"path":"troubleshooting/azurefile.md","ref":"troubleshooting/azurefile.md","articles":[]}]},"previous":{"title":"Pod 排错","level":"8.3","depth":1,"path":"troubleshooting/pod.md","ref":"troubleshooting/pod.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/network.md","mtime":"2019-10-12T14:34:50.795Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-12T14:36:08.075Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"网络排错","level":"8.4","depth":1,"next":{"title":"PV 排错","level":"8.5","depth":1,"path":"troubleshooting/pv.md","ref":"troubleshooting/pv.md","articles":[{"title":"AzureDisk","level":"8.5.1","depth":2,"path":"troubleshooting/azuredisk.md","ref":"troubleshooting/azuredisk.md","articles":[]},{"title":"AzureFile","level":"8.5.2","depth":2,"path":"troubleshooting/azurefile.md","ref":"troubleshooting/azurefile.md","articles":[]}]},"previous":{"title":"Pod 排错","level":"8.3","depth":1,"path":"troubleshooting/pod.md","ref":"troubleshooting/pod.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/network.md","mtime":"2019-12-25T07:04:21.942Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-25T07:05:47.042Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
