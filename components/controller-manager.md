@@ -86,7 +86,7 @@ kube-controller-manager 由一系列的控制器组成，这些控制器可以�
 
 1. 必须启动的控制器
    - EndpointController
-   - ReplicationController：
+   - ReplicationController
    - PodGCController
    - ResourceQuotaController
    - NamespaceController
