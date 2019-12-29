@@ -1,6 +1,6 @@
 # Kubernetes 大规模集群
 
-Kubernetes v1.6-v1.11 单集群最大支持 5000 个节点，也就是说 Kubernetes 最新稳定版的单个集群支持
+Kubernetes v1.6+ 单集群最大支持 5000 个节点，也就是说 Kubernetes 最新稳定版的单个集群支持
 
 * 不超过 5000 个节点
 * 不超过 150000 个 Pod

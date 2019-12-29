@@ -231,6 +231,6 @@ $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 
 最近 3 个稳定版本的 API 参考文档为：
 
-- [v1.13 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/)
-- [v1.12 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/)
-- [v1.11 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/)
+- [v1.17 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/)
+- [v1.16 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/)
+- [v1.15 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/)

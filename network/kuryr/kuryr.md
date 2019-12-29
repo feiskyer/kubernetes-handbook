@@ -2,7 +2,7 @@
 
 Kuryr 是 OpenStack Neutron 的子项目，其主要目标是透过该项目来集成 OpenStack 与 Kubernetes 的网络。该项目在 Kubernetes 中实作了原生 Neutron-based 的网络，因此使用 Kuryr-Kubernetes 可以让 OpenStack VM 与 Kubernetes Pods 能够选择在同一个子网络上运作，并且能够使用 Neutron L3 与 Security Group 来对网络进行路由，以及阻挡特定来源 Port，并且也提供基于 Neutron LBaaS 的 Service 集成。
 
-![](https://i.imgur.com/2XfP3vb.png)
+![](assets/2XfP3vb.png)
 
 Kuryr-Kubernetes 有以两个主要部分组成：
 
@@ -351,9 +351,9 @@ $ sudo systemctl daemon-reload && systemctl restart kubelet.service
 ## 测试结果
 
 创建一个 Pod 与 OpenStack VM 来进行通信：
-![](https://i.imgur.com/UYXdKud.png)
+![](assets/UYXdKud.png)
 
-![](https://i.imgur.com/dwoEytW.png)
+![](assets/dwoEytW.png)
 
 ## 参考文档
 

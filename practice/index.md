@@ -1,4 +1,4 @@
-# Kubernetes 实践
+# Kubernetes 实践概览
 
 Kubernetes 实践及常用技巧，包括
 
@@ -13,5 +13,8 @@ Kubernetes 实践及常用技巧，包括
 - [GPU](gpu.md)
 - [安全](security.md)
 - [审计](audit.md)
+- [备份恢复](backup.md)
+- [证书轮换](certificate-rotation.md)
+- [大规模集群](big-cluster.md)
 
 除了这些技巧外，[AKS 官方文档](https://docs.microsoft.com/zh-cn/azure/aks/best-practices) 也包含了很多集群操作和应用程序的最佳做法。
