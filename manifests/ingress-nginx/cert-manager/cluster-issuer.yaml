@@ -1,4 +1,4 @@
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: letsencrypt
@@ -8,11 +8,14 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
 
     # Email address used for ACME registration
-    email: certificates@feisky.xyz
+    email: handbook@feisky.xyz
 
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
       name: letsencrypt-cluster-key-pair
 
     # Enable the HTTP-01 challenge provider
-    http01: {}
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
