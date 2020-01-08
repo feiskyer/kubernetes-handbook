@@ -92,6 +92,9 @@ kubectl logs -p -c ruby web-1
 kubectl logs -f -c ruby web-1
 ```
 
+> 注：kubectl 只可以查看单个容器的日志，如果想要同时查看多个 Pod 的日志，可以使用 [stern](https://github.com/wercker/stern)。比如：
+> `stern --all-namespaces -l run=nginx`。
+
 ## 连接到一个正在运行的容器
 
 `kubectl attach` 用于连接到一个正在运行的容器。跟 docker 的 attach 命令类似。
