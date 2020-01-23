@@ -92,7 +92,7 @@ kubernetes-the-hard-way  us-west1  XX.XXX.XXX.XX  RESERVED
 
 ### Kubernetes 控制节点
 
-建立三个计算节点用以配置 Kubernetes 控制平面：
+建立三个控制节点用以配置 Kubernetes 控制平面：
 
 ```sh
 for i in 0 1 2; do
