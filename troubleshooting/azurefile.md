@@ -19,6 +19,15 @@ parameters:
   skuName: Standard_LRS
 ```
 
+使用 AzureFile 推荐的版本：
+
+| Kubernetes version | Recommended version |
+| ------------------ | :-----------------: |
+| 1.12               |  1.12.6 或更高版本  |
+| 1.13               |  1.13.4 或更高版本  |
+| 1.14               |  1.14.0 或更高版本  |
+| >=1.15             |       >=1.15        |
+
 ## 访问权限
 
 AzureFile 使用 [mount.cifs](https://linux.die.net/man/8/mount.cifs) 将其远端存储挂载到 Node 上，而`fileMode` 和 `dirMode` 控制了挂载后文件和目录的访问权限。不同的 Kubernetes 版本，`fileMode` 和 `dirMode` 的默认选项是不同的
@@ -29,7 +38,8 @@ AzureFile 使用 [mount.cifs](https://linux.die.net/man/8/mount.cifs) 将其远�
 | v1.8.0-v1.8.5   | 0700              |
 | v1.8.6 or above | 0755              |
 | v1.9.0          | 0700              |
-| v1.9.1 or above | 0755              |
+| v1.9.1-v1.12.1  | 0755              |
+| >=v1.12.2       | 0777              |
 
 按照默认的权限会导致非跟用户无法在目录中创建新的文件，解决方法为
 
@@ -47,6 +57,9 @@ mountOptions:
   - file_mode=0777
   - uid=1000
   - gid=1000
+  - mfsymlinks
+  - nobrl
+  - cache=none
 parameters:
   skuName: Standard_LRS
 ```
@@ -115,6 +128,18 @@ subjects:
 ## Azure German Cloud 无法使用 AzureFile
 
 Azure German Cloud 仅在 v1.7.11+、v1.8+ 以及更新版本中支持（[#48460](https://github.com/kubernetes/kubernetes/pull/48460)），升级 Kubernetes 版本即可解决。
+
+## "could not change permissions" 错误
+
+在 Azure Files 插件上运行 PostgreSQL 时，可能会看到类似于以下内容的错误：
+
+```
+initdb: could not change permissions of directory "/var/lib/postgresql/data": Operation not permitted
+fixing permissions on existing directory /var/lib/postgresql/data
+```
+
+此错误是由使用 cifs/SMB 协议的 Azure 文件插件导致的。 使用 cifs/SMB 协议时，无法在装载后更改文件和目录权限。
+若要解决此问题，请将子路径与 Azure 磁盘插件结合使用。
 
 ## 参考文档
 

@@ -14,7 +14,16 @@
 > - 由于 Managed Disks 需要创建和管理存储账户，其创建过程会比 Blob Disks 慢（3 分钟 vs 1-2 分钟）。
 > - 但节点最大支持同时挂载 16 个 AzureDisk。
 
-使用 [acs-engine](https://github.com/Azure/acs-engine) 部署的 Kubernetes 集群，会自动创建两个 StorageClass，默认为managed-standard（即HDD）：
+使用 AzureDisk 推荐的版本：
+
+| Kubernetes version | Recommended version |
+| ------------------ | :-----------------: |
+| 1.12               |  1.12.9 或更高版本  |
+| 1.13               |  1.13.6 或更高版本  |
+| 1.14               |  1.14.2 或更高版本  |
+| >=1.15             |       >=1.15        |
+
+使用 [aks-engine](https://github.com/Azure/aks-engine) 部署的 Kubernetes 集群，会自动创建两个 StorageClass，默认为managed-standard（即HDD）：
 
 ```sh
 kubectl get storageclass
@@ -38,9 +47,21 @@ Cannot attach data disk 'cdb-dynamic-pvc-92972088-11b9-11e8-888f-000d3a018174' t
 
 （1）更新所有受影响的虚拟机状态
 
+使用powershell：
+
 ```powershell
 $vm = Get-AzureRMVM -ResourceGroupName $rg -Name $vmname
 Update-AzureRmVM -ResourceGroupName $rg -VM $vm -verbose -debug
+```
+
+使用 Azure CLI：
+
+```sh
+# For VM:
+az vm update -n <VM_NAME> -g <RESOURCE_GROUP_NAME>
+
+# For VMSS:
+az vmss update-instances -g <RESOURCE_GROUP_NAME> --name <VMSS_NAME> --instance-id <ID>
 ```
 
 （2）重启虚拟机
@@ -129,6 +150,60 @@ MountVolume.WaitForAttach failed for volume "pvc-f1562ecb-3e5f-11e8-ab6b-000d3af
 ```
 
 [该问题](https://github.com/kubernetes/kubernetes/issues/62540) 仅在 Kubernetes v1.10.0 和 v1.10.1 中存在，将在 v1.10.2 中修复。
+
+## 在 mountOptions 中设置 uid 和 gid 时失败
+
+默认情况下，Azure 磁盘使用 ext4、xfs filesystem 和 mountOptions，如 uid = x，gid = x 无法在装入时设置。 例如，如果你尝试设置 mountOptions uid = 999，gid = 999，将看到类似于以下内容的错误:
+
+```console
+Warning  FailedMount             63s                  kubelet, aks-nodepool1-29460110-0  MountVolume.MountDevice failed for volume "pvc-d783d0e4-85a1-11e9-8a90-369885447933" : azureDisk - mountDevice:FormatAndMount failed with mount failed: exit status 32
+Mounting command: systemd-run
+Mounting arguments: --description=Kubernetes transient mount for /var/lib/kubelet/plugins/kubernetes.io/azure-disk/mounts/m436970985 --scope -- mount -t xfs -o dir_mode=0777,file_mode=0777,uid=1000,gid=1000,defaults /dev/disk/azure/scsi1/lun2 /var/lib/kubelet/plugins/kubernetes.io/azure-disk/mounts/m436970985
+Output: Running scope as unit run-rb21966413ab449b3a242ae9b0fbc9398.scope.
+mount: wrong fs type, bad option, bad superblock on /dev/sde,
+       missing codepage or helper program, or other error
+```
+
+可以通过执行以下操作之一来缓解此问题
+
+* 通过在 fsGroup 中的 runAsUser 和 gid 中设置 uid 来[配置 pod 的安全上下文](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)。例如，以下设置会将 pod 设置为 root，使其可供任何文件访问：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo
+spec:
+  securityContext:
+    runAsUser: 0
+    fsGroup: 0
+```
+
+> 备注: 因为 gid 和 uid 默认装载为 root 或0。如果 gid 或 uid 设置为非根（例如1000），则 Kubernetes 将使用 `chown` 更改该磁盘下的所有目录和文件。此操作可能非常耗时，并且可能会导致装载磁盘的速度非常慢。
+
+* 使用 initContainers 中的 `chown` 设置 gid 和 uid。例如：
+
+```yaml
+initContainers:
+- name: volume-mount
+  image: busybox
+  command: ["sh", "-c", "chown -R 100:100 /data"]
+  volumeMounts:
+  - name: <your data volume>
+    mountPath: /data
+```
+
+## 删除 pod 使用的 Azure 磁盘 PersistentVolumeClaim 时出错
+
+如果尝试删除 pod 使用的 Azure 磁盘 PersistentVolumeClaim，可能会看到错误。例如：
+
+```console
+$ kubectl describe pv pvc-d8eebc1d-74d3-11e8-902b-e22b71bb1c06
+...
+Message:         disk.DisksClient#Delete: Failure responding to request: StatusCode=409 -- Original Error: autorest/azure: Service returned an error. Status=409 Code="OperationNotAllowed" Message="Disk kubernetes-dynamic-pvc-d8eebc1d-74d3-11e8-902b-e22b71bb1c06 is attached to VM /subscriptions/{subs-id}/resourceGroups/MC_markito-aks-pvc_markito-aks-pvc_westus/providers/Microsoft.Compute/virtualMachines/aks-agentpool-25259074-0."
+```
+
+在 Kubernetes 版本1.10 及更高版本中，默认情况下已启用 PersistentVolumeClaim protection 功能以防止此错误。如果你使用的 Kubernetes 版本不能解决此问题，则可以通过在删除 PersistentVolumeClaim 前使用 PersistentVolumeClaim 删除 pod 来缓解此问题。
 
 ## 参考文档
 
