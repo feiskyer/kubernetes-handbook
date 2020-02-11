@@ -21,6 +21,8 @@
 - Pod 网络路由丢失，比如
   - kubenet 要求网络中有 podCIDR 到主机 IP 地址的路由，这些路由如果没有正确配置会导致 Pod 网络通信等问题
   - 在公有云平台上，kube-controller-manager 会自动为所有 Node 配置路由，但如果配置不当（如认证授权失败、超出配额等），也有可能导致无法配置路由
+- Service NodePort 和 health probe 端口冲突
+  - 在 1.10.4 版本之前的集群中，多个不同的 Service 之间的 NodePort 和 health probe 端口有可能会有重合 （已经在 [kubernetes#64468](https://github.com/kubernetes/kubernetes/pull/64468) 修复）
 - 主机内或者云平台的安全组、防火墙或者安全策略等阻止了 Pod 网络，比如
   - 非 Kubernetes 管理的 iptables 规则禁止了 Pod 网络
   - 公有云平台的安全组禁止了 Pod 网络（注意 Pod 网络有可能与 Node 网络不在同一个网段）
