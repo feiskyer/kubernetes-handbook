@@ -12,6 +12,7 @@
   - [Kubernetes submit queue](http://submit-queue.k8s.io/#/e2e)
   - [Kubernetes Performance Dashboard](http://perf-dash.k8s.io/)
   - [Node Performance Dashboard](http://node-perf-dash.k8s.io/#/builds)
+- [Kubernetes release notes](https://relnotes.k8s.io)
 - [CNCF项目贡献统计](https://devstats.cncf.io/)
 - [Kubernetes项目贡献统计](https://k8s.devstats.cncf.io/)
 - [Kubernetes github metrics](http://velodrome.k8s.io)
