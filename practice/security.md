@@ -266,6 +266,8 @@ $ kubectl logs kube-bench-master-k7jdd
 
 ## 镜像安全
 
+### Clair
+
 [Clair](https://github.com/coreos/clair/) 是 CoreOS 开源的容器安全工具，用来静态分析镜像中潜在的安全问题。推荐将 Clair 集成到 Devops 流程中，自动对所有镜像进行安全扫描。
 
 安装 Clair 的方法为：
@@ -290,6 +292,24 @@ $ reg vulns --clair https://clair.j3ss.co r.j3ss.co/chrome
 $ $ reg server --clair https://clair.j3ss.co
 ```
 
+### trivy
+
+[trivy](https://github.com/aquasecurity/trivy) 是 Aqua Security 开源的容器漏洞扫描工具。相对于 Clair 来说，使用起来更为简单，可以更方便集成到 CI 中。
+
+```sh
+# Install
+sudo apt-get install wget apt-transport-https gnupg lsb-release
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+sudo apt-get update
+sudo apt-get install -y trivy
+
+# Image Scanning
+trivy python:3.4-alpine
+```
+
+### 其他工具
+
 其他镜像安全扫描工具还有：
 
 - [National Vulnerability Database](https://nvd.nist.gov/)
@@ -306,7 +326,7 @@ $ $ reg server --clair https://clair.j3ss.co
 - [Grafeas](https://grafeas.io/)
 - [in-toto](https://in-toto.github.io/)
 
-## 其他安全工具
+## 安全工具
 
 开源产品：
 
