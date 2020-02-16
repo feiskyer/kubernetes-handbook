@@ -167,7 +167,35 @@ spec:
     protocol: TCP
 ```
 
-（3）如果 kube-dns Pod 和 Service 都正常，那么就需要检查 kube-proxy 是否正确为 kube-dns 配置了负载均衡的 iptables 规则。具体排查方法可以参考下面的 Service 无法访问部分。
+（3）如果最近升级了 CoreDNS，并且使用了 CoreDNS 的 proxy 插件，那么需要注意 [1.5.0 以上](https://coredns.io/2019/04/06/coredns-1.5.0-release/)的版本需要将 proxy 插件替换为 forward 插件。比如：
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  test.server: |
+    abc.com:53 {
+        errors
+        cache 30
+        forward . 1.2.3.4
+    }
+    my.cluster.local:53 {
+        errors
+        cache 30
+        forward . 2.3.4.5
+    }
+    azurestack.local:53 {
+        forward . tls://1.1.1.1 tls://1.0.0.1 {
+          tls_servername cloudflare-dns.com
+          health_check 5s
+        }
+    }
+```
+
+（4）如果 kube-dns Pod 和 Service 都正常，那么就需要检查 kube-proxy 是否正确为 kube-dns 配置了负载均衡的 iptables 规则。具体排查方法可以参考下面的 Service 无法访问部分。
 
 ## DNS解析缓慢
 

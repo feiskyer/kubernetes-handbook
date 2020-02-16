@@ -357,6 +357,12 @@ Node 存储空间不足一般是容器镜像未及时清理导致的，比如短
 sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
 ```
 
+你也可以 SSH 到 Node 上，执行下面的命令来查看占用空间最多的镜像（按镜像大小由大到小排序）：
+
+```sh
+sudo docker images --format '{{.Size}}\t{{.Repository}}:{{.Tag}}\t{{.ID}}' | sort -h -r | column -t
+```
+
 ## /sys/fs/cgroup 空间不足
 
 很多发行版默认的 fs.inotify.max_user_watches 太小，只有 8192，可以通过增大该配置解决。比如
