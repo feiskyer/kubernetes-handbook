@@ -95,10 +95,7 @@ kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='^*$' &
 推荐使用 [Prometheus Operator](https://github.com/coreos/prometheus-operator) 或 [Prometheus Chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus) 来部署和管理 Prometheus，比如
 
 ```sh
-# 使用 prometheus operator
-helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
-helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
+helm install stable/prometheus-operator --name prometheus-operator --namespace monitoring
 ```
 
 使用端口转发的方式访问 Prometheus，如 `kubectl --namespace monitoring port-forward service/kube-prometheus-prometheus :9090`
@@ -132,6 +129,8 @@ kubectl port-forward -n monitoring service/kube-prometheus-grafana :80
 ```
 
 添加 Prometheus 类型的 Data Source，填入原地址 `http://prometheus-prometheus-server.monitoring`。
+
+> 注意：Prometheus Operator 不支持通过 `prometheus.io/scrape` 注解来发现服务，需要你定义[ServiceMonitor](https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/running-exporters.md#generic-servicemonitor-example) 才会去抓取服务的度量数据。
 
 ## Node Problem Detector
 
