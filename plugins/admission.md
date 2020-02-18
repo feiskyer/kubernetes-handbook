@@ -119,6 +119,21 @@ externalAdmissionHooks:
       namespace: <namespace of the front-end service>
 ```
 
+## PodNodeSelector
+
+PodNodeSelector 用来限制一个 Namespace 中 Pod 所允许运行的 Node（功能跟 Taint 相反）。
+
+使用示例：
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/node-selector: env=production
+  name: namespace3
+```
+
 ## 推荐配置
 
 对于 Kubernetes >= 1.9.0，推荐配置以下插件
