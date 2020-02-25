@@ -133,8 +133,13 @@ spec:
         - -c
         - |
           # ensure ebtables rules are added even after reboot (only required for Azure CNI)
-          ebtables -t broute -F
-          ebtables -t broute -A BROUTING --ip-dst 169.254.20.10 -p IPv4 -j redirect --redirect-target ACCEPT
+          check=`ebtables -t broute -L | grep -e "-p IPv4 --ip-dst 169.254.20.10 -j redirect"`
+          if [ ! -z "$check" ]; then
+            echo "ebtables rule for node local dns has already been added"
+          else
+            ebtables -t broute -A BROUTING --ip-dst 169.254.20.10 -p IPv4 -j redirect --redirect-target ACCEPT
+            echo "added ebtables rule for node local dns"
+          fi
           # ensure kubelet --cluster-dns is set to 169.254.20.10
           # TODO: move those changes to CSE instead so that init containers won't need to restart kubelet.
           check=`ps -ef | grep cluster-dns=169.254.20.10 | grep -v grep`
