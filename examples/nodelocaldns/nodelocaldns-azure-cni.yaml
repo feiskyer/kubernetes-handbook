@@ -133,7 +133,7 @@ spec:
         - -c
         - |
           # ensure ebtables rules are added even after reboot (only required for Azure CNI)
-          check=`ebtables -t broute -L | grep -e "-p IPv4 --ip-dst 169.254.20.10 -j redirect"`
+          check=`ebtables -t broute -L BROUTING | grep -e "-p IPv4 --ip-dst 169.254.20.10 -j redirect"`
           if [ ! -z "$check" ]; then
             echo "ebtables rule for node local dns has already been added"
           else
