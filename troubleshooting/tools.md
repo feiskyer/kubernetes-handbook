@@ -10,6 +10,19 @@
 * `tcpdump`：用于排查容器网络问题，如 `tcpdump -nn host 10.240.0.8`
 * `perf`：Linux 内核自带的性能分析工具，常用来排查性能问题，如 [Container Isolation Gone Wrong](https://dzone.com/articles/container-isolation-gone-wrong) 问题的排查
 
+## kubectl-node-shell
+
+查看 Kubelet、CNI、kernel 等系统组件的日志需要首先 SSH 登录到 Node 上，推荐使用 [kubectl-node-shell](https://github.com/kvaps/kubectl-node-shell) 插件而不是为每个节点分配公网 IP 地址。比如：
+
+```sh
+curl -LO https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell
+chmod +x ./kubectl-node_shell
+sudo mv ./kubectl-node_shell /usr/local/bin/kubectl-node_shell
+
+kubectl node-shell <node>
+journalctl -l -u kubelet
+```
+
 ## sysdig
 
 sysdig 是一个容器排错工具，提供了开源和商业版本。对于常规排错来说，使用开源版本即可。
