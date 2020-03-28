@@ -271,8 +271,9 @@ az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorag
     * 受影响版本：v1.15.8-v1.15.11, v1.16.5-v1.16.8, v1.17.1-v1.17.4
     * 修复版本：v1.15.12, v1.16.9, v1.17.5, v1.18.0 及更高版本
 
-
 ## 参考文档
+
+更多的 AKS 排错信息可以参考 [AKS 常见问题](https://docs.microsoft.com/zh-cn/azure/aks/troubleshooting)。
 
 - [AKS troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting)
 - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits)
