@@ -28,16 +28,57 @@ Public IP associated is Basic SKU, which has some [limitations](https://docs.mic
 | Counters                     | Not supported   | Available                                |
 | Network Security Group       | Optional on NIC | Required                                 |
 
+## LoadBalancer SKUs
+
+Azure cloud provider supports both `basic` and `standard` SKU load balancers, which can be set via `loadBalancerSku` option in [cloud config file](cloud-provider-config.md). A list of differences between these two SKUs can be found [here](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-overview#why-use-standard-load-balancer).
+
+> Note that the public IPs used in load balancer frontend configurations should be the same SKU. That is a standard SKU public IP for standard load balancer and a basic SKU public IP for a basic load balancer.
+
+Azure doesn’t support a network interface joining load balancers with different SKUs, hence migration dynamically between them is not supported.
+
+> If you do require migration, please delete all services with type `LoadBalancer` (or change to other type)
+
+### Outbound connectivity
+
+[Outbound connectivity](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections
+) is also different between the two load balancer SKUs:
+
+* For the basic SKU, the outbound connectivity is opened by default. If multiple frontends are set, then the outbound IP is selected randomly (and configurable) from them.
+
+* For the standard SKU, the outbound connectivity is disabled by default. There are two ways to open the outbound connectivity: use a standard public IP with the standard load balancer or define outbound rules.
+
+### Standard LoadBalancer
+
+Because the load balancer in a Kubernetes cluster is managed by the Azure cloud provider and it may change dynamically (e.g. the public load balancer would be deleted if no services defined with type `LoadBalancer`), [outbound rules](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-rules-overview) are the recommended path if you want to ensure the outbound connectivity for all nodes.
+
+> Especially note:
+>
+> * In the context of outbound connectivity, a single standalone VM, all the VM's in an Availability Set, all the instances in a VMSS behave as a group. This means, if a single VM in an Availability Set is associated with a Standard SKU, all VM instances within this Availability Set now behave by the same rules as if they are associated with Standard SKU, even if an individual instance is not directly associated with it.
+>
+> * Public IP's used as instance-level public IP are mutually exclusive with outbound rules.
+
+Here is the recommend way to define the [outbound rules](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-rules-overview) when using separate provisioning tools:
+
+* Create a separate IP (or multiple IPs for scale) in standard SKU for outbound rules. Make use of the [allocatedOutboundPorts](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-rules-overview#snatports) parameter to allocate sufficient ports for your desired scenario scale.
+* Create a separate pool definition for outbound, and ensure all virtual machines or VMSS virtual machines are in this pool. Azure cloud provider will manage the load balancer rules with another pool, so that provisioning tools and the Azure cloud provider won't affect each other.
+* Define inbound with load balancing rules and inbound NAT rules as needed, and set `disableOutboundSNAT` to true on the load balancing rule(s).  Don't rely on the side effect from these rules for outbound connectivity. It makes it messier than it needs to be and limits your options.  Use inbound NAT rules to create port forwarding mappings for SSH access to the VM's rather than burning public IPs per instance.
+
+## Service Annotations
+
 When creating LoadBalancer Service, a set of annotations could be set to customize ALB:
 
-| Annotation                               | Comments                                 |
-| ---------------------------------------- | ---------------------------------------- |
-| service.beta.kubernetes.io/azure-load-balancer-internal | If set, create internal load balancer    |
-| service.beta.kubernetes.io/azure-load-balancer-internal-subnet | Set subnet for internal load balancer    |
-| service.beta.kubernetes.io/azure-load-balancer-mode | Determine how to select ALB based on availability sets. Candidate values are: 1）Not set or empty, use `primaryAvailabilitySet` set in `/etc/kubernetes/azure.json`; 2）`auto`, select ALB which has the minimum rules associated ; 3）`as1,as2`, specify a list of availability sets |
-| service.beta.kubernetes.io/azure-dns-label-name | Set DNS label name                       |
-| service.beta.kubernetes.io/azure-shared-securityrule | If set, NSG will be shared with other services. This relies on [Augmented Security Rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#augmented-security-rules) |
-| service.beta.kubernetes.io/azure-load-balancer-resource-group | Specify the resource group of load balancer objects that are not in the same resource group as the cluster |
+| Annotation | Value | Description | Kubernetes Version |
+| ------------------------------------------------------------ | ---------------------------- | ------------------------------------------------------------ |------|
+| `service.beta.kubernetes.io/azure-load-balancer-internal`    | `true` or `false`            | Specify whether the load balancer should be internal. It’s defaulting to public if not set. | v1.10.0 and later |
+| `service.beta.kubernetes.io/azure-load-balancer-internal-subnet` | Name of the subnet           | Specify which subnet the internal load balancer should be bound to. It’s defaulting to the subnet configured in cloud config file if not set. | v1.10.0 and later |
+| `service.beta.kubernetes.io/azure-load-balancer-mode`        | `auto`, `{name1},{name2}`    | Specify the Azure load balancer selection algorithm based on availability sets. There are currently three possible load balancer selection modes : default, auto or "{name1}, {name2}". This is only working for basic LB (see below for how it works) |  v1.10.0 and later |
+| `service.beta.kubernetes.io/azure-dns-label-name`            | Name of the DNS label        | Specify the DNS label name for the service. If it is set to empty string, DNS in PIP would be deleted. Because of a bug, before v1.15.10/v1.16.7/v1.17.3, the DNS label on PIP would also be deleted if the annotation is not specified. | v1.15.0 and later |
+| `service.beta.kubernetes.io/azure-shared-securityrule`       | `true` or `false`            | Specify that the service should be exposed using an Azure security rule that may be shared with another service, trading specificity of rules for an increase in the number of services that can be exposed. This relies on the Azure "augmented security rules" feature. | v1.10.0 and later |
+| `service.beta.kubernetes.io/azure-load-balancer-resource-group` | Name of the resource group   | Specify the resource group of load balancer objects that are not in the same resource group as the cluster. | v1.10.0 and later |
+| `service.beta.kubernetes.io/azure-allowed-service-tags`      | List of allowed service tags | Specify a list of allowed [service tags](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#service-tags) separated by comma. | v1.11.0 and later |
+| `service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout` | TCP idle timeouts in minutes | Specify the time, in minutes, for TCP connection idle timeouts to occur on the load balancer. Default and minimum value is 4. Maximum value is 30. Must be an integer. |  v1.11.4, v1.12.0 and later |
+|`service.beta.kubernetes.io/azure-load-balancer-disable-tcp-reset`|`true`|Disable `enableTcpReset` for SLB|v1.16 or later|
+|`service.beta.kubernetes.io/azure-pip-name`|Name of PIP|Specify the PIP that will be applied to load balancer|v1.16-v1.18. The annotation has been deprecated and would be removed in a future release.|
 
 ## Checking logs and events
 
@@ -235,6 +276,37 @@ spec:
         beta.kubernetes.io/os: linux
         accelerator: nvidia
 ```
+
+## Outstanding issues and fixed versions
+
+1. Azure LoadBalancer would lose backends when the nodes are upgraded to latest model 
+
+    * Upstream issue: https://github.com/kubernetes/kubernetes/issues/80365 and https://github.com/kubernetes/kubernetes/issues/89336
+    * Fixed versions for basic LoadBalancer: v1.14.7, v1.15.4, v1.16.0 and above
+    * Fixed versions for standard LoadBalancer: v1.15.12, v1.16.9, v1.17.5, v1.18.1 and above (WIP on PRs, not released yet)
+
+2. Public IP dns label will be default deleted when there is no service dns annotation
+
+    * Upstream issue: https://github.com/kubernetes/kubernetes/issues/87127
+    * Influenced versions: v1.17.0-v1.17.2, v1.16.0-v1.16.6, v1.15.7-v1.15.9, v1.14.10
+    * Fixed versions: v1.15.10, v1.16.7, v1.17.3, v1.18.0 and above
+
+3. Azure route table conflicted updating because of concurrent API calls
+
+    * Upstream issue: https://github.com/kubernetes/kubernetes/issues/88151
+    * Fixed versions: v1.15.11, v1.16.8, v1.17.4, v1.18.0 and above
+
+4. Azure VMSS instance conflicted updating for LoadBalancer backedn address pools
+
+    * Upstream issue: https://github.com/kubernetes/kubernetes/pull/88094
+    * Fixed versions: v1.15.11, v1.16.8, v1.17.4, v1.18.0 and above
+    * Performance improvements only in v1.18.0: https://github.com/kubernetes/kubernetes/pull/88699
+
+5. Azure: Many invalid VMSS update calls due to incorrect VMSS cache
+
+    * Upstream issue: https://github.com/kubernetes/kubernetes/issues/89025
+    * Influenced versions: v1.15.8-v1.15.11, v1.16.5-v1.16.8, v1.17.1-v1.17.4
+    * Fixed versions: v1.15.12, v1.16.9, v1.17.5, v1.18.0 and above (PR merged, not released yet)
 
 ## References
 
