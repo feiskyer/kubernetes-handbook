@@ -240,6 +240,38 @@ az extension add --name aks-preview
 az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
 ```
 
+## 已知问题及修复版本
+
+1. 手动更新 VMSS VM 到最新时 Azure LoadBalancer 后端丢失问题
+
+    * 问题链接： https://github.com/kubernetes/kubernetes/issues/80365 和 https://github.com/kubernetes/kubernetes/issues/89336
+    * Basic LoadBalancer 修复版本: v1.14.7, v1.15.4, v1.16.0 及更高版本
+    * Standard LoadBalancer 修复版本: v1.15.12, v1.16.9, v1.17.5, v1.18.1 及更高版本
+
+2. Service 未配置 DNS 标签导致公网 IP 上 DNS 标签丢失问题
+
+    * 问题链接： https://github.com/kubernetes/kubernetes/issues/87127
+    * 受影响版本：v1.17.0-v1.17.2, v1.16.0-v1.16.6, v1.15.7-v1.15.9, v1.14.10
+    * 修复版本：v1.15.10, v1.16.7, v1.17.3, v1.18.0 及更高版本
+
+3. 路由表并发更新冲突问题
+
+    * 问题链接： https://github.com/kubernetes/kubernetes/issues/88151
+    * 修复版本：v1.15.11, v1.16.8, v1.17.4, v1.18.0 及更高版本
+
+4. VMSS VM 并发更新冲突问题
+
+    * 问题链接： https://github.com/kubernetes/kubernetes/pull/88094
+    * 修复版本：v1.15.11, v1.16.8, v1.17.4, v1.18.0 及更高版本
+    * 仅包含在 v1.18.0 或更高版本中的性能优化: https://github.com/kubernetes/kubernetes/pull/88699
+
+5. VMSS 缓存不一致问题
+
+    * 问题链接： https://github.com/kubernetes/kubernetes/issues/89025
+    * 受影响版本：v1.15.8-v1.15.11, v1.16.5-v1.16.8, v1.17.1-v1.17.4
+    * 修复版本：v1.15.12, v1.16.9, v1.17.5, v1.18.0 及更高版本
+
+
 ## 参考文档
 
 - [AKS troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting)
