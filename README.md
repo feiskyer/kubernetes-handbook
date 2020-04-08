@@ -36,7 +36,7 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 
 扫码关注微信公众号，回复关键字即可在微信中查看相关章节。
 
-<p align="center"> <img src="images/wx.jpeg"></p>
+<p align="center"> <img src="images/wx.png"></p>
 
 ## 贡献者
 
