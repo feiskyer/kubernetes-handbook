@@ -66,14 +66,12 @@ kubectl apply -f calico.yaml
 
 ## 开发版
 
+### local-up-cluster.sh
+
 minikube/localkube 只提供了正式 release 版本，而如果想要部署 master 或者开发版的话，则可以用 `hack/local-up-cluster.sh` 来启动一个本地集群：
 
 ```sh
 cd $GOPATH/src/k8s.io/kubernetes
-
-export KUBERNETES_PROVIDER=local
-hack/install-etcd.sh
-export PATH=$GOPATH/src/k8s.io/kubernetes/third_party/etcd:$PATH
 hack/local-up-cluster.sh
 ```
 
@@ -81,11 +79,15 @@ hack/local-up-cluster.sh
 
 ```sh
 cd $GOPATH/src/k8s.io/kubernetes
-export KUBECONFIG=/var/run/kubernetes/admin.kubeconfig
-cluster/kubectl.sh
+cluster/kubectl.sh get pods
+cluster/kubectl.sh get services
+cluster/kubectl.sh get replicationcontrollers
+cluster/kubectl.sh run my-nginx --image=nginx --port=80
 ```
 
-或者，使用 [kind](https://github.com/kubernetes-sigs/kind)，以 Docker 容器的方式运行 Kubernetes 集群：
+### Kind
+
+使用 [kind](https://github.com/kubernetes-sigs/kind)，以 Docker 容器的方式运行 Kubernetes 集群：
 
 ```sh
 $ go get sigs.k8s.io/kind
