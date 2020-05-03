@@ -19,10 +19,14 @@ docker pull quay.mirrors.ustc.edu.cn/coreos/kube-state-metrics:v1.5.0
 ## GCR（Google Container Registry）镜像
 
 - 开源社镜像（Azure China）：http://mirror.azure.cn/help/gcr-proxy-cache.html
+- 阿里云镜像：registry.cn-hangzhou.aliyuncs.com/google_containers 或者 registry.aliyuncs.com/google_containers
 
 示例
 
 ```sh
+docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.18.0
+docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.0
+
 docker pull gcr.azk8s.cn/google_containers/hyperkube:v1.12.1
 docker pull gcr.azk8s.cn/google_containers/pause-amd64:3.1
 ```
