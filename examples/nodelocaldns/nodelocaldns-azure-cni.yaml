@@ -44,7 +44,7 @@ data:
         }
         reload
         loop
-        bind 169.254.20.10 10.0.0.10
+        bind 169.254.20.10
         forward . __PILLAR__CLUSTER__DNS__ {
                 force_tcp
         }
@@ -56,7 +56,7 @@ data:
         cache 30
         reload
         loop
-        bind 169.254.20.10 10.0.0.10
+        bind 169.254.20.10
         forward . __PILLAR__CLUSTER__DNS__ {
                 force_tcp
         }
@@ -67,7 +67,7 @@ data:
         cache 30
         reload
         loop
-        bind 169.254.20.10 10.0.0.10
+        bind 169.254.20.10
         forward . __PILLAR__CLUSTER__DNS__ {
                 force_tcp
         }
@@ -78,7 +78,7 @@ data:
         cache 30
         reload
         loop
-        bind 169.254.20.10 10.0.0.10
+        bind 169.254.20.10
         forward . __PILLAR__UPSTREAM__SERVERS__ {
                 force_tcp
         }
@@ -158,7 +158,7 @@ spec:
           requests:
             cpu: 25m
             memory: 5Mi
-        args: [ "-localip", "169.254.20.10,10.0.0.10", "-conf", "/etc/Corefile", "-upstreamsvc", "kube-dns-upstream" ]
+        args: [ "-localip", "169.254.20.10", "-conf", "/etc/Corefile", "-upstreamsvc", "kube-dns-upstream" ]
         securityContext:
           privileged: true
         ports:
