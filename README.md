@@ -17,11 +17,10 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 ## 在线阅读
 
 - 中文：
-  - Gitbook: <https://kubernetes.feisky.xyz/>
-  - [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
-  - [Github Pages](https://feisky.xyz/kubernetes-handbook/)
-  - [InfoQ](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)
-- [English](https://kubernetes.feisky.xyz/v/en/)
+  - [Gitbook: kubernetes.feisky.xyz](https://kubernetes.feisky.xyz/)
+  - [Github: github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
+  - [InfoQ: www.infoq.com/cn/minibooks/Kubernetes-handbook](http://www.infoq.com/cn/minibooks/Kubernetes-handbook)
+- [English: kubernetes.feisky.xyz/v/en](https://kubernetes.feisky.xyz/v/en/)
 - PDF 电子书：点击 [这里](https://legacy.gitbook.com/download/pdf/book/feisky/kubernetes) 下载
 
 ## 项目源码
