@@ -157,7 +157,7 @@ spec:
         resources:
           requests:
             cpu: 25m
-            memory: 5Mi
+            memory: 32Mi
         args: [ "-localip", "169.254.20.10", "-conf", "/etc/Corefile", "-upstreamsvc", "kube-dns-upstream" ]
         securityContext:
           privileged: true
