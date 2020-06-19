@@ -43,6 +43,6 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 
 ## LICENSE
 
-![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+![LICENSE](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
 
 [署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)。
