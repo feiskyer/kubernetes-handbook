@@ -503,7 +503,7 @@ spec:
           cpu: "300m"
           memory: "56Mi"
         limits:
-          cpu: "1"
+          cpu: "500m"
           memory: "128Mi"
 ```
 
