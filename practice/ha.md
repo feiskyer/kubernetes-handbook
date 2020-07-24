@@ -1,4 +1,4 @@
-# Kubernetes HA
+# 集群高可用
 
 Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会自动部署一个高可用的系统，包括
 

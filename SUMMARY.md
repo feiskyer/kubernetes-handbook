@@ -163,7 +163,8 @@
 
 - [实践概览](practice/index.md)
 - [资源控制](practice/resource-management.md)
-- [高可用](practice/ha.md)
+- [集群高可用](practice/ha.md)
+- [应用高可用](practice/app-ha.md)
 - [调试](practice/debugging.md)
 - [端口映射](practice/portmap.md)
 - [端口转发](practice/portforward.md)
