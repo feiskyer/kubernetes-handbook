@@ -284,6 +284,12 @@ kubectl get events --field-selector involvedObject.name=nginx,involvedObject.nam
 
 # 查看Pod的事件
 kubectl get events --field-selector involvedObject.name=nginx-85cb5867f-bs7pn,involvedObject.kind=Pod
+
+# 按时间对events排序
+kubectl get events --sort-by=.metadata.creationTimestamp
+
+# 自定义events输出格式
+kubectl get events  --sort-by='.metadata.creationTimestamp'  -o 'go-template={{range .items}}{{.involvedObject.name}}{{"\t"}}{{.involvedObject.kind}}{{"\t"}}{{.message}}{{"\t"}}{{.reason}}{{"\t"}}{{.type}}{{"\t"}}{{.firstTimestamp}}{{"\n"}}{{end}}'
 ```
 
 ## kubectl 插件
