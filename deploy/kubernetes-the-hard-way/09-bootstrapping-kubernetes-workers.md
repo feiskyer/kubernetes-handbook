@@ -23,18 +23,23 @@ sudo apt-get -y install socat conntrack ipset
 
 > socat 命令用于支持 `kubectl port-forward` 命令。
 
+### 禁止 Swap
+
+```sh
+sudo swapoff -a
+```
+
 ### 下载并安装 worker 二进制文件
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.12.0/crictl-v1.12.0-linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-the-hard-way/runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 \
-  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc5/runc.amd64 \
-  https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz \
-  https://github.com/containerd/containerd/releases/download/v1.2.0-rc.0/containerd-1.2.0-rc.0.linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubelet
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.18.0/crictl-v1.18.0-linux-amd64.tar.gz \
+  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc91/runc.amd64 \
+  https://github.com/containernetworking/plugins/releases/download/v0.8.6/cni-plugins-linux-amd64-v0.8.6.tgz \
+  https://github.com/containerd/containerd/releases/download/v1.3.6/containerd-1.3.6-linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubelet
 ```
 
 创建安装目录：
@@ -52,13 +57,16 @@ sudo mkdir -p \
 安装 worker 二进制文件
 
 ```sh
-sudo mv runsc-50c283b9f56bb7200938d9e207355f05f79f0d17 runsc
-sudo mv runc.amd64 runc
-chmod +x kubectl kube-proxy kubelet runc runsc
-sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
-sudo tar -xvf crictl-v1.12.0-linux-amd64.tar.gz -C /usr/local/bin/
-sudo tar -xvf cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin/
-sudo tar -xvf containerd-1.2.0-rc.0.linux-amd64.tar.gz -C /
+{
+  mkdir containerd
+  tar -xvf crictl-v1.18.0-linux-amd64.tar.gz
+  tar -xvf containerd-1.3.6-linux-amd64.tar.gz -C containerd
+  sudo tar -xvf cni-plugins-linux-amd64-v0.8.6.tgz -C /opt/cni/bin/
+  sudo mv runc.amd64 runc
+  chmod +x crictl kubectl kube-proxy kubelet runc
+  sudo mv crictl kubectl kube-proxy kubelet runc /usr/local/bin/
+  sudo mv containerd/bin/* /bin/
+}
 ```
 
 ### 配置 CNI 网路
@@ -98,6 +106,7 @@ EOF
 cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
 {
     "cniVersion": "0.3.1",
+    "name": "lo",
     "type": "loopback"
 }
 EOF
@@ -107,8 +116,6 @@ EOF
 
 ```sh
 sudo mkdir -p /etc/containerd/
-
-# Untrusted workloads will be run using the gVisor (runsc) runtime.
 cat << EOF | sudo tee /etc/containerd/config.toml
 [plugins]
   [plugins.cri.containerd]
@@ -117,17 +124,8 @@ cat << EOF | sudo tee /etc/containerd/config.toml
       runtime_type = "io.containerd.runtime.v1.linux"
       runtime_engine = "/usr/local/bin/runc"
       runtime_root = ""
-    [plugins.cri.containerd.untrusted_workload_runtime]
-      runtime_type = "io.containerd.runtime.v1.linux"
-      runtime_engine = "/usr/local/bin/runsc"
-      runtime_root = "/run/containerd/runsc"
-    [plugins.cri.containerd.gvisor]
-      runtime_type = "io.containerd.runtime.v1.linux"
-      runtime_engine = "/usr/local/bin/runsc"
-      runtime_root = "/run/containerd/runsc"
 EOF
 
-# Create the containerd.service systemd unit file
 cat <<EOF | sudo tee /etc/systemd/system/containerd.service
 [Unit]
 Description=containerd container runtime
@@ -154,16 +152,17 @@ EOF
 ### 配置 Kubelet
 
 ```sh
-sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-sudo mv ca.pem /var/lib/kubernetes/
+{
+  sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
+  sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+  sudo mv ca.pem /var/lib/kubernetes/
+}
 ```
 
 生成 `kubelet.service` systemd 配置文件：
 
 ```sh
-# The resolvConf configuration is used to avoid loops
-# when using CoreDNS for service discovery on systems running systemd-resolved.
+# The resolvConf configuration is used to avoid loops when using CoreDNS for service discovery on systems running systemd-resolved.
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -268,9 +267,9 @@ gcloud compute ssh controller-0 \
 
 ```sh
 NAME       STATUS   ROLES    AGE   VERSION
-worker-0   Ready    <none>   35s   v1.12.0
-worker-1   Ready    <none>   36s   v1.12.0
-worker-2   Ready    <none>   36s   v1.12.0
+worker-0   Ready    <none>   24s   v1.18.6
+worker-1   Ready    <none>   24s   v1.18.6
+worker-2   Ready    <none>   24s   v1.18.6
 ```
 
 下一步：[配置 Kubectl](10-configuring-kubectl.md)。

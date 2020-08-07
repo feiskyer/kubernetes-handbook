@@ -22,21 +22,26 @@ gcloud compute ssh controller-0
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+  "https://github.com/etcd-io/etcd/releases/download/v3.4.10/etcd-v3.4.10-linux-amd64.tar.gz"
 ```
 
 解压缩并安装 `etcd` 服务与 `etcdctl` 命令行工具：
 
 ```sh
-tar -xvf etcd-v3.3.9-linux-amd64.tar.gz
-sudo mv etcd-v3.3.9-linux-amd64/etcd* /usr/local/bin/
+{
+  tar -xvf etcd-v3.4.10-linux-amd64.tar.gz
+  sudo mv etcd-v3.4.10-linux-amd64/etcd* /usr/local/bin/
+}
 ```
 
 ### 配置 etcd Server
 
 ```sh
-sudo mkdir -p /etc/etcd /var/lib/etcd
-sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
+{
+  sudo mkdir -p /etc/etcd /var/lib/etcd
+  sudo chmod 700 /var/lib/etcd
+  sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
+}
 ```
 
 使用虚拟机的内网 IP 地址来作为 etcd 集群的服务地址。查询当前节点的内网 IP 地址：
@@ -61,6 +66,7 @@ Description=etcd
 Documentation=https://github.com/coreos
 
 [Service]
+Type=notify
 ExecStart=/usr/local/bin/etcd \\
   --name ${ETCD_NAME} \\
   --cert-file=/etc/etcd/kubernetes.pem \\
@@ -112,9 +118,9 @@ sudo ETCDCTL_API=3 etcdctl member list \
 > 输出
 
 ```sh
-3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379
-f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.240.0.10:2379
-ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379
+3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379, false
+f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.240.0.10:2379, false
+ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379, false
 ```
 
 下一步：[部署 Kubernetes 控制节点](08-bootstrapping-kubernetes-controllers.md)。

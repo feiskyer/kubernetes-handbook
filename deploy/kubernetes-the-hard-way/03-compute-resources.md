@@ -48,7 +48,7 @@ gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external \
   --source-ranges 0.0.0.0/0
 ```
 
->  [外部负载均衡器](https://cloud.google.com/compute/docs/load-balancing/network/) 被用来暴露 Kubernetes API Servers 给远端客户端。
+> [外部负载均衡器](https://cloud.google.com/compute/docs/load-balancing/network/) 被用来暴露 Kubernetes API Servers 给远端客户端。
 
 列出在 `kubernetes-the-hard-way` VPC 网络中的防火墙规则：
 
@@ -59,9 +59,9 @@ gcloud compute firewall-rules list --filter="network:kubernetes-the-hard-way"
 > 输出为
 
 ```sh
-NAME                                    NETWORK                  DIRECTION  PRIORITY  ALLOW                 DENY
-kubernetes-the-hard-way-allow-external  kubernetes-the-hard-way  INGRESS    1000      tcp:22,tcp:6443,icmp
-kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000      tcp,udp,icmp
+NAME                                    NETWORK                  DIRECTION  PRIORITY  ALLOW                 DENY  DISABLED
+kubernetes-the-hard-way-allow-external  kubernetes-the-hard-way  INGRESS    1000      tcp:22,tcp:6443,icmp        False
+kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000      tcp,udp,icmp                Fals
 ```
 
 ### Kubernetes 公网 IP 地址
@@ -82,13 +82,13 @@ gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"
 > 输出为
 
 ```sh
-NAME                     REGION    ADDRESS        STATUS
-kubernetes-the-hard-way  us-west1  XX.XXX.XXX.XX  RESERVED
+NAME                     ADDRESS/RANGE   TYPE      PURPOSE  NETWORK  REGION    SUBNET  STATUS
+kubernetes-the-hard-way  XX.XXX.XXX.XXX  EXTERNAL                    us-west1          RESERVED
 ```
 
 ## 计算实例
 
-本节将会创建基于 [Ubuntu Server 18.04](https://www.ubuntu.com/server) 的计算实例，原因是它对 [containerd](https://github.com/containerd/containerd) 容器引擎有很好的支持。每个虚拟机将会分配一个私有 IP 地址用以简化 Kubernetes 的设置。
+本节将会创建基于 [Ubuntu Server 20.04](https://www.ubuntu.com/server) 的计算实例，原因是它对 [containerd](https://github.com/containerd/containerd) 容器引擎有很好的支持。每个虚拟机将会分配一个私有 IP 地址用以简化 Kubernetes 的设置。
 
 ### Kubernetes 控制节点
 
@@ -100,9 +100,9 @@ for i in 0 1 2; do
     --async \
     --boot-disk-size 200GB \
     --can-ip-forward \
-    --image-family ubuntu-1804-lts \
+    --image-family ubuntu-2004-lts \
     --image-project ubuntu-os-cloud \
-    --machine-type n1-standard-1 \
+    --machine-type e2-standard-2 \
     --private-network-ip 10.240.0.1${i} \
     --scopes compute-rw,storage-ro,service-management,service-control,logging-write,monitoring \
     --subnet kubernetes \
@@ -124,9 +124,9 @@ for i in 0 1 2; do
     --async \
     --boot-disk-size 200GB \
     --can-ip-forward \
-    --image-family ubuntu-1804-lts \
+    --image-family ubuntu-2004-lts \
     --image-project ubuntu-os-cloud \
-    --machine-type n1-standard-1 \
+    --machine-type e2-standard-2 \
     --metadata pod-cidr=10.200.${i}.0/24 \
     --private-network-ip 10.240.0.2${i} \
     --scopes compute-rw,storage-ro,service-management,service-control,logging-write,monitoring \
@@ -140,19 +140,19 @@ done
 列出所有在默认 Compute Zone 的计算节点：
 
 ```sh
-gcloud compute instances list
+gcloud compute instances list --filter="tags.items=kubernetes-the-hard-way"
 ```
 
 输出为：
 
 ```sh
-NAME          ZONE        MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
-controller-0  us-west1-c  n1-standard-1               10.240.0.10  XX.XXX.XXX.XXX  RUNNING
-controller-1  us-west1-c  n1-standard-1               10.240.0.11  XX.XXX.X.XX     RUNNING
-controller-2  us-west1-c  n1-standard-1               10.240.0.12  XX.XXX.XXX.XX   RUNNING
-worker-0      us-west1-c  n1-standard-1               10.240.0.20  XXX.XXX.XXX.XX  RUNNING
-worker-1      us-west1-c  n1-standard-1               10.240.0.21  XX.XXX.XX.XXX   RUNNING
-worker-2      us-west1-c  n1-standard-1               10.240.0.22  XXX.XXX.XX.XX   RUNNING
+NAME          ZONE        MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+controller-0  us-west1-c  e2-standard-2               10.240.0.10  XX.XX.XX.XXX   RUNNING
+controller-1  us-west1-c  e2-standard-2               10.240.0.11  XX.XXX.XXX.XX  RUNNING
+controller-2  us-west1-c  e2-standard-2               10.240.0.12  XX.XXX.XX.XXX  RUNNING
+worker-0      us-west1-c  e2-standard-2               10.240.0.20  XX.XX.XXX.XXX  RUNNING
+worker-1      us-west1-c  e2-standard-2               10.240.0.21  XX.XX.XX.XXX   RUNNING
+worker-2      us-west1-c  e2-standard-2               10.240.0.22  XX.XXX.XX.XX   RUNNING
 ```
 
 ## 配置 SSH
@@ -204,11 +204,20 @@ Waiting for SSH key to propagate.
 SSH 证书更新后，你就可以登录到 `controller-0` 实例中了：
 
 ```sh
-Welcome to Ubuntu 18.04 LTS (GNU/Linux 4.15.0-1006-gcp x86_64)
+Welcome to Ubuntu 20.04 LTS (GNU/Linux 5.4.0-1019-gcp x86_64)
 
 ...
 
 Last login: Sun May 13 14:34:27 2018 from XX.XXX.XXX.XX
+```
+
+执行 `exit` 命令退出 `controller-0` 实例
+
+```sh
+$USER@controller-0:~$ exit
+
+logout
+Connection to XX.XX.XX.XXX closed
 ```
 
 下一步：[配置 CA 和创建 TLS 证书](04-certificate-authority.md)

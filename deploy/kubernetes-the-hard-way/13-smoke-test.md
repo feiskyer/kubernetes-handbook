@@ -32,18 +32,23 @@ gcloud compute ssh controller-0 \
 00000010  73 2f 64 65 66 61 75 6c  74 2f 6b 75 62 65 72 6e  |s/default/kubern|
 00000020  65 74 65 73 2d 74 68 65  2d 68 61 72 64 2d 77 61  |etes-the-hard-wa|
 00000030  79 0a 6b 38 73 3a 65 6e  63 3a 61 65 73 63 62 63  |y.k8s:enc:aescbc|
-00000040  3a 76 31 3a 6b 65 79 31  3a ea 7c 76 32 43 62 6f  |:v1:key1:.|v2Cbo|
-00000050  44 02 02 8c b7 ca fe 95  a5 33 f6 a1 18 6c 3d 53  |D........3...l=S|
-00000060  e7 9c 51 ee 32 f6 e4 17  ea bb 11 d5 2f e2 40 00  |..Q.2......./.@.|
-00000070  ae cf d9 e7 ba 7f 68 18  d3 c1 10 10 93 43 35 bd  |......h......C5.|
-00000080  24 dd 66 b4 f8 f9 82 77  4a d5 78 03 19 41 1e bc  |$.f....wJ.x..A..|
-00000090  94 3f 17 41 ad cc 8c ba  9f 8f 8e 56 97 7e 96 fb  |.?.A.......V.~..|
-000000a0  8f 2e 6a a5 bf 08 1f 0b  c3 4b 2b 93 d1 ec f8 70  |..j......K+....p|
-000000b0  c1 e4 1d 1a d2 0d f8 74  3a a1 4f 3c e0 c9 6d 3f  |.......t:.O<..m?|
-000000c0  de a3 f5 fd 76 aa 5e bc  27 d9 3c 6b 8f 54 97 45  |....v.^.'.<k.T.E|
-000000d0  31 25 ff 23 90 a4 2a f2  db 78 b1 3b ca 21 f3 6b  |1%.#..*..x.;.!.k|
-000000e0  dd fb 8e 53 c6 23 0d 35  c8 0a                    |...S.#.5..|
-000000ea
+00000040  3a 76 31 3a 6b 65 79 31  3a 8c 7b 16 f3 26 59 d5  |:v1:key1:.{..&Y.|
+00000050  c9 65 1c f0 3a 04 e7 66  2a f6 50 93 4e d4 d7 8c  |.e..:..f*.P.N...|
+00000060  ca 24 ab 68 54 5f 31 f6  5c e5 5c c6 29 1d cc da  |.$.hT_1.\.\.)...|
+00000070  22 fc c9 be 23 8a 26 b4  9b 38 1d 57 65 87 2a ac  |"...#.&..8.We.*.|
+00000080  70 11 ea 06 93 b7 de ba  12 83 42 94 9d 27 8f ee  |p.........B..'..|
+00000090  95 05 b0 77 31 ab 66 3d  d9 e2 38 85 f9 a5 59 3a  |...w1.f=..8...Y:|
+000000a0  90 c1 46 ae b4 9d 13 05  82 58 71 4e 5b cb ac e2  |..F......XqN[...|
+000000b0  3b 6e d7 10 ab 7c fc fe  dd f0 e6 0a 7b 24 2e 68  |;n...|......{$.h|
+000000c0  5e 78 98 5f 33 40 f8 d2  10 30 1f de 17 3f 06 a1  |^x._3@...0...?..|
+000000d0  81 bd 1f 2e be e9 35 26  2c be 39 16 cf ac c2 6d  |......5&,.9....m|
+000000e0  32 56 05 7d 80 39 5d c0  a4 43 46 75 96 0c 87 49  |2V.}.9]..CFu...I|
+000000f0  3c 17 1a 1c 8e 52 b1 e8  42 6b a5 e8 b2 b3 27 bc  |<....R..Bk....'.|
+00000100  80 a6 53 2a 9f 57 d2 de  a3 f8 7f 84 2c 01 c9 d9  |..S*.W......,...|
+00000110  4f e0 3f e7 a7 1e 46 b7  47 dc f0 53 d2 d2 e1 99  |O.?...F.G..S....|
+00000120  0b b7 b3 49 d0 3c a5 e8  26 ce 2c 51 42 2c 0f 48  |...I.<..&.,QB,.H|
+00000130  b1 9a 1a dd 24 d1 06 d8  34 bf 09 2e 20 cc 3d 3d  |....$...4... .==|
+00000140  e2 5a e5 e4 44 b7 ae 57  49 0a                    |.Z..D..WI.|
 ```
 
 Etcd 的密钥以 `k8s:enc:aescbc:v1:key1` 为前缀, 表示使用密钥为 `key1` 的 `aescbc` 加密数据。
@@ -55,7 +60,7 @@ Etcd 的密钥以 `k8s:enc:aescbc:v1:key1` 为前缀, 表示使用密钥为 `key
 创建一个 Deployment 用来搭建 [nginx](https://nginx.org/en/) Web 服务：
 
 ```sh
-kubectl run nginx --image=nginx
+kubectl create deployment nginx --image=nginx
 ```
 
 列出 `nginx` deployment 的 pods:
@@ -208,102 +213,6 @@ Last-Modified: Tue, 21 Nov 2017 14:28:04 GMT
 Connection: keep-alive
 ETag: "5a1437f4-264"
 Accept-Ranges: bytes
-```
-
-## 非可信应用
-
-非可信应用可以运行在 [gVisor](https://github.com/google/gvisor) 容器引擎之中。
-
-```sh
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: untrusted
-  annotations:
-    io.kubernetes.cri.untrusted-workload: "true"
-spec:
-  containers:
-    - name: webserver
-      image: gcr.io/hightowerlabs/helloworld:2.0.0
-EOF
-```
-
-验证
-
-```sh
-kubectl get pods -o wide
-```
-
-```
-NAME                       READY     STATUS    RESTARTS   AGE       IP           NODE
-busybox-68654f944b-djjjb   1/1       Running   0          5m        10.200.0.2   worker-0
-nginx-65899c769f-xkfcn     1/1       Running   0          4m        10.200.1.2   worker-1
-untrusted                  1/1       Running   0          10s       10.200.0.3   worker-0
-```
-
-查看 untrusted Pod 运行信息
-
-```sh
-# SSH to the node
-INSTANCE_NAME=$(kubectl get pod untrusted --output=jsonpath='{.spec.nodeName}')
-gcloud compute ssh ${INSTANCE_NAME}
-
-# List the containers running under gVisor
-sudo runsc --root  /run/containerd/runsc/k8s.io list
-```
-
-输出
-
-```sh
-I0514 14:03:56.108368   14988 x:0] ***************************
-I0514 14:03:56.108548   14988 x:0] Args: [runsc --root /run/containerd/runsc/k8s.io list]
-I0514 14:03:56.108730   14988 x:0] Git Revision: 08879266fef3a67fac1a77f1ea133c3ac75759dd
-I0514 14:03:56.108787   14988 x:0] PID: 14988
-I0514 14:03:56.108838   14988 x:0] UID: 0, GID: 0
-I0514 14:03:56.108877   14988 x:0] Configuration:
-I0514 14:03:56.108912   14988 x:0]              RootDir: /run/containerd/runsc/k8s.io
-I0514 14:03:56.109000   14988 x:0]              Platform: ptrace
-I0514 14:03:56.109080   14988 x:0]              FileAccess: proxy, overlay: false
-I0514 14:03:56.109159   14988 x:0]              Network: sandbox, logging: false
-I0514 14:03:56.109238   14988 x:0]              Strace: false, max size: 1024, syscalls: []
-I0514 14:03:56.109315   14988 x:0] ***************************
-ID                                                                 PID         STATUS      BUNDLE                                                           CREATED                          OWNER
-3528c6b270c76858e15e10ede61bd1100b77519e7c9972d51b370d6a3c60adbb   14766       running     /run/containerd/io.containerd.runtime.v1.linux/k8s.io/3528c6b270c76858e15e10ede61bd1100b77519e7c9972d51b370d6a3c60adbb   2018-05-14T14:02:34.302378996Z
-7ff747c919c2dcf31e64d7673340885138317c91c7c51ec6302527df680ba981   14716       running     /run/containerd/io.containerd.runtime.v1.linux/k8s.io/7ff747c919c2dcf31e64d7673340885138317c91c7c51ec6302527df680ba981   2018-05-14T14:02:32.159552044Z
-I0514 14:03:56.111287   14988 x:0] Exiting with status: 0
-```
-
-查询容器中的进程
-
-```sh
-POD_ID=$(sudo crictl -r unix:///var/run/containerd/containerd.sock \
-  pods --name untrusted -q)
-
-CONTAINER_ID=$(sudo crictl -r unix:///var/run/containerd/containerd.sock \
-  ps -p ${POD_ID} -q)
-
-sudo runsc --root /run/containerd/runsc/k8s.io ps ${CONTAINER_ID}
-```
-
-输出
-
-```
-I0514 14:05:16.499237   15096 x:0] ***************************
-I0514 14:05:16.499542   15096 x:0] Args: [runsc --root /run/containerd/runsc/k8s.io ps 3528c6b270c76858e15e10ede61bd1100b77519e7c9972d51b370d6a3c60adbb]
-I0514 14:05:16.499597   15096 x:0] Git Revision: 08879266fef3a67fac1a77f1ea133c3ac75759dd
-I0514 14:05:16.499644   15096 x:0] PID: 15096
-I0514 14:05:16.499695   15096 x:0] UID: 0, GID: 0
-I0514 14:05:16.499734   15096 x:0] Configuration:
-I0514 14:05:16.499769   15096 x:0]              RootDir: /run/containerd/runsc/k8s.io
-I0514 14:05:16.499880   15096 x:0]              Platform: ptrace
-I0514 14:05:16.499962   15096 x:0]              FileAccess: proxy, overlay: false
-I0514 14:05:16.500042   15096 x:0]              Network: sandbox, logging: false
-I0514 14:05:16.500120   15096 x:0]              Strace: false, max size: 1024, syscalls: []
-I0514 14:05:16.500197   15096 x:0] ***************************
-UID       PID       PPID      C         STIME     TIME      CMD
-0         1         0         0         14:02     40ms      app
-I0514 14:05:16.501354   15096 x:0] Exiting with status: 0
 ```
 
 下一步：[删除集群](14-cleanup.md)。

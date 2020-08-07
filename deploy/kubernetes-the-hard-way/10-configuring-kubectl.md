@@ -20,17 +20,17 @@ KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-har
 
 ```sh
 kubectl config set-cluster kubernetes-the-hard-way \
-  --certificate-authority=ca.pem \
-  --embed-certs=true \
-  --server=https://${KUBERNETES_PUBLIC_ADDRESS}:6443
+    --certificate-authority=ca.pem \
+    --embed-certs=true \
+    --server=https://${KUBERNETES_PUBLIC_ADDRESS}:6443
 
 kubectl config set-credentials admin \
-  --client-certificate=admin.pem \
-  --client-key=admin-key.pem
+    --client-certificate=admin.pem \
+    --client-key=admin-key.pem
 
 kubectl config set-context kubernetes-the-hard-way \
-  --cluster=kubernetes-the-hard-way \
-  --user=admin
+    --cluster=kubernetes-the-hard-way \
+    --user=admin
 
 kubectl config use-context kubernetes-the-hard-way
 ```
@@ -63,10 +63,10 @@ kubectl get nodes
 输出为
 
 ```sh
-NAME       STATUS   ROLES    AGE    VERSION
-worker-0   Ready    <none>   117s   v1.12.0
-worker-1   Ready    <none>   118s   v1.12.0
-worker-2   Ready    <none>   118s   v1.12.0
+NAME       STATUS   ROLES    AGE     VERSION
+worker-0   Ready    <none>   2m30s   v1.18.6
+worker-1   Ready    <none>   2m30s   v1.18.6
+worker-2   Ready    <none>   2m30s   v1.18.6
 ```
 
 下一步：[配置 Pod 网络路由](11-pod-network-routes.md)。

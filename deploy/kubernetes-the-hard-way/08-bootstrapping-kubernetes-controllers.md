@@ -24,10 +24,10 @@ sudo mkdir -p /etc/kubernetes/config
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-apiserver" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-controller-manager" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-scheduler" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl"
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-apiserver" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-controller-manager" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-scheduler" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl"
 
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
@@ -36,11 +36,13 @@ sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local
 ### 配置 Kubernetes API Server
 
 ```sh
-sudo mkdir -p /var/lib/kubernetes/
+{
+  sudo mkdir -p /var/lib/kubernetes/
 
-sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-  service-account-key.pem service-account.pem \
-  encryption-config.yaml /var/lib/kubernetes/
+  sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+    service-account-key.pem service-account.pem \
+    encryption-config.yaml /var/lib/kubernetes/
+}
 ```
 
 使用节点的内网 IP 地址作为 API server 与集群内部成员的广播地址。首先查询当前节点的内网 IP 地址：
@@ -70,19 +72,18 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --authorization-mode=Node,RBAC \\
   --bind-address=0.0.0.0 \\
   --client-ca-file=/var/lib/kubernetes/ca.pem \\
-  --enable-admission-plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
-  --enable-swagger-ui=true \\
+  --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
   --etcd-cafile=/var/lib/kubernetes/ca.pem \\
   --etcd-certfile=/var/lib/kubernetes/kubernetes.pem \\
   --etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem \\
   --etcd-servers=https://10.240.0.10:2379,https://10.240.0.11:2379,https://10.240.0.12:2379 \\
   --event-ttl=1h \\
-  --experimental-encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
+  --encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
   --kubelet-client-certificate=/var/lib/kubernetes/kubernetes.pem \\
   --kubelet-client-key=/var/lib/kubernetes/kubernetes-key.pem \\
   --kubelet-https=true \\
-  --runtime-config=api/all \\
+  --runtime-config='api/all=true' \\
   --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
   --service-cluster-ip-range=10.32.0.0/24 \\
   --service-node-port-range=30000-32767 \\
@@ -111,7 +112,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \\
-  --address=0.0.0.0 \\
+  --bind-address=0.0.0.0 \\
   --cluster-cidr=10.200.0.0/16 \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
@@ -139,7 +140,7 @@ EOF
 sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
-apiVersion: componentconfig/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1alpha1
 kind: KubeSchedulerConfiguration
 clientConnection:
   kubeconfig: "/var/lib/kubernetes/kube-scheduler.kubeconfig"
@@ -183,7 +184,6 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 ```sh
 sudo apt-get update
 sudo apt-get install -y nginx
-
 cat > kubernetes.default.svc.cluster.local <<EOF
 server {
   listen      80;
@@ -195,11 +195,12 @@ server {
   }
 }
 EOF
-
-sudo mv kubernetes.default.svc.cluster.local \
+{
+  sudo mv kubernetes.default.svc.cluster.local \
     /etc/nginx/sites-available/kubernetes.default.svc.cluster.local
-sudo ln -s /etc/nginx/sites-available/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
 
+  sudo ln -s /etc/nginx/sites-available/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+}
 sudo systemctl restart nginx
 sudo systemctl enable nginx
 ```
@@ -213,12 +214,12 @@ kubectl get componentstatuses --kubeconfig admin.kubeconfig
 将输出结果
 
 ```sh
-NAME                 STATUS    MESSAGE              ERROR
-controller-manager   Healthy   ok
+NAME                 STATUS    MESSAGE             ERROR
 scheduler            Healthy   ok
-etcd-2               Healthy   {"health": "true"}
-etcd-0               Healthy   {"health": "true"}
-etcd-1               Healthy   {"health": "true"}
+controller-manager   Healthy   ok
+etcd-0               Healthy   {"health":"true"}
+etcd-1               Healthy   {"health":"true"}
+etcd-2               Healthy   {"health":"true"}
 ```
 
 验证 Nginx HTTP 健康检查
@@ -231,11 +232,13 @@ curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
 
 ```sh
 HTTP/1.1 200 OK
-Server: nginx/1.14.0 (Ubuntu)
-Date: Mon, 14 May 2018 13:45:39 GMT
+Server: nginx/1.18.0 (Ubuntu)
+Date: Sat, 18 Jul 2020 06:20:48 GMT
 Content-Type: text/plain; charset=utf-8
 Content-Length: 2
 Connection: keep-alive
+Cache-Control: no-cache, private
+X-Content-Type-Options: nosniff
 
 ok
 ```
@@ -309,31 +312,33 @@ EOF
 创建外部负载均衡器网络资源：
 
 ```sh
-KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region) \
-  --format 'value(address)')
+{
+  KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
+    --region $(gcloud config get-value compute/region) \
+    --format 'value(address)')
 
-gcloud compute http-health-checks create kubernetes \
-  --description "Kubernetes Health Check" \
-  --host "kubernetes.default.svc.cluster.local" \
-  --request-path "/healthz"
+  gcloud compute http-health-checks create kubernetes \
+    --description "Kubernetes Health Check" \
+    --host "kubernetes.default.svc.cluster.local" \
+    --request-path "/healthz"
 
-gcloud compute firewall-rules create kubernetes-the-hard-way-allow-health-check \
-  --network kubernetes-the-hard-way \
-  --source-ranges 209.85.152.0/22,209.85.204.0/22,35.191.0.0/16 \
-  --allow tcp
+  gcloud compute firewall-rules create kubernetes-the-hard-way-allow-health-check \
+    --network kubernetes-the-hard-way \
+    --source-ranges 209.85.152.0/22,209.85.204.0/22,35.191.0.0/16 \
+    --allow tcp
 
-gcloud compute target-pools create kubernetes-target-pool \
-  --http-health-check kubernetes
+  gcloud compute target-pools create kubernetes-target-pool \
+    --http-health-check kubernetes
 
-gcloud compute target-pools add-instances kubernetes-target-pool \
-  --instances controller-0,controller-1,controller-2
+  gcloud compute target-pools add-instances kubernetes-target-pool \
+   --instances controller-0,controller-1,controller-2
 
-gcloud compute forwarding-rules create kubernetes-forwarding-rule \
-  --address ${KUBERNETES_PUBLIC_ADDRESS} \
-  --ports 6443 \
-  --region $(gcloud config get-value compute/region) \
-  --target-pool kubernetes-target-pool
+  gcloud compute forwarding-rules create kubernetes-forwarding-rule \
+    --address ${KUBERNETES_PUBLIC_ADDRESS} \
+    --ports 6443 \
+    --region $(gcloud config get-value compute/region) \
+    --target-pool kubernetes-target-pool
+}
 ```
 
 ### 验证
@@ -357,12 +362,12 @@ curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version
 ```json
 {
   "major": "1",
-  "minor": "12",
-  "gitVersion": "v1.12.0",
-  "gitCommit": "0ed33881dc4355495f623c6f22e7dd0b7632b7c0",
+  "minor": "18",
+  "gitVersion": "v1.18.6",
+  "gitCommit": "dff82dc0de47299ab66c83c626e08b245ab19037",
   "gitTreeState": "clean",
-  "buildDate": "2018-09-27T16:55:41Z",
-  "goVersion": "go1.10.4",
+  "buildDate": "2020-07-15T16:51:04Z",
+  "goVersion": "go1.13.9",
   "compiler": "gc",
   "platform": "linux/amd64"
 }

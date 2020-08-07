@@ -16,6 +16,12 @@ Kubernetes The Hard Way 的主要目的是学习, 也就是说它会花很多时
 
 ---
 
+## 版权
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+---
+
 ## 目标读者
 
 该教程的目标是给那些计划要将 Kubernetes 应用到生产环境的人, 并想了解每个有关 Kubernetes 的环节以及他们如何运作的。
@@ -24,12 +30,11 @@ Kubernetes The Hard Way 的主要目的是学习, 也就是说它会花很多时
 
 Kubernetes The Hard Way 将引导你建立高可用的 Kubernetes 集群, 包括每个组件之间的加密以及 RBAC 认证
 
-* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.12.0
-* [Containerd Container Runtime](https://github.com/containerd/containerd) 1.2.0-rc0
-* [CNI Container Networking](https://github.com/containernetworking/cni) 0.6.0
-* [gVisor](https://github.com/google/gvisor) 50c283b9f56bb7200938d9e207355f05f79f0d17
-* [etcd](https://github.com/coreos/etcd) 3.3.9
-* [CoreDNS](https://github.com/coredns/coredns) v1.2.2
+* [Kubernetes](https://github.com/kubernetes/kubernetes) v1.18.6
+* [Containerd Container Runtime](https://github.com/containerd/containerd) v1.3.6
+* [CNI Container Networking](https://github.com/containernetworking/cni) v0.8.6
+* [etcd](https://github.com/coreos/etcd) v3.4.10
+* [CoreDNS](https://github.com/coredns/coredns) v1.7.0
 
 ## 实验步骤
 

@@ -8,7 +8,7 @@
 
 ### Kubernetes 公有 IP 地址
 
-每一个 kubeconfig 文件都需要一个 Kuberntes API Server 的 IP 地址。为了保证高可用性，我们将该 IP 分配给 API Server 之前的外部负载均衡器。
+每一个 kubeconfig 文件都需要一个 Kubernetes API Server 的 IP 地址。为了保证高可用性，我们将该 IP 分配给 API Server 之前的外部负载均衡器。
 
 查询 `kubernetes-the-hard-way` 的静态 IP 地址：
 

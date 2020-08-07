@@ -12,7 +12,7 @@
 
 ### 安装 Google Cloud SDK
 
-按照 Google Cloud SDK [文档](https://cloud.google.com/sdk/) 的步骤去安装并设置 gcloud` 命令。验证 Google Cloud SDK 版本为 218.0.0 或更高:
+按照 Google Cloud SDK [文档](https://cloud.google.com/sdk/) 的步骤去安装并设置 gcloud` 命令。验证 Google Cloud SDK 版本为 301.0.0 或更高:
 
 
 ```sh
