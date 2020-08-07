@@ -2113,7 +2113,7 @@
                 <a href="../../practice/ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="../../practice/debugging.html">
+        <li class="chapter " data-level="7.4" data-path="../../practice/app-ha.html">
+            
+                <a href="../../practice/app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="../../practice/debugging.html">
             
                 <a href="../../practice/debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="../../practice/portmap.html">
+        <li class="chapter " data-level="7.6" data-path="../../practice/portmap.html">
             
                 <a href="../../practice/portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="../../practice/portforward.html">
+        <li class="chapter " data-level="7.7" data-path="../../practice/portforward.html">
             
                 <a href="../../practice/portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="../../practice/user-management.html">
+        <li class="chapter " data-level="7.8" data-path="../../practice/user-management.html">
             
                 <a href="../../practice/user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="../../practice/gpu.html">
+        <li class="chapter " data-level="7.9" data-path="../../practice/gpu.html">
             
                 <a href="../../practice/gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="../../practice/hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="../../practice/hugepage.html">
             
                 <a href="../../practice/hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="../../practice/security.html">
+        <li class="chapter " data-level="7.11" data-path="../../practice/security.html">
             
                 <a href="../../practice/security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="../../practice/audit.html">
+        <li class="chapter " data-level="7.12" data-path="../../practice/audit.html">
             
                 <a href="../../practice/audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="../../practice/backup.html">
+        <li class="chapter " data-level="7.13" data-path="../../practice/backup.html">
             
                 <a href="../../practice/backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="../../practice/certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="../../practice/certificate-rotation.html">
             
                 <a href="../../practice/certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="../../practice/big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="../../practice/big-cluster.html">
             
                 <a href="../../practice/big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../../machine-learning/introduction.html">
             
                 <a href="../../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../../machine-learning/spark.html">
             
                 <a href="../../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../../machine-learning/tensorflow.html">
             
                 <a href="../../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../../serverless/serverless.html">
             
                 <a href="../../serverless/serverless.html">
             
@@ -2660,20 +2673,22 @@
 </code></pre>
 <h3 id="&#x4E0B;&#x8F7D;&#x5E76;&#x5B89;&#x88C5;-kubernetes-controller-&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;">&#x4E0B;&#x8F7D;&#x5E76;&#x5B89;&#x88C5; Kubernetes Controller &#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</h3>
 <pre><code class="lang-sh">wget -q --show-progress --https-only --timestamping \
-  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-apiserver&quot;</span> \
-  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-controller-manager&quot;</span> \
-  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kube-scheduler&quot;</span> \
-  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl&quot;</span>
+  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-apiserver&quot;</span> \
+  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-controller-manager&quot;</span> \
+  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-scheduler&quot;</span> \
+  <span class="hljs-string">&quot;https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl&quot;</span>
 
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/<span class="hljs-built_in">local</span>/bin/
 </code></pre>
 <h3 id="&#x914D;&#x7F6E;-kubernetes-api-server">&#x914D;&#x7F6E; Kubernetes API Server</h3>
-<pre><code class="lang-sh">sudo mkdir -p /var/lib/kubernetes/
+<pre><code class="lang-sh">{
+  sudo mkdir -p /var/lib/kubernetes/
 
-sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-  service-account-key.pem service-account.pem \
-  encryption-config.yaml /var/lib/kubernetes/
+  sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+    service-account-key.pem service-account.pem \
+    encryption-config.yaml /var/lib/kubernetes/
+}
 </code></pre>
 <p>&#x4F7F;&#x7528;&#x8282;&#x70B9;&#x7684;&#x5185;&#x7F51; IP &#x5730;&#x5740;&#x4F5C;&#x4E3A; API server &#x4E0E;&#x96C6;&#x7FA4;&#x5185;&#x90E8;&#x6210;&#x5458;&#x7684;&#x5E7F;&#x64AD;&#x5730;&#x5740;&#x3002;&#x9996;&#x5148;&#x67E5;&#x8BE2;&#x5F53;&#x524D;&#x8282;&#x70B9;&#x7684;&#x5185;&#x7F51; IP &#x5730;&#x5740;&#xFF1A;</p>
 <pre><code class="lang-sh">INTERNAL_IP=$(curl <span class="hljs-_">-s</span> -H <span class="hljs-string">&quot;Metadata-Flavor: Google&quot;</span> \
@@ -2697,19 +2712,18 @@ ExecStart=/usr/<span class="hljs-built_in">local</span>/bin/kube-apiserver \\
   --authorization-mode=Node,RBAC \\
   --bind-address=0.0.0.0 \\
   --client-ca-file=/var/lib/kubernetes/ca.pem \\
-  --enable-admission-plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
-  --enable-swagger-ui=<span class="hljs-literal">true</span> \\
+  --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
   --etcd-cafile=/var/lib/kubernetes/ca.pem \\
   --etcd-certfile=/var/lib/kubernetes/kubernetes.pem \\
   --etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem \\
   --etcd-servers=https://10.240.0.10:2379,https://10.240.0.11:2379,https://10.240.0.12:2379 \\
   --event-ttl=1h \\
-  --experimental-encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
+  --encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
   --kubelet-client-certificate=/var/lib/kubernetes/kubernetes.pem \\
   --kubelet-client-key=/var/lib/kubernetes/kubernetes-key.pem \\
   --kubelet-https=<span class="hljs-literal">true</span> \\
-  --runtime-config=api/all \\
+  --runtime-config=<span class="hljs-string">&apos;api/all=true&apos;</span> \\
   --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
   --service-cluster-ip-range=10.32.0.0/24 \\
   --service-node-port-range=30000-32767 \\
@@ -2734,7 +2748,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/<span class="hljs-built_in">local</span>/bin/kube-controller-manager \\
-  --address=0.0.0.0 \\
+  --bind-address=0.0.0.0 \\
   --cluster-cidr=10.200.0.0/16 \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
@@ -2758,7 +2772,7 @@ EOF
 <pre><code class="lang-sh">sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 
 cat &lt;&lt;EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
-apiVersion: componentconfig/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1alpha1
 kind: KubeSchedulerConfiguration
 clientConnection:
   kubeconfig: <span class="hljs-string">&quot;/var/lib/kubernetes/kube-scheduler.kubeconfig&quot;</span>
@@ -2797,7 +2811,6 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 </blockquote>
 <pre><code class="lang-sh">sudo apt-get update
 sudo apt-get install -y nginx
-
 cat &gt; kubernetes.default.svc.cluster.local &lt;&lt;EOF
 server {
   listen      80;
@@ -2809,11 +2822,12 @@ server {
   }
 }
 EOF
-
-sudo mv kubernetes.default.svc.cluster.local \
+{
+  sudo mv kubernetes.default.svc.cluster.local \
     /etc/nginx/sites-available/kubernetes.default.svc.cluster.local
-sudo ln <span class="hljs-_">-s</span> /etc/nginx/sites-available/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
 
+  sudo ln <span class="hljs-_">-s</span> /etc/nginx/sites-available/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+}
 sudo systemctl restart nginx
 sudo systemctl <span class="hljs-built_in">enable</span> nginx
 </code></pre>
@@ -2821,23 +2835,25 @@ sudo systemctl <span class="hljs-built_in">enable</span> nginx
 <pre><code class="lang-sh">kubectl get componentstatuses --kubeconfig admin.kubeconfig
 </code></pre>
 <p>&#x5C06;&#x8F93;&#x51FA;&#x7ED3;&#x679C;</p>
-<pre><code class="lang-sh">NAME                 STATUS    MESSAGE              ERROR
-controller-manager   Healthy   ok
+<pre><code class="lang-sh">NAME                 STATUS    MESSAGE             ERROR
 scheduler            Healthy   ok
-etcd-2               Healthy   {<span class="hljs-string">&quot;health&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>}
-etcd-0               Healthy   {<span class="hljs-string">&quot;health&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>}
-etcd-1               Healthy   {<span class="hljs-string">&quot;health&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>}
+controller-manager   Healthy   ok
+etcd-0               Healthy   {<span class="hljs-string">&quot;health&quot;</span>:<span class="hljs-string">&quot;true&quot;</span>}
+etcd-1               Healthy   {<span class="hljs-string">&quot;health&quot;</span>:<span class="hljs-string">&quot;true&quot;</span>}
+etcd-2               Healthy   {<span class="hljs-string">&quot;health&quot;</span>:<span class="hljs-string">&quot;true&quot;</span>}
 </code></pre>
 <p>&#x9A8C;&#x8BC1; Nginx HTTP &#x5065;&#x5EB7;&#x68C0;&#x67E5;</p>
 <pre><code class="lang-sh">curl -H <span class="hljs-string">&quot;Host: kubernetes.default.svc.cluster.local&quot;</span> -i http://127.0.0.1/healthz
 </code></pre>
 <p>&#x5C06;&#x8F93;&#x51FA;</p>
 <pre><code class="lang-sh">HTTP/1.1 200 OK
-Server: nginx/1.14.0 (Ubuntu)
-Date: Mon, 14 May 2018 13:45:39 GMT
+Server: nginx/1.18.0 (Ubuntu)
+Date: Sat, 18 Jul 2020 06:20:48 GMT
 Content-Type: text/plain; charset=utf-8
 Content-Length: 2
 Connection: keep-alive
+Cache-Control: no-cache, private
+X-Content-Type-Options: nosniff
 
 ok
 </code></pre>
@@ -2898,31 +2914,33 @@ EOF
 <p>&#x672C;&#x6307;&#x5357;&#x521B;&#x5EFA;&#x7684;&#x865A;&#x62DF;&#x673A;&#x5185;&#x90E8;&#x5E76;&#x6CA1;&#x6709;&#x64CD;&#x4F5C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x7684;&#x6743;&#x9650;&#xFF0C;&#x9700;&#x8981;&#x5230;&#x521B;&#x5EFA;&#x8FD9;&#x4E9B;&#x865A;&#x62DF;&#x673A;&#x7684;&#x90A3;&#x53F0;&#x673A;&#x5668;&#x4E0A;&#x53BB;&#x505A;&#x4E0B;&#x9762;&#x7684;&#x64CD;&#x4F5C;&#x3002;</p>
 </blockquote>
 <p>&#x521B;&#x5EFA;&#x5916;&#x90E8;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x7F51;&#x7EDC;&#x8D44;&#x6E90;&#xFF1A;</p>
-<pre><code class="lang-sh">KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region) \
-  --format <span class="hljs-string">&apos;value(address)&apos;</span>)
+<pre><code class="lang-sh">{
+  KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
+    --region $(gcloud config get-value compute/region) \
+    --format <span class="hljs-string">&apos;value(address)&apos;</span>)
 
-gcloud compute http-health-checks create kubernetes \
-  --description <span class="hljs-string">&quot;Kubernetes Health Check&quot;</span> \
-  --host <span class="hljs-string">&quot;kubernetes.default.svc.cluster.local&quot;</span> \
-  --request-path <span class="hljs-string">&quot;/healthz&quot;</span>
+  gcloud compute http-health-checks create kubernetes \
+    --description <span class="hljs-string">&quot;Kubernetes Health Check&quot;</span> \
+    --host <span class="hljs-string">&quot;kubernetes.default.svc.cluster.local&quot;</span> \
+    --request-path <span class="hljs-string">&quot;/healthz&quot;</span>
 
-gcloud compute firewall-rules create kubernetes-the-hard-way-allow-health-check \
-  --network kubernetes-the-hard-way \
-  --source-ranges 209.85.152.0/22,209.85.204.0/22,35.191.0.0/16 \
-  --allow tcp
+  gcloud compute firewall-rules create kubernetes-the-hard-way-allow-health-check \
+    --network kubernetes-the-hard-way \
+    --source-ranges 209.85.152.0/22,209.85.204.0/22,35.191.0.0/16 \
+    --allow tcp
 
-gcloud compute target-pools create kubernetes-target-pool \
-  --http-health-check kubernetes
+  gcloud compute target-pools create kubernetes-target-pool \
+    --http-health-check kubernetes
 
-gcloud compute target-pools add-instances kubernetes-target-pool \
-  --instances controller-0,controller-1,controller-2
+  gcloud compute target-pools add-instances kubernetes-target-pool \
+   --instances controller-0,controller-1,controller-2
 
-gcloud compute forwarding-rules create kubernetes-forwarding-rule \
-  --address <span class="hljs-variable">${KUBERNETES_PUBLIC_ADDRESS}</span> \
-  --ports 6443 \
-  --region $(gcloud config get-value compute/region) \
-  --target-pool kubernetes-target-pool
+  gcloud compute forwarding-rules create kubernetes-forwarding-rule \
+    --address <span class="hljs-variable">${KUBERNETES_PUBLIC_ADDRESS}</span> \
+    --ports 6443 \
+    --region $(gcloud config get-value compute/region) \
+    --target-pool kubernetes-target-pool
+}
 </code></pre>
 <h3 id="&#x9A8C;&#x8BC1;">&#x9A8C;&#x8BC1;</h3>
 <p>&#x67E5;&#x8BE2; <code>kubernetes-the-hard-way</code> &#x9759;&#x6001; IP &#x5730;&#x5740;:</p>
@@ -2936,19 +2954,19 @@ gcloud compute forwarding-rules create kubernetes-forwarding-rule \
 <p>&#x7ED3;&#x679C;&#x4E3A;</p>
 <pre><code class="lang-json">{
   <span class="hljs-string">&quot;major&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-string">&quot;minor&quot;</span>: <span class="hljs-string">&quot;12&quot;</span>,
-  <span class="hljs-string">&quot;gitVersion&quot;</span>: <span class="hljs-string">&quot;v1.12.0&quot;</span>,
-  <span class="hljs-string">&quot;gitCommit&quot;</span>: <span class="hljs-string">&quot;0ed33881dc4355495f623c6f22e7dd0b7632b7c0&quot;</span>,
+  <span class="hljs-string">&quot;minor&quot;</span>: <span class="hljs-string">&quot;18&quot;</span>,
+  <span class="hljs-string">&quot;gitVersion&quot;</span>: <span class="hljs-string">&quot;v1.18.6&quot;</span>,
+  <span class="hljs-string">&quot;gitCommit&quot;</span>: <span class="hljs-string">&quot;dff82dc0de47299ab66c83c626e08b245ab19037&quot;</span>,
   <span class="hljs-string">&quot;gitTreeState&quot;</span>: <span class="hljs-string">&quot;clean&quot;</span>,
-  <span class="hljs-string">&quot;buildDate&quot;</span>: <span class="hljs-string">&quot;2018-09-27T16:55:41Z&quot;</span>,
-  <span class="hljs-string">&quot;goVersion&quot;</span>: <span class="hljs-string">&quot;go1.10.4&quot;</span>,
+  <span class="hljs-string">&quot;buildDate&quot;</span>: <span class="hljs-string">&quot;2020-07-15T16:51:04Z&quot;</span>,
+  <span class="hljs-string">&quot;goVersion&quot;</span>: <span class="hljs-string">&quot;go1.13.9&quot;</span>,
   <span class="hljs-string">&quot;compiler&quot;</span>: <span class="hljs-string">&quot;gc&quot;</span>,
   <span class="hljs-string">&quot;platform&quot;</span>: <span class="hljs-string">&quot;linux/amd64&quot;</span>
 }
 </code></pre>
 <p>&#x4E0B;&#x4E00;&#x6B65;&#xFF1A;<a href="09-bootstrapping-kubernetes-workers.html">&#x90E8;&#x7F72; Kubernetes Worker &#x8282;&#x70B9;</a>&#x3002;</p>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2992,7 +3010,7 @@ gcloud compute forwarding-rules create kubernetes-forwarding-rule \
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"部署控制节点","level":"4.9.8","depth":2,"next":{"title":"部署计算节点","level":"4.9.9","depth":2,"path":"deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.md","ref":"deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.md","articles":[]},"previous":{"title":"部署 Etcd 群集","level":"4.9.7","depth":2,"path":"deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md","ref":"deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md","mtime":"2019-12-29T11:13:13.156Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"部署控制节点","level":"4.9.8","depth":2,"next":{"title":"部署计算节点","level":"4.9.9","depth":2,"path":"deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.md","ref":"deploy/kubernetes-the-hard-way/09-bootstrapping-kubernetes-workers.md","articles":[]},"previous":{"title":"部署 Etcd 群集","level":"4.9.7","depth":2,"path":"deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md","ref":"deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md","mtime":"2020-08-07T14:01:05.411Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

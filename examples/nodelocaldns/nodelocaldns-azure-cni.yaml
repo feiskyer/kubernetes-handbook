@@ -1,0 +1,203 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-local-dns
+  namespace: kube-system
+  labels:
+    k8s-app: node-local-dns
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-dns-upstream
+  namespace: kube-system
+  labels:
+    k8s-app: kube-dns
+    kubernetes.io/name: "KubeDNSUpstream"
+spec:
+  ports:
+  - name: dns
+    port: 53
+    protocol: UDP
+    targetPort: 53
+  - name: dns-tcp
+    port: 53
+    protocol: TCP
+    targetPort: 53
+  selector:
+    k8s-app: kube-dns
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-local-dns
+  namespace: kube-system
+  labels:
+    k8s-app: node-local-dns
+data:
+  Corefile: |
+    cluster.local:53 {
+        errors
+        cache {
+                success 9984 30
+                denial 9984 5
+        }
+        reload
+        loop
+        bind 169.254.20.10
+        forward . __PILLAR__CLUSTER__DNS__ {
+                force_tcp
+        }
+        prometheus :9253
+        health 169.254.20.10:8080
+        }
+    in-addr.arpa:53 {
+        errors
+        cache 30
+        reload
+        loop
+        bind 169.254.20.10
+        forward . __PILLAR__CLUSTER__DNS__ {
+                force_tcp
+        }
+        prometheus :9253
+        }
+    ip6.arpa:53 {
+        errors
+        cache 30
+        reload
+        loop
+        bind 169.254.20.10
+        forward . __PILLAR__CLUSTER__DNS__ {
+                force_tcp
+        }
+        prometheus :9253
+        }
+    .:53 {
+        errors
+        cache 30
+        reload
+        loop
+        bind 169.254.20.10
+        forward . __PILLAR__UPSTREAM__SERVERS__ {
+                force_tcp
+        }
+        prometheus :9253
+        }
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-local-dns
+  namespace: kube-system
+  labels:
+    k8s-app: node-local-dns
+spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 10%
+  selector:
+    matchLabels:
+      k8s-app: node-local-dns
+  template:
+    metadata:
+       labels:
+          k8s-app: node-local-dns
+    spec:
+      priorityClassName: system-node-critical
+      serviceAccountName: node-local-dns
+      hostNetwork: true
+      hostPID: true
+      dnsPolicy: Default  # Don't use cluster DNS.
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+      initContainers:
+      - name: setup
+        image: alpine
+        tty: true
+        stdin: true
+        securityContext:
+          privileged: true
+        command:
+        - nsenter
+        - --target
+        - "1"
+        - --mount
+        - --uts
+        - --ipc
+        - --net
+        - --pid
+        - --
+        - bash
+        - -c
+        - |
+          # ensure ebtables rules are added even after reboot (only required for Azure CNI)
+          check=`ebtables -t broute -L BROUTING | grep -e "-p IPv4 --ip-dst 169.254.20.10 -j redirect"`
+          if [ ! -z "$check" ]; then
+            echo "ebtables rule for node local dns has already been added"
+          else
+            ebtables -t broute -A BROUTING --ip-dst 169.254.20.10 -p IPv4 -j redirect --redirect-target ACCEPT
+            echo "added ebtables rule for node local dns"
+          fi
+          # ensure kubelet --cluster-dns is set to 169.254.20.10
+          # TODO: move those changes to CSE instead so that init containers won't need to restart kubelet.
+          check=`ps -ef | grep cluster-dns=169.254.20.10 | grep -v grep`
+          if [ ! -z "$check" ]; then
+            echo "Kubelet --cluster-dns already configured to 169.254.20.10"
+            exit 0
+          fi
+          echo "Configuring kubelet --cluster-dns=169.254.20.10"
+          sed -i 's/--cluster-dns=10.0.0.10/--cluster-dns=169.254.20.10/g' /etc/default/kubelet
+          systemctl daemon-reload && systemctl restart kubelet
+
+      containers:
+      - name: node-cache
+        image: k8s.gcr.io/k8s-dns-node-cache:1.15.7
+        resources:
+          requests:
+            cpu: 25m
+            memory: 32Mi
+        args: [ "-localip", "169.254.20.10", "-conf", "/etc/Corefile", "-upstreamsvc", "kube-dns-upstream" ]
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 9253
+          name: metrics
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            host: 169.254.20.10
+            path: /health
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /run/xtables.lock
+          name: xtables-lock
+          readOnly: false
+        - name: config-volume
+          mountPath: /etc/coredns
+        - name: kube-dns-config
+          mountPath: /etc/kube-dns
+      volumes:
+      - name: xtables-lock
+        hostPath:
+          path: /run/xtables.lock
+          type: FileOrCreate
+      - name: kube-dns-config
+        configMap:
+          name: kube-dns
+          optional: true
+      - name: config-volume
+        configMap:
+          name: node-local-dns
+          items:
+            - key: Corefile
+              path: Corefile.base

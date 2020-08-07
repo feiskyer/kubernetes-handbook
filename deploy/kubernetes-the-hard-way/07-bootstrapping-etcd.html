@@ -2113,7 +2113,7 @@
                 <a href="../../practice/ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="../../practice/debugging.html">
+        <li class="chapter " data-level="7.4" data-path="../../practice/app-ha.html">
+            
+                <a href="../../practice/app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="../../practice/debugging.html">
             
                 <a href="../../practice/debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="../../practice/portmap.html">
+        <li class="chapter " data-level="7.6" data-path="../../practice/portmap.html">
             
                 <a href="../../practice/portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="../../practice/portforward.html">
+        <li class="chapter " data-level="7.7" data-path="../../practice/portforward.html">
             
                 <a href="../../practice/portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="../../practice/user-management.html">
+        <li class="chapter " data-level="7.8" data-path="../../practice/user-management.html">
             
                 <a href="../../practice/user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="../../practice/gpu.html">
+        <li class="chapter " data-level="7.9" data-path="../../practice/gpu.html">
             
                 <a href="../../practice/gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="../../practice/hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="../../practice/hugepage.html">
             
                 <a href="../../practice/hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="../../practice/security.html">
+        <li class="chapter " data-level="7.11" data-path="../../practice/security.html">
             
                 <a href="../../practice/security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="../../practice/audit.html">
+        <li class="chapter " data-level="7.12" data-path="../../practice/audit.html">
             
                 <a href="../../practice/audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="../../practice/backup.html">
+        <li class="chapter " data-level="7.13" data-path="../../practice/backup.html">
             
                 <a href="../../practice/backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="../../practice/certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="../../practice/certificate-rotation.html">
             
                 <a href="../../practice/certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="../../practice/big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="../../practice/big-cluster.html">
             
                 <a href="../../practice/big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../../machine-learning/introduction.html">
             
                 <a href="../../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../../machine-learning/spark.html">
             
                 <a href="../../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../../machine-learning/tensorflow.html">
             
                 <a href="../../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../../serverless/serverless.html">
             
                 <a href="../../serverless/serverless.html">
             
@@ -2659,15 +2672,20 @@
 <h3 id="&#x4E0B;&#x8F7D;&#x5E76;&#x5B89;&#x88C5;-etcd-&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;">&#x4E0B;&#x8F7D;&#x5E76;&#x5B89;&#x88C5; etcd &#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</h3>
 <p>&#x4ECE; <a href="https://github.com/coreos/etcd" target="_blank">coreos/etcd</a> GitHub &#x4E2D;&#x4E0B;&#x8F7D; etcd &#x53D1;&#x5E03;&#x6587;&#x4EF6;&#xFF1A;</p>
 <pre><code class="lang-sh">wget -q --show-progress --https-only --timestamping \
-  <span class="hljs-string">&quot;https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz&quot;</span>
+  <span class="hljs-string">&quot;https://github.com/etcd-io/etcd/releases/download/v3.4.10/etcd-v3.4.10-linux-amd64.tar.gz&quot;</span>
 </code></pre>
 <p>&#x89E3;&#x538B;&#x7F29;&#x5E76;&#x5B89;&#x88C5; <code>etcd</code> &#x670D;&#x52A1;&#x4E0E; <code>etcdctl</code> &#x547D;&#x4EE4;&#x884C;&#x5DE5;&#x5177;&#xFF1A;</p>
-<pre><code class="lang-sh">tar -xvf etcd-v3.3.9-linux-amd64.tar.gz
-sudo mv etcd-v3.3.9-linux-amd64/etcd* /usr/<span class="hljs-built_in">local</span>/bin/
+<pre><code class="lang-sh">{
+  tar -xvf etcd-v3.4.10-linux-amd64.tar.gz
+  sudo mv etcd-v3.4.10-linux-amd64/etcd* /usr/<span class="hljs-built_in">local</span>/bin/
+}
 </code></pre>
 <h3 id="&#x914D;&#x7F6E;-etcd-server">&#x914D;&#x7F6E; etcd Server</h3>
-<pre><code class="lang-sh">sudo mkdir -p /etc/etcd /var/lib/etcd
-sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
+<pre><code class="lang-sh">{
+  sudo mkdir -p /etc/etcd /var/lib/etcd
+  sudo chmod 700 /var/lib/etcd
+  sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
+}
 </code></pre>
 <p>&#x4F7F;&#x7528;&#x865A;&#x62DF;&#x673A;&#x7684;&#x5185;&#x7F51; IP &#x5730;&#x5740;&#x6765;&#x4F5C;&#x4E3A; etcd &#x96C6;&#x7FA4;&#x7684;&#x670D;&#x52A1;&#x5730;&#x5740;&#x3002;&#x67E5;&#x8BE2;&#x5F53;&#x524D;&#x8282;&#x70B9;&#x7684;&#x5185;&#x7F51; IP &#x5730;&#x5740;&#xFF1A;</p>
 <pre><code class="lang-sh">INTERNAL_IP=$(curl <span class="hljs-_">-s</span> -H <span class="hljs-string">&quot;Metadata-Flavor: Google&quot;</span> \
@@ -2683,6 +2701,7 @@ Description=etcd
 Documentation=https://github.com/coreos
 
 [Service]
+Type=notify
 ExecStart=/usr/<span class="hljs-built_in">local</span>/bin/etcd \\
   --name <span class="hljs-variable">${ETCD_NAME}</span> \\
   --cert-file=/etc/etcd/kubernetes.pem \\
@@ -2727,13 +2746,13 @@ sudo systemctl start etcd
 <blockquote>
 <p>&#x8F93;&#x51FA;</p>
 </blockquote>
-<pre><code class="lang-sh">3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379
-f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.240.0.10:2379
-ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379
+<pre><code class="lang-sh">3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379, <span class="hljs-literal">false</span>
+f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.240.0.10:2379, <span class="hljs-literal">false</span>
+ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379, <span class="hljs-literal">false</span>
 </code></pre>
 <p>&#x4E0B;&#x4E00;&#x6B65;&#xFF1A;<a href="08-bootstrapping-kubernetes-controllers.html">&#x90E8;&#x7F72; Kubernetes &#x63A7;&#x5236;&#x8282;&#x70B9;</a>&#x3002;</p>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2777,7 +2796,7 @@ ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.24
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"部署 Etcd 群集","level":"4.9.7","depth":2,"next":{"title":"部署控制节点","level":"4.9.8","depth":2,"path":"deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md","ref":"deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md","articles":[]},"previous":{"title":"配置生成密钥","level":"4.9.6","depth":2,"path":"deploy/kubernetes-the-hard-way/06-data-encryption-keys.md","ref":"deploy/kubernetes-the-hard-way/06-data-encryption-keys.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md","mtime":"2019-12-29T11:13:13.156Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"部署 Etcd 群集","level":"4.9.7","depth":2,"next":{"title":"部署控制节点","level":"4.9.8","depth":2,"path":"deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md","ref":"deploy/kubernetes-the-hard-way/08-bootstrapping-kubernetes-controllers.md","articles":[]},"previous":{"title":"配置生成密钥","level":"4.9.6","depth":2,"path":"deploy/kubernetes-the-hard-way/06-data-encryption-keys.md","ref":"deploy/kubernetes-the-hard-way/06-data-encryption-keys.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"deploy/kubernetes-the-hard-way/07-bootstrapping-etcd.md","mtime":"2020-08-07T14:01:05.411Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

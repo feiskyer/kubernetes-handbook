@@ -2113,7 +2113,7 @@
                 <a href="ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="debugging.html">
+        <li class="chapter " data-level="7.4" data-path="app-ha.html">
+            
+                <a href="app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="debugging.html">
             
                 <a href="debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="portmap.html">
+        <li class="chapter " data-level="7.6" data-path="portmap.html">
             
                 <a href="portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="portforward.html">
+        <li class="chapter " data-level="7.7" data-path="portforward.html">
             
                 <a href="portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="user-management.html">
+        <li class="chapter " data-level="7.8" data-path="user-management.html">
             
                 <a href="user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="gpu.html">
+        <li class="chapter " data-level="7.9" data-path="gpu.html">
             
                 <a href="gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="hugepage.html">
             
                 <a href="hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="security.html">
+        <li class="chapter " data-level="7.11" data-path="security.html">
             
                 <a href="security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="audit.html">
+        <li class="chapter " data-level="7.12" data-path="audit.html">
             
                 <a href="audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="backup.html">
+        <li class="chapter " data-level="7.13" data-path="backup.html">
             
                 <a href="backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="certificate-rotation.html">
             
                 <a href="certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="7.14" data-path="big-cluster.html">
+        <li class="chapter active" data-level="7.15" data-path="big-cluster.html">
             
                 <a href="big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../machine-learning/introduction.html">
             
                 <a href="../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../machine-learning/spark.html">
             
                 <a href="../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../machine-learning/tensorflow.html">
             
                 <a href="../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../serverless/serverless.html">
             
                 <a href="../serverless/serverless.html">
             
@@ -2668,7 +2681,8 @@
 </ul>
 <h3 id="etcd-&#x5B58;&#x50A8;">Etcd &#x5B58;&#x50A8;</h3>
 <p>&#x9664;&#x4E86;&#x5E38;&#x89C4;&#x7684; <a href="https://coreos.com/etcd/docs/3.2.15/op-guide/clustering.html" target="_blank">Etcd &#x9AD8;&#x53EF;&#x7528;&#x96C6;&#x7FA4;</a>&#x914D;&#x7F6E;&#x3001;&#x4F7F;&#x7528; SSD &#x5B58;&#x50A8;&#x7B49;&#xFF0C;&#x8FD8;&#x9700;&#x8981;&#x4E3A; Events &#x914D;&#x7F6E;&#x5355;&#x72EC;&#x7684; Etcd &#x96C6;&#x7FA4;&#x3002;&#x5373;&#x90E8;&#x7F72;&#x4E24;&#x5957;&#x72EC;&#x7ACB;&#x7684; Etcd &#x96C6;&#x7FA4;&#xFF0C;&#x5E76;&#x914D;&#x7F6E; kube-apiserver</p>
-<pre><code class="lang-sh">--etcd-servers=<span class="hljs-string">&quot;http://etcd1:2379,http://etcd2:2379,http://etcd3:2379&quot;</span> --etcd-servers-overrides=<span class="hljs-string">&quot;/events#http://etcd4:2379,http://etcd5:2379,http://etcd6:2379&quot;</span>
+<pre><code class="lang-sh">--etcd-servers=<span class="hljs-string">&quot;http://etcd1:2379,http://etcd2:2379,http://etcd3:2379&quot;</span> \
+--etcd-servers-overrides=<span class="hljs-string">&quot;/events#http://etcd4:2379,http://etcd5:2379,http://etcd6:2379&quot;</span>
 </code></pre>
 <p>&#x53E6;&#x5916;&#xFF0C;Etcd &#x9ED8;&#x8BA4;&#x5B58;&#x50A8;&#x9650;&#x5236;&#x4E3A; 2GB&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>--quota-backend-bytes</code> &#x9009;&#x9879;&#x589E;&#x5927;&#x3002;</p>
 <h2 id="master-&#x8282;&#x70B9;&#x5927;&#x5C0F;">Master &#x8282;&#x70B9;&#x5927;&#x5C0F;</h2>
@@ -2769,20 +2783,28 @@ fs.inotify.max_user_watches=524288
 <li><code>spec.containers[].resources.requests.ephemeral-storage</code></li>
 </ul>
 </li>
-<li>&#x5BF9;&#x5173;&#x952E;&#x5E94;&#x7528;&#x4F7F;&#x7528; PodDisruptionBudget&#x3001;nodeAffinity&#x3001;podAffinity &#x548C; podAntiAffinity &#x7B49;&#x4FDD;&#x62A4;</li>
-<li>&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x63A7;&#x5236;&#x5668;&#x6765;&#x7BA1;&#x7406;&#x5BB9;&#x5668;&#xFF08;&#x5982; Deployment&#x3001;StatefulSet&#x3001;DaemonSet&#x3001;Job &#x7B49;&#xFF09;</li>
-<li>&#x66F4;&#x591A;&#x5185;&#x5BB9;&#x53C2;&#x8003;<a href="../deploy/kubernetes-configuration-best-practice.html">&#x8FD9;&#x91CC;</a></li>
+<li>&#x5BF9;&#x5173;&#x952E;&#x5E94;&#x7528;&#x4F7F;&#x7528; PodDisruptionBudget&#x3001;nodeAffinity&#x3001;podAffinity &#x548C; podAntiAffinity &#x7B49;&#x4FDD;&#x62A4;&#x3002;</li>
+<li>&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x63A7;&#x5236;&#x5668;&#x6765;&#x7BA1;&#x7406;&#x5BB9;&#x5668;&#xFF08;&#x5982; Deployment&#x3001;StatefulSet&#x3001;DaemonSet&#x3001;Job &#x7B49;&#xFF09;&#x3002;</li>
+<li>&#x5F00;&#x542F; <a href="https://kubernetes.io/docs/reference/using-api/api-concepts/#watch-bookmarks" target="_blank">Watch Bookmarks</a> &#x4F18;&#x5316; Watch &#x6027;&#x80FD;&#xFF08;1.17 GA&#xFF09;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x51EF;&#x4F0A;&#x5728; Watch &#x8BF7;&#x6C42;&#x4E2D;&#x589E;&#x52A0; <code>allowWatchBookmarks=true</code> &#x6765;&#x5F00;&#x542F;&#x8FD9;&#x4E2A;&#x7279;&#x6027;&#x3002;</li>
+<li>&#x51CF;&#x5C11;&#x955C;&#x50CF;&#x4F53;&#x79EF;&#xFF0C;P2P &#x955C;&#x50CF;&#x5206;&#x53D1;&#xFF0C;&#x9884;&#x7F13;&#x5B58;&#x70ED;&#x70B9;&#x955C;&#x50CF;&#x3002;</li>
+<li>&#x66F4;&#x591A;&#x5185;&#x5BB9;&#x53C2;&#x8003;<a href="../deploy/kubernetes-configuration-best-practice.html">&#x8FD9;&#x91CC;</a>&#x3002;</li>
 </ul>
 <h2 id="&#x5FC5;&#x8981;&#x7684;&#x6269;&#x5C55;">&#x5FC5;&#x8981;&#x7684;&#x6269;&#x5C55;</h2>
 <p>&#x76D1;&#x63A7;&#x3001;&#x544A;&#x8B66;&#x4EE5;&#x53CA;&#x53EF;&#x89C6;&#x5316;&#xFF08;&#x5982; Prometheus &#x548C; Grafana&#xFF09;&#x81F3;&#x5173;&#x91CD;&#x8981;&#xFF0C;&#x63A8;&#x8350;&#x90E8;&#x7F72;&#x5E76;&#x5F00;&#x542F;&#x3002;</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/DBJ0F3g2Y5EhS02D7k2n5w" target="_blank">&#x5982;&#x4F55;&#x6269;&#x5C55;&#x5355;&#x4E2A;Prometheus&#x5B9E;&#x73B0;&#x8FD1;&#x4E07;Kubernetes&#x96C6;&#x7FA4;&#x76D1;&#x63A7;</a></li>
+</ul>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
-<li><a href="https://kubernetes.io/docs/setup/cluster-large/" target="_blank">Building Large Clusters</a></li>
+<li><a href="https://kubernetes.io/docs/setup/best-practices/cluster-large/" target="_blank">Building Large Clusters</a></li>
 <li><a href="https://blog.openai.com/scaling-kubernetes-to-2500-nodes/" target="_blank">Scaling Kubernetes to 2,500 Nodes</a></li>
 <li><a href="https://medium.com/@brendanrius/scaling-kubernetes-for-25m-users-a7937e3536a0" target="_blank">Scaling Kubernetes for 25M users</a></li>
+<li><a href="https://www.alibabacloud.com/blog/how-does-alibaba-ensure-the-performance-of-system-components-in-a-10000-node-kubernetes-cluster_595469" target="_blank">How Does Alibaba Ensure the Performance of System Components in a 10,000-node Kubernetes Cluster</a></li>
+<li><a href="https://itnext.io/architecting-kubernetes-clusters-choosing-a-cluster-size-92f6feaa2908" target="_blank">Architecting Kubernetes clusters &#x2014; choosing a cluster size</a></li>
+<li><a href="https://cloud.google.com/blog/products/containers-kubernetes/google-kubernetes-engine-clusters-can-have-up-to-15000-nodes" target="_blank">Bayer Crop Science seeds the future with 15000-node GKE clusters</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2826,7 +2848,7 @@ fs.inotify.max_user_watches=524288
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"大规模集群","level":"7.14","depth":1,"next":{"title":"大数据与机器学习","level":"7.15","depth":1,"path":"machine-learning/introduction.md","ref":"machine-learning/introduction.md","articles":[{"title":"Spark","level":"7.15.1","depth":2,"path":"machine-learning/spark.md","ref":"machine-learning/spark.md","articles":[]},{"title":"Tensorflow","level":"7.15.2","depth":2,"path":"machine-learning/tensorflow.md","ref":"machine-learning/tensorflow.md","articles":[]}]},"previous":{"title":"证书轮换","level":"7.13","depth":1,"path":"practice/certificate-rotation.md","ref":"practice/certificate-rotation.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/big-cluster.md","mtime":"2019-12-29T11:13:13.252Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"大规模集群","level":"7.15","depth":1,"next":{"title":"大数据与机器学习","level":"7.16","depth":1,"path":"machine-learning/introduction.md","ref":"machine-learning/introduction.md","articles":[{"title":"Spark","level":"7.16.1","depth":2,"path":"machine-learning/spark.md","ref":"machine-learning/spark.md","articles":[]},{"title":"Tensorflow","level":"7.16.2","depth":2,"path":"machine-learning/tensorflow.md","ref":"machine-learning/tensorflow.md","articles":[]}]},"previous":{"title":"证书轮换","level":"7.14","depth":1,"path":"practice/certificate-rotation.md","ref":"practice/certificate-rotation.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/big-cluster.md","mtime":"2020-08-07T14:01:05.731Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

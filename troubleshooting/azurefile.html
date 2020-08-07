@@ -2113,7 +2113,7 @@
                 <a href="../practice/ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="7.4" data-path="../practice/app-ha.html">
+            
+                <a href="../practice/app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="7.6" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="7.7" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="../practice/user-management.html">
+        <li class="chapter " data-level="7.8" data-path="../practice/user-management.html">
             
                 <a href="../practice/user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="7.9" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="../practice/security.html">
+        <li class="chapter " data-level="7.11" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="../practice/audit.html">
+        <li class="chapter " data-level="7.12" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="../practice/backup.html">
+        <li class="chapter " data-level="7.13" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="../practice/certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="../practice/certificate-rotation.html">
             
                 <a href="../practice/certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../machine-learning/introduction.html">
             
                 <a href="../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../machine-learning/spark.html">
             
                 <a href="../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../machine-learning/tensorflow.html">
             
                 <a href="../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../serverless/serverless.html">
             
                 <a href="../serverless/serverless.html">
             
@@ -2663,6 +2676,33 @@
 <span class="hljs-attr">parameters:</span>
 <span class="hljs-attr">  skuName:</span> Standard_LRS
 </code></pre>
+<p>&#x4F7F;&#x7528; AzureFile &#x63A8;&#x8350;&#x7684;&#x7248;&#x672C;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>Kubernetes version</th>
+<th style="text-align:center">Recommended version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.12</td>
+<td style="text-align:center">1.12.6 &#x6216;&#x66F4;&#x9AD8;&#x7248;&#x672C;</td>
+</tr>
+<tr>
+<td>1.13</td>
+<td style="text-align:center">1.13.4 &#x6216;&#x66F4;&#x9AD8;&#x7248;&#x672C;</td>
+</tr>
+<tr>
+<td>1.14</td>
+<td style="text-align:center">1.14.0 &#x6216;&#x66F4;&#x9AD8;&#x7248;&#x672C;</td>
+</tr>
+<tr>
+<td>&gt;=1.15</td>
+<td style="text-align:center">&gt;=1.15</td>
+</tr>
+</tbody>
+</table>
 <h2 id="&#x8BBF;&#x95EE;&#x6743;&#x9650;">&#x8BBF;&#x95EE;&#x6743;&#x9650;</h2>
 <p>AzureFile &#x4F7F;&#x7528; <a href="https://linux.die.net/man/8/mount.cifs" target="_blank">mount.cifs</a> &#x5C06;&#x5176;&#x8FDC;&#x7AEF;&#x5B58;&#x50A8;&#x6302;&#x8F7D;&#x5230; Node &#x4E0A;&#xFF0C;&#x800C;<code>fileMode</code> &#x548C; <code>dirMode</code> &#x63A7;&#x5236;&#x4E86;&#x6302;&#x8F7D;&#x540E;&#x6587;&#x4EF6;&#x548C;&#x76EE;&#x5F55;&#x7684;&#x8BBF;&#x95EE;&#x6743;&#x9650;&#x3002;&#x4E0D;&#x540C;&#x7684; Kubernetes &#x7248;&#x672C;&#xFF0C;<code>fileMode</code> &#x548C; <code>dirMode</code> &#x7684;&#x9ED8;&#x8BA4;&#x9009;&#x9879;&#x662F;&#x4E0D;&#x540C;&#x7684;</p>
 <table>
@@ -2690,8 +2730,12 @@
 <td>0700</td>
 </tr>
 <tr>
-<td>v1.9.1 or above</td>
+<td>v1.9.1-v1.12.1</td>
 <td>0755</td>
+</tr>
+<tr>
+<td>&gt;=v1.12.2</td>
+<td>0777</td>
 </tr>
 </tbody>
 </table>
@@ -2710,6 +2754,9 @@
 <span class="hljs-bullet">  -</span> file_mode=<span class="hljs-number">0777</span>
 <span class="hljs-bullet">  -</span> uid=<span class="hljs-number">1000</span>
 <span class="hljs-bullet">  -</span> gid=<span class="hljs-number">1000</span>
+<span class="hljs-bullet">  -</span> mfsymlinks
+<span class="hljs-bullet">  -</span> nobrl
+<span class="hljs-bullet">  -</span> cache=none
 <span class="hljs-attr">parameters:</span>
 <span class="hljs-attr">  skuName:</span> Standard_LRS
 </code></pre>
@@ -2759,6 +2806,12 @@ m:persistent-volume-binder&quot; cannot create secrets in the namespace &quot;de
 </code></pre>
 <h2 id="azure-german-cloud-&#x65E0;&#x6CD5;&#x4F7F;&#x7528;-azurefile">Azure German Cloud &#x65E0;&#x6CD5;&#x4F7F;&#x7528; AzureFile</h2>
 <p>Azure German Cloud &#x4EC5;&#x5728; v1.7.11+&#x3001;v1.8+ &#x4EE5;&#x53CA;&#x66F4;&#x65B0;&#x7248;&#x672C;&#x4E2D;&#x652F;&#x6301;&#xFF08;<a href="https://github.com/kubernetes/kubernetes/pull/48460" target="_blank">#48460</a>&#xFF09;&#xFF0C;&#x5347;&#x7EA7; Kubernetes &#x7248;&#x672C;&#x5373;&#x53EF;&#x89E3;&#x51B3;&#x3002;</p>
+<h2 id="could-not-change-permissions-&#x9519;&#x8BEF;">&quot;could not change permissions&quot; &#x9519;&#x8BEF;</h2>
+<p>&#x5728; Azure Files &#x63D2;&#x4EF6;&#x4E0A;&#x8FD0;&#x884C; PostgreSQL &#x65F6;&#xFF0C;&#x53EF;&#x80FD;&#x4F1A;&#x770B;&#x5230;&#x7C7B;&#x4F3C;&#x4E8E;&#x4EE5;&#x4E0B;&#x5185;&#x5BB9;&#x7684;&#x9519;&#x8BEF;&#xFF1A;</p>
+<pre><code>initdb: could not change permissions of directory &quot;/var/lib/postgresql/data&quot;: Operation not permitted
+fixing permissions on existing directory /var/lib/postgresql/data
+</code></pre><p>&#x6B64;&#x9519;&#x8BEF;&#x662F;&#x7531;&#x4F7F;&#x7528; cifs/SMB &#x534F;&#x8BAE;&#x7684; Azure &#x6587;&#x4EF6;&#x63D2;&#x4EF6;&#x5BFC;&#x81F4;&#x7684;&#x3002; &#x4F7F;&#x7528; cifs/SMB &#x534F;&#x8BAE;&#x65F6;&#xFF0C;&#x65E0;&#x6CD5;&#x5728;&#x88C5;&#x8F7D;&#x540E;&#x66F4;&#x6539;&#x6587;&#x4EF6;&#x548C;&#x76EE;&#x5F55;&#x6743;&#x9650;&#x3002;
+&#x82E5;&#x8981;&#x89E3;&#x51B3;&#x6B64;&#x95EE;&#x9898;&#xFF0C;&#x8BF7;&#x5C06;&#x5B50;&#x8DEF;&#x5F84;&#x4E0E; Azure &#x78C1;&#x76D8;&#x63D2;&#x4EF6;&#x7ED3;&#x5408;&#x4F7F;&#x7528;&#x3002;</p>
 <h2 id="&#x53C2;&#x8003;&#x6587;&#x6863;">&#x53C2;&#x8003;&#x6587;&#x6863;</h2>
 <ul>
 <li><a href="https://github.com/andyzhangx/demo/tree/master/issues" target="_blank">Known kubernetes issues on Azure</a></li>
@@ -2768,7 +2821,7 @@ m:persistent-volume-binder&quot; cannot create secrets in the namespace &quot;de
 <li><a href="https://docs.microsoft.com/en-us/azure/storage/files/storage-files-scale-targets" target="_blank">Azure Files scalability and performance targets</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2812,7 +2865,7 @@ m:persistent-volume-binder&quot; cannot create secrets in the namespace &quot;de
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"AzureFile","level":"8.5.2","depth":2,"next":{"title":"Windows 排错","level":"8.6","depth":1,"path":"troubleshooting/windows.md","ref":"troubleshooting/windows.md","articles":[]},"previous":{"title":"AzureDisk","level":"8.5.1","depth":2,"path":"troubleshooting/azuredisk.md","ref":"troubleshooting/azuredisk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/azurefile.md","mtime":"2019-12-29T11:13:13.268Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"AzureFile","level":"8.5.2","depth":2,"next":{"title":"Windows 排错","level":"8.6","depth":1,"path":"troubleshooting/windows.md","ref":"troubleshooting/windows.md","articles":[]},"previous":{"title":"AzureDisk","level":"8.5.1","depth":2,"path":"troubleshooting/azuredisk.md","ref":"troubleshooting/azuredisk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"troubleshooting/azurefile.md","mtime":"2020-08-07T14:01:05.755Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

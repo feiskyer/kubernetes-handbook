@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>高可用 · Kubernetes Handbook</title>
+        <title>集群高可用 · Kubernetes Handbook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -65,7 +65,7 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="debugging.html" />
+    <link rel="next" href="app-ha.html" />
     
     
     <link rel="prev" href="resource-management.html" />
@@ -2113,7 +2113,7 @@
                 <a href="ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="debugging.html">
+        <li class="chapter " data-level="7.4" data-path="app-ha.html">
+            
+                <a href="app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="debugging.html">
             
                 <a href="debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="portmap.html">
+        <li class="chapter " data-level="7.6" data-path="portmap.html">
             
                 <a href="portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="portforward.html">
+        <li class="chapter " data-level="7.7" data-path="portforward.html">
             
                 <a href="portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="user-management.html">
+        <li class="chapter " data-level="7.8" data-path="user-management.html">
             
                 <a href="user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="gpu.html">
+        <li class="chapter " data-level="7.9" data-path="gpu.html">
             
                 <a href="gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="hugepage.html">
             
                 <a href="hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="security.html">
+        <li class="chapter " data-level="7.11" data-path="security.html">
             
                 <a href="security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="audit.html">
+        <li class="chapter " data-level="7.12" data-path="audit.html">
             
                 <a href="audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="backup.html">
+        <li class="chapter " data-level="7.13" data-path="backup.html">
             
                 <a href="backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="certificate-rotation.html">
             
                 <a href="certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="big-cluster.html">
             
                 <a href="big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../machine-learning/introduction.html">
             
                 <a href="../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../machine-learning/spark.html">
             
                 <a href="../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../machine-learning/tensorflow.html">
             
                 <a href="../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../serverless/serverless.html">
             
                 <a href="../serverless/serverless.html">
             
@@ -2632,7 +2645,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >高可用</a>
+        <a href=".." >集群高可用</a>
     </h1>
 </div>
 
@@ -2647,7 +2660,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="kubernetes-ha">Kubernetes HA</h1>
+                                <h1 id="&#x96C6;&#x7FA4;&#x9AD8;&#x53EF;&#x7528;">&#x96C6;&#x7FA4;&#x9AD8;&#x53EF;&#x7528;</h1>
 <p>Kubernetes &#x4ECE; 1.5 &#x5F00;&#x59CB;&#xFF0C;&#x901A;&#x8FC7; <code>kops</code> &#x6216;&#x8005; <code>kube-up.sh</code> &#x90E8;&#x7F72;&#x7684;&#x96C6;&#x7FA4;&#x4F1A;&#x81EA;&#x52A8;&#x90E8;&#x7F72;&#x4E00;&#x4E2A;&#x9AD8;&#x53EF;&#x7528;&#x7684;&#x7CFB;&#x7EDF;&#xFF0C;&#x5305;&#x62EC;</p>
 <ul>
 <li>Etcd &#x96C6;&#x7FA4;&#x6A21;&#x5F0F;</li>
@@ -3031,7 +3044,7 @@ sudo systemctl restart kubelet
 <li><a href="https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3" target="_blank">Scaling Kubernetes to Support 50000 Services</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -3064,7 +3077,7 @@ sudo systemctl restart kubelet
                 </a>
                 
                 
-                <a href="debugging.html" class="navigation navigation-next " aria-label="Next page: 调试">
+                <a href="app-ha.html" class="navigation navigation-next " aria-label="Next page: 应用高可用">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -3075,7 +3088,7 @@ sudo systemctl restart kubelet
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"高可用","level":"7.3","depth":1,"next":{"title":"调试","level":"7.4","depth":1,"path":"practice/debugging.md","ref":"practice/debugging.md","articles":[]},"previous":{"title":"资源控制","level":"7.2","depth":1,"path":"practice/resource-management.md","ref":"practice/resource-management.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/ha.md","mtime":"2019-12-29T11:13:13.252Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"集群高可用","level":"7.3","depth":1,"next":{"title":"应用高可用","level":"7.4","depth":1,"path":"practice/app-ha.md","ref":"practice/app-ha.md","articles":[]},"previous":{"title":"资源控制","level":"7.2","depth":1,"path":"practice/resource-management.md","ref":"practice/resource-management.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/ha.md","mtime":"2020-08-07T14:01:05.731Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

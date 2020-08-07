@@ -2113,7 +2113,7 @@
                 <a href="../practice/ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="7.4" data-path="../practice/app-ha.html">
+            
+                <a href="../practice/app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="7.6" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="7.7" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="../practice/user-management.html">
+        <li class="chapter " data-level="7.8" data-path="../practice/user-management.html">
             
                 <a href="../practice/user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="7.9" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="../practice/security.html">
+        <li class="chapter " data-level="7.11" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="../practice/audit.html">
+        <li class="chapter " data-level="7.12" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="../practice/backup.html">
+        <li class="chapter " data-level="7.13" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="../practice/certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="../practice/certificate-rotation.html">
             
                 <a href="../practice/certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../machine-learning/introduction.html">
             
                 <a href="../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../machine-learning/spark.html">
             
                 <a href="../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../machine-learning/tensorflow.html">
             
                 <a href="../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../serverless/serverless.html">
             
                 <a href="../serverless/serverless.html">
             
@@ -2714,10 +2727,7 @@ kubectl proxy --address=<span class="hljs-string">&apos;0.0.0.0&apos;</span> --p
 <p><img src="images/prometheus.png" alt="prometheus"></p>
 <p>&#x4F7F;&#x7528; Prometheus &#x76D1;&#x63A7; Kubernetes &#x9700;&#x8981;&#x914D;&#x7F6E;&#x597D;&#x6570;&#x636E;&#x6E90;&#xFF0C;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x793A;&#x4F8B;&#x662F; <a href="prometheus.txt">prometheus.yml</a>&#x3002;</p>
 <p>&#x63A8;&#x8350;&#x4F7F;&#x7528; <a href="https://github.com/coreos/prometheus-operator" target="_blank">Prometheus Operator</a> &#x6216; <a href="https://github.com/kubernetes/charts/tree/master/stable/prometheus" target="_blank">Prometheus Chart</a> &#x6765;&#x90E8;&#x7F72;&#x548C;&#x7BA1;&#x7406; Prometheus&#xFF0C;&#x6BD4;&#x5982;</p>
-<pre><code class="lang-sh"><span class="hljs-comment"># &#x4F7F;&#x7528; prometheus operator</span>
-helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
-helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
+<pre><code class="lang-sh">helm install stable/prometheus-operator --name prometheus-operator --namespace monitoring
 </code></pre>
 <p>&#x4F7F;&#x7528;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x7684;&#x65B9;&#x5F0F;&#x8BBF;&#x95EE; Prometheus&#xFF0C;&#x5982; <code>kubectl --namespace monitoring port-forward service/kube-prometheus-prometheus :9090</code></p>
 <p><img src="images/14842125295113.jpg" alt="prometheus-web"></p>
@@ -2736,6 +2746,9 @@ kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath=<s
 <pre><code class="lang-sh">kubectl port-forward -n monitoring service/kube-prometheus-grafana :80
 </code></pre>
 <p>&#x6DFB;&#x52A0; Prometheus &#x7C7B;&#x578B;&#x7684; Data Source&#xFF0C;&#x586B;&#x5165;&#x539F;&#x5730;&#x5740; <code>http://prometheus-prometheus-server.monitoring</code>&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;Prometheus Operator &#x4E0D;&#x652F;&#x6301;&#x901A;&#x8FC7; <code>prometheus.io/scrape</code> &#x6CE8;&#x89E3;&#x6765;&#x53D1;&#x73B0;&#x670D;&#x52A1;&#xFF0C;&#x9700;&#x8981;&#x4F60;&#x5B9A;&#x4E49;<a href="https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/running-exporters.md#generic-servicemonitor-example" target="_blank">ServiceMonitor</a> &#x624D;&#x4F1A;&#x53BB;&#x6293;&#x53D6;&#x670D;&#x52A1;&#x7684;&#x5EA6;&#x91CF;&#x6570;&#x636E;&#x3002;</p>
+</blockquote>
 <h2 id="node-problem-detector">Node Problem Detector</h2>
 <p>Kubernetes node &#x6709;&#x53EF;&#x80FD;&#x4F1A;&#x51FA;&#x73B0;&#x5404;&#x79CD;&#x786C;&#x4EF6;&#x3001;&#x5185;&#x6838;&#x6216;&#x8005;&#x8FD0;&#x884C;&#x65F6;&#x7B49;&#x95EE;&#x9898;&#xFF0C;&#x8FD9;&#x4E9B;&#x95EE;&#x9898;&#x6709;&#x53EF;&#x80FD;&#x5BFC;&#x81F4;&#x670D;&#x52A1;&#x5F02;&#x5E38;&#x3002;&#x800C; Node Problem Detector&#xFF08;NPD&#xFF09;&#x5C31;&#x662F;&#x7528;&#x6765;&#x76D1;&#x6D4B;&#x8FD9;&#x4E9B;&#x5F02;&#x5E38;&#x7684;&#x670D;&#x52A1;&#x3002;NPD &#x4EE5; DaemonSet &#x7684;&#x65B9;&#x5F0F;&#x8FD0;&#x884C;&#x5728;&#x6BCF;&#x53F0; Node &#x4E0A;&#x9762;&#xFF0C;&#x5E76;&#x5728;&#x5F02;&#x5E38;&#x53D1;&#x751F;&#x65F6;&#x66F4;&#x65B0; NodeCondition&#xFF08;&#x6BD4;&#x5982; KernelDaedlock&#x3001;DockerHung&#x3001;BadDisk &#x7B49;&#xFF09;&#x6216;&#x8005; Node Event&#xFF08;&#x6BD4;&#x5982; OOM Kill &#x7B49;&#xFF09;&#x3002;</p>
 <p>&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://github.com/kubernetes/node-problem-detector#start-daemonset" target="_blank">kubernetes/node-problem-detector</a> &#x6765;&#x90E8;&#x7F72; NPD&#xFF0C;&#x6216;&#x8005;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; Helm &#x6765;&#x90E8;&#x7F72;&#xFF1A;</p>
@@ -2851,7 +2864,7 @@ sysdig evt.type=open and fd.name
 <li><a href="https://github.com/kubernetes/heapster" target="_blank">Kubernetes Heapster</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2895,7 +2908,7 @@ sysdig evt.type=open and fd.name
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"监控","level":"4.8.4","depth":2,"next":{"title":"日志","level":"4.8.5","depth":2,"path":"addons/logging.md","ref":"addons/logging.md","articles":[]},"previous":{"title":"Dashboard","level":"4.8.3","depth":2,"path":"addons/dashboard.md","ref":"addons/dashboard.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"addons/monitor.md","mtime":"2019-12-29T11:13:13.060Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"监控","level":"4.8.4","depth":2,"next":{"title":"日志","level":"4.8.5","depth":2,"path":"addons/logging.md","ref":"addons/logging.md","articles":[]},"previous":{"title":"Dashboard","level":"4.8.3","depth":2,"path":"addons/dashboard.md","ref":"addons/dashboard.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"addons/monitor.md","mtime":"2020-08-07T14:01:05.303Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

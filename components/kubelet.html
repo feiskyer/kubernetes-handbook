@@ -2113,7 +2113,7 @@
                 <a href="../practice/ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="../practice/debugging.html">
+        <li class="chapter " data-level="7.4" data-path="../practice/app-ha.html">
+            
+                <a href="../practice/app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="../practice/debugging.html">
             
                 <a href="../practice/debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="../practice/portmap.html">
+        <li class="chapter " data-level="7.6" data-path="../practice/portmap.html">
             
                 <a href="../practice/portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="../practice/portforward.html">
+        <li class="chapter " data-level="7.7" data-path="../practice/portforward.html">
             
                 <a href="../practice/portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="../practice/user-management.html">
+        <li class="chapter " data-level="7.8" data-path="../practice/user-management.html">
             
                 <a href="../practice/user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="../practice/gpu.html">
+        <li class="chapter " data-level="7.9" data-path="../practice/gpu.html">
             
                 <a href="../practice/gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="../practice/hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="../practice/hugepage.html">
             
                 <a href="../practice/hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.10" data-path="../practice/security.html">
+        <li class="chapter " data-level="7.11" data-path="../practice/security.html">
             
                 <a href="../practice/security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="../practice/audit.html">
+        <li class="chapter " data-level="7.12" data-path="../practice/audit.html">
             
                 <a href="../practice/audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="../practice/backup.html">
+        <li class="chapter " data-level="7.13" data-path="../practice/backup.html">
             
                 <a href="../practice/backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="../practice/certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="../practice/certificate-rotation.html">
             
                 <a href="../practice/certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="../practice/big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="../practice/big-cluster.html">
             
                 <a href="../practice/big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../machine-learning/introduction.html">
             
                 <a href="../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../machine-learning/spark.html">
             
                 <a href="../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../machine-learning/tensorflow.html">
             
                 <a href="../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../serverless/serverless.html">
             
                 <a href="../serverless/serverless.html">
             
@@ -2782,6 +2795,58 @@
 </ul>
 </li>
 </ul>
+<p>&#x9664;&#x4E86;&#x9A71;&#x9010;&#x4E4B;&#x5916;&#xFF0C;Kubelet &#x8FD8;&#x652F;&#x6301;&#x4E00;&#x7CFB;&#x5217;&#x7684;&#x5BB9;&#x5668;&#x548C;&#x955C;&#x50CF;&#x5783;&#x573E;&#x56DE;&#x6536;&#x9009;&#x9879;&#xFF0C;&#x5B83;&#x4EEC;&#x672A;&#x6765;&#x5C06;&#x4F1A;&#x88AB;&#x9A71;&#x9010;&#x66FF;&#x4EE3;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x5783;&#x573E;&#x56DE;&#x6536;&#x53C2;&#x6570;</th>
+<th>&#x9A71;&#x9010;&#x53C2;&#x6570;</th>
+<th>&#x89E3;&#x91CA;                   </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--image-gc-high-threshold</code></td>
+<td><code>--eviction-hard</code> &#x6216; <code>--eviction-soft</code></td>
+<td>&#x73B0;&#x5B58;&#x7684;&#x9A71;&#x9010;&#x56DE;&#x6536;&#x4FE1;&#x53F7;&#x53EF;&#x4EE5;&#x89E6;&#x53D1;&#x955C;&#x50CF;&#x5783;&#x573E;&#x56DE;&#x6536;  </td>
+</tr>
+<tr>
+<td><code>--image-gc-low-threshold</code></td>
+<td><code>--eviction-minimum-reclaim</code></td>
+<td>&#x9A71;&#x9010;&#x56DE;&#x6536;&#x5B9E;&#x73B0;&#x76F8;&#x540C;&#x884C;&#x4E3A;           </td>
+</tr>
+<tr>
+<td><code>--minimum-image-ttl-duration</code></td>
+<td></td>
+<td>&#x7531;&#x4E8E;&#x9A71;&#x9010;&#x4E0D;&#x5305;&#x62EC;TTL&#x914D;&#x7F6E;&#xFF0C;&#x6240;&#x4EE5;&#x5B83;&#x8FD8;&#x4F1A;&#x7EE7;&#x7EED;&#x652F;&#x6301;</td>
+</tr>
+<tr>
+<td><code>--maximum-dead-containers</code></td>
+<td></td>
+<td>&#x4E00;&#x65E6;&#x65E7;&#x65E5;&#x5FD7;&#x5B58;&#x50A8;&#x5728;&#x5BB9;&#x5668;&#x4E0A;&#x4E0B;&#x6587;&#x4E4B;&#x5916;&#xFF0C;&#x5C31;&#x4F1A;&#x88AB;&#x5F03;&#x7528;</td>
+</tr>
+<tr>
+<td><code>--maximum-dead-containers-per-container</code></td>
+<td></td>
+<td>&#x4E00;&#x65E6;&#x65E7;&#x65E5;&#x5FD7;&#x5B58;&#x50A8;&#x5728;&#x5BB9;&#x5668;&#x4E0A;&#x4E0B;&#x6587;&#x4E4B;&#x5916;&#xFF0C;&#x5C31;&#x4F1A;&#x88AB;&#x5F03;&#x7528;</td>
+</tr>
+<tr>
+<td><code>--minimum-container-ttl-duration</code></td>
+<td></td>
+<td>&#x4E00;&#x65E6;&#x65E7;&#x65E5;&#x5FD7;&#x5B58;&#x50A8;&#x5728;&#x5BB9;&#x5668;&#x4E0A;&#x4E0B;&#x6587;&#x4E4B;&#x5916;&#xFF0C;&#x5C31;&#x4F1A;&#x88AB;&#x5F03;&#x7528;</td>
+</tr>
+<tr>
+<td><code>--low-diskspace-threshold-mb</code></td>
+<td><code>--eviction-hard</code> or <code>eviction-soft</code></td>
+<td>&#x9A71;&#x9010;&#x56DE;&#x6536;&#x5C06;&#x78C1;&#x76D8;&#x9608;&#x503C;&#x6CDB;&#x5316;&#x5230;&#x5176;&#x4ED6;&#x8D44;&#x6E90;     </td>
+</tr>
+<tr>
+<td><code>--outofdisk-transition-frequency</code></td>
+<td><code>--eviction-pressure-transition-period</code></td>
+<td>&#x9A71;&#x9010;&#x56DE;&#x6536;&#x5C06;&#x78C1;&#x76D8;&#x538B;&#x529B;&#x8F6C;&#x6362;&#x5230;&#x5176;&#x4ED6;&#x8D44;&#x6E90;     </td>
+</tr>
+</tbody>
+</table>
 <h2 id="&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;">&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;</h2>
 <p>&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#xFF08;Container Runtime&#xFF09;&#x662F; Kubernetes &#x6700;&#x91CD;&#x8981;&#x7684;&#x7EC4;&#x4EF6;&#x4E4B;&#x4E00;&#xFF0C;&#x8D1F;&#x8D23;&#x771F;&#x6B63;&#x7BA1;&#x7406;&#x955C;&#x50CF;&#x548C;&#x5BB9;&#x5668;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x3002;Kubelet &#x901A;&#x8FC7; <a href="../plugins/CRI.html">&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x63A5;&#x53E3;&#xFF08;Container Runtime Interface&#xFF0C;CRI)</a> &#x4E0E;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x4EA4;&#x4E92;&#xFF0C;&#x4EE5;&#x7BA1;&#x7406;&#x955C;&#x50CF;&#x548C;&#x5BB9;&#x5668;&#x3002;</p>
 <p>Container Runtime Interface&#xFF08;CRI&#xFF09;&#x662F; Kubernetes v1.5 &#x5F15;&#x5165;&#x7684;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x63A5;&#x53E3;&#xFF0C;&#x5B83;&#x5C06; Kubelet &#x4E0E;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x89E3;&#x8026;&#xFF0C;&#x5C06;&#x539F;&#x6765;&#x5B8C;&#x5168;&#x9762;&#x5411; Pod &#x7EA7;&#x522B;&#x7684;&#x5185;&#x90E8;&#x63A5;&#x53E3;&#x62C6;&#x5206;&#x6210;&#x9762;&#x5411; Sandbox &#x548C; Container &#x7684; gRPC &#x63A5;&#x53E3;&#xFF0C;&#x5E76;&#x5C06;&#x955C;&#x50CF;&#x7BA1;&#x7406;&#x548C;&#x5BB9;&#x5668;&#x7BA1;&#x7406;&#x5206;&#x79BB;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x670D;&#x52A1;&#x3002;</p>
@@ -2859,7 +2924,7 @@
 curl http://localhost:8001/api/v1/proxy/nodes/&lt;node-name&gt;:10255/stats/summary
 </code></pre>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2903,7 +2968,7 @@ curl http://localhost:8001/api/v1/proxy/nodes/&lt;node-name&gt;:10255/stats/summ
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"kubelet","level":"3.4.5","depth":2,"next":{"title":"kube-proxy","level":"3.4.6","depth":2,"path":"components/kube-proxy.md","ref":"components/kube-proxy.md","articles":[]},"previous":{"title":"kube-controller-manager","level":"3.4.4","depth":2,"path":"components/controller-manager.md","ref":"components/controller-manager.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kubelet.md","mtime":"2019-12-29T11:13:13.132Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"kubelet","level":"3.4.5","depth":2,"next":{"title":"kube-proxy","level":"3.4.6","depth":2,"path":"components/kube-proxy.md","ref":"components/kube-proxy.md","articles":[]},"previous":{"title":"kube-controller-manager","level":"3.4.4","depth":2,"path":"components/controller-manager.md","ref":"components/controller-manager.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"components/kubelet.md","mtime":"2020-08-07T14:01:05.387Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

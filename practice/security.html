@@ -2113,7 +2113,7 @@
                 <a href="ha.html">
             
                     
-                    高可用
+                    集群高可用
             
                 </a>
             
@@ -2121,7 +2121,20 @@
             
         </li>
     
-        <li class="chapter " data-level="7.4" data-path="debugging.html">
+        <li class="chapter " data-level="7.4" data-path="app-ha.html">
+            
+                <a href="app-ha.html">
+            
+                    
+                    应用高可用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" data-path="debugging.html">
             
                 <a href="debugging.html">
             
@@ -2134,7 +2147,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.5" data-path="portmap.html">
+        <li class="chapter " data-level="7.6" data-path="portmap.html">
             
                 <a href="portmap.html">
             
@@ -2147,7 +2160,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.6" data-path="portforward.html">
+        <li class="chapter " data-level="7.7" data-path="portforward.html">
             
                 <a href="portforward.html">
             
@@ -2160,7 +2173,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.7" data-path="user-management.html">
+        <li class="chapter " data-level="7.8" data-path="user-management.html">
             
                 <a href="user-management.html">
             
@@ -2173,7 +2186,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.8" data-path="gpu.html">
+        <li class="chapter " data-level="7.9" data-path="gpu.html">
             
                 <a href="gpu.html">
             
@@ -2186,7 +2199,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.9" data-path="hugepage.html">
+        <li class="chapter " data-level="7.10" data-path="hugepage.html">
             
                 <a href="hugepage.html">
             
@@ -2199,7 +2212,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="7.10" data-path="security.html">
+        <li class="chapter active" data-level="7.11" data-path="security.html">
             
                 <a href="security.html">
             
@@ -2212,7 +2225,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.11" data-path="audit.html">
+        <li class="chapter " data-level="7.12" data-path="audit.html">
             
                 <a href="audit.html">
             
@@ -2225,7 +2238,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.12" data-path="backup.html">
+        <li class="chapter " data-level="7.13" data-path="backup.html">
             
                 <a href="backup.html">
             
@@ -2238,7 +2251,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.13" data-path="certificate-rotation.html">
+        <li class="chapter " data-level="7.14" data-path="certificate-rotation.html">
             
                 <a href="certificate-rotation.html">
             
@@ -2251,7 +2264,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.14" data-path="big-cluster.html">
+        <li class="chapter " data-level="7.15" data-path="big-cluster.html">
             
                 <a href="big-cluster.html">
             
@@ -2264,7 +2277,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15" data-path="../machine-learning/introduction.html">
+        <li class="chapter " data-level="7.16" data-path="../machine-learning/introduction.html">
             
                 <a href="../machine-learning/introduction.html">
             
@@ -2278,7 +2291,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="7.15.1" data-path="../machine-learning/spark.html">
+        <li class="chapter " data-level="7.16.1" data-path="../machine-learning/spark.html">
             
                 <a href="../machine-learning/spark.html">
             
@@ -2291,7 +2304,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.15.2" data-path="../machine-learning/tensorflow.html">
+        <li class="chapter " data-level="7.16.2" data-path="../machine-learning/tensorflow.html">
             
                 <a href="../machine-learning/tensorflow.html">
             
@@ -2309,7 +2322,7 @@
             
         </li>
     
-        <li class="chapter " data-level="7.16" data-path="../serverless/serverless.html">
+        <li class="chapter " data-level="7.17" data-path="../serverless/serverless.html">
             
                 <a href="../serverless/serverless.html">
             
@@ -2878,6 +2891,7 @@ $ kubectl logs kube-bench-master-k7jdd
 ...
 </code></pre>
 <h2 id="&#x955C;&#x50CF;&#x5B89;&#x5168;">&#x955C;&#x50CF;&#x5B89;&#x5168;</h2>
+<h3 id="clair">Clair</h3>
 <p><a href="https://github.com/coreos/clair/" target="_blank">Clair</a> &#x662F; CoreOS &#x5F00;&#x6E90;&#x7684;&#x5BB9;&#x5668;&#x5B89;&#x5168;&#x5DE5;&#x5177;&#xFF0C;&#x7528;&#x6765;&#x9759;&#x6001;&#x5206;&#x6790;&#x955C;&#x50CF;&#x4E2D;&#x6F5C;&#x5728;&#x7684;&#x5B89;&#x5168;&#x95EE;&#x9898;&#x3002;&#x63A8;&#x8350;&#x5C06; Clair &#x96C6;&#x6210;&#x5230; Devops &#x6D41;&#x7A0B;&#x4E2D;&#xFF0C;&#x81EA;&#x52A8;&#x5BF9;&#x6240;&#x6709;&#x955C;&#x50CF;&#x8FDB;&#x884C;&#x5B89;&#x5168;&#x626B;&#x63CF;&#x3002;</p>
 <p>&#x5B89;&#x88C5; Clair &#x7684;&#x65B9;&#x6CD5;&#x4E3A;&#xFF1A;</p>
 <pre><code class="lang-sh">git <span class="hljs-built_in">clone</span> https://github.com/coreos/clair
@@ -2895,6 +2909,19 @@ $ reg vulns --clair https://clair.j3ss.co r.j3ss.co/chrome
 <span class="hljs-comment"># Generating Static Website for a Registry</span>
 $ $ reg server --clair https://clair.j3ss.co
 </code></pre>
+<h3 id="trivy">trivy</h3>
+<p><a href="https://github.com/aquasecurity/trivy" target="_blank">trivy</a> &#x662F; Aqua Security &#x5F00;&#x6E90;&#x7684;&#x5BB9;&#x5668;&#x6F0F;&#x6D1E;&#x626B;&#x63CF;&#x5DE5;&#x5177;&#x3002;&#x76F8;&#x5BF9;&#x4E8E; Clair &#x6765;&#x8BF4;&#xFF0C;&#x4F7F;&#x7528;&#x8D77;&#x6765;&#x66F4;&#x4E3A;&#x7B80;&#x5355;&#xFF0C;&#x53EF;&#x4EE5;&#x66F4;&#x65B9;&#x4FBF;&#x96C6;&#x6210;&#x5230; CI &#x4E2D;&#x3002;</p>
+<pre><code class="lang-sh"><span class="hljs-comment"># Install</span>
+sudo apt-get install wget apt-transport-https gnupg lsb-release
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+<span class="hljs-built_in">echo</span> deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee <span class="hljs-_">-a</span> /etc/apt/sources.list.d/trivy.list
+sudo apt-get update
+sudo apt-get install -y trivy
+
+<span class="hljs-comment"># Image Scanning</span>
+trivy python:3.4-alpine
+</code></pre>
+<h3 id="&#x5176;&#x4ED6;&#x5DE5;&#x5177;">&#x5176;&#x4ED6;&#x5DE5;&#x5177;</h3>
 <p>&#x5176;&#x4ED6;&#x955C;&#x50CF;&#x5B89;&#x5168;&#x626B;&#x63CF;&#x5DE5;&#x5177;&#x8FD8;&#x6709;&#xFF1A;</p>
 <ul>
 <li><a href="https://nvd.nist.gov/" target="_blank">National Vulnerability Database</a></li>
@@ -2911,7 +2938,7 @@ $ $ reg server --clair https://clair.j3ss.co
 <li><a href="https://grafeas.io/" target="_blank">Grafeas</a></li>
 <li><a href="https://in-toto.github.io/" target="_blank">in-toto</a></li>
 </ul>
-<h2 id="&#x5176;&#x4ED6;&#x5B89;&#x5168;&#x5DE5;&#x5177;">&#x5176;&#x4ED6;&#x5B89;&#x5168;&#x5DE5;&#x5177;</h2>
+<h2 id="&#x5B89;&#x5168;&#x5DE5;&#x5177;">&#x5B89;&#x5168;&#x5DE5;&#x5177;</h2>
 <p>&#x5F00;&#x6E90;&#x4EA7;&#x54C1;&#xFF1A;</p>
 <ul>
 <li><a href="https://github.com/falcosecurity/falco" target="_blank">falco</a>&#xFF1A;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x65F6;&#x5B89;&#x5168;&#x884C;&#x4E3A;&#x76D1;&#x63A7;&#x5DE5;&#x5177;&#x3002;</li>
@@ -2943,7 +2970,7 @@ $ $ reg server --clair https://clair.j3ss.co
 <li><a href="https://github.com/freach/kubernetes-security-best-practice" target="_blank">Kubernetes Security - Best Practice Guide</a></li>
 </ul>
 <footer class="page-footer"><span class="copyright">&#xA9; Pengfei Ni all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
-2019-12-29 11:13:13
+2020-08-07 14:01:05
 </span></footer>
                                 
                                 </section>
@@ -2987,7 +3014,7 @@ $ $ reg server --clair https://clair.j3ss.co
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"安全","level":"7.10","depth":1,"next":{"title":"审计","level":"7.11","depth":1,"path":"practice/audit.md","ref":"practice/audit.md","articles":[]},"previous":{"title":"HugePage","level":"7.9","depth":1,"path":"practice/hugepage.md","ref":"practice/hugepage.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/security.md","mtime":"2019-12-29T11:13:13.256Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-29T11:14:23.268Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"安全","level":"7.11","depth":1,"next":{"title":"审计","level":"7.12","depth":1,"path":"practice/audit.md","ref":"practice/audit.md","articles":[]},"previous":{"title":"HugePage","level":"7.10","depth":1,"path":"practice/hugepage.md","ref":"practice/hugepage.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","page-toc","-lunr","-search","search-plus","tbfed-pagefooter"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy Pengfei Ni","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"github":{"url":"https://github.com/feiskyer/kubernetes-handbook"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/feiskyer/kubernetes-handbook/blob/master"},"mermaid":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3","showByDefault":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{}},"theme":"default","author":"Pengfei Ni","pdf":{"pageNumbers":true,"fontSize":11,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Kubernetes Handbook","language":"zh-cn","gitbook":">= 3.2.2"},"file":{"path":"practice/security.md","mtime":"2020-08-07T14:01:05.735Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T14:02:23.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
