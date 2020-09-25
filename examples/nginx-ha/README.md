@@ -1,6 +1,8 @@
 # Zero Downtime Service Updates
 
-Example nginx manifests for the zone downtime service udpates described [here](https://blog.gruntwork.io/zero-downtime-server-updates-for-your-kubernetes-cluster-902009df5b33). General guidelines are:
+Example nginx manifests for the zone downtime service udpates described [here](https://blog.gruntwork.io/zero-downtime-server-updates-for-your-kubernetes-cluster-902009df5b33). 
+
+General guidelines of Kubernetes workloads HA are:
 
 * run Pods in multiple replicas across different nodes
 * readinessProbe is added to the container
@@ -11,9 +13,9 @@ Example nginx manifests for the zone downtime service udpates described [here](h
 
 Note that even all of the above steps are applied, connection timeout would still happen because:
 
-1) Pod IPs would be deleted from endpoints immediately when the Pods are marked for deletion. Endpoints controller won't wait for the real container status, it only checks  `pod.DeletionTimestamp != nil`.
-2) kube-proxy would delete the iptables rules immediately when the Pod IPs are deleted from endpoints.
-3) LoadBalancer would continue forwarding requests to the node until health probe fails (it needs 10s).
+* Pod IPs would be deleted from endpoints immediately when the Pods are marked for deletion. Endpoints controller won't wait for the real container status, it only checks  `pod.DeletionTimestamp != nil`.
+* kube-proxy would delete the iptables rules immediately when the Pod IPs are deleted from endpoints.
+* LoadBalancer would continue forwarding requests to the node until health probe fails (it needs 10s).
 
 So, to avoid the connection timeout, the node should be removed from LoadBalancer backend address pool before draining it.
 
