@@ -1,11 +1,12 @@
 # Zero Downtime Service Updates
 
-Example nginx manifests for the zone downtime service udpates described [here](https://blog.gruntwork.io/zero-downtime-server-updates-for-your-kubernetes-cluster-902009df5b33). 
+Example nginx manifests for the zone downtime service udpates described [here](https://blog.gruntwork.io/zero-downtime-server-updates-for-your-kubernetes-cluster-902009df5b33).
 
 General guidelines of Kubernetes workloads HA are:
 
 * run Pods in multiple replicas across different nodes
 * readinessProbe is added to the container
+* applications have handled SIGTERM to gracefully shutdown itself (e.g. save data and close network connections)
 * sleep at least 10 seconds in the preStop hook (longer than LB health probe failure)
 * service's externalTrafficPolicy is set to Local
 * PodDiscruptionBudget is used to avoid disruptions
@@ -17,7 +18,10 @@ Note that even all of the above steps are applied, connection timeout would stil
 * kube-proxy would delete the iptables rules immediately when the Pod IPs are deleted from endpoints.
 * LoadBalancer would continue forwarding requests to the node until health probe fails (it needs 10s).
 
-So, to avoid the connection timeout, the node should be removed from LoadBalancer backend address pool before draining it.
+So, there're still some extra steps required to completely avoid connection issues:
+
+1) To avoid new connection issues, remove the node from LoadBalancer backend address pool if you want to drain the node. Or else, ensure the Pods are still running on existing nodes (by using nodeAffinity and deployment.strategy.rollingUpdate.maxUnavailable).
+2) To avoid existing persistent connections, graceful termination is required to indicate the connections should be closed when the Pods get the SIGTERM signal. For node draining scenarios, since the existing active connections would be terminated, it's better to block the health check for a while before removing the node from SLB backend address pool.
 
 ## Provision Nginx service
 
