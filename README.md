@@ -39,6 +39,8 @@ Kubernetes 发展非常迅速，已经成为容器编排领域的领导者。Kub
 
 欢迎参与贡献和完善内容，贡献方法参考 [CONTRIBUTING](https://github.com/feiskyer/kubernetes-handbook/blob/master/CONTRIBUTING.md)。感谢所有的贡献者，贡献者列表见 [contributors](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)。
 
+[![](https://opencollective.com/kubernetes-handbook/contributors.svg?width=890&button=false)](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)
+
 ## LICENSE
 
 ![LICENSE](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
