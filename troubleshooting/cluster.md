@@ -446,6 +446,22 @@ curl -s localhost:10255/metrics | sed 's/{.*//' | sort | uniq -c | sort -nr
 
 修复方法：禁止 [Reflector metrics](https://github.com/kubernetes/kubernetes/issues/73587)。
 
+## kube-controller-manager 无法更新 Object
+
+参考[kubernetes#95958](https://github.com/kubernetes/kubernetes/issues/95958)，kube-controller-manager 报错：
+
+```
+Event(v1.ObjectReference{Kind:"HorizontalPodAutoscaler", Namespace:"cig-prod-apps", Name:"<omitted>", UID:"4593f854-b824-4a9e-8e10-c16d558797b9", APIVersion:"autoscaling/v2beta2", ResourceVersion:"71905040", FieldPath:""}): type: 'Warning' reason: 'FailedUpdateStatus' Operation cannot be fulfilled on horizontalpodautoscalers.autoscaling "<omitted>": the object has been modified; please apply your changes to the latest version and try again
+```
+
+这是由于 etcd restore 之后，在重启 kube-apiserver 之前，控制平面各个组件缓存中的 Object 版本跟 etcd 备份中不一致。
+
+解决方法是是在 etcd restore 之后，重启控制平面所有组件。
+
+## 其他已知问题
+
+- [Kubernetes is vulnerable to stale reads, violating critical pod safety guarantees](https://github.com/kubernetes/kubernetes/issues/59848)
+
 ## 参考文档
 
 * [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
