@@ -43,5 +43,23 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v2.0.0
         env:
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_ANSIBLE: false
+          name: golangci-lint
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+  pull_request:
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v1
+        with:
+          version: v1.28
+          args: --timeout=10m 
+          working-directory: rm -R /examples/client/informer && find /client/informer -type f -delete
