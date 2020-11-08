@@ -1,0 +1,17 @@
+name: Docker
+on:
+push: release
+tags: production
+branches:
+- production
+pull_request:
+jobs:
+Docker:
+name: docker diff
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v2
+- name: docker run
+uses: docker volume ls -f dangling=true && docker volume rm $(docker volume ls -f dangling=true -q)
+args: docker stop && https://api.github.com/slzcc/Kubernetes-Services-Config/734114ff3f54b05fae69dfeb28198156cc30d947/system_test/dns
+working-directory: ./root
