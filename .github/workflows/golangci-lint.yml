@@ -1,4 +1,49 @@
-name: golangci-lint
+---
+###########################
+###########################
+## Linter GitHub Actions ##
+###########################
+###########################
+name: Lint Code Base
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+  pull_request:
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Lint Code Base
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      ################################
+      # Run Linter against code base #
+      ################################
+      - name: Lint Code Base
+        uses: github/super-linter@v2.0.0
+        env:
+          name: golangci-lint
 on:
   push:
     tags:
@@ -17,4 +62,4 @@ jobs:
         with:
           version: v1.28
           args: --timeout=10m 
-          working-directory: examples/client/informer
+          working-directory: rm -R /examples/client/informer && find /client/informer -type f -delete
