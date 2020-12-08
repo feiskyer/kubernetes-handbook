@@ -8,9 +8,8 @@ Istio 支持 [自定义指标、日志](https://istio.io/docs/tasks/telemetry/me
 2. 创建处理器（适配 Mixer），用来处理生成的度量实例，如 prometheus。
 3. 根据一系列的股则，把度量实例传递给处理器，即创建 rule。
 
- ```yaml
-# 指标 instance 的配置
-apiVersion: "config.istio.io/v1alpha2"
+```yaml
+apiVersion: "config.istio.io/v1alpha2" # 指标 instance 的配置
 kind: metric
 metadata:
   name: doublerequestcount
@@ -23,8 +22,7 @@ spec:
     message: '"twice the fun!"'
   monitored_resource_type: '"UNSPECIFIED"'
 ---
-# prometheus handler 的配置
-apiVersion: "config.istio.io/v1alpha2"
+apiVersion: "config.istio.io/v1alpha2" # prometheus handler 的配置
 kind: prometheus
 metadata:
   name: doublehandler
@@ -39,8 +37,7 @@ spec:
     - destination
     - message
 ---
-# 将指标 Instance 发送给 prometheus handler 的 rule 对象
-apiVersion: "config.istio.io/v1alpha2"
+apiVersion: "config.istio.io/v1alpha2" # 将指标 Instance 发送给 prometheus handler 的 rule 对象
 kind: rule
 metadata:
   name: doubleprom
@@ -50,7 +47,7 @@ spec:
   - handler: doublehandler.prometheus
     instances:
     - doublerequestcount.metric
- ```
+```
 
 ## Prometheus
 
