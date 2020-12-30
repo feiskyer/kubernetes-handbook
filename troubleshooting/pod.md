@@ -271,7 +271,7 @@ kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get
 kubectl proxy &
 
 NAMESPACE="<ns-to-delete>"
-kubectl get namespaces $NAMESPACE -o json | jq '.metadata.finalizers=[]' > /tmp/ns.json
+kubectl get namespaces $NAMESPACE -o json | jq '.metadata.finalizers=[]' | jq '.spec.finalizers=[]' > /tmp/ns.json
 curl -k -H "Content-Type: application/json" -X PUT --data-binary @/tmp/ns.json http://127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
 ```
 
