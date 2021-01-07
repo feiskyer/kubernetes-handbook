@@ -267,6 +267,8 @@ kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get
 
 而第二个问题则需要手动清理 Namespace 的 Finalizer 列表：
 
+1) 使用 kubectl proxy：
+
 ```sh
 kubectl proxy &
 
@@ -275,12 +277,22 @@ kubectl get namespaces $NAMESPACE -o json | jq '.metadata.finalizers=[]' | jq '.
 curl -k -H "Content-Type: application/json" -X PUT --data-binary @/tmp/ns.json http://127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
 ```
 
+2) 使用 kubectl --raw：
+
+```sh
+NAMESPACE="<ns-to-delete>"
+kubectl get namespaces $NAMESPACE -o json | jq '.metadata.finalizers=[]' | jq '.spec.finalizers=[]' | kubectl replace --raw /api/v1/namespaces/$NAMESPACE/finalize -f -
+```
+
+
+
 ## Pod 排错图解
 
 ![img](assets/f65ffe9f61de0f4a417f7a05306edd4c.png)
 
-(图片来自[A visual guide on troubleshooting Kubernetes deployments](https://learnk8s.io/troubleshooting-deployments)
+(图片来自[A visual guide on troubleshooting Kubernetes deployments](https://learnk8s.io/troubleshooting-deployments)）
 
 ## 参考文档
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)
+
