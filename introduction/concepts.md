@@ -10,16 +10,16 @@ Container（容器）是一种便携式、轻量级的操作系统级虚拟化�
 
 其他容器的优点还包括
 
-- 敏捷的应用程序创建和部署: 与虚拟机镜像相比，容器镜像更易用、更高效。
-- 持续开发、集成和部署: 提供可靠与频繁的容器镜像构建、部署和快速简便的回滚（镜像是不可变的）。
-- 开发与运维的关注分离: 在构建/发布时即创建容器镜像，从而将应用与基础架构分离。
-- 开发、测试与生产环境的一致性: 在笔记本电脑上运行和云中一样。
-- 可观测：不仅显示操作系统的信息和度量，还显示应用自身的信息和度量。
-- 云和操作系统的分发可移植性: 可运行在 Ubuntu, RHEL, CoreOS, 物理机, GKE 以及其他任何地方。
-- 以应用为中心的管理: 从传统的硬件上部署操作系统提升到操作系统中部署应用程序。
-- 松耦合、分布式、弹性伸缩、微服务: 应用程序被分成更小，更独立的模块，并可以动态管理和部署 - 而不是运行在专用设备上的大型单体程序。
-- 资源隔离：可预测的应用程序性能。
-- 资源利用：高效率和高密度。
+* 敏捷的应用程序创建和部署: 与虚拟机镜像相比，容器镜像更易用、更高效。
+* 持续开发、集成和部署: 提供可靠与频繁的容器镜像构建、部署和快速简便的回滚（镜像是不可变的）。
+* 开发与运维的关注分离: 在构建/发布时即创建容器镜像，从而将应用与基础架构分离。
+* 开发、测试与生产环境的一致性: 在笔记本电脑上运行和云中一样。
+* 可观测：不仅显示操作系统的信息和度量，还显示应用自身的信息和度量。
+* 云和操作系统的分发可移植性: 可运行在 Ubuntu, RHEL, CoreOS, 物理机, GKE 以及其他任何地方。
+* 以应用为中心的管理: 从传统的硬件上部署操作系统提升到操作系统中部署应用程序。
+* 松耦合、分布式、弹性伸缩、微服务: 应用程序被分成更小，更独立的模块，并可以动态管理和部署 - 而不是运行在专用设备上的大型单体程序。
+* 资源隔离：可预测的应用程序性能。
+* 资源利用：高效率和高密度。
 
 ## Pod
 
@@ -27,7 +27,7 @@ Kubernetes 使用 Pod 来管理容器，每个 Pod 可以包含一个或多个�
 
 Pod 是一组紧密关联的容器集合，它们共享 IPC 和 Network namespace，是 Kubernetes 调度的基本单位。Pod 内的多个容器共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。
 
-![pod](media/pod.png)
+![pod](../.gitbook/assets/pod%20%285%29.png)
 
 在 Kubernetes 中，所有对象都使用 manifest（yaml 或 json）来定义，比如一个简单的 nginx 服务可以定义为 nginx.yaml，它包含一个镜像为 nginx 的容器：
 
@@ -50,7 +50,7 @@ spec:
 
 Node 是 Pod 真正运行的主机，可以是物理机，也可以是虚拟机。为了管理 Pod，每个 Node 节点上至少要运行 container runtime（比如 docker 或者 rkt）、`kubelet` 和 `kube-proxy` 服务。
 
-![node](media/node.png)
+![node](../.gitbook/assets/node%20%283%29.png)
 
 ## Namespace
 
@@ -62,7 +62,7 @@ Service 是应用服务的抽象，通过 labels 为应用提供负载均衡和�
 
 每个 Service 都会自动分配一个 cluster IP（仅在集群内部可访问的虚拟地址）和 DNS 名，其他容器可以通过该地址或 DNS 来访问服务，而不需要了解后端容器的运行。
 
-![](media/14731220608865.png)
+![](../.gitbook/assets/14731220608865.png)
 
 ```yaml
 apiVersion: v1
@@ -89,10 +89,11 @@ Label 不提供唯一性，并且实际上经常是很多对象（如 Pods）都
 
 Label 定义好后其他对象可以使用 Label Selector 来选择一组相同 label 的对象（比如 ReplicaSet 和 Service 用 label 来选择一组 Pod）。Label Selector 支持以下几种方式：
 
-- 等式，如 `app=nginx` 和 `env!=production`
-- 集合，如 `env in (production, qa)`
-- 多个 label（它们之间是 AND 关系），如 `app=nginx,env=test`
+* 等式，如 `app=nginx` 和 `env!=production`
+* 集合，如 `env in (production, qa)`
+* 多个 label（它们之间是 AND 关系），如 `app=nginx,env=test`
 
 ## Annotations
 
 Annotations 是 key/value 形式附加于对象的注解。不同于 Labels 用于标志和选择对象，Annotations 则是用来记录一些附加信息，用来辅助应用部署、安全策略以及调度策略等。比如 deployment 使用 annotations 来记录 rolling update 的状态。
+

@@ -1,4 +1,4 @@
-# 集群状态异常排错
+# 集群排错
 
 本章介绍集群状态异常的排错方法，包括 Kubernetes 主要组件以及必备扩展（如 kube-dns）等，而有关网络的异常排错请参考[网络异常排错方法](network.md)。
 
@@ -40,7 +40,7 @@
 
 一般来说，可以首先查看 Node 的状态，确认 Node 本身是不是 Ready 状态
 
-```sh
+```bash
 kubectl get nodes
 kubectl describe node <node-name>
 ```
@@ -93,7 +93,7 @@ spec:
       nodeName: <node-name>
 ```
 
-```sh
+```bash
 $ kubectl create -f ssh.yaml
 $ kubectl get svc ssh
 NAME      TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
@@ -113,7 +113,7 @@ ssh       LoadBalancer   10.0.99.149   52.52.52.52   22:32008/TCP   5m
 
 使用 systemd 等管理控制节点服务时，查看日志必须要首先 SSH 登录到机器上，然后查看具体的日志文件。如
 
-```sh
+```bash
 journalctl -l -u kube-apiserver
 journalctl -l -u kube-controller-manager
 journalctl -l -u kube-scheduler
@@ -133,28 +133,28 @@ journalctl -l -u kube-proxy
 
 ### kube-apiserver 日志
 
-```sh
+```bash
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-apiserver -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
 ### kube-controller-manager 日志
 
-```sh
+```bash
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-controller-manager -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
 ### kube-scheduler 日志
 
-```sh
+```bash
 PODNAME=$(kubectl -n kube-system get pod -l component=kube-scheduler -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME --tail 100
 ```
 
 ### kube-dns 日志
 
-```sh
+```bash
 PODNAME=$(kubectl -n kube-system get pod -l k8s-app=kube-dns -o jsonpath='{.items[0].metadata.name}')
 kubectl -n kube-system logs $PODNAME -c kubedns
 ```
@@ -163,7 +163,7 @@ kubectl -n kube-system logs $PODNAME -c kubedns
 
 查看 Kubelet 日志需要首先 SSH 登录到 Node 上。
 
-```sh
+```bash
 journalctl -l -u kubelet
 ```
 
@@ -171,7 +171,7 @@ journalctl -l -u kubelet
 
 Kube-proxy 通常以 DaemonSet 的方式部署
 
-```sh
+```bash
 $ kubectl -n kube-system get pod -l component=kube-proxy
 NAME               READY     STATUS    RESTARTS   AGE
 kube-proxy-42zpn   1/1       Running   0          1d
@@ -184,7 +184,7 @@ $ kubectl -n kube-system logs kube-proxy-42zpn
 
 由于 Dashboard 依赖于 kube-dns，所以这个问题一般是由于 kube-dns 无法正常启动导致的。查看 kube-dns 的日志
 
-```sh
+```bash
 $ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name) -c kubedns
 $ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name) -c dnsmasq
 $ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name) -c sidecar
@@ -192,7 +192,7 @@ $ kubectl logs --namespace=kube-system $(kubectl get pods --namespace=kube-syste
 
 可以发现如下的错误日志
 
-```sh
+```bash
 Waiting for services and endpoints to be initialized from apiserver...
 skydns: failure to forward request "read udp 10.240.0.18:47848->168.63.129.16:53: i/o timeout"
 Timeout waiting for initialization
@@ -200,13 +200,12 @@ Timeout waiting for initialization
 
 这说明 kube-dns pod 无法转发 DNS 请求到上游 DNS 服务器。解决方法为
 
-- 如果使用的 Docker 版本大于 1.12，则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT` 开启 Docker 容器的 IP 转发
-- 等待一段时间，如果还未恢复，则检查 Node 网络是否正确配置，比如是否可以正常请求上游DNS服务器、是否开启了 IP 转发（包括 Node 内部和公有云上虚拟网卡等）、是否有安全组禁止了 DNS 请求等
-
+* 如果使用的 Docker 版本大于 1.12，则在每个 Node 上面运行 `iptables -P FORWARD ACCEPT` 开启 Docker 容器的 IP 转发
+* 等待一段时间，如果还未恢复，则检查 Node 网络是否正确配置，比如是否可以正常请求上游DNS服务器、是否开启了 IP 转发（包括 Node 内部和公有云上虚拟网卡等）、是否有安全组禁止了 DNS 请求等
 
 如果错误日志中不是转发 DNS 请求超时，而是访问 kube-apiserver 超时，比如
 
-```sh
+```bash
 E0122 06:56:04.774977       1 reflector.go:199] k8s.io/dns/vendor/k8s.io/client-go/tools/cache/reflector.go:94: Failed to list *v1.Endpoints: Get https://10.0.0.1:443/api/v1/endpoints?resourceVersion=0: dial tcp 10.0.0.1:443: i/o timeout
 I0122 06:56:04.775358       1 dns.go:174] Waiting for services and endpoints to be initialized from apiserver...
 E0122 06:56:04.775574       1 reflector.go:199] k8s.io/dns/vendor/k8s.io/client-go/tools/cache/reflector.go:94: Failed to list *v1.Service: Get https://10.0.0.1:443/api/v1/services?resourceVersion=0: dial tcp 10.0.0.1:443: i/o timeout
@@ -215,11 +214,11 @@ I0122 06:56:05.775182       1 dns.go:174] Waiting for services and endpoints to 
 I0122 06:56:06.275288       1 dns.go:174] Waiting for services and endpoints to be initialized from apiserver...
 ```
 
-这说明 Pod 网络（一般是多主机之间）访问异常，包括 Pod->Node、Node->Pod 以及 Node-Node 等之间的往来通信异常。可能的原因比较多，具体的排错方法可以参考[网络异常排错指南](network.md)。
+这说明 Pod 网络（一般是多主机之间）访问异常，包括 Pod-&gt;Node、Node-&gt;Pod 以及 Node-Node 等之间的往来通信异常。可能的原因比较多，具体的排错方法可以参考[网络异常排错指南](network.md)。
 
 ## Node NotReady
 
-Node 处于 NotReady 状态，大部分是由于 PLEG（Pod Lifecycle Event Generator）问题导致的。社区 issue [#45419](https://github.com/kubernetes/kubernetes/issues/45419) 目前还处于未解决状态。
+Node 处于 NotReady 状态，大部分是由于 PLEG（Pod Lifecycle Event Generator）问题导致的。社区 issue [\#45419](https://github.com/kubernetes/kubernetes/issues/45419) 目前还处于未解决状态。
 
 NotReady 的原因比较多，在排查时最重要的就是执行 `kubectl describe node <node name>` 并查看 Kubelet 日志中的错误信息。常见的问题及修复方法为：
 
@@ -234,18 +233,18 @@ NotReady 的原因比较多，在排查时最重要的就是执行 `kubectl desc
 
 ## Kubelet: failed to initialize top level QOS containers
 
-重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers `（参考 [#43856](https://github.com/kubernetes/kubernetes/issues/43856)），临时解决方法是：
+重启 kubelet 时报错 `Failed to start ContainerManager failed to initialise top level QOS containers`（参考 [\#43856](https://github.com/kubernetes/kubernetes/issues/43856)），临时解决方法是：
 
 1. 在 docker.service 配置中增加 `--exec-opt native.cgroupdriver=systemd` 选项。
 2. 重启主机
 
-该问题已于2017年4月27日修复（v1.7.0+， [#44940](https://github.com/kubernetes/kubernetes/pull/44940)）。更新集群到新版本即可解决这个问题。
+该问题已于2017年4月27日修复（v1.7.0+， [\#44940](https://github.com/kubernetes/kubernetes/pull/44940)）。更新集群到新版本即可解决这个问题。
 
 ## Kubelet 一直报 FailedNodeAllocatableEnforcement 事件
 
 当 NodeAllocatable 特性未开启时（即 kubelet 设置了 `--cgroups-per-qos=false` ），查看 node 的事件会发现每分钟都会有 `Failed to update Node Allocatable Limits` 的警告信息：
 
-```sh
+```bash
 $ kubectl describe node node1
 Events:
   Type     Reason                            Age                  From                               Message
@@ -259,7 +258,7 @@ Events:
 >
 > The `kubelet` exposes a feature named `Node Allocatable` that helps to reserve compute resources for system daemons. Kubernetes recommends cluster administrators to configure `Node Allocatable` based on their workload density on each node.
 >
-> ```sh
+> ```bash
 >       Node Capacity
 > ---------------------------
 > |     kube-reserved       |
@@ -278,7 +277,7 @@ Events:
 
 开启方法为：
 
-```sh
+```bash
 kubelet --cgroups-per-qos=true --enforce-node-allocatable=pods ...
 ```
 
@@ -286,7 +285,7 @@ kubelet --cgroups-per-qos=true --enforce-node-allocatable=pods ...
 
 kube-proxy 报错，并且 service 的 DNS 解析异常
 
-```sh
+```bash
 kube-proxy[2241]: E0502 15:55:13.889842    2241 conntrack.go:42] conntrack returned error: error looking for path of conntrack: exec: "conntrack": executable file not found in $PATH
 ```
 
@@ -296,21 +295,21 @@ kube-proxy[2241]: E0502 15:55:13.889842    2241 conntrack.go:42] conntrack retur
 
 正常情况下，Dashboard 首页应该会显示资源使用情况的图表，如
 
-![](images/dashboard-ui.png)
+![](../.gitbook/assets/dashboard-ui.png)
 
 如果没有这些图表，则需要首先检查 Heapster 是否正在运行（因为Dashboard 需要访问 Heapster 来查询资源使用情况）：
 
-```sh
+```bash
 kubectl -n kube-system get pods -l k8s-app=heapster
 NAME                        READY     STATUS    RESTARTS   AGE
 heapster-86b59f68f6-h4vt6   2/2       Running   0          5d
 ```
 
-如果查询结果为空，说明 Heapster 还未部署，可以参考 https://github.com/kubernetes/heapster 来部署。
+如果查询结果为空，说明 Heapster 还未部署，可以参考 [https://github.com/kubernetes/heapster](https://github.com/kubernetes/heapster) 来部署。
 
 但如果 Heapster 处于正常状态，那么需要查看 dashboard 的日志，确认是否还有其他问题
 
-```sh
+```bash
 $ kubectl -n kube-system get pods -l k8s-app=kubernetes-dashboard
 NAME                                   READY     STATUS    RESTARTS   AGE
 kubernetes-dashboard-665b4f7df-dsjpn   1/1       Running   0          5d
@@ -324,7 +323,7 @@ $ kubectl -n kube-system logs kubernetes-dashboard-665b4f7df-dsjpn
 
 查看 HPA 的事件，发现
 
-```sh
+```bash
 $ kubectl describe hpa php-apache
 Name:                                                  php-apache
 Namespace:                                             default
@@ -347,27 +346,27 @@ Events:
   Warning  FailedGetResourceMetric  3m (x2231 over 18h)  horizontal-pod-autoscaler  unable to get metrics for resource cpu: unable to fetch metrics from API: the server could not find the requested resource (get pods.metrics.k8s.io)
 ```
 
-这说明 [metrics-server](../addons/metrics.md) 未部署，可以参考 [这里](../addons/metrics.md) 部署。
+这说明 [metrics-server](../setup/addon-list/metrics.md) 未部署，可以参考 [这里](../setup/addon-list/metrics.md) 部署。
 
 ## Node 存储空间不足
 
 Node 存储空间不足一般是容器镜像未及时清理导致的，比如短时间内运行了很多使用较大镜像的容器等。Kubelet 会自动清理未使用的镜像，但如果想要立即清理，可以使用 [spotify/docker-gc](https://github.com/spotify/docker-gc)：
 
-```sh
+```bash
 sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc:ro spotify/docker-gc
 ```
 
 你也可以 SSH 到 Node 上，执行下面的命令来查看占用空间最多的镜像（按镜像大小由大到小排序）：
 
-```sh
+```bash
 sudo docker images --format '{{.Size}}\t{{.Repository}}:{{.Tag}}\t{{.ID}}' | sort -h -r | column -t
 ```
 
 ## /sys/fs/cgroup 空间不足
 
-很多发行版默认的 fs.inotify.max_user_watches 太小，只有 8192，可以通过增大该配置解决。比如
+很多发行版默认的 fs.inotify.max\_user\_watches 太小，只有 8192，可以通过增大该配置解决。比如
 
-```sh
+```bash
 $ sudo sysctl fs.inotify.max_user_watches=524288
 ```
 
@@ -378,16 +377,15 @@ $ sudo sysctl fs.inotify.max_user_watches=524288
 
 ## 大量 ConfigMap/Secret 导致Kubernetes缓慢
 
-这是从 Kubernetes 1.12 开始才有的问题，Kubernetes issue: [#74412](https://github.com/kubernetes/kubernetes/issues/74412)。
+这是从 Kubernetes 1.12 开始才有的问题，Kubernetes issue: [\#74412](https://github.com/kubernetes/kubernetes/issues/74412)。
 
 > This worked well on version 1.11 of Kubernetes. After upgrading to 1.12 or 1.13, I've noticed that doing this will cause the cluster to significantly slow down; up to the point where nodes are being marked as NotReady and no new work is being scheduled.
 >
 > For example, consider a scenario in which I schedule 400 jobs, each with its own ConfigMap, which print "Hello World" on a single-node cluster would.
 >
-> - On v1.11, it takes about 10 minutes for the cluster to process all jobs. New jobs can be scheduled.
+> * On v1.11, it takes about 10 minutes for the cluster to process all jobs. New jobs can be scheduled.
+> * On v1.12 and v1.13, it takes about 60 minutes for the cluster to process all jobs. After this, no new jobs can be scheduled.
 >
-> - On v1.12 and v1.13, it takes about 60 minutes for the cluster to process all jobs. After this, no new jobs can be scheduled.
-
 > This is related to max concurrent http2 streams and the change of configmap manager of kubelet. By default, max concurrent http2 stream of http2 server in kube-apiserver is 250, and every configmap will consume one stream to watch in kubelet at least from version 1.13.x. Kubelet will stuck to communicate to kube-apiserver and then become NotReady if too many pods with configmap scheduled to it. A work around is to change the config http2-max-streams-per-connection of kube-apiserver to a bigger value.
 
 临时解决方法：为 Kubelet 设置 `configMapAndSecretChangeDetectionStrategy: Cache` （参考 [这里](https://github.com/kubernetes/kubernetes/pull/74755) ）。
@@ -396,9 +394,9 @@ $ sudo sysctl fs.inotify.max_user_watches=524288
 
 ## Kubelet 内存泄漏
 
-这是从 1.12 版本开始有的问题（只在使用 hyperkube 启动 kubelet 时才有问题），社区 issue 为 [#73587](https://github.com/kubernetes/kubernetes/issues/73587)。
+这是从 1.12 版本开始有的问题（只在使用 hyperkube 启动 kubelet 时才有问题），社区 issue 为 [\#73587](https://github.com/kubernetes/kubernetes/issues/73587)。
 
-```
+```text
 (pprof) root@ip-172-31-10-50:~# go tool pprof  http://localhost:10248/debug/pprof/heap
 Fetching profile from http://localhost:10248/debug/pprof/heap
 Saved profile in /root/pprof/pprof.hyperkube.localhost:10248.alloc_objects.alloc_space.inuse_objects.inuse_space.002.pb.gz
@@ -417,7 +415,7 @@ Showing top 10 nodes out of 34 (cum >= 2411.39MB)
          0     0% 98.18%  2412.06MB 98.39%  k8s.io/kubernetes/pkg/kubelet.(*Kubelet).Run
 ```
 
-```sh
+```bash
 curl -s localhost:10255/metrics | sed 's/{.*//' | sort | uniq -c | sort -nr
   25749 reflector_watch_duration_seconds
   25749 reflector_list_duration_seconds
@@ -448,9 +446,9 @@ curl -s localhost:10255/metrics | sed 's/{.*//' | sort | uniq -c | sort -nr
 
 ## kube-controller-manager 无法更新 Object
 
-参考[kubernetes#95958](https://github.com/kubernetes/kubernetes/issues/95958)，kube-controller-manager 报错：
+参考[kubernetes\#95958](https://github.com/kubernetes/kubernetes/issues/95958)，kube-controller-manager 报错：
 
-```
+```text
 Event(v1.ObjectReference{Kind:"HorizontalPodAutoscaler", Namespace:"cig-prod-apps", Name:"<omitted>", UID:"4593f854-b824-4a9e-8e10-c16d558797b9", APIVersion:"autoscaling/v2beta2", ResourceVersion:"71905040", FieldPath:""}): type: 'Warning' reason: 'FailedUpdateStatus' Operation cannot be fulfilled on horizontalpodautoscalers.autoscaling "<omitted>": the object has been modified; please apply your changes to the latest version and try again
 ```
 
@@ -460,10 +458,11 @@ Event(v1.ObjectReference{Kind:"HorizontalPodAutoscaler", Namespace:"cig-prod-app
 
 ## 其他已知问题
 
-- [Kubernetes is vulnerable to stale reads, violating critical pod safety guarantees](https://github.com/kubernetes/kubernetes/issues/59848)
+* [Kubernetes is vulnerable to stale reads, violating critical pod safety guarantees](https://github.com/kubernetes/kubernetes/issues/59848)
 
 ## 参考文档
 
 * [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
-* [SSH into Azure Container Service (AKS) cluster nodes](https://docs.microsoft.com/en-us/azure/aks/aks-ssh#configure-ssh-access)
+* [SSH into Azure Container Service \(AKS\) cluster nodes](https://docs.microsoft.com/en-us/azure/aks/aks-ssh#configure-ssh-access)
 * [Kubernetes dashboard FAQ](https://github.com/kubernetes/dashboard/wiki/FAQ)
+

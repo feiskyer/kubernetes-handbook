@@ -1,4 +1,4 @@
-# Windows 容器异常排错
+# Windows 排错
 
 本章介绍 Windows 容器异常的排错方法。
 
@@ -32,7 +32,7 @@ subsets:
       - port: 3389
 ```
 
-```sh
+```bash
 $ kubectl create -f rdp.yaml
 $ kubectl get svc rdp
 NAME      TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
@@ -50,22 +50,17 @@ rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 * Pause 镜像配置错误
 * 容器[镜像版本与 Windows 系统不兼容](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
 
-
-
 在 Windows Server 1709 上面需要使用 1709 标签的镜像，比如
 
-    * `microsoft/aspnet:4.7.2-windowsservercore-1709`
-    * `microsoft/windowsservercore:1709`
-    * `microsoft/iis:windowsservercore-1709`
-
-
+* `microsoft/aspnet:4.7.2-windowsservercore-1709`
+* `microsoft/windowsservercore:1709`
+* `microsoft/iis:windowsservercore-1709`
 
 在 Windows Server 1803 上面需要使用 1803 标签的镜像，比如
 
-    * `microsoft/aspnet:4.7.2-windowsservercore-1803`
-    * `microsoft/iis:windowsservercore-1803`
-    * `microsoft/windowsservercore:1803`
-
+* `microsoft/aspnet:4.7.2-windowsservercore-1803`
+* `microsoft/iis:windowsservercore-1803`
+* `microsoft/windowsservercore:1803`
 
 ## Windows Pod 内无法解析 DNS
 
@@ -73,7 +68,7 @@ rdp       LoadBalancer   10.0.99.149   52.52.52.52   3389:32008/TCP   5m
 
 （1）Windows 重启后，清空 HNS Policy 并重启 KubeProxy 服务：
 
-```powershell
+```text
 Start-BitsTransfer -Source https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/hns.psm1
 Import-Module .\hns.psm1
 
@@ -87,7 +82,7 @@ Start-Service kubeproxy
 
 （2）是为 Pod 直接配置 kube-dns Pod 的地址：
 
-```powershell
+```text
 $adapter=Get-NetAdapter
 Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses 10.244.0.4,10.244.0.6
 Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "default.svc.cluster.local"
@@ -97,7 +92,7 @@ Set-DnsClient -InterfaceIndex $adapter.ifIndex -ConnectionSpecificSuffix "defaul
 
 如果 Windows Node 运行在 Azure 上面，并且部署 Kubernetes 时使用了[自定义 VNET](https://github.com/Azure/acs-engine/blob/master/docs/kubernetes/features.md#feat-custom-vnet)，那么需要[为该 VNET 添加路由表](https://github.com/Azure/acs-engine/blob/master/docs/custom-vnet.md#post-deployment-attach-cluster-route-table-to-vnet)：
 
-```sh
+```bash
 #!/bin/bash
 # KubernetesSubnet is the name of the vnet subnet
 # KubernetesCustomVNET is the name of the custom VNET itself
@@ -110,7 +105,7 @@ az network vnet subnet update -n KubernetesSubnet \
 
 如果 VNET 在不同的 ResourceGroup 里面，那么
 
-```sh
+```bash
 rt=$(az network route-table list -g RESOURCE_GROUP_NAME_KUBE -o json | jq -r '.[].id')
 az network vnet subnet update \
 -g RESOURCE_GROUP_NAME_VNET \
@@ -122,7 +117,7 @@ az network vnet subnet update \
 
 这个错误发生在 kube-proxy 为服务配置负载均衡的时候，需要安装 [KB4089848](https://support.microsoft.com/en-us/help/4089848/windows-10-update-kb4089848)：
 
-```powershell
+```text
 Start-BitsTransfer http://download.windowsupdate.com/d/msdownload/update/software/updt/2018/03/windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
 wusa.exe windows10.0-kb4089848-x64_db7c5aad31c520c6983a937c3d53170e84372b11.msu
 Restart-Computer
@@ -130,7 +125,7 @@ Restart-Computer
 
 重启后确认更新安装成功：
 
-```powershelgl
+```text
 PS C:\k> Get-HotFix
 
 Source        Description      HotFixID      InstalledBy          InstalledOn
@@ -157,18 +152,18 @@ Source        Description      HotFixID      InstalledBy          InstalledOn
 
 使用 Docker 18.03 版本和 Kubelet v1.12.x 时，Kubelet 无法正常启动报错：
 
-```sh
+```bash
 Error response from daemon: client version 1.38 is too new. Maximum supported API version is 1.37
 ```
 
 解决方法是为 Windows 上面的 Docker 设置 API 版本的环境变量：
 
-```sh
+```bash
 [System.Environment]::SetEnvironmentVariable('DOCKER_API_VERSION', '1.37', [System.EnvironmentVariableTarget]::Machine)
 ```
 
 ## 参考文档
 
-- [Kubernetes On Windows - Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)
-- [Debug Networking issues on Windows](https://github.com/microsoft/SDN/tree/master/Kubernetes/windows/debug)
+* [Kubernetes On Windows - Troubleshooting Kubernetes](https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems)
+* [Debug Networking issues on Windows](https://github.com/microsoft/SDN/tree/master/Kubernetes/windows/debug)
 

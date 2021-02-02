@@ -6,7 +6,7 @@
 
 可以将本地端口转发到指定 Pod 的端口。
 
-```sh
+```bash
 # Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in the pod
 kubectl port-forward mypod 5000 6000
 
@@ -19,11 +19,12 @@ kubectl port-forward mypod :5000
 # Listen on a random port locally, forwarding to 5000 in the pod
 kubectl port-forward mypod 0:5000
 ```
+
 ## 服务端口转发
 
 也可以将本地端口转发到服务、复制控制器或者部署的端口。
 
-```sh
+```bash
 # Forward to deployment
 kubectl port-forward deployment/redis-master 6379:6379
 

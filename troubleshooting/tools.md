@@ -14,7 +14,7 @@
 
 查看 Kubelet、CNI、kernel 等系统组件的日志需要首先 SSH 登录到 Node 上，推荐使用 [kubectl-node-shell](https://github.com/kvaps/kubectl-node-shell) 插件而不是为每个节点分配公网 IP 地址。比如：
 
-```sh
+```bash
 curl -LO https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell
 chmod +x ./kubectl-node_shell
 sudo mv ./kubectl-node_shell /usr/local/bin/kubectl-node_shell
@@ -30,13 +30,11 @@ sysdig 是一个容器排错工具，提供了开源和商业版本。对于常�
 除了 sysdig，还可以使用其他两个辅助工具
 
 * csysdig：与 sysdig 一起自动安装，提供了一个命令行界面
-
-
 * [sysdig-inspect](https://github.com/draios/sysdig-inspect)：为 sysdig 保存的跟踪文件（如 `sudo sysdig -w filename.scap`）提供了一个图形界面（非实时）
 
 ### 安装
 
-```sh
+```bash
 # on Ubuntu
 curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add -
 curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
@@ -57,7 +55,7 @@ brew install sysdig
 
 ### 示例
 
-```sh
+```bash
 # Refer https://www.sysdig.org/wiki/sysdig-examples/.
 # View the top network connections
 sudo sysdig -pc -c topconns
@@ -67,7 +65,7 @@ sudo sysdig -pc -c topconns container.name=wordpress1
 # Show the network data exchanged with the host 192.168.0.1
 sudo sysdig fd.ip=192.168.0.1
 sudo sysdig -s2000 -A -c echo_fds fd.cip=192.168.0.1
- 
+
 # List all the incoming connections that are not served by apache.
 sudo sysdig -p"%proc.name %fd.name" "evt.type=accept and proc.name!=httpd"
 
@@ -95,20 +93,20 @@ sudo csysdig -pc
 
 Weave Scope 是另外一款可视化容器监控和排错工具。与 sysdig 相比，它没有强大的命令行工具，但提供了一个简单易用的交互界面，自动描绘了整个集群的拓扑，并可以通过插件扩展其功能。从其官网的介绍来看，其提供的功能包括
 
-- [交互式拓扑界面](https://www.weave.works/docs/scope/latest/features/#topology-mapping)
-- [图形模式和表格模式](https://www.weave.works/docs/scope/latest/features/#mode)
-- [过滤功能](https://www.weave.works/docs/scope/latest/features/#flexible-filtering)
-- [搜索功能](https://www.weave.works/docs/scope/latest/features/#powerful-search)
-- [实时度量](https://www.weave.works/docs/scope/latest/features/#real-time-app-and-container-metrics)
-- [容器排错](https://www.weave.works/docs/scope/latest/features/#interact-with-and-manage-containers)
-- [插件扩展](https://www.weave.works/docs/scope/latest/features/#custom-plugins)
+* [交互式拓扑界面](https://www.weave.works/docs/scope/latest/features/#topology-mapping)
+* [图形模式和表格模式](https://www.weave.works/docs/scope/latest/features/#mode)
+* [过滤功能](https://www.weave.works/docs/scope/latest/features/#flexible-filtering)
+* [搜索功能](https://www.weave.works/docs/scope/latest/features/#powerful-search)
+* [实时度量](https://www.weave.works/docs/scope/latest/features/#real-time-app-and-container-metrics)
+* [容器排错](https://www.weave.works/docs/scope/latest/features/#interact-with-and-manage-containers)
+* [插件扩展](https://www.weave.works/docs/scope/latest/features/#custom-plugins)
 
 Weave Scope 由 [App 和 Probe 两部分](https://www.weave.works/docs/scope/latest/how-it-works)组成，它们
 
-- Probe 负责收集容器和宿主的信息，并发送给 App
-- App 负责处理这些信息，并生成相应的报告，并以交互界面的形式展示
+* Probe 负责收集容器和宿主的信息，并发送给 App
+* App 负责处理这些信息，并生成相应的报告，并以交互界面的形式展示
 
-```sh
+```bash
                     +--Docker host----------+      +--Docker host----------+
 .---------------.   |  +--Container------+  |      |  +--Container------+  |
 | Browser       |   |  |                 |  |      |  |                 |  |
@@ -127,7 +125,7 @@ Weave Scope 由 [App 和 Probe 两部分](https://www.weave.works/docs/scope/lat
 
 ### 安装
 
-```sh
+```bash
 kubectl apply -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')&k8s-service-type=LoadBalancer"
 ```
 
@@ -135,22 +133,22 @@ kubectl apply -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl
 
 安装完成后，可以通过 weave-scope-app 来访问交互界面
 
-```sh
+```bash
 kubectl -n weave get service weave-scope-app
 kubectl -n weave port-forward service/weave-scope-app :80
 ```
 
-![](images/weave-scope.png)
+![](../.gitbook/assets/weave-scope%20%2810%29.png)
 
 点击 Pod，还可以查看该 Pod 所有容器的实时状态和度量数据：
 
-![](images/scope-pod.png)
+![](../.gitbook/assets/scope-pod%20%287%29.png)
 
 ### 已知问题
 
 在 Ubuntu 内核 4.4.0 上面开启 `--probe.ebpf.connections` 时（默认开启），Node 有可能会因为[内核问题而不停重启](https://github.com/weaveworks/scope/issues/3131)：
 
-```sh
+```bash
 [ 263.736006] CPU: 0 PID: 6309 Comm: scope Not tainted 4.4.0-119-generic #143-Ubuntu
 [ 263.736006] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090007 06/02/2017
 [ 263.736006] task: ffff88011cef5400 ti: ffff88000a0e4000 task.ti: ffff88000a0e4000
@@ -196,10 +194,11 @@ kubectl -n weave port-forward service/weave-scope-app :80
 
 解决方法有两种
 
-- 禁止 eBPF 探测，如 `--probe.ebpf.connections=false`
-- 升级内核，如升级到 4.13.0
+* 禁止 eBPF 探测，如 `--probe.ebpf.connections=false`
+* 升级内核，如升级到 4.13.0
 
 ## 参考文档
 
-- [Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
-- [Monitoring Kuberietes with sysdig](https://sysdig.com/blog/kubernetes-service-discovery-docker/)
+* [Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
+* [Monitoring Kuberietes with sysdig](https://sysdig.com/blog/kubernetes-service-discovery-docker/)
+

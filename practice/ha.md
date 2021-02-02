@@ -2,13 +2,13 @@
 
 Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会自动部署一个高可用的系统，包括
 
-- Etcd 集群模式
-- kube-apiserver 负载均衡
-- kube-controller-manager、kube-scheduler 和 cluster-autoscaler 自动选主（有且仅有一个运行实例）
+* Etcd 集群模式
+* kube-apiserver 负载均衡
+* kube-controller-manager、kube-scheduler 和 cluster-autoscaler 自动选主（有且仅有一个运行实例）
 
 如下图所示
 
-![](images/ha.png)
+![](../.gitbook/assets/ha%20%285%29.png)
 
 注意：以下步骤假设每台机器上 Kubelet 和 Docker 已配置并处于正常运行状态。
 
@@ -16,17 +16,16 @@ Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会
 
 安装 cfssl
 
-```sh
+```bash
 # On all etcd nodes
 curl -o /usr/local/bin/cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
 curl -o /usr/local/bin/cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
 chmod +x /usr/local/bin/cfssl*
-
 ```
 
 生成 CA certs:
 
-```sh
+```bash
 # SSH etcd0
 mkdir -p /etc/kubernetes/pki/etcd
 cd /etc/kubernetes/pki/etcd
@@ -93,7 +92,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=clie
 
 生成 etcd server/peer certs
 
-```sh
+```bash
 # Copy files to other etcd nodes
 mkdir -p /etc/kubernetes/pki/etcd
 cd /etc/kubernetes/pki/etcd
@@ -114,10 +113,10 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer
 
 最后运行 etcd，将如下的 yaml 配置写入每台 etcd 节点的 `/etc/kubernetes/manifests/etcd.yaml` 文件中，注意替换
 
-- `<podname>` 为 etcd 节点名称 （比如`etcd0`, `etcd1` 和 `etcd2`）
-- `<etcd0-ip-address>`, `<etcd1-ip-address>` and `<etcd2-ip-address>` 为 etcd 节点的内网 IP 地址
+* `<podname>` 为 etcd 节点名称 （比如`etcd0`, `etcd1` 和 `etcd2`）
+* `<etcd0-ip-address>`, `<etcd1-ip-address>` and `<etcd2-ip-address>` 为 etcd 节点的内网 IP 地址
 
-```sh
+```bash
 cat >/etc/kubernetes/manifests/etcd.yaml <<EOF
 apiVersion: v1
 kind: Pod
@@ -188,7 +187,7 @@ EOF
 
 > 注意：以上方法需要每个 etcd 节点都运行 kubelet。如果不想使用 kubelet，还可以通过 systemd 的方式来启动 etcd：
 >
-> ```sh
+> ```bash
 > export ETCD_VERSION=v3.1.10
 > curl -sSL https://github.com/coreos/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz | tar -xzv --strip-components=1 -C /usr/local/bin/
 > rm -rf etcd-$ETCD_VERSION-linux-amd64*
@@ -242,13 +241,13 @@ EOF
 
 把 `kube-apiserver.yaml` 放到每台 Master 节点的 `/etc/kubernetes/manifests/`，并把相关的配置放到 `/srv/kubernetes/`，即可由 kubelet 自动创建并启动 apiserver:
 
-- basic_auth.csv - basic auth user and password
-- ca.crt - Certificate Authority cert
-- known_tokens.csv - tokens that entities (e.g. the kubelet) can use to talk to the apiserver
-- kubecfg.crt - Client certificate, public key
-- kubecfg.key - Client certificate, private key
-- server.cert - Server certificate, public key
-- server.key - Server certificate, private key
+* basic\_auth.csv - basic auth user and password
+* ca.crt - Certificate Authority cert
+* known\_tokens.csv - tokens that entities \(e.g. the kubelet\) can use to talk to the apiserver
+* kubecfg.crt - Client certificate, public key
+* kubecfg.key - Client certificate, private key
+* server.cert - Server certificate, public key
+* server.key - Server certificate, private key
 
 > 注意：确保 kube-apiserver 配置 --etcd-quorum-read=true（v1.9 之后默认为 true）。
 
@@ -256,7 +255,7 @@ EOF
 
 如果使用 kubeadm 来部署集群的话，可以按照如下步骤配置：
 
-```sh
+```bash
 # on master0
 # deploy master0
 cat >config.yaml <<EOF
@@ -366,18 +365,18 @@ kube-apiserver 启动后，还需要为它们做负载均衡，可以使用云�
 
 kube-controller manager 和 kube-scheduler 需要保证任何时刻都只有一个实例运行，需要一个选主的过程，所以在启动时要设置 `--leader-elect=true`，比如
 
-```
+```text
 kube-scheduler --master=127.0.0.1:8080 --v=2 --leader-elect=true
 kube-controller-manager --master=127.0.0.1:8080 --cluster-cidr=10.245.0.0/16 --allocate-node-cidrs=true --service-account-private-key-file=/srv/kubernetes/server.key --v=2 --leader-elect=true
 ```
 
-把  `kube-scheduler.yaml` 和 `kube-controller-manager.yaml` 放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
+把 `kube-scheduler.yaml` 和 `kube-controller-manager.yaml` 放到每台 master 节点的 `/etc/kubernetes/manifests/` 即可。
 
 ## kube-dns
 
 kube-dns 可以通过 Deployment 的方式来部署，默认 kubeadm 会自动创建。但在大规模集群的时候，需要放宽资源限制，比如
 
-```
+```text
 dns_replicas: 6
 dns_cpu_limit: 100m
 dns_memory_limit: 512Mi
@@ -393,7 +392,7 @@ dns_memory_requests: 70Mi
 
 另外，需要注意配置 kube-proxy 使用 kube-apiserver 负载均衡的 IP 地址：
 
-```sh
+```bash
 kubectl get configmap -n kube-system kube-proxy -o yaml > kube-proxy-сm.yaml
 sed -i 's#server:.*#server: https://<masterLoadBalancerFQDN>:6443#g' kube-proxy-cm.yaml
 kubectl apply -f kube-proxy-cm.yaml --force
@@ -405,7 +404,7 @@ kubectl delete pod -n kube-system -l k8s-app=kube-proxy
 
 kubelet 需要配置 kube-apiserver 负载均衡的 IP 地址
 
-```sh
+```bash
 sudo sed -i 's#server:.*#server: https://<masterLoadBalancerFQDN>:6443#g' /etc/kubernetes/kubelet.conf
 sudo systemctl restart kubelet
 ```
@@ -414,14 +413,15 @@ sudo systemctl restart kubelet
 
 除了上面提到的这些配置，持久化存储也是高可用 Kubernetes 集群所必须的。
 
-- 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如 aws ebs 或者 gce persistent disk
-- 对于物理机部署的集群，可以考虑使用 iSCSI、NFS、Gluster 或者 Ceph 等网络存储，也可以使用 RAID
+* 对于公有云上部署的集群，可以考虑使用云平台提供的持久化存储，比如 aws ebs 或者 gce persistent disk
+* 对于物理机部署的集群，可以考虑使用 iSCSI、NFS、Gluster 或者 Ceph 等网络存储，也可以使用 RAID
 
 ## 参考文档
 
-- [Set up High-Availability Kubernetes Masters](https://kubernetes.io/docs/tasks/administer-cluster/highly-available-master/)
-- [Creating Highly Available Clusters with kubeadm](https://kubernetes.io/docs/setup/independent/high-availability/)
-- http://kubecloud.io/setup-ha-k8s-kops/
-- https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md
-- [Kubernetes Master Tier For 1000 Nodes Scale](http://fuel-ccp.readthedocs.io/en/latest/design/k8s_1000_nodes_architecture.html)
-- [Scaling Kubernetes to Support 50000 Services](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3)
+* [Set up High-Availability Kubernetes Masters](https://kubernetes.io/docs/tasks/administer-cluster/highly-available-master/)
+* [Creating Highly Available Clusters with kubeadm](https://kubernetes.io/docs/setup/independent/high-availability/)
+* [http://kubecloud.io/setup-ha-k8s-kops/](http://kubecloud.io/setup-ha-k8s-kops/)
+* [https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md)
+* [Kubernetes Master Tier For 1000 Nodes Scale](http://fuel-ccp.readthedocs.io/en/latest/design/k8s_1000_nodes_architecture.html)
+* [Scaling Kubernetes to Support 50000 Services](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3)
+

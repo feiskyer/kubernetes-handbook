@@ -1,10 +1,10 @@
 # 用户管理
 
-根据[Kubernetes 认证](../plugins/authentication.md)文档，Kubernetes 本身并不直接提供用户管理的特性，不支持 User 对象，更不会存储 User 对象。但是它支持一系列的插件，比如 X509 证书、OpenID、Webhook等，用户可以基于这些插件跟外部的用户管理系统进行对接，再配合 RBAC 实现权限管理的机制。
+根据[Kubernetes 认证](../extension/auth/authentication.md)文档，Kubernetes 本身并不直接提供用户管理的特性，不支持 User 对象，更不会存储 User 对象。但是它支持一系列的插件，比如 X509 证书、OpenID、Webhook等，用户可以基于这些插件跟外部的用户管理系统进行对接，再配合 RBAC 实现权限管理的机制。
 
-实际上，你也可以使用 Certificate Signing Request (CSR) 或者 ServiceAccount 来创建和管理受限的用户。
+实际上，你也可以使用 Certificate Signing Request \(CSR\) 或者 ServiceAccount 来创建和管理受限的用户。
 
-## Certificate Signing Request (CSR)
+## Certificate Signing Request \(CSR\)
 
 Kubernetes 提供了 `certificates.k8s.io` API，可让您配置由您控制的证书颁发机构（CA）签名的TLS证书，工作负载可以使用这些CA和证书来建立信任。
 
@@ -12,7 +12,7 @@ Kubernetes 提供了 `certificates.k8s.io` API，可让您配置由您控制的�
 
 假设已经为 kubectl 配置好了管理员 kubeconfig，以下是通过 openssl 和 CSR 创建一个新用户配置的步骤。
 
-```sh
+```bash
 NAMESPACE=${NAMESPACE:-"default"}
 USER_NAME=${USER_NAME:-"user1"}
 GROUP_NAME=${GROUP_NAME:-"group1"}
@@ -80,7 +80,7 @@ ServiceAccount 是 Kubernetes 自动生成的，并会自动挂载到容器的 `
 
 在 Pod 内部，你可以通过下面的方式来访问 API：
 
-```sh
+```bash
 $ TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
 $ CACERT=/run/secrets/kubernetes.io/serviceaccount/ca.crt
 $ curl --cacert $CACERT --header "Authorization: Bearer $TOKEN"  https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT/api
@@ -102,7 +102,7 @@ $ curl --cacert $CACERT --header "Authorization: Bearer $TOKEN"  https://$KUBERN
 
 假设已经为 kubectl 配置好了管理员 kubeconfig，以下是通过 ServiceAccount 创建一个新用户配置的步骤。
 
-```sh
+```bash
 NAMESPACE=${NAMESPACE:-"default"}
 SERVICE_ACCOUNT_NAME=${SERVICE_ACCOUNT_NAME:-"demo"}
 SERVER_URL=$(kubectl cluster-info | awk '/Kubernetes master/{print $NF}' | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')

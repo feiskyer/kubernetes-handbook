@@ -1,4 +1,4 @@
-# Kubernetes 审计
+# 审计
 
 Kubernetes 审计（Audit）提供了安全相关的时序操作记录，支持日志和 webhook 两种格式，并可以通过审计策略自定义事件类型。
 
@@ -6,19 +6,19 @@ Kubernetes 审计（Audit）提供了安全相关的时序操作记录，支持�
 
 通过配置 kube-apiserver 的下列参数开启审计日志
 
-- audit-log-path：审计日志路径
-- audit-log-maxage：旧日志最长保留天数
-- audit-log-maxbackup：旧日志文件最多保留个数
-- audit-log-maxsize：日志文件最大大小（单位 MB），超过后自动做轮转（默认为 100MB）
+* audit-log-path：审计日志路径
+* audit-log-maxage：旧日志最长保留天数
+* audit-log-maxbackup：旧日志文件最多保留个数
+* audit-log-maxsize：日志文件最大大小（单位 MB），超过后自动做轮转（默认为 100MB）
 
 每条审计记录包括两行
 
-- 请求行包括：唯一 ID 和请求的元数据（如源 IP、用户名、请求资源等）
-- 响应行包括：唯一 ID（与请求 ID 一致）和响应的元数据（如 HTTP 状态码）
+* 请求行包括：唯一 ID 和请求的元数据（如源 IP、用户名、请求资源等）
+* 响应行包括：唯一 ID（与请求 ID 一致）和响应的元数据（如 HTTP 状态码）
 
 比如，admin 用户查询默认 namespace 的 Pod 列表的审计日志格式为
 
-```sh
+```bash
 2017-03-21T03:57:09.106841886-04:00 AUDIT: id="c939d2a7-1c37-4ef1-b2f7-4ba9b1e43b53" ip="127.0.0.1" method="GET" user="admin" groups="\"system:masters\",\"system:authenticated\""as="<self>"asgroups="<lookup>"namespace="default"uri="/api/v1/namespaces/default/pods"
 2017-03-21T03:57:09.108403639-04:00 AUDIT: id="c939d2a7-1c37-4ef1-b2f7-4ba9b1e43b53" response="200"
 ```
@@ -27,7 +27,7 @@ Kubernetes 审计（Audit）提供了安全相关的时序操作记录，支持�
 
 v1.7 + 支持实验性的高级审计特性，可以自定义审计策略（选择记录哪些事件）和审计存储后端（日志和 webhook）等。开启方法为
 
-```sh
+```bash
 kube-apiserver ... --feature-gates=AdvancedAuditing=true
 ```
 
@@ -37,7 +37,7 @@ kube-apiserver ... --feature-gates=AdvancedAuditing=true
 
 审计策略选择记录哪些事件，设置方法为
 
-```sh
+```bash
 kube-apiserver ... --audit-policy-file=/etc/kubernetes/audit-policy.yaml
 ```
 
@@ -91,14 +91,14 @@ rules:
 
 审计存储后端支持两种方式
 
-- 日志，配置 `--audit-log-path` 开启，格式为
+* 日志，配置 `--audit-log-path` 开启，格式为
 
-```
+```text
 2017-06-15T21:50:50.259470834Z AUDIT: id="591e9fde-6a98-46f6-b7bc-ec8ef575696d" stage="RequestReceived" ip="10.2.1.3" method="update" user="system:serviceaccount:kube-system:default" groups="\"system:serviceaccounts\",\"system:serviceaccounts:kube-system\",\"system:authenticated\""as="<self>"asgroups="<lookup>"namespace="kube-system"uri="/api/v1/namespaces/kube-system/endpoints/kube-controller-manager"response="<deferred>"
 2017-06-15T21:50:50.259470834Z AUDIT: id="591e9fde-6a98-46f6-b7bc-ec8ef575696d" stage="ResponseComplete" ip="10.2.1.3" method="update" user="system:serviceaccount:kube-system:default" groups="\"system:serviceaccounts\",\"system:serviceaccounts:kube-system\",\"system:authenticated\""as="<self>"asgroups="<lookup>"namespace="kube-system"uri="/api/v1/namespaces/kube-system/endpoints/kube-controller-manager"response="200"
 ```
 
-- webhook，配置 `--audit-webhook-config-file=/etc/kubernetes/audit-webhook-kubeconfig --audit-webhook-mode=batch` 开启，其中 audit-webhook-mode 支持 batch 和 blocking 两种格式，而 webhook 配置文件格式为
+* webhook，配置 `--audit-webhook-config-file=/etc/kubernetes/audit-webhook-kubeconfig --audit-webhook-mode=batch` 开启，其中 audit-webhook-mode 支持 batch 和 blocking 两种格式，而 webhook 配置文件格式为
 
 ```yaml
 # clusters refers to the remote service.
@@ -126,7 +126,7 @@ contexts:
 
 所有的事件以 JSON 格式 POST 给 webhook server，如
 
-```json
+```javascript
 {
   "kind": "EventList",
   "apiVersion": "audit.k8s.io/v1alpha1",
@@ -165,3 +165,4 @@ contexts:
   ]
 }
 ```
+

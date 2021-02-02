@@ -4,13 +4,13 @@
 
 ## 安装
 
-从 <https://github.com/heptio/velero/releases> 下载最新的稳定版。
+从 [https://github.com/heptio/velero/releases](https://github.com/heptio/velero/releases) 下载最新的稳定版。
 
 以 Azure 为例，安装 Velero 需要以下步骤：
 
 （1） 创建存储账户
 
-```sh
+```bash
 AZURE_BACKUP_RESOURCE_GROUP=Velero_Backups
 az group create -n $AZURE_BACKUP_RESOURCE_GROUP --location WestUS
 
@@ -30,7 +30,7 @@ az storage container create -n $BLOB_CONTAINER --public-access off --account-nam
 
 （2）创建 service principal
 
-```sh
+```bash
 AZURE_RESOURCE_GROUP=<NAME_OF_RESOURCE_GROUP>
 AZURE_SUBSCRIPTION_ID=`az account list --query '[?isDefault].id' -o tsv`
 AZURE_TENANT_ID=`az account list --query '[?isDefault].tenantId' -o tsv`
@@ -48,7 +48,7 @@ EOF
 
 （3）启动 Velero
 
-```sh
+```bash
 velero install \
     --provider azure \
     --bucket $BLOB_CONTAINER \
@@ -61,13 +61,13 @@ velero install \
 
 创建定期备份：
 
-```sh
+```bash
 velero schedule create <SCHEDULE NAME> --schedule "0 7 * * *"
 ```
 
 ## 灾难恢复
 
-```sh
+```bash
 # Update your backup storage location to read-only mode 
 kubectl patch backupstoragelocation <STORAGE LOCATION NAME> \
     --namespace velero \
@@ -88,13 +88,13 @@ kubectl patch backupstoragelocation <STORAGE LOCATION NAME> \
 
 首先，在集群 1 中创建备份（默认 TTL 是 30 天，你可以使用 --ttl 来修改）：
 
-```sh
+```bash
 velero backup create <BACKUP-NAME>
 ```
 
 然后，为集群 2 配置 BackupStorageLocations 和 VolumeSnapshotLocations，指向与集群 1 相同的备份和快照路径，并确保 BackupStorageLocations 是只读的（使用 --access-mode=ReadOnly）。接下来，稍微等一会（默认的同步时间为 1 分钟），等待 Backup 对象创建成功。
 
-```sh
+```bash
 # The default sync interval is 1 minute, so make sure to wait before checking.
 # You can configure this interval with the --backup-sync-period flag to the Velero server.
 velero backup describe <BACKUP-NAME>
@@ -102,7 +102,7 @@ velero backup describe <BACKUP-NAME>
 
 最后，执行数据恢复：
 
-```sh
+```bash
 velero restore create --from-backup <BACKUP-NAME>
 velero restore get
 velero restore describe <RESTORE-NAME-FROM-GET-COMMAND>
@@ -110,5 +110,5 @@ velero restore describe <RESTORE-NAME-FROM-GET-COMMAND>
 
 ## 参考文档
 
-- <https://velero.io/>
+* [https://velero.io/](https://velero.io/)
 
