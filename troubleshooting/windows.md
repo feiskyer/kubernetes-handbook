@@ -163,7 +163,7 @@ Error response from daemon: client version 1.38 is too new. Maximum supported AP
 
 解决方法是为 Windows 上面的 Docker 设置 API 版本的环境变量：
 
-```powershell
+```sh
 [System.Environment]::SetEnvironmentVariable('DOCKER_API_VERSION', '1.37', [System.EnvironmentVariableTarget]::Machine)
 ```
 
