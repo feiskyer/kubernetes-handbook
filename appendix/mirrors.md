@@ -6,6 +6,8 @@
 * 163镜像： `hub-mirror.c.163.com`
 * 开源社镜像：[http://mirror.azure.cn/help/docker-registry-proxy-cache.html](http://mirror.azure.cn/help/docker-registry-proxy-cache.html)
 
+> 注：开源社镜像代理仅限于 Azure China IP 使用。
+
 示例
 
 ```bash
@@ -20,6 +22,8 @@ docker pull quay.mirrors.ustc.edu.cn/coreos/kube-state-metrics:v1.5.0
 
 * 开源社镜像（Azure China）：[http://mirror.azure.cn/help/gcr-proxy-cache.html](http://mirror.azure.cn/help/gcr-proxy-cache.html)
 * 阿里云镜像：registry.cn-hangzhou.aliyuncs.com/google\_containers 或者 registry.aliyuncs.com/google\_containers
+
+> 注：开源社镜像代理仅限于 Azure China IP 使用。
 
 示例
 
