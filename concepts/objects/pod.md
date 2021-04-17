@@ -915,7 +915,7 @@ spec:
 [PodDisruptionBudget \(PDB\)](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) 用来保证一组 Pod 同时运行的数量，这些 Pod 需要使用 Deployment、ReplicationController、ReplicaSet 或者 StatefulSet 管理。
 
 ```yaml
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: zk-pdb
@@ -1006,4 +1006,3 @@ spec:
 * [Linux Capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
 * [Manage HugePages](https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/)
 * [Document supported docker image \(Dockerfile\) features](https://github.com/kubernetes/kubernetes/issues/30039)
-

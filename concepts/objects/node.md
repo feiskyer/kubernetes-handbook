@@ -50,14 +50,19 @@ Taints 和 tolerations 的具体使用方法请参考 [调度器章节](../compo
 
 ## Node 维护模式
 
-标志 Node 不可调度但不影响其上正在运行的 Pod，这种维护 Node 时是非常有用的
+标志 Node 不可调度但不影响其上正在运行的 Pod，这在维护 Node 时是非常有用的：
 
 ```bash
 kubectl cordon $NODENAME
 ```
 
+## Node 优雅关闭
+
+当配置 ShutdownGracePeriod 和 ShutdownGracePeriodCriticalPods 后，Kubelet 会根据 systemd 事件检测 Node 的关闭状态，并自动终止其上运行的 Pod（ShutdownGracePeriodCriticalPods 需要小于 ShutdownGracePeriod）。
+
+比如，如果 ShutdownGracePeriod 设置为 30s，而 ShutdownGracePeriodCriticalPods 设置为 10s，那么 Kubelet 将使节点关闭延迟 30 秒。 在关闭期间，将保留前20（30-10）秒以终止普通 Pod，而保留最后 10 秒以终止关键 Pod。
+
 ## 参考文档
 
 * [Kubernetes Node](https://kubernetes.io/docs/concepts/architecture/nodes/)
 * [Taints 和 tolerations](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature)
-

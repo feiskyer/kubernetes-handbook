@@ -7,7 +7,8 @@ CronJob 即定时任务，就类似于 Linux 系统的 crontab，在指定的时
 | Kubernetes 版本 | Batch API 版本 | 默认开启 |
 | :--- | :--- | :--- |
 | v1.5-v1.7 | batch/v2alpha1 | 否 |
-| v1.8-v1.9 | batch/v1beta1 | 是 |
+| v1.8-v1.20 | batch/v1beta1 | 是 |
+| v1.21+    | batch/v1 | 是 |
 
 注意：使用默认未开启的 API 时需要在 kube-apiserver 中配置 `--runtime-config=batch/v2alpha1`。
 
@@ -19,7 +20,7 @@ CronJob 即定时任务，就类似于 Linux 系统的 crontab，在指定的时
 * `.spec.concurrencyPolicy` 指定任务的并发策略，支持 Allow、Forbid 和 Replace 三个选项
 
 ```yaml
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: hello
@@ -32,7 +33,8 @@ spec:
           containers:
           - name: hello
             image: busybox
-            args:
+            imagePullPolicy: IfNotPresent
+            command:
             - /bin/sh
             - -c
             - date; echo Hello from the Kubernetes cluster
@@ -70,4 +72,3 @@ cronjob "hello" deleted
 ## 参考文档
 
 * [Cron Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
-

@@ -231,6 +231,27 @@ nginx.default.svc.cluster.local. 30 IN    A    172.26.2.5
 * NodePort Service：默认情况下，源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。为了避免这种情况，可以给 service 设置 `spec.ExternalTrafficPolicy=Local` （1.6-1.7 版本设置 Annotation `service.beta.kubernetes.io/external-traffic=OnlyLocal`），让 service 只代理本地 endpoint 的请求（如果没有本地 endpoint 则直接丢包），从而保留源 IP。
 * LoadBalancer Service：默认情况下，源 IP 会做 SNAT，server pod 看到的源 IP 是 Node IP。设置 `service.spec.ExternalTrafficPolicy=Local` 后可以自动从云平台负载均衡器中删除没有本地 endpoint 的 Node，从而保留源 IP。
 
+## 内部网络策略
+
+默认情况下，Kubernetes 把集群中所有 Endpoints 的 IP 作为 Service 的后端。你可以通过设置 `.spec.internalTrafficPolicy=Local` 让 kube-proxy 只为 Node 本地的 Endpoints 做负载均衡。
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+  internalTrafficPolicy: Local
+```
+
+注意，开启内网网络策略之后，即使其他 Node 上面有正常工作的 Endpoints，只要 Node 本地没有正常运行的 Pod，该 Service 就无法访问。
+
 ## 工作原理
 
 kube-proxy 负责将 service 负载均衡到后端 Pod 中，如下图所示
@@ -315,4 +336,3 @@ Service 的 ClusterIP 是 Kubernetes 内部的虚拟 IP 地址，无法直接从
 * [https://github.com/weaveworks/flux](https://github.com/weaveworks/flux)
 * [https://github.com/AdoHe/kube2haproxy](https://github.com/AdoHe/kube2haproxy)
 * [Accessing Kubernetes Services Without Ingress, NodePort, or LoadBalancer](https://medium.com/@kyralak/accessing-kubernetes-services-without-ingress-nodeport-or-loadbalancer-de6061b42d72)
-

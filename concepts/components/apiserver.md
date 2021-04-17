@@ -7,7 +7,7 @@ kube-apiserver 是 Kubernetes 最重要的核心组件之一，主要提供以�
 
 ## REST API
 
-kube-apiserver 支持同时提供 https（默认监听在 6443 端口）和 http API（默认监听在 127.0.0.1 的 8080 端口），其中 http API 是非安全接口，不做任何认证授权机制，不建议生产环境启用。两个接口提供的 REST API 格式相同，参考 [Kubernetes API Reference](https://kubernetes.io/docs/reference/#api-reference) 查看所有 API 的调用格式。
+kube-apiserver 支持同时提供 https（默认监听在 6443 端口）和 http API（默认监听在 127.0.0.1 的 8080 端口），其中 http API 是非安全接口，不做任何认证授权机制，不建议生产环境启用。两个接口提供的 REST API 格式相同，参考 [Kubernetes API Reference](https://kubernetes.io/docs/reference/kubernetes-api/) 查看所有 API 的调用格式。
 
 ![img](../../.gitbook/assets/API-server-space%20%282%29.png)
 
@@ -230,7 +230,6 @@ $ curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 
 最近 3 个稳定版本的 API 参考文档为：
 
-* [v1.17 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/)
-* [v1.16 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/)
-* [v1.15 API Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/)
-
+* [v1.21 API Reference](https://kubernetes.io/docs/reference/kubernetes-api/)
+* [v1.20 API Reference](https://v1-20.docs.kubernetes.io/docs/reference/kubernetes-api/)
+* [v1.19 API Reference](https://v1-19.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/)

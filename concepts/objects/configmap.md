@@ -298,7 +298,27 @@ very
 root@dapi-test-pod:/#
 ```
 
-参考文档：
+## 不可变 ConfigMap
+
+> 不可变 ConfigMap 在 v1.21.0 进入稳定版本。
+
+当集群包含大量 ConfigMap 和 Secret 时，大量的 watch 事件会急剧增加 kube-apiserver 的负载，并会导致错误配置过快传播到整个集群。在这种情况中，给不需要经常修改的 ConfigMap 和 Secret 设置 `immutable: true` 就可以避免类似的问题。
+
+不可变 ConfigMap 的好处包括：
+
+* 保护应用，使之免受意外更新所带来的负面影响。
+* 通过大幅降低对 kube-apiserver 的压力提升集群性能，这是因为 Kubernetes 会关闭不可变 ConfigMap 的监视操作。
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  ...
+data:
+  ...
+immutable: true
+```
+
+## 参考文档
 
 * [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
-

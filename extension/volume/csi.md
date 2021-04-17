@@ -169,4 +169,3 @@ spec:
 
 * [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
 * [CSI Volume Plugins in Kubernetes Design Doc](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes)
-

@@ -127,6 +127,50 @@ spec:
       restartPolicy: Never
 ```
 
+## Indexed Job
+
+通常，当使用 Job 来运行分布式任务时，用户需要一个单独的系统来在 Job 的不同 worker Pod 之间分配任务。比如，设置一个工作队列，逐一给每个 Pod 分配任务。Kubernetes v1.21 新增的 Indexed Job 会给每个任务分配一个数值索引，并通过 annotation `batch.kubernetes.io/job-completion-index` 暴露给每个 Pod。使用方法为在 Job spec 中设置 `completionMode: Indexed`。
+
+## Pod 自动清理
+
+TTL 控制器用来自动清理已经结束的 Pod，如处于 Complete 或 Failed 状态的 Job。Pod 停止之后的 TTL 可以通过 `.spec.ttlSecondsAfterFinished` 来设置。
+
+注意，该特性要求集群中各节点（包括控制节点）的时间一致，比如在所有节点中运行 NTP 服务。
+
+## 暂停和重启 Job
+
+从 v1.21 开始，可通过 `.spec.suspend` 暂停和重启 Job：
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: myjob
+spec:
+  suspend: true
+  parallelism: 1
+  completions: 5
+  template:
+    spec:
+      ...
+```
+
+当 Job 暂停后，Job conditions 中会新增一条 Job 暂停的事件：
+
+```sh
+$ kubectl get jobs/myjob -o yaml
+apiVersion: batch/v1
+kind: Job
+# .metadata and .spec omitted
+status:
+  conditions:
+  - lastProbeTime: "2021-02-05T13:14:33Z"
+    lastTransitionTime: "2021-02-05T13:14:33Z"
+    status: "True"
+    type: Suspended
+  startTime: "2021-02-05T13:13:48Z"
+```
+
 ## Bare Pods
 
 所谓 Bare Pods 是指直接用 PodSpec 来创建的 Pod（即不在 ReplicaSets 或者 ReplicationCtroller 的管理之下的 Pods）。这些 Pod 在 Node 重启后不会自动重启，但 Job 则会创建新的 Pod 继续任务。所以，推荐使用 Job 来替代 Bare Pods，即便是应用只需要一个 Pod。
@@ -134,4 +178,3 @@ spec:
 ## 参考文档
 
 * [Jobs - Run to Completion](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/)
-

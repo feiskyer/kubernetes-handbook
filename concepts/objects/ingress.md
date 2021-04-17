@@ -49,7 +49,8 @@ spec:
 | Kubernetes 版本 | Extension 版本 |
 | :--- | :--- |
 | v1.5-v1.17 | extensions/v1beta1 |
-| v1.8+ | networking.k8s.io/v1beta1 |
+| v1.8-v1.18 | networking.k8s.io/v1beta1 |
+| v1.19+     | networking.k8s.io/v1 |
 
 ## Ingress 类型
 
@@ -249,6 +250,23 @@ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
 * [kubernetes/ingress-nginx](https://github.com/kubernetes/ingress-nginx) 提供了一个详细的 Nginx Ingress Controller 示例
 * [kubernetes/ingress-gce](https://github.com/kubernetes/ingress-gce) 提供了一个用于 GCE 的 Ingress Controller 示例
 
+## Ingress Class
+
+在 Ingress Class 之前，要给 Ingress 选择具体的 Controller，需要加上特殊的 annotation（如 kubernetes.io/ingress.class: nginx）。而有了 IngressClass，集群管理员就可以预先创建好支持的 Ingress 类型，并可以 Ingress 中直接引用。
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: external-lb
+spec:
+  controller: example.com/ingress-controller
+  parameters:
+    apiGroup: k8s.example.com
+    kind: IngressParameters
+    name: external-lb
+```
+
 ## 参考文档
 
 * [Kubernetes Ingress Resource](https://kubernetes.io/docs/concepts/services-networking/ingress/)
@@ -259,4 +277,3 @@ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
 * [Kubernetes : Træfɪk and Let's Encrypt at scale](https://blog.osones.com/en/kubernetes-traefik-and-lets-encrypt-at-scale.html)
 * [Kubernetes Ingress Controller-Træfɪk](https://docs.traefik.io/user-guide/kubernetes/)
 * [Kubernetes 1.2 and simplifying advanced networking with Ingress](http://blog.kubernetes.io/2016/03/Kubernetes-1.2-and-simplifying-advanced-networking-with-Ingress.html)
-

@@ -378,6 +378,25 @@ resources:
           secret: dGhpcyBpcyBwYXNzd29yZA==
 ```
 
+## 不可变 Secret
+
+> 不可变 Secret 在 v1.21.0 进入稳定版本。
+
+对于大量使用 Secret 的 集群而言（如有数万个各不相同的 Secret 给 Pod 挂载），禁止更改 Secret 的数据有很多好处：
+
+* 保护应用，使之免受意外更新所带来的负面影响。
+* 通过大幅降低对 kube-apiserver 的压力提升集群性能，这是因为 Kubernetes 会关闭不可变 Secret 的监视操作。
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  ...
+data:
+  ...
+immutable: true
+```
+
 ## Secret 与 ConfigMap 对比
 
 相同点：
@@ -399,4 +418,3 @@ resources:
 
 * [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 * [Specifying ImagePullSecrets on a Pod](https://kubernetes.io/docs/concepts/configuration/secret/)
-

@@ -7,6 +7,7 @@
 * v1.6 以及以前的版本需要在 kube-apiserver 中开启 `extensions/v1beta1/networkpolicies`
 * v1.7 版本 Network Policy 已经 GA，API 版本为 `networking.k8s.io/v1`
 * v1.8 版本新增 **Egress** 和 **IPBlock** 的支持
+* v1.21版本新增 **endPort** 的支持用于设置端口范围（需要配置 `--feature-gates=NetworkPolicyEndPort=true`）
 * 网络插件要支持 Network Policy，如 Calico、Romana、Weave Net 和 trireme 等，参考 [这里](../../extension/network-policy.md)
 
 ## API 版本对照表
@@ -454,10 +455,22 @@ spec:
     from: []
 ```
 
+## 不支持场景
+
+- 强制集群内部流量经过某公用网关（这种场景最好通过服务网格或其他代理来实现）；
+- 与 TLS 相关的场景（考虑使用服务网格或者 Ingress 控制器）；
+- 特定于节点的策略（你可以使用 CIDR 来表达这一需求不过你无法使用节点在 Kubernetes 中的其他标识信息来辩识目标节点）；
+- 基于名字来选择服务（不过，你可以使用 标签 来选择目标 Pod 或名字空间，这也通常是一种可靠的替代方案）；
+- 创建或管理由第三方来实际完成的“策略请求”；
+- 实现适用于所有名字空间或 Pods 的默认策略（某些第三方 Kubernetes 发行版本 或项目可以做到这点）；
+- 高级的策略查询或者可达性相关工具；
+- 生成网络安全事件日志的能力（例如，被阻塞或接收的连接请求）；
+- 显式地拒绝策略的能力（目前，NetworkPolicy 的模型默认采用拒绝操作， 其唯一的能力是添加允许策略）；
+- 禁止本地回路或指向宿主的网络流量（Pod 目前无法阻塞 localhost 访问， 它们也无法禁止来自所在节点的访问请求）。
+
 ## 参考文档
 
 * [Kubernetes network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 * [Declare Network Policy](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/)
 * [Securing Kubernetes Cluster Networking](https://ahmet.im/blog/kubernetes-network-policy/)
 * [Kubernetes Network Policy Recipes](https://github.com/ahmetb/kubernetes-networkpolicy-tutorial)
-
