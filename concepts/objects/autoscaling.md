@@ -2,7 +2,7 @@
 
 Horizontal Pod Autoscaling \(HPA\) 可以根据 CPU 使用率或应用自定义 metrics 自动扩展 Pod 数量（支持 replication controller、deployment 和 replica set ）。
 
-* 控制管理器每隔 30s（可以通过 `--horizontal-pod-autoscaler-sync-period` 修改）查询 metrics 的资源使用情况
+* 控制管理器每隔 15s（可以通过 `--horizontal-pod-autoscaler-sync-period` 修改）查询 metrics 的资源使用情况
 * 支持三种 metrics 类型
   * 预定义 metrics（比如 Pod 的 CPU）以利用率的方式计算
   * 自定义的 Pod metrics，以原始值（raw value）的方式计算
