@@ -10,7 +10,7 @@
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-alerts": "^0.1.1",
     "gitbook-plugin-editlink": "^1.0.2",
-    "gitbook-plugin-github": "^2.0.0",
+    "gitbook-plugin-github": "^3.0.0",
     "gitbook-plugin-github-buttons": "^2.1.0",
     "gitbook-plugin-mermaid": "^0.0.9",
     "gitbook-plugin-page-treeview": "^3.0.6",
