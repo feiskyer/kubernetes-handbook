@@ -13,7 +13,7 @@
     "gitbook-plugin-github": "^2.0.0",
     "gitbook-plugin-github-buttons": "^2.1.0",
     "gitbook-plugin-mermaid": "^0.0.9",
-    "gitbook-plugin-page-treeview": "^2.9.7",
+    "gitbook-plugin-page-treeview": "^3.0.6",
     "gitbook-plugin-search-plus": "^1.0.3",
     "npm": "^6.13.4"
   },
