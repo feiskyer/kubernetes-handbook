@@ -2,6 +2,8 @@
 
 [Contiv](http://contiv.github.io)是思科开源的容器网络方案，是一个用于跨虚拟机、裸机、公有云或私有云的异构容器部署的开源容器网络架构，并与主流容器编排系统集成。Contiv最主要的优势是直接提供了多租户网络，并支持L2\(VLAN\), L3\(BGP\), Overlay \(VXLAN\)以及思科自家的ACI。
 
+> 注：Contiv 项目已不在活跃维护状态，建议用户切换到其他更活跃的项目。
+
 ![](../../.gitbook/assets/Contiv_Blog_image.jpg)
 
 主要特征
@@ -52,8 +54,6 @@ netctl bgp create devstack-71 --router-ip="30.30.30.79/24" --as="65000" --neighb
 
 **参考文档**
 
-* [http://contiv.github.io/](http://contiv.github.io/)
 * [https://github.com/contiv/netplugin](https://github.com/contiv/netplugin)
 * [http://blogs.cisco.com/cloud/introducing-contiv-1-0](http://blogs.cisco.com/cloud/introducing-contiv-1-0)
 * [Kubernetes and Contiv on Bare-Metal with L3/BGP](http://blog.michali.net/2017/03/20/kubernetes-and-contiv-on-bare-metal-with-l3bgp/)
-

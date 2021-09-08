@@ -77,7 +77,7 @@ Kubernetes 目前还不支持通过 [Certificate Rovocation List \(CRL\)](https:
 
 为了避免这个问题，推荐为客户端配置 [OIDC](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens) 认证，比如可以使用 [dex](https://github.com/dexidp/dex) 项目来实现。
 
-> 注：Etcd 支持 CRL 撤销证书，具体实现可以参考[这里](https://github.com/etcd-io/etcd/blob/master/pkg/transport/listener_tls.go#L169-L190)。
+> 注：Etcd 支持 CRL 撤销证书，具体实现可以参考[这里](https://github.com/etcd-io/etcd/blob/main/client/pkg/transport/listener_tls.go)。
 
 ## 附: 名词解释
 
@@ -93,4 +93,3 @@ Kubernetes 目前还不支持通过 [Certificate Rovocation List \(CRL\)](https:
 * [Certificate Management with kubeadm](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/)
 * [Manage TLS Certificates in a Cluster](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/)
 * [Kubelet Certificate Rotation](https://kubernetes.io/docs/tasks/tls/certificate-rotation/)
-

@@ -297,7 +297,7 @@ spec:
 
 注意 Ingress 本身并不会自动创建负载均衡器，cluster 中需要运行一个 ingress controller 来根据 Ingress 的定义来管理负载均衡器。目前社区提供了 nginx 和 gce 的参考实现。
 
-Traefik 提供了易用的 Ingress Controller，使用方法见 [https://docs.traefik.io/user-guide/kubernetes/](https://docs.traefik.io/user-guide/kubernetes/)。
+Traefik 提供了易用的 Ingress Controller，使用方法见 [https://doc.traefik.io/traefik/providers/kubernetes-ingress/](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)。
 
 更多 Ingress 和 Ingress Controller 的介绍参见 [ingress](ingress.md)。
 

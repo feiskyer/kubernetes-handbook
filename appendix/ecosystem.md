@@ -16,5 +16,4 @@
 
 ![](../.gitbook/assets/CloudNativeLandscape_Serverless_latest.png)
 
-图片来源：[https://s.cncf.io](https://s.cncf.io)。
-
+图片来源：[https://s.cncf.io](https://landscape.cncf.io/serverless)。

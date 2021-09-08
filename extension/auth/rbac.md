@@ -22,7 +22,7 @@ ABAC（Attribute Based Access Control）本来是不错的概念，但是在 Kub
 
 ## 基础概念
 
-需要理解 RBAC 一些基础的概念和思路，RBAC 是让用户能够访问 [Kubernetes API 资源](https://kubernetes.io/docs/api-reference/v1.15/) 的授权方式。
+需要理解 RBAC 一些基础的概念和思路，RBAC 是让用户能够访问 [Kubernetes API 资源](https://kubernetes.io/docs/reference/) 的授权方式。
 
 ![RBAC &#x67B6;&#x6784;&#x56FE; 1](../../.gitbook/assets/rbac1%20%281%29.png)
 
@@ -230,8 +230,7 @@ kubectl create clusterrolebinding permissive-binding \
 ## 参考文档
 
 * [RBAC documentation](https://kubernetes.io/docs/admin/authorization/rbac/)
+* [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
 * [Google Cloud Next talks 1](https://www.youtube.com/watch?v=Cd4JU7qzYbE#t=8m01s%20)
 * [Google Cloud Next talks 2](https://www.youtube.com/watch?v=18P7cFc6nTU#t=41m06s%20)
 * [在 Kubernetes Pod 中使用 Service Account 访问 API Server](http://tonybai.com/2017/03/03/access-api-server-from-a-pod-through-serviceaccount/)
-* 部分翻译自 [RBAC Support in Kubernetes](http://blog.kubernetes.io/2017/04/rbac-support-in-kubernetes.html)（转载自[kubernetes 中文社区](https://www.kubernetes.org.cn/1879.html)，译者催总，[Jimmy Song](http://rootsongjc.github.com/about) 做了稍许修改）
-

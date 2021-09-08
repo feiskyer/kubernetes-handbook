@@ -8,19 +8,17 @@
 
 * [addon-manager](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/addon-manager)
 * [cluster-loadbalancing](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/cluster-loadbalancing)
-* [cluster-monitoring](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/cluster-monitoring)
 * [dashboard](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dashboard)
 * [device-plugins/nvidia-gpu](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/device-plugins/nvidia-gpu)
 * [dns-horizontal-autoscaler](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns-horizontal-autoscaler)
 * [dns](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)
 * [fluentd-elasticsearch](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch)
 * [ip-masq-agent](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/ip-masq-agent)
-* [istio](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/istio)
+* [istio](https://istio.io)
 * [kube-proxy](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/kube-proxy)
 * [metrics-server](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/metrics-server)
 * [node-problem-detector](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/node-problem-detector)
-* [prometheus](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/prometheus)
+* [prometheus](https://prometheus.io/)
 * [storage-class](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/storage-class)
 
 更多的扩展组件可以参考 [Installing Addons](https://kubernetes.io/docs/concepts/cluster-administration/addons/) 和 [Legacy Addons](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)。
-

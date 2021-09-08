@@ -281,5 +281,3 @@ $ kubectl apply -f <(linkerd-inject -f <your k8s config>.yml -linkerdPort 4140)
 * [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
 * [Linkerd examples](https://github.com/linkerd/linkerd-examples)
 * [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)
-* [https://conduit.io](https://conduit.io)
-

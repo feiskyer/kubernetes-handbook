@@ -48,7 +48,6 @@ Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Po
 以下扩展服务需要增大 CPU 和内存：
 
 * [DNS \(kube-dns or CoreDNS\)](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)
-* [InfluxDB and Grafana](http://releases.k8s.io/master/cluster/addons/cluster-monitoring/influxdb/influxdb-grafana-controller.yaml)
 * [Kibana](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/kibana-deployment.yaml)
 * [FluentD with ElasticSearch Plugin](http://releases.k8s.io/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml)
 * [FluentD with GCP Plugin](http://releases.k8s.io/master/cluster/addons/fluentd-gcp/fluentd-gcp-ds.yaml)
@@ -157,4 +156,3 @@ fs.inotify.max_user_watches=524288
 * [How Does Alibaba Ensure the Performance of System Components in a 10,000-node Kubernetes Cluster](https://www.alibabacloud.com/blog/how-does-alibaba-ensure-the-performance-of-system-components-in-a-10000-node-kubernetes-cluster_595469)
 * [Architecting Kubernetes clusters — choosing a cluster size](https://itnext.io/architecting-kubernetes-clusters-choosing-a-cluster-size-92f6feaa2908)
 * [Bayer Crop Science seeds the future with 15000-node GKE clusters](https://cloud.google.com/blog/products/containers-kubernetes/google-kubernetes-engine-clusters-can-have-up-to-15000-nodes)
-

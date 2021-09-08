@@ -14,12 +14,10 @@
 ## 支持 Network Policy 的网络插件
 
 * [Calico](https://www.projectcalico.org/)
+* [Cilium](https://cilium.io/)
 * [Romana](https://github.com/romana/romana)
 * [Weave Net](https://www.weave.works/)
-* [Trireme](https://github.com/aporeto-inc/trireme-kubernetes)
-* [OpenContrail](http://www.opencontrail.org/)
 
 ## Network Policy 使用方法
 
 具体 Network Policy 的使用方法可以参考 [这里](../concepts/objects/network-policy.md)。
-

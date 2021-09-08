@@ -2,13 +2,13 @@
 
 ## Kubernetes 集群架构
 
-![](../../.gitbook/assets/ha%20%283%29.png)
+![ha](../../.gitbook/assets/ha%20%283%29.png)
 
 ### etcd 集群
 
 从 `https://discovery.etcd.io/new?size=3` 获取 token 后，把 `etcd.yaml` 放到每台机器的 `/etc/kubernetes/manifests/etcd.yaml`，并替换掉 `${DISCOVERY_TOKEN}`, `${NODE_NAME}` 和 `${NODE_IP}`，即可以由 kubelet 来启动一个 etcd 集群。
 
-对于运行在 kubelet 外部的 etcd，可以参考 [etcd clustering guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md) 来手动配置集群模式。
+对于运行在 kubelet 外部的 etcd，可以参考 [etcd clustering guide](https://etcd.io/docs/v3.5/op-guide/clustering/) 来手动配置集群模式。
 
 ### kube-apiserver
 
@@ -86,4 +86,3 @@ cluster/kube-up.sh
 ## 物理机或虚拟机
 
 在 Linux 物理机或虚拟机中，建议使用 [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) 或 [kubespray](kubespray.md) 来部署 Kubernetes 集群。
-

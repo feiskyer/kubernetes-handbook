@@ -88,7 +88,7 @@ Kubelet 定期（`housekeeping-interval`）检查系统的资源是否达到了�
 
 | Eviction Signal | Condition | Description |
 | :--- | :--- | :--- |
-| `memory.available` | MemoryPressue | `memory.available` := `node.status.capacity[memory]` - `node.stats.memory.workingSet` （计算方法参考[这里](https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/memory-available.sh)） |
+| `memory.available` | MemoryPressue | `memory.available` := `node.status.capacity[memory]` - `node.stats.memory.workingSet` （计算方法参考[这里](https://kubernetes.io/docs/tasks/administer-cluster/memory-available.sh)） |
 | `nodefs.available` | DiskPressure | `nodefs.available` := `node.stats.fs.available`（Kubelet Volume以及日志等） |
 | `nodefs.inodesFree` | DiskPressure | `nodefs.inodesFree` := `node.stats.fs.inodesFree` |
 | `imagefs.available` | DiskPressure | `imagefs.available` := `node.stats.runtime.imagefs.available`（镜像以及容器可写层等） |

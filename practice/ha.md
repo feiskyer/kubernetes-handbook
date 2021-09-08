@@ -8,7 +8,7 @@ Kubernetes 从 1.5 开始，通过 `kops` 或者 `kube-up.sh` 部署的集群会
 
 如下图所示
 
-![](../.gitbook/assets/ha%20%285%29.png)
+![ha](../.gitbook/assets/ha%20%285%29.png)
 
 注意：以下步骤假设每台机器上 Kubelet 和 Docker 已配置并处于正常运行状态。
 
@@ -113,7 +113,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer
 
 最后运行 etcd，将如下的 yaml 配置写入每台 etcd 节点的 `/etc/kubernetes/manifests/etcd.yaml` 文件中，注意替换
 
-* `<podname>` 为 etcd 节点名称 （比如`etcd0`, `etcd1` 和 `etcd2`）
+* `<podname>` 为 etcd 节点名称 （比如 `etcd0`, `etcd1` 和 `etcd2`）
 * `<etcd0-ip-address>`, `<etcd1-ip-address>` and `<etcd2-ip-address>` 为 etcd 节点的内网 IP 地址
 
 ```bash
@@ -420,8 +420,5 @@ sudo systemctl restart kubelet
 
 * [Set up High-Availability Kubernetes Masters](https://kubernetes.io/docs/tasks/administer-cluster/highly-available-master/)
 * [Creating Highly Available Clusters with kubeadm](https://kubernetes.io/docs/setup/independent/high-availability/)
-* [http://kubecloud.io/setup-ha-k8s-kops/](http://kubecloud.io/setup-ha-k8s-kops/)
-* [https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md)
 * [Kubernetes Master Tier For 1000 Nodes Scale](http://fuel-ccp.readthedocs.io/en/latest/design/k8s_1000_nodes_architecture.html)
 * [Scaling Kubernetes to Support 50000 Services](https://docs.google.com/presentation/d/1BaIAywY2qqeHtyGZtlyAp89JIZs59MZLKcFLxKE6LyM/edit#slide=id.p3)
-

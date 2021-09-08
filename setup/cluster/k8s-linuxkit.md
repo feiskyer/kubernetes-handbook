@@ -123,7 +123,7 @@ nginx        10.108.41.230   <nodes>       80:31773/TCP   5s
 $ docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
 ```
 
-> 完成后透过浏览器连接 [HTML VNC](localhost:6080)。
+> 完成后透过浏览器 `http://localhost:6080` 连接 HTML VNC。
 
 ![](../../.gitbook/assets/docker-desktop%20%283%29.png)
 
@@ -133,4 +133,3 @@ $ docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
 $ halt
 [1503.034689] reboot: Power down
 ```
-

@@ -14,14 +14,14 @@
 
 ## 裸奔的 Pods vs Replication Controllers 和 Jobs
 
-* 如果有其他方式替代 “裸奔的 pod”（如没有绑定到 [replication controller ](https://kubernetes.io/docs/user-guide/replication-controller) 上的 pod），那么就使用其他选择。
+* 如果有其他方式替代 “裸奔的 pod”（如没有绑定到 [replication controller](https://kubernetes.io/docs/user-guide/replication-controller) 上的 pod），那么就使用其他选择。
 * 在 node 节点出现故障时，裸奔的 pod 不会被重新调度。
 * Replication Controller 总是会重新创建 pod，除了明确指定了 [`restartPolicy: Never`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) 的场景。[Job](https://kubernetes.io/docs/concepts/jobs/run-to-completion-finite-workloads/) 对象也适用。
 
 ## Services
 
 * 通常最好在创建相关的 [replication controllers](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/) 之前先创建 [service](https://kubernetes.io/docs/concepts/services-networking/service/)。这样可以保证容器在启动时就配置了该服务的环境变量。对于新的应用，推荐通过服务的 DNS 名字来访问（而不是通过环境变量）。
-* 除非有必要（如运行一个 node daemon），不要使用配置 `hostPort` 的 Pod（用来指定暴露在主机上的端口号）。当你给 Pod 绑定了一个 `hostPort`，该 Pod 会因为端口冲突很难调度。如果是为了调试目的来通过端口访问的话，你可以使用 [kubectl proxy and apiserver proxy](https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/) 或者 [kubectl port-forward](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)。你可使用 [Service](https://kubernetes.io/docs/concepts/services-networking/service/) 来对外暴露服务。如果你确实需要将 pod 的端口暴露到主机上，考虑使用 [NodePort](https://kubernetes.io/docs/user-guide/services/#type-nodeport) service。
+* 除非有必要（如运行一个 node daemon），不要使用配置 `hostPort` 的 Pod（用来指定暴露在主机上的端口号）。当你给 Pod 绑定了一个 `hostPort`，该 Pod 会因为端口冲突很难调度。如果是为了调试目的来通过端口访问的话，你可以使用 [kubectl proxy and apiserver proxy](https://kubernetes.io/docs/tasks/extend-kubernetes/http-proxy-access-api/) 或者 [kubectl port-forward](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)。你可使用 [Service](https://kubernetes.io/docs/concepts/services-networking/service/) 来对外暴露服务。如果你确实需要将 pod 的端口暴露到主机上，考虑使用 [NodePort](https://kubernetes.io/docs/user-guide/services/#type-nodeport) service。
 * 跟 `hostPort` 一样的原因，避免使用 `hostNetwork`。
 * 如果你不需要 kube-proxy 的负载均衡的话，可以考虑使用使用 [headless services](https://kubernetes.io/docs/user-guide/services/#headless-services)（ClusterIP 为 None）。
 
@@ -37,7 +37,7 @@
 * 默认容器镜像拉取策略是 `IfNotPresent`, 当本地已存在该镜像的时候 Kubelet 不会再从镜像仓库拉取。如果你希望总是从镜像仓库中拉取镜像的话，在 yaml 文件中指定镜像拉取策略为 `Always`（ `imagePullPolicy: Always`）或者指定镜像的 tag 为 `:latest` 。
 * 如果你没有将镜像标签指定为 `:latest`，例如指定为 `myimage:v1`，当该标签的镜像进行了更新，kubelet 也不会拉取该镜像。你可以在每次镜像更新后都生成一个新的 tag（例如 `myimage:v2`），在配置文件中明确指定该版本。
 * 可以使用镜像的摘要（Digest）来保证容器总是使用同一版本的镜像。
-*  **注意：** 在生产环境下部署容器应该尽量避免使用 `:latest` 标签，因为这样很难追溯到底运行的是哪个版本以及发生故障时该如何回滚。
+* **注意：** 在生产环境下部署容器应该尽量避免使用 `:latest` 标签，因为这样很难追溯到底运行的是哪个版本以及发生故障时该如何回滚。
 
 ## 使用 kubectl
 
@@ -54,4 +54,3 @@
 ## 参考文档
 
 * [Configuration Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
-

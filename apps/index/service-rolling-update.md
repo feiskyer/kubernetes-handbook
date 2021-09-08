@@ -8,7 +8,7 @@ Deployment 已经内置了 RollingUpdate strategy，因此不用再调用 `kubec
 
 Rolling Update 适用于 `Deployment`、`Replication Controller`，官方推荐使用 Deployment 而不再使用 Replication Controller。
 
-使用 ReplicationController 时的滚动升级请参考官网说明：[https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/)
+使用 ReplicationController 时的滚动升级请参考官网说明：[https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment)
 
 ## ReplicationController 与 Deployment 的关系
 
@@ -101,7 +101,7 @@ clean:
   rm -f hello${TAG}
 ```
 
- **编译** 
+ **编译**
 
 ```text
 make all
@@ -154,7 +154,7 @@ spec:
 kubectl create -f rolling-update-test.yaml
 ```
 
- **修改 traefik ingress 配置** 
+ **修改 traefik ingress 配置**
 
 在 `ingress.yaml` 文件中增加新 service 的配置。
 
@@ -182,7 +182,7 @@ kubectl create -f rolling-update-test.yaml
 This is version 1.
 ```
 
- **滚动升级** 
+ **滚动升级**
 
 只需要将 `rolling-update-test.yaml` 文件中的 `image` 改成新版本的镜像名，然后执行：
 
@@ -237,4 +237,3 @@ replicationcontroller "zeppelin-controller" rolling updated
 * [Running a Stateless Application Using a Deployment](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)
 * [Simple Rolling Update](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/cli/simple-rolling-update.md)
 * [使用 kubernetes 的 deployment 进行 RollingUpdate](https://segmentfault.com/a/1190000008232770)
-

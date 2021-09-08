@@ -409,7 +409,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: web
-spec:   
+spec:
   serviceName: "nginx"
   replicas: 2
   selector:
@@ -484,9 +484,9 @@ logs-web-1      us-central1-a
 存储快照是 v1.12 新增的 Alpha 特性，用来支持给存储卷创建快照。支持的插件包括
 
 * [GCE Persistent Disk CSI Driver](https://github.com/kubernetes-sigs/gcp-compute-persistent-disk-csi-driver)
-* [OpenSDS CSI Driver](https://github.com/opensds/nbp/tree/master/csi/server)
-* [Ceph RBD CSI Driver](https://github.com/ceph/ceph-csi/tree/master/pkg/rbd)
-* [Portworx CSI Driver](https://github.com/libopenstorage/openstorage/tree/master/csi)
+* [OpenSDS CSI Driver](https://docs.opensds.io/guides/user-guides/csi/ceph-csi/)
+* [Ceph RBD CSI Driver](https://github.com/ceph/ceph-csi)
+* [Portworx CSI Driver](https://docs.portworx.com/portworx-csi-driver/)
 
 ![image-20181014215558480](../../.gitbook/assets/image-20181014215558480.png)
 
@@ -547,4 +547,3 @@ spec:
 * [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 * [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
 * [Volume Snapshots Documentation](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)
-

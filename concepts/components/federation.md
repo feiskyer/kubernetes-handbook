@@ -299,6 +299,5 @@ $ kubectl delete ns federation-system
 
 ## 参考文档
 
-* [Kubernetes federation](https://kubernetes.io/docs/concepts/cluster-administration/federation/)
-* [kubefed](https://kubernetes.io/docs/tasks/federation/set-up-cluster-federation-kubefed/)
-
+* [Kubernetes federation](https://kubernetes.io/blog/2018/12/12/kubernetes-federation-evolution/)
+* [kubefed](https://github.com/kubernetes-sigs/kubefed)

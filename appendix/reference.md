@@ -24,4 +24,3 @@
 * [Awesome Kubernetes](https://github.com/ramitsurana/awesome-kubernetes)
 * [Awesome Docker](https://github.com/veggiemonk/awesome-docker)
 * [OperatorHub.io](https://www.operatorhub.io/)
-

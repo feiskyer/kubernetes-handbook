@@ -193,5 +193,4 @@ $ argo -n argo delete hello-world-4dhg8
 Workflow 'hello-world-4dhg8' deleted
 ```
 
-更多工作流 YAML 的格式见[官方文档](https://applatix.com/open-source/argo/docs/argo_v2_yaml.html)和[工作流示例](https://github.com/argoproj/argo/tree/master/examples)。
-
+更多工作流 YAML 的格式见[官方文档](https://argoproj.github.io/argo-workflows/)。

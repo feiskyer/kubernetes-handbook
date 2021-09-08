@@ -719,7 +719,7 @@ Deployment 也需要 [`.spec` section](https://github.com/kubernetes/community/b
 
 `.spec.template` 是 [pod template](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/#pod-template). 它跟 [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) 有一模一样的 schema，除了它是嵌套的并且不需要 `apiVersion` 和 `kind` 字段。
 
-另外为了划分 Pod 的范围，Deployment 中的 pod template 必须指定适当的 label（不要跟其他 controller 重复了，参考 [selector](https://github.com/kubernetes/kubernetes.github.io/blob/master/docs/concepts/workloads/controllers/deployment.md#selector)）和适当的重启策略。
+另外为了划分 Pod 的范围，Deployment 中的 pod template 必须指定适当的 label（不要跟其他 controller 重复了，参考 [selector](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#selector)）和适当的重启策略。
 
 [`.spec.template.spec.restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/) 可以设置为 `Always` , 如果不指定的话这就是默认配置。
 
@@ -749,7 +749,7 @@ Deployment 也需要 [`.spec` section](https://github.com/kubernetes/community/b
 
 #### Rolling Update Deployment
 
-`.spec.strategy.type==RollingUpdate` 时，Deployment 使用 [rolling update](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 的方式更新 Pod 。你可以指定 `maxUnavailable` 和 `maxSurge` 来控制 rolling update 进程。
+`.spec.strategy.type==RollingUpdate` 时，Deployment 使用 [rolling update](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment) 的方式更新 Pod 。你可以指定 `maxUnavailable` 和 `maxSurge` 来控制 rolling update 进程。
 
 **Max Unavailable**
 
@@ -797,5 +797,4 @@ Deployment revision history 存储在它控制的 ReplicaSets 中。
 
 ### kubectl rolling update
 
-[Kubectl rolling update](https://kubernetes.io/docs/tasks/run-application/rolling-update-replication-controller/) 虽然使用类似的方式更新 Pod 和 ReplicationController。但是我们推荐使用 Deployment，因为它是声明式的，客户端侧，具有附加特性，例如即使滚动升级结束后也可以回滚到任何历史版本。
-
+[Kubectl rolling update](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment) 虽然使用类似的方式更新 Pod 和 ReplicationController。但是我们推荐使用 Deployment，因为它是声明式的，客户端侧，具有附加特性，例如即使滚动升级结束后也可以回滚到任何历史版本。

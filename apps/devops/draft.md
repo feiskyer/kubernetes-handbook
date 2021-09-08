@@ -13,7 +13,7 @@ Draft 主要由三个命令组成
 由于 Draft 需要构建镜像并部署应用到 Kubernetes 集群，因而在安装 Draft 之前需要
 
 * 部署一个 Kubernetes 集群，部署方法可以参考 [kubernetes 部署方法](../../setup/index.md)
-* 安装并初始化 helm（需要 v2.4.x 版本，并且不要忘记运行 `helm init`），具体步骤可以参考 [helm 使用方法](https://github.com/feiskyer/kubernetes-handbook/tree/549e0e3c9ba0175e64b2d4719b5a46e9016d532b/apps/helm-app.md)
+* 安装并初始化 helm（需要 v2.4.x 版本，并且不要忘记运行 `helm init`），具体步骤可以参考 [helm 使用方法](../../apps/index/helm.md)
 * 注册 docker registry 账号，比如 [Docker Hub](https://hub.docker.com/) 或[Quay.io](https://quay.io/)
 * 配置 Ingress Controller 并在 DNS 中设置通配符域 `*` 的 A 记录（如 `*.draft.example.com`）到 Ingress IP 地址。最简单的 Ingress Controller 创建方式是使用 helm：
 
@@ -118,4 +118,3 @@ Watching local files for changes...
 $ curl virulent-sheep.app.feisky.xyz
 Hello, World!
 ```
-

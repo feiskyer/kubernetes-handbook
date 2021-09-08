@@ -289,7 +289,7 @@ Calico在每一个计算节点利用Linux Kernel实现了一个高效的vRouter�
 
 ## [OVN](ovn-kubernetes.md)
 
-[OVN \(Open Virtual Network\)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是OVS提供的原生虚拟化网络方案，旨在解决传统SDN架构（比如Neutron DVR）的性能问题。
+[OVN (Open Virtual Network)](https://www.ovn.org/en/) 是OVS提供的原生虚拟化网络方案，旨在解决传统SDN架构（比如Neutron DVR）的性能问题。
 
 OVN为Kubernetes提供了两种网络方案：
 
@@ -452,4 +452,3 @@ OpenContrail是Juniper推出的开源网络虚拟化平台，其商业版本为C
 [CNI-Genie](https://github.com/Huawei-PaaS/CNI-Genie)是华为PaaS团队推出的同时支持多种网络插件（支持calico, canal, romana, weave等）的CNI插件。
 
 项目主页为[https://github.com/Huawei-PaaS/CNI-Genie](https://github.com/Huawei-PaaS/CNI-Genie)。
-

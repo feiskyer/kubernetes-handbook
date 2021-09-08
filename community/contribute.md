@@ -60,6 +60,5 @@ hack/cherry_pick_pull.sh upstream/release-1.7 51870
 * [**Kubernetes Contributor Documentation**](https://www.kubernetes.dev/docs/)
 * [Special Interest Groups](https://github.com/kubernetes/community)
 * [Feature Tracking and Backlog](https://github.com/kubernetes/features)
-* [Community Expectations](https://github.com/kubernetes/community/blob/master/contributors/guide/community-expectations.md)
+* [Community Expectations](https://github.com/kubernetes/community/blob/master/contributors/guide/expectations.md)
 * [Kubernetes release managers](https://github.com/kubernetes/sig-release/blob/master/release-managers.md)
-

@@ -317,7 +317,7 @@ kubernetes-dashboard-665b4f7df-dsjpn   1/1       Running   0          5d
 $ kubectl -n kube-system logs kubernetes-dashboard-665b4f7df-dsjpn
 ```
 
-> 注意：Heapster 已被社区弃用，推荐部署 metrics-server 来获取这些指标。支持 metrics-server 的 dashboard 可以参考[这里](https://github.com/kubernetes/dashboard/blob/master/aio/deploy/recommended/kubernetes-dashboard-head.yaml)。
+> 注意：Heapster 已被社区弃用，推荐部署 metrics-server 来获取这些指标。支持 metrics-server 的 dashboard 可以参考[这里](https://github.com/kubernetes/dashboard)。
 
 ## HPA 不自动扩展 Pod
 
@@ -465,4 +465,3 @@ Event(v1.ObjectReference{Kind:"HorizontalPodAutoscaler", Namespace:"cig-prod-app
 * [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
 * [SSH into Azure Container Service \(AKS\) cluster nodes](https://docs.microsoft.com/en-us/azure/aks/aks-ssh#configure-ssh-access)
 * [Kubernetes dashboard FAQ](https://github.com/kubernetes/dashboard/wiki/FAQ)
-

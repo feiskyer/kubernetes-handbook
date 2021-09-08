@@ -213,7 +213,7 @@ spec:
 $ kubectl create -f spark-ui-proxy-service.yaml
 ```
 
-部署完后你可以利用 [kubecrl proxy](https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/) 来察看你的 Spark 群集状态
+部署完后你可以利用 [kubecrl proxy](https://kubernetes.io/docs/tasks/extend-kubernetes/http-proxy-access-api/) 来察看你的 Spark 群集状态
 
 ```bash
 $ kubectl proxy --port=8001
@@ -366,4 +366,3 @@ SparkContext available as sc, HiveContext available as sqlContext.
 * [Apache Spark on Kubernetes](https://apache-spark-on-k8s.github.io/userdocs/index.html)
 * [https://github.com/kweisamx/spark-on-kubernetes](https://github.com/kweisamx/spark-on-kubernetes)
 * [Spark examples](https://github.com/kubernetes/examples/tree/master/staging/spark)
-

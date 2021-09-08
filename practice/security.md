@@ -279,7 +279,7 @@ helm dependency update clair
 helm install clair
 ```
 
-Clair 项目本身只提供了 API，在实际使用中还需要一个[客户端（或集成Clair的服务）](https://github.com/coreos/clair/blob/master/Documentation/integrations.md)配合使用。比如，使用 [reg](https://github.com/genuinetools/reg) 的方法为
+Clair 项目本身只提供了 API，在实际使用中还需要一个[客户端（或集成Clair的服务）](https://quay.github.io/clair/howto/deployment.html)配合使用。比如，使用 [reg](https://github.com/genuinetools/reg) 的方法为
 
 ```bash
 # Install
@@ -337,7 +337,6 @@ trivy python:3.4-alpine
 * [Istio](https://istio.io/)
 * [Linkerd](https://linkerd.io/)
 * [Open Vulnerability and Assessment Language](https://oval.mitre.org/index.html)
-* [aporeto-inc/trireme-kubernetes](https://github.com/aporeto-inc/trireme-kubernetes)
 * [jetstack/cert-manager](https://github.com/jetstack/cert-manager/)
 * [Kata Containers](https://katacontainers.io/)
 * [google/gvisor](https://github.com/google/gvisor)
@@ -357,4 +356,3 @@ trivy python:3.4-alpine
 * [kube-bench](https://github.com/aquasecurity/kube-bench)
 * [Kubernetes Security - Operating Kubernetes Clusters and Applications Safely](https://kubernetes-security.info)
 * [Kubernetes Security - Best Practice Guide](https://github.com/freach/kubernetes-security-best-practice)
-

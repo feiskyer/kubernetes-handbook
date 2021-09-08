@@ -129,7 +129,7 @@ kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/i
 
 ## [OVN](ovn-kubernetes.md)
 
-[OVN \(Open Virtual Network\)](http://openvswitch.org/support/dist-docs/ovn-architecture.7.html) 是 OVS 提供的原生虚拟化网络方案，旨在解决传统 SDN 架构（比如 Neutron DVR）的性能问题。
+[OVN (Open Virtual Network)](https://www.ovn.org/en/) 是 OVS 提供的原生虚拟化网络方案，旨在解决传统 SDN 架构（比如 Neutron DVR）的性能问题。
 
 OVN 为 Kubernetes 提供了两种网络方案：
 
@@ -236,4 +236,3 @@ kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/m
 kubectl -n kube-system delete ds kube-proxy
 docker run --privileged --net=host gcr.io/google_containers/kube-proxy-amd64:v1.7.3 kube-proxy --cleanup-iptables
 ```
-

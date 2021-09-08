@@ -38,7 +38,7 @@ prometheus   ClusterIP   10.0.205.82    <none>        9090/TCP            163m
 proxy-api    ClusterIP   10.0.170.201   <none>        8086/TCP            163m
 web          ClusterIP   10.0.88.136    <none>        8084/TCP,9994/TCP   163m
 
-$ kubectl -n linkerd get pod          
+$ kubectl -n linkerd get pod
 NAME                          READY     STATUS    RESTARTS   AGE
 controller-67489d768d-75wjz   5/5       Running   0          163m
 grafana-5df745d8b8-pv6tf      2/2       Running   0          163m
@@ -95,4 +95,3 @@ end id=0:810 src=10.244.6.239:57202 dst=10.244.1.237:8080 grpc-status=OK duratio
 * [A SERVICE MESH FOR KUBERNETES](https://buoyant.io/2016/10/04/a-service-mesh-for-kubernetes-part-i-top-line-service-metrics/)
 * [Service Mesh Pattern](http://philcalcado.com/2017/08/03/pattern_service_mesh.html)
 * [https://linkerd.io/2/overview/](https://linkerd.io/2/overview/)
-

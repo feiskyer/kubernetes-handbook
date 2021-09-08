@@ -8,7 +8,5 @@
   * [istio-dev@](https://groups.google.com/forum/#!forum/istio-dev)
   * [istio-announce@](https://groups.google.com/forum/#!forum/istio-announce)
 * [Twitter](https://twitter.com/IstioMesh)
-* [Rocket.Chat](https://istio.rocket.chat/home)
 * [FAQ](https://istio.io/faq/)
 * [术语表](https://istio.io/docs/reference/glossary/)
-

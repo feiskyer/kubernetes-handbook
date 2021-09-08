@@ -67,5 +67,4 @@ Kubernetes 的 Cloud Provider 目前正在重构中
 * 配置 kube-controller-manager `--cloud-provider=external`
 * 启动 `cloud-controller-manager`
 
-具体实现方法可以参考 [rancher-cloud-controller-manager](https://github.com/rancher/rancher-cloud-controller-manager) 和 [cloud-controller-manager](https://github.com/kubernetes/kubernetes/blob/master/cmd/cloud-controller-manager/controller-manager.go)。
-
+具体实现方法可以参考 [rancher-cloud-controller-manager](https://github.com/rancher/rancher-cloud-controller-manager) 和 [cloud-controller-manager](https://github.com/kubernetes/cloud-provider)。

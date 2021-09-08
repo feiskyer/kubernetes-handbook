@@ -16,7 +16,7 @@ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
 
 * [HAProxy Ingress controller](https://github.com/jcmoraisjr/haproxy-ingress)
 * [Linkerd](https://linkerd.io/config/0.9.1/linkerd/index.html#ingress-identifier)
-* [traefik](https://docs.traefik.io/configuration/backends/kubernetes/)
+* [traefik](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
 * [AWS Application Load Balancer Ingress Controller](https://github.com/coreos/alb-ingress-controller)
 * [kube-ingress-aws-controller](https://github.com/zalando-incubator/kube-ingress-aws-controller)
 * [Voyager: HAProxy Ingress Controller](https://github.com/appscode/voyager)
@@ -24,4 +24,3 @@ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true
 ## Ingress 使用方法
 
 具体 Ingress 的使用方法可以参考 [这里](../../concepts/objects/ingress.md)。
-
