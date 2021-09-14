@@ -180,6 +180,9 @@ example-etcd-cluster-0004       1/1       Running   0          4h
 * [https://github.com/upmc-enterprises/elasticsearch-operator](https://github.com/upmc-enterprises/elasticsearch-operator)
 * [https://github.com/pires/nats-operator](https://github.com/pires/nats-operator)
 * [https://github.com/rosskukulinski/rethinkdb-operator](https://github.com/rosskukulinski/rethinkdb-operator)
+* [https://github.com/jxlwqq/wordpress-operator](https://github.com/jxlwqq/wordpress-operator)
+* [https://github.com/jxlwqq/guestbook-operator](https://github.com/jxlwqq/guestbook-operator)
+* [https://github.com/jxlwqq/visitors-operator](https://github.com/jxlwqq/visitors-operator)
 * [https://istio.io/](https://istio.io/)
 
 ## 与其他工具的关系
