@@ -6,7 +6,7 @@ Operator 是 CoreOS 推出的旨在简化复杂有状态应用管理的框架，
 
 ## Operator 原理
 
-Operator 基于 Third Party Resources 扩展了新的应用资源，并通过控制器来保证应用处于预期状态。比如 etcd operator 通过下面的三个步骤模拟了管理 etcd 集群的行为：
+Operator 基于 CustomResourceDefinition(CRD) 扩展了新的应用资源，并通过控制器来保证应用处于预期状态。比如 etcd operator 通过下面的三个步骤模拟了管理 etcd 集群的行为：
 
 1. 通过 Kubernetes API 观察集群的当前状态；
 2. 分析当前状态与期望状态的差别；
@@ -18,9 +18,9 @@ Operator 基于 Third Party Resources 扩展了新的应用资源，并通过控
 
 Operator 是一个感知应用状态的控制器，所以实现一个 Operator 最关键的就是把管理应用状态的所有操作封装到配置资源和控制器中。通常来说 Operator 需要包括以下功能：
 
-* Operator 自身以 deployment 的方式部署
-* Operator 自动创建一个 Third Party Resources 资源类型，用户可以用该类型创建应用实例
-* Operator 应该利用 Kubernetes 内置的 Serivce/ReplicaSet 等管理应用
+* Operator 自身以 Deployment 的方式部署
+* Operator 自动创建一个 CustomResourceDefinition(CRD) 资源类型，用户可以用该类型创建应用实例
+* Operator 应该利用 Kubernetes 内置的 Serivce/Deployment 等管理应用
 * Operator 应该向后兼容，并且在 Operator 自身退出或删除时不影响应用的状态
 * Operator 应该支持应用版本更新
 * Operator 应该测试 Pod 失效、配置错误、网络错误等异常情况
@@ -42,30 +42,28 @@ $ make install
 （2）初始化项目：
 
 ```bash
-$ mkdir -p $GOPATH/src/github.com/example-inc/
-$ cd $GOPATH/src/github.com/example-inc/
-$ operator-sdk new memcached-operator
+$ mkdir memcached-operator
 $ cd memcached-operator
+$ operator-sdk init --domain example.com --repo github.com/example/memcached-operator
 ```
 
 （3）添加 CRD 定义和控制器：
 
 ```bash
-$ operator-sdk add api --api-version=cache.example.com/v1alpha1 --kind=Memcached
-$ operator-sdk add controller --api-version=cache.example.com/v1alpha1 --kind=Memcached
+$ operator-sdk create api --group cache --version v1alpha1 --kind Memcached --resource --controller
 ```
 
 （4）实现 Controller、Reconciler 等控制逻辑。
 
 （5）部署 Operator 到 Kubernetes 集群中，并通过自定义的 CRD 创建资源。
 
-完整的示例可以参考 [这里](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md)。
+完整的示例可以参考 [这里](https://github.com/operator-framework/operator-sdk/tree/master/testdata)。
 
 ## 如何使用 Operator
 
 为了方便描述，以 Etcd Operator 为例，具体的链接可以参考 -[Etcd Operator](https://coreos.com/operators/etcd/docs/latest)。
 
-在 Kubernetes 部署 Operator： 通过在 Kubernetes 集群中创建一个 deploymet 实例，来部署对应的 Operator。具体的 Yaml 示例如下：
+在 Kubernetes 部署 Operator： 通过在 Kubernetes 集群中创建一个 Deploymet 实例，来部署对应的 Operator。具体的 Yaml 示例如下：
 
 ```yaml
 apiVersion: v1
