@@ -44,7 +44,7 @@ kubectl 的详细使用方法请参考 [kubectl 指南](../concepts/components/k
 
 你可以使用 krew 来管理 kubectl 插件。
 
-[krew](https://github.com/GoogleContainerTools/krew) 是一个用来管理 kubectl 插件的工具，类似于 apt 或 yum，支持搜索、安装和管理 kubectl 插件。
+[krew](https://github.com/kubernetes-sigs/krew) 是一个用来管理 kubectl 插件的工具，类似于 apt 或 yum，支持搜索、安装和管理 kubectl 插件。
 
 ### 安装
 
@@ -120,5 +120,5 @@ kubectl krew upgrade
 
 ## 参考文档
 
-* [https://github.com/GoogleContainerTools/krew](https://github.com/GoogleContainerTools/krew)
+* [https://github.com/kubernetes-sigs/krew](https://github.com/kubernetes-sigs/krew)
 
