@@ -56,3 +56,52 @@ RETURN     all  --  anywhere             10.0.0.0/8           /* ip-masq-agent: 
 MASQUERADE  all  --  anywhere             anywhere             /* ip-masq-agent: outbound traffic should be subject to MASQUERADE (this match must come after cluster-local CIDR matches) */ ADDRTYPE match dst-type !LOCAL
 ```
 
+## Windows IP 伪装
+
+ip-masq-agent 只支持 Linux, 而在 Windows 节点中可以通过 [CNI 配置](https://github.com/containernetworking/plugins/blob/master/plugins/main/windows/win-bridge/sample-v1.conf)实现类似的功能 (把不需要做 SNAT 的网段加入到 OutBoundNAT 策略的 ExceptionList 中):
+
+```json
+{
+  "name": "cbr0",
+  "type": "win-bridge",
+  "dns": {
+    "nameservers": [
+      "11.0.0.10"
+    ],
+    "search": [
+      "svc.cluster.local"
+    ]
+  },
+  "policies": [
+    {
+      "name": "EndpointPolicy",
+      "value": {
+        "Type": "OutBoundNAT",
+        "ExceptionList": [
+          "192.168.0.0/16",
+          "11.0.0.0/8",
+          "10.137.196.0/23"
+        ]
+      }
+    },
+    {
+      "name": "EndpointPolicy",
+      "value": {
+        "Type": "ROUTE",
+        "DestinationPrefix": "11.0.0.0/8",
+        "NeedEncap": true
+      }
+    },
+    {
+      "name": "EndpointPolicy",
+      "value": {
+        "Type": "ROUTE",
+        "DestinationPrefix": "10.137.198.27/32",
+        "NeedEncap": true
+      }
+    }
+  ],
+  "loopbackDSR": true
+}
+```
+
