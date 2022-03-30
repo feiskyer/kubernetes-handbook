@@ -13,7 +13,7 @@ import (
 	"k8s.io/api/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/kubectl/pkg/util/logs"
+  "k8s.io/component-base/logs"
 )
 
 // PodLoggingController logs the name and namespace of pods that are added,
