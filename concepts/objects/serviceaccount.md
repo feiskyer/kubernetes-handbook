@@ -12,6 +12,8 @@ Service account 是为了方便 Pod 里面的进程调用 Kubernetes API 或其�
   * 如果 Pod 没有指定 ImagePullSecrets，则把 service account 的 ImagePullSecrets 加到 Pod 中
   * 每个 container 启动后都会挂载该 service account 的 token 和 `ca.crt` 到 `/var/run/secrets/kubernetes.io/serviceaccount/`
 
+> 注意： 从 v1.24.0 开始，ServiceAccount 不再自动生成 Secret。如果你还想要自动生成 Secret，那么可以给 kube-controller-manager 配置特性 `LegacyServiceAccountTokenNoAutoGeneration=false`。
+
 ```bash
 $ kubectl exec nginx-3137573019-md1u2 ls /var/run/secrets/kubernetes.io/serviceaccount
 ca.crt
