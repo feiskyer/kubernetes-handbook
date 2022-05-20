@@ -229,6 +229,41 @@ spec:
 
 ## 调度器扩展
 
+### 调度插件
+
+从 1.19 开始，你可以借助 [Scheduling Framework](https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/) 以插件的形式扩展调度器。如下图所示，就是 Pod 调度上下文以及调度框架公开的扩展点：
+
+![](2022-04-24-16-32-32.png)
+
+通过调度器配置文件 [Scheduler Configuration](https://kubernetes.io/docs/reference/scheduling/config/)，你可以配置 kube-scheduler 中的不同调度阶段，比如
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1beta1
+kind: KubeSchedulerConfiguration
+clientConnection:
+  kubeconfig: "/etc/kubernetes/scheduler.conf"
+profiles:
+- schedulerName: default-scheduler
+  plugins:
+    score:
+      enabled:
+      - name: NetworkTraffic
+      disabled:
+      - name: "*"
+  pluginConfig:
+  - name: NetworkTraffic
+    args:
+      prometheusAddress: "http://prometheus-1616380099-server.monitor"
+      networkInterface: "ens192"
+      timeRangeInMinutes: 3
+```
+
+详细的插件开发步骤请参考 [Creating a kube-scheduler plugin](https://medium.com/@juliorenner123/k8s-creating-a-kube-scheduler-plugin-8a826c486a1) 和 [kubernetes-sigs/scheduler-plugins](https://github.com/kubernetes-sigs/scheduler-plugins)。
+
+### 调度策略
+
+> 注意，调度策略只在 1.23 之前的版本中支持。从 1.23 开始，用户需要切换到上述调度插件的方式。
+
 kube-scheduler 还支持使用 `--policy-config-file` 指定一个调度策略文件来自定义调度策略，比如
 
 ```javascript
@@ -363,7 +398,7 @@ priorities 策略
 * ImageLocalityPriority：尽量将使用大镜像的容器调度到已经下拉了该镜像的节点上 \[默认未使用\]
 * MostRequestedPriority：尽量调度到已经使用过的 Node 上，特别适用于 cluster-autoscaler\[默认未使用\]
 
-> **代码入口路径** 
+> **代码入口路径**
 >
 > 在release-1.9及之前的代码入口在plugin/cmd/kube-scheduler，从release-1.10起，kube-scheduler的核心代码迁移到pkg/scheduler目录下面，入口也迁移到cmd/kube-scheduler
 
@@ -373,4 +408,3 @@ priorities 策略
 * [Configure Multiple Schedulers](https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/)
 * [Taints and Tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
 * [Advanced Scheduling in Kubernetes](https://kubernetes.io/blog/2017/03/advanced-scheduling-in-kubernetes/)
-
