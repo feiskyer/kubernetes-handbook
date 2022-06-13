@@ -265,7 +265,13 @@ kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get
 
 而第二个问题则需要手动清理 Namespace 的 Finalizer 列表：
 
-1\) 使用 kubectl proxy：
+1\) 使用 kubectl patch：
+
+```bash
+kubectl patch --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]' namespaces "<ns-to-delete>"
+```
+
+2\) 使用 kubectl proxy：
 
 ```bash
 kubectl proxy &
@@ -275,7 +281,7 @@ kubectl get namespaces $NAMESPACE -o json | jq '.metadata.finalizers=[]' | jq '.
 curl -k -H "Content-Type: application/json" -X PUT --data-binary @/tmp/ns.json http://127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
 ```
 
-2\) 使用 kubectl --raw：
+3\) 使用 kubectl --raw：
 
 ```bash
 NAMESPACE="<ns-to-delete>"
