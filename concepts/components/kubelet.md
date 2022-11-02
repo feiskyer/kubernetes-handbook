@@ -18,8 +18,8 @@ Kubelet 以 PodSpec 的方式工作。PodSpec 是描述一个 Pod 的 YAML 或 J
 
 向 Kubelet 提供节点上需要运行的 Pod 清单的方法：
 
-* 文件：启动参数 --config 指定的配置目录下的文件 \(默认 / etc/kubernetes/manifests/\)。该文件每 20 秒重新检查一次（可配置）。
-* HTTP endpoint \(URL\)：启动参数 --manifest-url 设置。每 20 秒检查一次这个端点（可配置）。
+* 文件：启动参数 `--config` 指定的配置目录下的文件 \(默认 `/ etc/kubernetes/manifests/`\)。该文件每 20 秒重新检查一次（可配置）。
+* HTTP endpoint \(URL\)：启动参数 `--manifest-url` 设置。每 20 秒检查一次这个端点（可配置）。
 * API Server：通过 API Server 监听 etcd 目录，同步 Pod 清单。
 * HTTP server：kubelet 侦听 HTTP 请求，并响应简单的 API 以提交新的 Pod 清单。
 
@@ -221,3 +221,25 @@ Kubelet 作为 CRI 的客户端，而容器运行时则需要实现 CRI 的服�
 kubectl proxy&
 curl http://localhost:8001/api/v1/proxy/nodes/<node-name>:10255/stats/summary
 ```
+
+* 或者通过 Node 代理来访问
+
+```sh
+kubectl get --raw /api/v1/nodes/<node-name>/proxy/stats/summary
+```
+
+## Kubelet API
+
+[Kubelet API](https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/server/server.go#L93-L102) 可以通过其暴露的端口或者 `kubectl get --raw /api/v1/nodes/$NODE/proxy/` 来访问，常用的几个 API 包括：
+
+* `/metrics` 查询 Kubelet 度量
+* `/metrics/cadvisor` 查询 Cadvisor 度量（包含节点和容器的度量）
+* `/metrics/resource` 查询资源使用度量（包含CPU和内存）
+* `/metrics/probes` 查询探针度量
+* `/stats/summary` 查询节点和Pod汇总指标
+* `/pods` 查询Pod列表
+* `/logs` 查询节点或容器日志
+* `/containerLogs/{podNamespace}/{podID}/{containerName}` 查询容器日志
+* `configz` 查询Kubelet配置
+* `/run`, `/exec`, `/attach`, `/portForward` 用于 apiserver 跟 kubelet 协同完成交互式API。
+

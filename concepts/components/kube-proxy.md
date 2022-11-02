@@ -29,9 +29,19 @@ cut -f1 -d " "  /proc/modules | grep -e ip_vs -e nf_conntrack_ipv4
 
 ## Iptables 示例
 
+### Kube-proxy iptables 示意图
+
 ![](../../.gitbook/assets/iptables-mode%20%281%29.png)
 
 \(图片来自[cilium/k8s-iptables-diagram](https://github.com/cilium/k8s-iptables-diagram)\)
+
+### Kube-proxy NAT 示意图
+
+![](../../.gitbook/assets/kube-proxy-nat-flow.png)
+
+（图片来自[kube-proxy iptables "nat" control flow](https://docs.google.com/drawings/d/1MtWL8qRTs6PlnJrW4dh8135_S9e2SaawT410bJuoBPk/edit)）
+
+### Iptables 示例
 
 ```bash
 # Masquerade
