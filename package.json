@@ -15,7 +15,7 @@
     "gitbook-plugin-mermaid": "^0.0.9",
     "gitbook-plugin-page-treeview": "^3.0.6",
     "gitbook-plugin-search-plus": "^1.0.3",
-    "npm": "^8.0.0"
+    "npm": "^9.1.1"
   },
   "devDependencies": {},
   "scripts": {
