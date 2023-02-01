@@ -58,9 +58,15 @@ kubectl cordon $NODENAME
 
 ## Node 优雅关闭
 
-当配置 ShutdownGracePeriod 和 ShutdownGracePeriodCriticalPods 后，Kubelet 会根据 systemd 事件检测 Node 的关闭状态，并自动终止其上运行的 Pod（ShutdownGracePeriodCriticalPods 需要小于 ShutdownGracePeriod）。
+当配置 `ShutdownGracePeriod` 和 `ShutdownGracePeriodCriticalPods` 后，Kubelet 会根据 systemd 事件检测 Node 的关闭状态，并自动终止其上运行的 Pod（ShutdownGracePeriodCriticalPods 需要小于 ShutdownGracePeriod）。注意，这两个参数默认配置为 0，即优雅关闭特性默认是未开启的。
 
 比如，如果 ShutdownGracePeriod 设置为 30s，而 ShutdownGracePeriodCriticalPods 设置为 10s，那么 Kubelet 将使节点关闭延迟 30 秒。 在关闭期间，将保留前20（30-10）秒以终止普通 Pod，而保留最后 10 秒以终止关键 Pod。
+
+## Node 非优雅关闭
+
+在 Node 发生异常的情况下，Kubelet 可能没有机会检测并执行优雅关闭。在这种情况下，StatefulSet 无法创建同名的新 Pod，如果 Pod 使用了卷，则 VolumeAttachments 不会从原来的已关闭节点上删除，因此这些 Pod 所使用的卷也无法挂接到新的运行节点上。
+
+Node 非优雅关闭正是为了解决这些问题。用户可以手动将具有 `NoExecute` 或 `NoSchedule` 效果的 `node.kubernetes.io/out-of-service` 污点添加到节点上，标记其无法提供服务。如果在 kube-controller-manager 上启用了 `NodeOutOfServiceVolumeDetach` 特性，并且 Pod 上没有设置对应的容忍度，那么这些 Pod 将被强制删除，并且该在节点上被终止的 Pod 将立即进行卷卸载操作。这样就允许那些在无法提供服务节点上的 Pod 能在其他节点上快速恢复。
 
 ## 参考文档
 

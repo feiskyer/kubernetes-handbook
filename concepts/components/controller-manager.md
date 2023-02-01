@@ -136,7 +136,21 @@ Informer 的使用方法可以参考 [这里](https://github.com/feiskyer/kubern
 
 ## Node 驱逐
 
-默认情况下，Kubelet 每隔 10s (--node-status-update-frequency=10s) 更新 Node 的状态，而 kube-controller-manager 每隔 5s 检查一次 Node 的状态 (--node-monitor-period=5s)。kube-controller-manager 会在 Node 未更新状态超过 40s 时 (--node-monitor-grace-period=40s)，将其标记为 NotReady (Node `Ready` Condition: `True` on healthy, `False` on unhealthy and not accepting pods, `Unknown` on no heartbeat)。当 Node 超过 5m 未更新状态 (--pod-eviction-timeout=5m)，则 kube-controller-manager 会驱逐该 Node 上的所有 Pod。
+默认情况下，Kubelet 每隔 10s (--node-status-update-frequency=10s) 更新 Node 的状态，而 kube-controller-manager 每隔 5s 检查一次 Node 的状态 (--node-monitor-period=5s)。kube-controller-manager 会在 Node 未更新状态超过 40s 时 (--node-monitor-grace-period=40s)，将其标记为 NotReady (Node `Ready` Condition: `True` on healthy, `False` on unhealthy and not accepting pods, `Unknown` on no heartbeat)。当 Node 超过 5m 未更新状态，则 kube-controller-manager 会驱逐该 Node 上的所有 Pod。
+
+Kubernetes 会自动给 Pod 添加针对 `node.kubernetes.io/not-ready` 和 `node.kubernetes.io/unreachable` 的容忍度，且配置 `tolerationSeconds=300`。你可以通过 tolerations 配置 Pod 的容忍度，来覆盖默认的配置：
+
+```yaml
+tolerations:
+- key: "node.kubernetes.io/unreachable"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 10
+- key: "node.kubernetes.io/not-ready"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 10
+```
 
 Node 控制器在节点异常后，会按照默认的速率（`--node-eviction-rate=0.1`，即每10秒一个节点的速率）进行 Node 的驱逐。Node 控制器按照 Zone 将节点划分为不同的组，再跟进 Zone 的状态进行速率调整：
 
