@@ -16,61 +16,32 @@ Kubernetes 支持容器请求 GPU 资源（目前仅支持 NVIDIA GPU），在�
 
 NVIDIA 需要 nvidia-docker。
 
-安装 nvidia-docker
+安装 [nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker):
 
 ```bash
 # Install docker-ce
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-sudo apt-get update
-sudo apt-get install docker-ce
+curl https://get.docker.com | sh \
+  && sudo systemctl --now enable docker
 
 # Add the package repositories
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
-  sudo apt-key add -
-curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
-  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-sudo apt-get update
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+      && curl -s -L https://nvidia.github.io/libnvidia-container/experimental/$distribution/libnvidia-container.list | \
+         sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+         sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 # Install nvidia-docker2 and reload the Docker daemon configuration
 sudo apt-get install -y nvidia-docker2
-sudo pkill -SIGHUP dockerd
+sudo systemctl restart docker
 
 # Test nvidia-smi with the latest official CUDA image
-docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
-```
-
-设置 Docker 默认运行时为 nvidia
-
-```bash
-# cat /etc/docker/daemon.json
-{
-    "default-runtime": "nvidia",
-    "runtimes": {
-        "nvidia": {
-            "path": "/usr/bin/nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
-}
+sudo docker run --rm --gpus all nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
 ```
 
 部署 NVDIA 设备插件
 
 ```bash
-# For Kubernetes v1.8
-kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.8/nvidia-device-plugin.yml
-
-# For Kubernetes v1.9
-kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.9/nvidia-device-plugin.yml
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.13.0/nvidia-device-plugin.yml
 ```
 
 #### GCE/GKE GPU 插件
@@ -79,31 +50,46 @@ kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.
 
 ```bash
 # Install NVIDIA drivers on Container-Optimized OS:
-kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/k8s-1.9/daemonset.yaml
+kubectl create -f https://github.com/GoogleCloudPlatform/container-engine-accelerators/raw/master/daemonset.yaml
 
 # Install NVIDIA drivers on Ubuntu (experimental):
-kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/k8s-1.9/nvidia-driver-installer/ubuntu/daemonset.yaml
+kubectl create -f https://github.com/GoogleCloudPlatform/container-engine-accelerators/raw/master/nvidia-driver-installer/ubuntu/daemonset.yaml
 
 # Install the device plugin:
-kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.9/cluster/addons/device-plugins/nvidia-gpu/daemonset.yaml
+kubectl create -f https://github.com/kubernetes/kubernetes/raw/master/cluster/addons/device-plugins/nvidia-gpu/daemonset.yaml
+```
+
+### NVIDIA GPU Operator
+
+[Nvidia GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#install-nvidia-gpu-operator) 是一个 Kubernetes Operator，用于在 Kubernetes 集群中部署和管理 Nvidia GPU。
+
+```sh
+helm install --wait --generate-name \
+     -n gpu-operator --create-namespace \
+     nvidia/gpu-operator
 ```
 
 #### 请求 `nvidia.com/gpu` 资源示例
 
-```yaml
+```sh
+$ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: cuda-vector-add
+  name: gpu-pod
 spec:
-  restartPolicy: OnFailure
+  restartPolicy: Never
   containers:
-    - name: cuda-vector-add
-      # https://github.com/kubernetes/kubernetes/blob/v1.7.11/test/images/nvidia-cuda/Dockerfile
-      image: "k8s.gcr.io/cuda-vector-add:v0.1"
+    - name: cuda-container
+      image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda10.2
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 GPU
+  tolerations:
+  - key: nvidia.com/gpu
+    operator: Exists
+    effect: NoSchedule
+EOF
 ```
 
 ### Kubernetes v1.6 和 v1.7
@@ -357,4 +343,3 @@ Fri Jun 16 19:33:35 2017
 * [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)
 * [Schedule GPUs on Kubernetes](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 * [GoogleCloudPlatform/container-engine-accelerators](https://github.com/GoogleCloudPlatform/container-engine-accelerators)
-
