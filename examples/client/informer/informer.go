@@ -12,8 +12,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	klog "k8s.io/klog/v2"
 
-	//"k8s.io/client-go/pkg/api/v1"
-	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/component-base/logs"
@@ -34,7 +33,7 @@ func (c *PodLoggingController) Run(stopCh chan struct{}) error {
 	c.informerFactory.Start(stopCh)
 	// wait for the initial synchronization of the local cache.
 	if !cache.WaitForCacheSync(stopCh, c.podInformer.Informer().HasSynced) {
-		return fmt.Errorf("Failed to sync")
+		return fmt.Errorf("failed to sync")
 	}
 	return nil
 }
