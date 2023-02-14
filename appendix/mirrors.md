@@ -2,7 +2,6 @@
 
 ## Docker Hub 镜像
 
-* 中科大镜像：`docker.mirrors.ustc.edu.cn`
 * 163镜像： `hub-mirror.c.163.com`
 * 开源社镜像：[http://mirror.azure.cn/help/docker-registry-proxy-cache.html](http://mirror.azure.cn/help/docker-registry-proxy-cache.html)
 
@@ -11,7 +10,6 @@
 示例
 
 ```bash
-docker pull docker.mirrors.ustc.edu.cn/library/nginx
 docker pull hub-mirror.c.163.com/library/busybox
 docker pull dockerhub.azk8s.cn/library/nginx
 
@@ -80,4 +78,3 @@ deb-src http://azure.archive.ubuntu.com/ubuntu/ bionic-updates main restricted u
 deb-src http://azure.archive.ubuntu.com/ubuntu/ bionic-proposed main restricted universe multiverse
 deb-src http://azure.archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
 ```
-
