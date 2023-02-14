@@ -3,14 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"k8s.io/client-go/informers"
 	coreinformers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	klog "k8s.io/klog/v2"
+
 	//"k8s.io/client-go/pkg/api/v1"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/component-base/logs"
@@ -56,14 +59,14 @@ func (c *PodLoggingController) podDelete(obj interface{}) {
 }
 
 // NewPodLoggingController creates a PodLoggingController
-func NewPodLoggingController(informerFactory informers.SharedInformerFactory) *PodLoggingController {
+func NewPodLoggingController(informerFactory informers.SharedInformerFactory) (*PodLoggingController, error) {
 	podInformer := informerFactory.Core().V1().Pods()
 
 	c := &PodLoggingController{
 		informerFactory: informerFactory,
 		podInformer:     podInformer,
 	}
-	podInformer.Informer().AddEventHandler(
+	_, err := podInformer.Informer().AddEventHandler(
 		// Your custom resource event handlers.
 		cache.ResourceEventHandlerFuncs{
 			// Called on creation
@@ -74,13 +77,17 @@ func NewPodLoggingController(informerFactory informers.SharedInformerFactory) *P
 			DeleteFunc: c.podDelete,
 		},
 	)
-	return c
+	if err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }
 
 var kubeconfig string
 
 func init() {
-	flag.StringVar(&kubeconfig, "kubeconfig", "", "absolute path to the kubeconfig file")
+	flag.StringVar(&kubeconfig, "kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "absolute path to the kubeconfig file")
 }
 
 func main() {
@@ -99,7 +106,11 @@ func main() {
 	}
 
 	factory := informers.NewSharedInformerFactory(clientset, time.Hour*24)
-	controller := NewPodLoggingController(factory)
+	controller, err := NewPodLoggingController(factory)
+	if err != nil {
+		klog.Fatal(err)
+	}
+
 	stop := make(chan struct{})
 	defer close(stop)
 	err = controller.Run(stop)
