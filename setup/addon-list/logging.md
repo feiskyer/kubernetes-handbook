@@ -24,7 +24,7 @@ cluster/kube-up.sh
 
 ## 部署方法
 
-由于 Fluentd daemonset 只会调度到带有标签 `kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true` 的 Node 上，需要给 Node 设置标签
+由于 Fluentd daemonset 只会调度到带有标签 `beta.kubernetes.io/fluentd-ds-ready=true` 的 Node 上，需要给 Node 设置标签
 
 ```bash
 kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true
