@@ -227,7 +227,7 @@ NotReady 的原因比较多，在排查时最重要的就是执行 `kubectl desc
 * Docker 僵死（API 不响应）：重启 Docker。
 * 磁盘空间不足：清理磁盘空间，比如镜像、临时文件等。
 
-> Kubernetes node 有可能会出现各种硬件、内核或者运行时等问题，这些问题有可能导致服务异常。而 Node Problem Detector（NPD）就是用来监测这些异常的服务。NPD 以 DaemonSet 的方式运行在每台 Node 上面，并在异常发生时更新 NodeCondition（比如 KernelDaedlock、DockerHung、BadDisk 等）或者 Node Event（比如 OOM Kill 等）。
+> Kubernetes node 有可能会出现各种硬件、内核或者运行时等问题，这些问题有可能导致服务异常。而 Node Problem Detector（NPD）就是用来监测这些异常的服务。NPD 以 DaemonSet 的方式运行在每台 Node 上面，并在异常发生时更新 NodeCondition（比如 KernelDeadlock、DockerHung、BadDisk 等）或者 Node Event（比如 OOM Kill 等）。
 >
 > 可以参考 [kubernetes/node-problem-detector](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/node-problem-detector) 来部署 NPD，以便更快发现 Node 上的问题。
 
