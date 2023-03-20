@@ -34,7 +34,7 @@ kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready=true
 
 ```bash
 $ git clone https://github.com/kubernetes/kubernetes
-$ cd cluster/addons/fluentd-elasticsearch
+$ cd kubernetes/cluster/addons/fluentd-elasticsearch
 $ kubectl apply -f .
 clusterrole "elasticsearch-logging" configured
 clusterrolebinding "elasticsearch-logging" configured
