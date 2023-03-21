@@ -89,7 +89,7 @@ $ docker ps | grep POD | wc -l
 * 找到 IPAM 插件保存已分配 IP 地址的文件，比如 `/var/lib/cni/networks/cbr0`（flannel）或者 `/var/run/azure-vnet-ipam.json`（Azure CNI）等
 * 查询容器已用的 IP 地址，比如 `kubectl get pod -o wide --all-namespaces | grep <node-name>`
 * 对比两个列表，从 IPAM 文件中删除未使用的 IP 地址，并手动删除相关的虚拟网卡和网络命名空间（如果有的话）
-* 重启启动 Kubelet
+* 重新启动 Kubelet
 
 ```bash
 # Take kubenet for example to delete the unused IPs

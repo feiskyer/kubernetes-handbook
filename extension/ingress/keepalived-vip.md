@@ -2,7 +2,7 @@
 
 Kubernetes 使用 [keepalived](http://www.keepalived.org) 来产生虚拟 IP address
 
-我们将探讨如何利用 [IPVS - The Linux Virtual Server Project](http://www.linuxvirtualserver.org/software/ipvs.html)" 来 kubernetes 配置 VIP
+我们将探讨如何利用 [IPVS - The Linux Virtual Server Project](http://www.linuxvirtualserver.org/software/ipvs.html)" 来为 kubernetes 配置 VIP
 
 ## 前言
 
@@ -33,7 +33,7 @@ Public ----(example.com = 10.4.0.3/4/5)----|-----| Host IP: 10.4.0.4 |
 
 我们假设 Ingress 运行在 3 个 kubernetes 节点上, 并对外暴露 `10.4.0.x` 的 IP 去做 loadbalance
 
-DNS Round Robin \(RR\) 将对应到 `example.com` 的请求轮循给这 3 个节点, 如果 `10.4.0.3` 掛了, 仍有三分之一的流量会导向 `10.4.0.3`, 这样就会有一段 downtime, 直到 DNS 发现 `10.4.0.3` 掛了并修正导向
+DNS Round Robin \(RR\) 将对应到 `example.com` 的请求轮循给这 3 个节点, 如果 `10.4.0.3` 挂了, 仍有三分之一的流量会导向 `10.4.0.3`, 这样就会有一段 downtime, 直到 DNS 发现 `10.4.0.3` 挂了并修正导向
 
 严格来说, 这并没有真正的做到 High Availability \(HA\)
 
@@ -74,7 +74,7 @@ Public ----(example.com = 10.4.0.50)----|-----| Host IP: 10.4.0.4 |
 
 ### RBAC
 
-由于 kubernetes 在 1.6 后引进了 RBAC 的概念, 所以我们要先去设定 rule, 至於有关 RBAC 的详情请至 [说明](../auth/rbac.md)。
+由于 kubernetes 在 1.6 后引进了 RBAC 的概念, 所以我们要先去设定 rule, 至于有关 RBAC 的详情请至 [说明](../auth/rbac.md)。
 
 vip-rbac.yaml
 
