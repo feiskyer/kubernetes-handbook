@@ -13,6 +13,8 @@ Kubernetes 集群以及应用排错的一般方法，主要包括
   * [Azure 排错](cloud/azure.md)
 * [常用排错工具](tools.md)
 
+你可以使用 [kube-copilot](https://github.com/feiskyer/kube-copilot) 借助 OpenAI 来帮你自动排查集群中的问题并通过自然语言的方式与集群进行交互。
+
 在排错过程中，`kubectl` 是最重要的工具，通常也是定位错误的起点。这里也列出一些常用的命令，在后续的各种排错过程中都会经常用到。
 
 ### 查看 Pod 状态以及运行节点
@@ -103,4 +105,3 @@ $ kubectl -n kube-system logs kube-proxy-42zpn
 * [https://docs.microsoft.com/en-us/azure/aks/troubleshooting](https://docs.microsoft.com/en-us/azure/aks/troubleshooting) 包含了 AKS 中排错的一般思路
 * [https://cloud.google.com/kubernetes-engine/docs/troubleshooting](https://cloud.google.com/kubernetes-engine/docs/troubleshooting) 包含了 GKE 中问题排查的一般思路
 * [https://www.oreilly.com/ideas/kubernetes-recipes-maintenance-and-troubleshooting](https://www.oreilly.com/ideas/kubernetes-recipes-maintenance-and-troubleshooting)
-
