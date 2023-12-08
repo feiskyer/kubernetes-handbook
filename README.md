@@ -1,26 +1,48 @@
 # Kubernetes Handbook
 
-Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
+[![star this repo](https://badgen.net/github/stars/feiskyer/kubernetes-handbook)](https://github.com/feiskyer/kubernetes-handbook) [![fork this repo](https://badgen.net/github/forks/feiskyer/kubernetes-handbook)](https://github.com/feiskyer/kubernetes-handbook/fork) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/feiskyer/kubernetes-handbook/issues)
 
-This handbook aims to provide a detailed guide of running and understanding both inside and outside of Kubernetes. Contents include
+Kubernetes is an open-source container cluster management system developed by Google. It is the open-source version of Google's large-scale container management technology Borg and one of the most important projects of CNCF. Its main features include:
 
-- Introduction of Kubernetes
-- Basic concepts
-- Architecture and components
-- Deploying
-- Plugins
-- Applications
-- Troubleshooting
+* Container-based application deployment, maintenance, and rolling upgrades
 
-## Reading
+* Load balancing and service discovery
 
-- English：[GitBook](https://kubernetes.feisky.xyz/v/en/) [Github](https://github.com/feiskyer/kubernetes-handbook/blob/en/SUMMARY.md)
-- 中文：[GitBook](https://kubernetes.feisky.xyz/) [Github](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
+* Cluster scheduling across machines and regions
 
-## Source Code
+* Automatic scaling
 
-The source code of this handbook is on [https://github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook).
+* Stateless services and stateful services
 
-## Contributing
+* Extensive volume support
 
-Any kinds of contributing are welcomed. Please send PRs or open issues on Github [https://github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook).
+* Plugin mechanism to ensure scalability
+
+Kubernetes has developed rapidly and has become a leader in the field of container orchestration. There is also a wealth of Chinese resources for Kubernetes, but there are relatively few systematic ones that keep up with community updates. The "Kubernetes Handbook" open-source e-book aims to organize reference guides and practice summaries for development and use of Kubernetes, forming a systematic reference guide for easy access. Everyone is welcome to follow and contribute.
+
+## Online Reading
+
+  *GitBook: [kubernetes.feisky.xyz](https://kubernetes.feisky.xyz/)
+  * Github: [github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook/blob/master/SUMMARY.md)
+
+## Project Source Code
+
+The project source code is stored on Github, [https://github.com/feiskyer/kubernetes-handbook](https://github.com/feiskyer/kubernetes-handbook).
+
+## WeChat
+  
+Scan the QR code to follow the WeChat public account, reply with keywords to view relevant chapters in WeChat.
+  
+![](../.gitbook/assets/wx.png)
+  
+## Contributors
+  
+Welcome to participate in contributing content improvement methods refer t o  [CONTRIBUTING] ( https : // github .com / fei skyer/kubern etes-han dboo k/blob/mas ter/C ON TRIBU TIN G.m d). Thank you all contributors , contributor list see [contributors](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors ) .
+
+[![](https://opencollective.com/kubernetes-handbook/contributors.svg?width=890&button=false)](https://github.com/feiskyer/kubernetes-handbook/graphs/contributors)
+
+## LICENSE
+
+![LICENSE](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)。

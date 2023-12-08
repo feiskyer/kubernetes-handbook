@@ -33,7 +33,7 @@ clean:
 .PHONY: spell
 spell:
 	go get github.com/client9/misspell/cmd/misspell
-	git ls-files | xargs misspell -error -o stderr	
+	git ls-files | grep -v /vendor/ | xargs misspell -error -o stderr	
 
 .PHONY: help
 help:
