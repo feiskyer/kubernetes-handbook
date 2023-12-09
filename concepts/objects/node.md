@@ -2,7 +2,7 @@
 
 A Node is the actual host where a Pod runs. This could be a physical or a virtual machine. For Pod management, each Node must at least run a container runtime (like `docker` or `rkt`), `kubelet`, and the `kube-proxy` service.
 
-![node](../../.gitbook/assets/node%20%284%29.png)
+![node](<../../.gitbook/assets/node (4).png>)
 
 ## Managing Nodes
 
@@ -45,7 +45,8 @@ For example, you can use the taint command to add taints to node1:
 kubectl taint nodes node1 key1=value1:NoSchedule
 kubectl taint nodes node1 key1=value2:NoExecute
 ```
-For the specific usage of Taints and Tolerations, please refer to the [scheduler section](../components/scheduler.md#Taints%20and%20tolerations).
+
+For the specific usage of Taints and Tolerations, please refer to the [scheduler section](<../components/scheduler.md#Taints and tolerations>).
 
 ## Node Maintenance Mode
 

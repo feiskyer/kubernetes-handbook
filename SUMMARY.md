@@ -2,7 +2,7 @@
 
 * [Overview](README.md)
 
-## Introduction <a id="introduction"></a>
+## Introduction
 
 * [Kubernetes Introduction](introduction/index.md)
 * [Kubernetes Concepts](introduction/concepts.md)
@@ -10,7 +10,7 @@
 * [Kubernetes 201](introduction/201.md)
 * [Kubernetes Cluster](introduction/cluster.md)
 
-## Concepts <a id="concepts"></a>
+## Concepts
 
 * [Concepts](concepts/index.md)
 * [Architecture](concepts/architecture.md)
@@ -52,10 +52,10 @@
   * [StatefulSet](concepts/objects/statefulset.md)
   * [Volume](concepts/objects/volume.md)
 
-## Setup <a id="setup"></a>
+## Setup
 
 * [Setup Guidance](setup/index.md)
-* [kubectl 安装](setup/kubectl.md)
+* [kubectl Install](setup/kubectl.md)
 * [Single Machine](setup/single.md)
 * [Feature Gates](setup/feature-gates.md)
 * [Best Practice](setup/kubernetes-configuration-best-practice.md)
@@ -79,7 +79,7 @@
   * [Cluster Autoscaler](setup/addon-list/cluster-autoscaler.md)
   * [ip-masq-agent](setup/addon-list/ip-masq-agent.md)
 
-## Extension <a id="extension"></a>
+## Extension
 
 * [API Extension](extension/api/README.md)
   * [Aggregation](extension/api/aggregation.md)
@@ -110,14 +110,14 @@
   * [glusterfs](extension/volume/glusterfs.md)
 * [Network Policy](extension/network-policy.md)
 * [Ingress Controller](extension/ingress/README.md)
-  * [Ingress + Letsencrypt](extension/ingress/ingress_letsencrypt.md)
+  * [Ingress + Letsencrypt](extension/ingress/ingress\_letsencrypt.md)
   * [minikube Ingress](extension/ingress/minikube-ingress.md)
   * [Traefik Ingress](extension/ingress/service-discovery-and-load-balancing.md)
   * [Keepalived-VIP](extension/ingress/keepalived-vip.md)
 * [Cloud Provider](extension/cloud-provider.md)
 * [Device Plugin](extension/device.md)
 
-## Cloud Native Apps <a id="apps"></a>
+## Cloud Native Apps <a href="#apps" id="apps"></a>
 
 * [Apps Management](apps/index/README.md)
   * [Patterns](apps/index/patterns.md)
@@ -144,7 +144,7 @@
   * [Argo](apps/devops/argo.md)
   * [Flux GitOps](apps/devops/flux.md)
 
-## Practices <a id="practice"></a>
+## Practices <a href="#practice" id="practice"></a>
 
 * [Overview](practice/index.md)
 * [Resource Management](practice/resource-management.md)
@@ -166,7 +166,7 @@
   * [Tensorflow](practice/introduction/tensorflow.md)
 * [Serverless](practice/serverless.md)
 
-## Troubleshooting <a id="troubleshooting"></a>
+## Troubleshooting
 
 * [Overview](troubleshooting/index.md)
 * [Cluster Troubleshooting](troubleshooting/cluster.md)
@@ -180,13 +180,13 @@
   * [Azure](troubleshooting/cloud/azure.md)
 * [Troubleshooting Tools](troubleshooting/tools.md)
 
-## Community <a id="community"></a>
+## Community
 
 * [Development Guide](community/index.md)
 * [Unit Test and Integration Test](community/testing.md)
 * [Community Contribution](community/contribute.md)
 
-## Appendix <a id="appendix"></a>
+## Appendix
 
 * [Ecosystem](appendix/ecosystem.md)
 * [Learning Resources](appendix/tutorial.md)

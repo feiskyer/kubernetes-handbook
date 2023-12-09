@@ -1,8 +1,8 @@
-# LinuxKit: Building and Running a Kubernetes Cluster
+# LinuxKit
 
 LinuxKit offers a minimal, immutable Linux framework built on containers. To get a taste of what it can do, check out the simple introduction on [LinuxKit's GitHub page](https://github.com/linuxkit/linuxkit). In this discussion, we'll be using LinuxKit to build a Kubernetes image and deploy a simple Kubernetes cluster.
 
-![](../../.gitbook/assets/moby+kubernetes%20%281%29.png)
+![](<../../.gitbook/assets/moby+kubernetes (1) (4).png>)
 
 This step-by-step guide operates in the `Mac OS X` environment. The components we'll use are:
 
@@ -127,7 +127,7 @@ $ docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
 
 After that, connect to HTML VNC via the browser at `http://localhost:6080`.
 
-![](../../.gitbook/assets/docker-desktop%20%283%29.png)
+![](<../../.gitbook/assets/docker-desktop (3).png>)
 
 Finally, to shut down nodes just execute the following:
 
