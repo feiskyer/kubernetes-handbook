@@ -1,0 +1,1 @@
+It seems like you may have forgotten to provide the text that you would like translated from Chinese into popular English for a science article. If you can provide the text, I'll be happy to assist you with the translation.

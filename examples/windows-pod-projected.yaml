@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mount-projected-volume
+spec:
+  containers:
+  - name: mount-projected-volume
+    image: atuvenie/mounttest:1.0
+    args: [--file_content=/projected-volume/new/path/data-1]
+    volumeMounts:
+    - name: all-in-one
+      mountPath: /projected-volume
+      readOnly: true
+  volumes:
+  - name: all-in-one
+    projected:
+      sources:
+      - secret:
+          name: my-special-secret
+          items:
+            - key: data-1
+              path: new/path/data-1
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-special-secret
+type: Opaque
+data:
+  data-1: aGVsbG8gdGhlcmUh
+

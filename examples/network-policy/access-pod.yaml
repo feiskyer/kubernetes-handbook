@@ -1,0 +1,40 @@
+# The pod should be in 'Complated' state since it's with label 'access=true'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: access-pod
+  labels:
+      access: "true"
+      app: access-pod
+spec:
+  restartPolicy: Never
+  initContainers:
+  - name: wait-for-nginx
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      set -x;
+      attempt_num=1;
+      while true; do
+        status=$(wget --spider -S --timeout=1 http://nginx 2>&1| awk '/HTTP\//{print $2}')
+        if [ "$status" = "200" ] || [ ${attempt_num} -gt 36 ]; then
+          exit 0
+        fi
+        sleep 5;
+        attempt_num=$(($attempt_num+1));
+      done
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+    - sh
+    - -c
+    - wget --spider --timeout=1 nginx
+    stdin: true
+    tty: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi

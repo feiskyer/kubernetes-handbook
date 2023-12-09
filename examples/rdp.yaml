@@ -1,0 +1,22 @@
+# RDP to node by load balancer.
+# Notice: replace <node-ip> first.
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdp-to-node
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 3389
+    targetPort: 3389
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: rdp-to-node
+subsets:
+  - addresses:
+      - ip: <node-ip>
+    ports:
+      - port: 3389

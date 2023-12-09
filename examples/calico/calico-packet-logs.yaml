@@ -1,0 +1,60 @@
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: calico-log
+spec:
+  egress:
+  - action: Log
+    destination: {}
+    protocol: TCP
+    source: {}
+  - action: Log
+    destination: {}
+    protocol: UDP
+    source: {}
+  - action: Allow
+  ingress:
+  - action: Log
+    destination: {}
+    protocol: TCP
+    source: {}
+  - action: Log
+    destination: {}
+    protocol: UDP
+    source: {}
+  - action: Allow
+  types:
+  - Ingress
+  - Egress
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "calico-packet-logs"
+  namespace: "default"
+spec:
+  selector:
+    matchLabels:
+      app: "calico-packet-logs"
+  template:
+    metadata:
+      labels:
+        app: "calico-packet-logs"
+    spec:
+      containers:
+        - name: "calico-packet-logs"
+          image: "alpine"
+          command:
+            - sh
+            - -c
+            - tail -f /var/log/syslog | grep 'calico-packet:'
+          volumeMounts:
+            - name: "iptables-logs"
+              mountPath: "/var/log"
+              readOnly: true
+      volumes:
+        - name: "iptables-logs"
+          hostPath:
+            path: "/var/log"
+      nodeSelector:
+        beta.kubernetes.io/os: linux

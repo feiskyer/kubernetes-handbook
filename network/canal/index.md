@@ -1,0 +1,1 @@
+It seems that you may have forgotten to include the text that you would like to have translated. If you provide the Chinese academic paper excerpt that you need help translating into popular English science article format, I'll be able to assist you. Please paste the text here, and I will take care of the rest.

@@ -1,0 +1,27 @@
+@startuml
+title Pod启动过程
+
+skinparam handwritten true
+skinparam ParticipantBackgroundColor #EEEBDC
+skinparam ParticipantBorderColor #FFFFFF
+
+actor User
+
+User -> APIServer : 创建Pod
+activate APIServer
+APIServer -> Etcd : 存储PodSpec
+deactivate APIServer
+
+Scheduler --> APIServer : 监听Pod，调度Node
+
+APIServer -> Etcd : 更新Node绑定
+
+Kubelet --> APIServer : 监听Pod
+Kubelet -> docker : 启动Docker Sandbox
+docker -> CNI : 配置sandbox网络
+CNI --> docker
+docker --> Kubelet
+Kubelet --> APIServer : 更新Pod状态
+APIServer -> Etcd : 存储Pod状态
+
+@enduml

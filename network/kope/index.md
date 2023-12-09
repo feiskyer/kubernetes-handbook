@@ -1,0 +1,1 @@
+It appears that your message was incomplete. Please provide the text or document you need help with for an academic paper to be translated from Chinese into a popular English science article, and I'd be happy to assist you!
