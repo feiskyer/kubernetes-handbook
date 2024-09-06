@@ -32,7 +32,7 @@ kubectl apply -f .
 ## Install HTTP load testing tool
 
 ```sh
-$ go get -u github.com/tsenart/vegeta
+go install github.com/tsenart/vegeta@latest
 ```
 
 ## Validate Nginx service availability during node drain
