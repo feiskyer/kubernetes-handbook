@@ -47,6 +47,8 @@
 | `HugePages` | `false` | Alpha | 1.8 | 1.9 |
 | `HugePages` | `true` | Beta | 1.10 |  |
 | `HyperVContainer` | `false` | Alpha | 1.10 |  |
+| `ImageVolume` | `false` | Alpha | 1.31 | 1.32 |
+| `ImageVolume` | `false` | Beta | 1.33 |  |
 | `Initializers` | `false` | Alpha | 1.7 |  |
 | `KubeletConfigFile` | `false` | Alpha | 1.8 | 1.9 |
 | `KubeletPluginsWatcher` | `false` | Alpha | 1.11 | 1.11 |
@@ -94,6 +96,7 @@
 | `VolumeScheduling` | `true` | Beta | 1.10 |  |
 | `VolumeSubpathEnvExpansion` | `false` | Alpha | 1.11 |  |
 | `ScheduleDaemonSetPods` | `true` | Beta | 1.12 |  |
+| `MutableCSINodeAllocatableCount` | `false` | Alpha | 1.33 |  |
 
 ## 参考文档
 

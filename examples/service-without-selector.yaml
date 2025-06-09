@@ -1,3 +1,6 @@
+# Service without selector example
+# This demonstrates how to create a Service that points to external endpoints
+
 kind: Service
 apiVersion: v1
 metadata:
@@ -8,6 +11,8 @@ spec:
       port: 80
       targetPort: 9376
 ---
+# Traditional Endpoints approach (DEPRECATED since Kubernetes 1.33)
+# This is kept for compatibility but not recommended for new deployments
 kind: Endpoints
 apiVersion: v1
 metadata:
@@ -17,3 +22,19 @@ subsets:
       - ip: 1.2.3.4
     ports:
       - port: 9376
+---
+# Recommended approach using EndpointSlices (Kubernetes 1.19+)
+kind: EndpointSlice
+apiVersion: discovery.k8s.io/v1
+metadata:
+  name: my-service-1
+  labels:
+    kubernetes.io/service-name: my-service
+addressType: IPv4
+endpoints:
+- addresses:
+  - "1.2.3.4"
+ports:
+- name: ""
+  port: 9376
+  protocol: TCP

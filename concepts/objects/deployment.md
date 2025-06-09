@@ -46,6 +46,34 @@ kubectl scale deployment nginx-deployment --replicas 10
 kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
 ```
 
+对于 Kubernetes v1.33+，还可以使用 YAML 配置文件创建带有可配置容忍度的 HPA：
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-deployment-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicas: 10
+  maxReplicas: 15
+  behavior:
+    scaleUp:
+      tolerance: 0.03  # 3% 容忍度，快速响应负载增长
+    scaleDown:
+      tolerance: 0.1   # 10% 容忍度，避免频繁缩容
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+```
+
 更新镜像也比较简单:
 
 ```text

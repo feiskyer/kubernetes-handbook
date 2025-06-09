@@ -1,0 +1,132 @@
+# Gateway API v1.3.0 新特性：CORS 过滤（实验性）
+# 注意：这是实验性功能，API 可能会在未来版本中发生变化
+
+# CORS 策略配置
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: CORSPolicy
+metadata:
+  name: api-cors-policy
+  namespace: default
+spec:
+  # 允许的来源
+  allowOrigins:
+  - "https://example.com"
+  - "https://*.example.com"
+  - "https://app.example.org"
+  
+  # 允许的 HTTP 方法
+  allowMethods:
+  - GET
+  - POST
+  - PUT
+  - DELETE
+  - PATCH
+  - OPTIONS
+  
+  # 允许的请求头
+  allowHeaders:
+  - "Content-Type"
+  - "Authorization"
+  - "X-API-Key"
+  - "X-Requested-With"
+  
+  # 暴露的响应头
+  exposeHeaders:
+  - "X-Total-Count"
+  - "X-Rate-Limit-Remaining"
+  
+  # 是否允许凭据
+  allowCredentials: true
+  
+  # 预检请求缓存时间
+  maxAge: "24h"
+
+---
+# 应用 CORS 策略的 HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: api-with-cors
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+  
+  hostnames:
+  - "api.example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/api"
+    
+    backendRefs:
+    - name: api-service
+      port: 8080
+    
+    # 使用 CORS 过滤器
+    filters:
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.networking.x-k8s.io
+        kind: CORSPolicy
+        name: api-cors-policy
+
+---
+# 更严格的 CORS 策略示例
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: CORSPolicy
+metadata:
+  name: strict-cors-policy
+  namespace: default
+spec:
+  # 只允许特定的域名
+  allowOrigins:
+  - "https://trusted-app.example.com"
+  
+  # 只允许读取操作
+  allowMethods:
+  - GET
+  - HEAD
+  
+  # 最小化的请求头
+  allowHeaders:
+  - "Content-Type"
+  
+  # 不允许凭据
+  allowCredentials: false
+  
+  # 较短的缓存时间
+  maxAge: "1h"
+
+---
+# 应用严格 CORS 策略的 HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: public-api-with-strict-cors
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+  
+  hostnames:
+  - "public-api.example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/public"
+    
+    backendRefs:
+    - name: public-api-service
+      port: 8080
+    
+    filters:
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.networking.x-k8s.io
+        kind: CORSPolicy
+        name: strict-cors-policy

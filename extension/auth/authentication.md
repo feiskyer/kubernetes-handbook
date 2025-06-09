@@ -186,6 +186,61 @@ API Server 需要配置
 
 匿名请求的用户名格式为 `system:anonymous`，而 group 则为 `system:unauthenticated`。
 
+## Kubelet 凭证提供程序的服务账户令牌（v1.33 Alpha）
+
+从 Kubernetes v1.33 开始，引入了 **Service Account Token Integration for Kubelet Credential Providers** 这一 Alpha 特性，允许 kubelet 凭证提供程序使用 Pod 的服务账户令牌来获取镜像拉取凭证，从而实现工作负载级别的镜像访问控制。
+
+### 工作原理
+
+当启用此特性后：
+
+1. **令牌生成**：Kubelet 为 Pod 生成短期、自动轮换的服务账户令牌
+2. **令牌传递**：这些令牌通过 `CredentialProviderRequest` 传递给凭证提供程序
+3. **凭证交换**：凭证提供程序使用服务账户令牌向镜像仓库（如 AWS ECR、GCP Artifact Registry、Azure ACR）交换临时的镜像拉取凭证
+4. **镜像拉取**：Kubelet 使用获得的临时凭证代表 Pod 拉取镜像
+
+### 配置方法
+
+1. **启用特性门控**：
+   ```bash
+   kubelet --feature-gates=ServiceAccountTokenForKubeletCredentialProviders=true
+   ```
+
+2. **配置凭证提供程序**：
+   在凭证提供程序配置中设置 `tokenAttributes` 字段以选择接收服务账户令牌：
+   ```yaml
+   apiVersion: kubelet.config.k8s.io/v1
+   kind: CredentialProviderConfig
+   providers:
+   - name: my-provider
+     tokenAttributes:
+       audience: "https://my-registry.example.com"
+       expirationSeconds: 3600
+   ```
+
+3. **Pod 配置**：
+   Pod 使用服务账户，kubelet 会自动为其生成令牌用于镜像拉取：
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: my-app
+   spec:
+     serviceAccountName: my-app-sa
+     containers:
+     - name: app
+       image: my-registry.example.com/app:v1
+   ```
+
+### 优势
+
+- **消除长期密钥**：不再需要在集群中存储长期有效的镜像拉取密钥
+- **工作负载隔离**：每个 Pod 使用自己的服务账户令牌，实现细粒度的访问控制
+- **自动轮换**：令牌自动过期和轮换，提高安全性
+- **与云原生集成**：可以与云提供商的 IAM 系统无缝集成
+
+这一特性预计在 Kubernetes v1.34 中升级为 Beta 版本。更多信息请参考 [KEP-4412](https://kep.k8s.io/4412)。
+
 ## Credential Plugin
 
 从 v1.11 开始支持 Credential Plugin（Beta），通过调用外部插件来获取用户的访问凭证。这是一种客户端认证插件，用来支持不在 Kubernetes 中内置的认证协议，如 LDAP、OAuth2、SAML 等。它通常与 [Webhook](authentication.md#webhook) 配合使用。
@@ -261,4 +316,3 @@ current-context: my-cluster
 * [Effective RBAC](https://www.youtube.com/watch?v=Nw1ymxcLIDI) by Jordan Liggitt
 * [Configure RBAC In Your Kubernetes Cluster](https://docs.bitnami.com/kubernetes/how-to/configure-rbac-in-your-kubernetes-cluster/) via Bitnami
 * [Using RBAC, Generally Available in Kubernetes v1.8](https://kubernetes.io/blog/2017/10/using-rbac-generally-available-18/) by Eric Chiang
-

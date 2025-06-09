@@ -34,6 +34,7 @@
   * [CustomResourceDefinition](concepts/objects/customresourcedefinition.md)
   * [DaemonSet](concepts/objects/daemonset.md)
   * [Deployment](concepts/objects/deployment.md)
+  * [Gateway API](concepts/objects/gateway-api.md)
   * [Ingress](concepts/objects/ingress.md)
   * [Job](concepts/objects/job.md)
   * [LocalVolume](concepts/objects/local-volume.md)

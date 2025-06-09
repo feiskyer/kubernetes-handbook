@@ -63,6 +63,19 @@ Cluster AutoScaler 也会定期（默认间隔 10s）自动监测 Node 的资源
 
   ![image-20190316184848223](../../.gitbook/assets/image-20190316184848223%20%281%29.png)
 
+* **HPA 容忍度配置建议（Kubernetes v1.33+）**：
+  * 与 Cluster AutoScaler 配合时，建议 HPA 使用较低的扩容容忍度（2-5%）以快速响应负载，避免不必要的节点创建
+  * 使用适中的缩容容忍度（10-15%）避免过于频繁的 Pod 缩容，减少节点利用率波动
+  * 示例配置：
+    ```yaml
+    behavior:
+      scaleUp:
+        tolerance: 0.03    # 快速扩容，及时响应负载增长
+      scaleDown:
+        tolerance: 0.12    # 稳定缩容，避免节点频繁创建/删除
+    ```
+  * 对于批处理工作负载，可以使用更激进的扩容策略（容忍度 0-2%）来确保任务能够快速获得所需资源
+
 * 不要手动修改 Node 配置，保证集群内的所有 Node 有相同的配置并属于同一个 Node 组
 * 运行 Pod 时指定资源请求
 * 必要时使用 PodDisruptionBudgets 阻止 Pod 被误删除

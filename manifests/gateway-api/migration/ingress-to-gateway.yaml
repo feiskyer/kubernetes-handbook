@@ -1,0 +1,264 @@
+# 从 Ingress 迁移到 Gateway API 的示例
+
+# 原始 Ingress 配置示例
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: example-ingress
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /
+#     cert-manager.io/cluster-issuer: letsencrypt-prod
+# spec:
+#   tls:
+#   - hosts:
+#     - example.com
+#     secretName: example-com-tls
+#   rules:
+#   - host: example.com
+#     http:
+#       paths:
+#       - path: /api
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: api-service
+#             port:
+#               number: 8080
+#       - path: /app
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: app-service
+#             port:
+#               number: 3000
+
+# 迁移后的 Gateway API 配置
+
+# 1. GatewayClass（如果还未创建）
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: nginx-gateway
+spec:
+  controllerName: nginx.org/nginx-gateway-controller
+  description: "NGINX Gateway API implementation"
+
+---
+# 2. Gateway 配置
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: example-gateway
+  namespace: default
+spec:
+  gatewayClassName: nginx-gateway
+  
+  listeners:
+  # HTTP 监听器（用于重定向到 HTTPS）
+  - name: http
+    port: 80
+    protocol: HTTP
+    hostname: "example.com"
+  
+  # HTTPS 监听器
+  - name: https
+    port: 443
+    protocol: HTTPS
+    hostname: "example.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: example-com-tls
+        kind: Secret
+
+---
+# 3. HTTPRoute 配置
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: example-routes
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+    namespace: default
+  
+  hostnames:
+  - "example.com"
+  
+  rules:
+  # API 路由
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/api"
+    backendRefs:
+    - name: api-service
+      port: 8080
+    
+    # 等效于 nginx.ingress.kubernetes.io/rewrite-target: /
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: "/"
+  
+  # 应用路由
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/app"
+    backendRefs:
+    - name: app-service
+      port: 3000
+    
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: "/"
+  
+  # 根路径路由（可选）
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/"
+    backendRefs:
+    - name: frontend-service
+      port: 80
+
+---
+# 4. HTTP 到 HTTPS 重定向
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-redirect
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+    namespace: default
+    sectionName: http  # 只应用到 HTTP 监听器
+  
+  hostnames:
+  - "example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/"
+    
+    filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
+
+---
+# 迁移对比示例：复杂的 Ingress 配置
+
+# 原始复杂 Ingress（注释形式）
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: complex-ingress
+#   annotations:
+#     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+#     nginx.ingress.kubernetes.io/cors-allow-origin: "https://trusted.example.com"
+#     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT"
+#     nginx.ingress.kubernetes.io/rate-limit: "10"
+#     nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+# spec:
+#   tls:
+#   - hosts:
+#     - api.example.com
+#     secretName: api-tls
+#   rules:
+#   - host: api.example.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: api-service
+#             port:
+#               number: 8080
+
+# 迁移后的 Gateway API 配置（使用 v1.3.0 特性）
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: complex-gateway
+  namespace: default
+spec:
+  gatewayClassName: nginx-gateway
+  
+  listeners:
+  - name: https
+    port: 443
+    protocol: HTTPS
+    hostname: "api.example.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: api-tls
+
+---
+# 使用 Gateway API v1.3.0 CORS 特性
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: CORSPolicy
+metadata:
+  name: api-cors
+  namespace: default
+spec:
+  allowOrigins:
+  - "https://trusted.example.com"
+  allowMethods:
+  - GET
+  - POST
+  - PUT
+  allowCredentials: true
+
+---
+# 应用 CORS 和其他策略的 HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: complex-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: complex-gateway
+  
+  hostnames:
+  - "api.example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/"
+    
+    backendRefs:
+    - name: api-service
+      port: 8080
+    
+    filters:
+    # 应用 CORS 策略
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.networking.x-k8s.io
+        kind: CORSPolicy
+        name: api-cors
+    
+    # 速率限制（取决于具体实现）
+    # - type: ExtensionRef
+    #   extensionRef:
+    #     group: gateway.networking.x-k8s.io
+    #     kind: RateLimitPolicy
+    #     name: api-rate-limit

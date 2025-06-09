@@ -1,0 +1,184 @@
+# Gateway API v1.3.0 新特性：XListenerSets（实验性）
+# XListenerSets 提供了标准化的 Gateway 监听器合并机制
+
+# 共享监听器集合定义
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XListenerSet
+metadata:
+  name: common-listeners
+  namespace: gateway-system  # 通常部署在基础设施命名空间
+spec:
+  # 定义一组共享的监听器
+  listeners:
+  # 标准 HTTP 监听器
+  - name: http
+    port: 80
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: All  # 允许所有命名空间的路由
+  
+  # 标准 HTTPS 监听器
+  - name: https
+    port: 443
+    protocol: HTTPS
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-tls-cert
+        namespace: gateway-system
+    allowedRoutes:
+      namespaces:
+        from: All
+  
+  # 管理端口
+  - name: admin
+    port: 8080
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            admin-access: "true"
+
+---
+# 特定应用的监听器集合
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XListenerSet
+metadata:
+  name: api-listeners
+  namespace: gateway-system
+spec:
+  listeners:
+  # API 专用端口
+  - name: api-http
+    port: 8080
+    protocol: HTTP
+    hostname: "api.example.com"
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            api-access: "true"
+  
+  # API HTTPS 端口
+  - name: api-https
+    port: 8443
+    protocol: HTTPS
+    hostname: "api.example.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: api-tls-cert
+        namespace: gateway-system
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            api-access: "true"
+  
+  # WebSocket 支持
+  - name: websocket
+    port: 9090
+    protocol: HTTP
+    hostname: "ws.example.com"
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            websocket-access: "true"
+
+---
+# 使用 XListenerSet 的 Gateway
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: shared-gateway
+  namespace: default
+spec:
+  gatewayClassName: example-gatewayclass
+  
+  # 引用共享监听器集合
+  listeners:
+  # 通过扩展引用 XListenerSet
+  - name: shared-http
+    port: 80
+    protocol: HTTP
+    # 使用扩展引用来包含 XListenerSet
+    # 注意：具体语法可能因实现而异
+    x-listenerSet:
+      name: common-listeners
+      namespace: gateway-system
+      listeners: ["http", "https"]  # 选择特定的监听器
+
+---
+# 应用命名空间的 Gateway（使用委托的监听器）
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: app-gateway
+  namespace: app-namespace
+  labels:
+    api-access: "true"  # 匹配 XListenerSet 的选择器
+spec:
+  gatewayClassName: example-gatewayclass
+  
+  # 本地监听器定义
+  listeners:
+  - name: app-http
+    port: 3000
+    protocol: HTTP
+    hostname: "app.example.com"
+    allowedRoutes:
+      namespaces:
+        from: Same  # 只允许同一命名空间的路由
+  
+  # 委托的监听器将通过 XListenerSet 自动添加
+  # 这样可以获得标准的 80/443 端口访问
+
+---
+# 管理 Gateway 示例
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: admin-gateway
+  namespace: admin-namespace
+  labels:
+    admin-access: "true"  # 匹配管理监听器的选择器
+spec:
+  gatewayClassName: example-gatewayclass
+  
+  # 管理专用的监听器
+  listeners:
+  - name: admin-dashboard
+    port: 9000
+    protocol: HTTPS
+    hostname: "admin.example.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: admin-tls-cert
+    allowedRoutes:
+      namespaces:
+        from: Same
+
+---
+# 配置命名空间标签以启用访问
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-namespace
+  labels:
+    api-access: "true"     # 允许访问 API 监听器
+    websocket-access: "true"  # 允许访问 WebSocket 监听器
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: admin-namespace
+  labels:
+    admin-access: "true"   # 允许访问管理监听器

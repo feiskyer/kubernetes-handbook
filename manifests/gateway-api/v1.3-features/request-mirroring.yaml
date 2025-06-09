@@ -1,0 +1,76 @@
+# Gateway API v1.3.0 新特性：基于百分比的请求镜像
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: request-mirroring-example
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+  
+  hostnames:
+  - "api.example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/api/v1"
+    
+    # 主要后端服务
+    backendRefs:
+    - name: production-api-service
+      port: 8080
+      weight: 100
+    
+    # 请求镜像过滤器
+    filters:
+    - type: RequestMirror
+      requestMirror:
+        backendRef:
+          name: staging-api-service
+          port: 8080
+        # v1.3.0 新增：基于百分比的镜像
+        percent: 10  # 镜像 10% 的请求到 staging 环境
+    
+    # 还可以添加多个镜像目标
+    - type: RequestMirror
+      requestMirror:
+        backendRef:
+          name: analytics-service
+          port: 9090
+        percent: 5   # 镜像 5% 的请求到分析服务
+---
+# 用于蓝绿部署的请求镜像示例
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: blue-green-mirroring
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+  
+  hostnames:
+  - "app.example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/app"
+    
+    # 蓝色环境（当前生产）
+    backendRefs:
+    - name: blue-app-service
+      port: 3000
+      weight: 100
+    
+    filters:
+    # 将部分流量镜像到绿色环境进行验证
+    - type: RequestMirror
+      requestMirror:
+        backendRef:
+          name: green-app-service
+          port: 3000
+        percent: 20  # 镜像 20% 的请求到绿色环境

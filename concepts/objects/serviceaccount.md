@@ -65,6 +65,69 @@ metadata:
 type: kubernetes.io/service-account-token
 ```
 
+## 绑定服务账户令牌安全改进 (v1.33.0 Stable)
+
+从 Kubernetes v1.33.0 开始，绑定服务账户令牌获得了安全改进，包括以下特性：
+
+### 唯一令牌标识符
+
+每个令牌现在都有一个唯一的标识符，用于跟踪和审计：
+
+```yaml
+apiVersion: authentication.k8s.io/v1
+kind: TokenRequest
+metadata:
+  name: my-token-request
+spec:
+  audiences:
+  - "https://kubernetes.default.svc"
+  expirationSeconds: 3600
+  boundObjectRef:
+    kind: Pod
+    name: my-pod
+    uid: 12345678-1234-1234-1234-123456789abc
+```
+
+### 节点特定令牌限制
+
+支持将令牌绑定到特定节点，增强安全性：
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-specific-sa
+  namespace: default
+  annotations:
+    # 限制令牌只能在特定节点上使用
+    kubernetes.io/bound-node: "node-1"
+```
+
+### 令牌生命周期管理
+
+改进的令牌生命周期管理，支持更精细的控制：
+
+```yaml
+apiVersion: authentication.k8s.io/v1
+kind: TokenRequest
+metadata:
+  name: short-lived-token
+spec:
+  audiences:
+  - "https://my-service.example.com"
+  expirationSeconds: 600  # 10分钟后过期
+  boundObjectRef:
+    kind: ServiceAccount
+    name: my-service-account
+```
+
+### 安全最佳实践
+
+- **最小权限原则**：只授予必要的权限
+- **短期令牌**：使用较短的过期时间减少风险
+- **节点绑定**：在多租户环境中使用节点绑定
+- **审计日志**：监控令牌的使用和访问模式
+
 ## 添加 ImagePullSecrets
 
 ```yaml

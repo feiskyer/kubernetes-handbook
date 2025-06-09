@@ -134,6 +134,75 @@ metadata:
   name: namespace3
 ```
 
+## 用户命名空间准入控制（Kubernetes v1.33+）
+
+从 Kubernetes v1.33 开始，用户命名空间功能默认启用，准入控制器可以用来强制执行用户命名空间策略。以下是一些常见的用户命名空间准入控制场景：
+
+### 使用 ValidatingAdmissionWebhook 强制用户命名空间
+
+可以通过自定义 ValidatingAdmissionWebhook 来强制特定工作负载启用用户命名空间：
+
+```yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionWebhook
+metadata:
+  name: enforce-user-namespaces
+webhooks:
+- name: usernamespace.security.example.com
+  admissionReviewVersions: ["v1", "v1beta1"]
+  rules:
+  - operations: ["CREATE", "UPDATE"]
+    apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+  # 示例：强制高安全级别的 Pod 使用用户命名空间
+  namespaceSelector:
+    matchLabels:
+      security-level: high
+  clientConfig:
+    service:
+      name: usernamespace-webhook
+      namespace: security-system
+      path: "/validate"
+```
+
+### 使用 MutatingAdmissionWebhook 自动添加用户命名空间
+
+可以通过 MutatingAdmissionWebhook 自动为符合条件的 Pod 启用用户命名空间：
+
+```yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingAdmissionWebhook
+metadata:
+  name: auto-usernamespace
+webhooks:
+- name: auto-usernamespace.security.example.com
+  admissionReviewVersions: ["v1", "v1beta1"]
+  rules:
+  - operations: ["CREATE"]
+    apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+  # 自动为多租户命名空间中的 Pod 启用用户命名空间
+  namespaceSelector:
+    matchLabels:
+      tenant: "true"
+  clientConfig:
+    service:
+      name: usernamespace-mutator
+      namespace: security-system
+      path: "/mutate"
+```
+
+### 安全策略建议
+
+在设计用户命名空间准入控制策略时，建议考虑以下因素：
+
+- **渐进式部署**：从非关键工作负载开始，逐步扩展到生产环境
+- **兼容性检查**：确保应用程序与用户命名空间兼容
+- **容器运行时要求**：验证容器运行时支持用户命名空间（containerd 2.0+ 或 CRI-O）
+- **内核版本检查**：确保节点运行支持的内核版本（Linux 5.19+，推荐 6.3+）
+
 ## 推荐配置
 
 对于 Kubernetes &gt;= 1.9.0，推荐配置以下插件

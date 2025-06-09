@@ -1,0 +1,335 @@
+# Kubernetes v1.33 Job 成功策略 (Success Policy) 示例
+#
+# Job 成功策略在 v1.33 中达到 GA 状态，专为批处理工作负载设计
+# 支持科学仿真、AI/ML 和高性能计算（HPC）等场景
+#
+# 注意：成功策略仅适用于索引化 Job (completionMode: Indexed)
+
+---
+# 示例1：单个索引成功即可完成 Job
+# 适用场景：多个并行任务中任意一个成功即可
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: any-one-success
+  labels:
+    example: single-success
+spec:
+  completionMode: Indexed
+  completions: 5
+  parallelism: 5
+  successPolicy:
+    rules:
+    - succeededCount: 1  # 只要有1个Pod成功就算Job成功
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          INDEX=${JOB_COMPLETION_INDEX}
+          echo "Starting task for index $INDEX"
+          # 模拟不同索引有不同的执行时间
+          SLEEP_TIME=$((10 + INDEX * 5))
+          echo "Index $INDEX will sleep for $SLEEP_TIME seconds"
+          sleep $SLEEP_TIME
+          echo "Index $INDEX completed successfully"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+      restartPolicy: Never
+
+---
+# 示例2：领导者-跟随者模式
+# 适用场景：分布式系统中需要特定节点（领导者）成功完成
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: leader-follower-pattern
+  labels:
+    example: leader-follower
+spec:
+  completionMode: Indexed
+  completions: 8
+  parallelism: 3
+  successPolicy:
+    rules:
+    - succeededIndexes: "0"  # 索引0作为领导者必须成功
+      succeededCount: 1
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          INDEX=${JOB_COMPLETION_INDEX}
+          if [ $INDEX -eq 0 ]; then
+            echo "Leader node (index $INDEX) starting..."
+            # 领导者任务：协调其他节点，处理关键逻辑
+            echo "Leader: Initializing distributed task"
+            sleep 20
+            echo "Leader: Task coordination completed"
+          else
+            echo "Follower node (index $INDEX) starting..."
+            # 跟随者任务：执行具体的工作负载
+            echo "Follower $INDEX: Processing data partition"
+            sleep $((5 + INDEX * 2))
+            echo "Follower $INDEX: Data processing completed"
+          fi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+      restartPolicy: Never
+
+---
+# 示例3：科学仿真场景
+# 适用场景：多个实验中需要特定实验成功或达到最小成功数量
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scientific-simulation
+  labels:
+    example: simulation
+spec:
+  completionMode: Indexed
+  completions: 20
+  parallelism: 5
+  # 结合失败策略使用
+  backoffLimitPerIndex: 2
+  maxFailedIndexes: 10
+  successPolicy:
+    rules:
+    - succeededIndexes: "0,1,2"  # 前3个关键实验必须成功
+    - succeededCount: 12         # 或者总共12个实验成功
+  template:
+    spec:
+      containers:
+      - name: simulation
+        image: python:3.9-slim
+        command:
+        - python3
+        - -c
+        - |
+          import os
+          import random
+          import time
+          
+          index = int(os.environ.get('JOB_COMPLETION_INDEX', '0'))
+          print(f"Starting simulation experiment {index}")
+          
+          # 模拟不同实验的复杂度
+          if index < 3:
+              # 关键实验，成功率较高
+              success_rate = 0.9
+              duration = 30
+              print(f"Critical experiment {index}: high priority")
+          else:
+              # 普通实验，成功率中等
+              success_rate = 0.7
+              duration = 15 + random.randint(0, 10)
+              print(f"Regular experiment {index}: normal priority")
+          
+          # 模拟计算过程
+          time.sleep(duration)
+          
+          # 模拟成功/失败
+          if random.random() < success_rate:
+              print(f"Experiment {index}: SUCCESS")
+              exit(0)
+          else:
+              print(f"Experiment {index}: FAILED")
+              exit(1)
+        resources:
+          requests:
+            cpu: 200m
+            memory: 128Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+      restartPolicy: Never
+
+---
+# 示例4：AI/ML 分布式训练
+# 适用场景：机器学习中的参数服务器架构
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: distributed-ml-training
+  labels:
+    example: ml-training
+spec:
+  completionMode: Indexed
+  completions: 6  # 1个参数服务器 + 5个工作节点
+  parallelism: 6
+  successPolicy:
+    rules:
+    - succeededIndexes: "0"  # 参数服务器（索引0）必须成功
+      succeededCount: 4      # 并且至少4个节点总体成功
+  template:
+    spec:
+      containers:
+      - name: ml-worker
+        image: tensorflow/tensorflow:2.12.0
+        command:
+        - python3
+        - -c
+        - |
+          import os
+          import time
+          import random
+          
+          index = int(os.environ.get('JOB_COMPLETION_INDEX', '0'))
+          
+          if index == 0:
+              print("Parameter server starting...")
+              # 参数服务器逻辑
+              print("PS: Initializing model parameters")
+              time.sleep(10)
+              print("PS: Starting parameter synchronization")
+              time.sleep(40)
+              print("PS: Training coordination completed")
+          else:
+              print(f"Worker {index} starting...")
+              # 工作节点逻辑
+              print(f"Worker {index}: Loading training data")
+              time.sleep(5)
+              print(f"Worker {index}: Starting model training")
+              
+              # 模拟训练过程，某些工作节点可能失败
+              training_time = 25 + random.randint(0, 15)
+              time.sleep(training_time)
+              
+              # 模拟训练结果
+              success_rate = 0.8
+              if random.random() < success_rate:
+                  print(f"Worker {index}: Training completed successfully")
+              else:
+                  print(f"Worker {index}: Training failed")
+                  exit(1)
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        env:
+        - name: TF_CPP_MIN_LOG_LEVEL
+          value: "2"
+      restartPolicy: Never
+
+---
+# 示例5：批量数据处理
+# 适用场景：大规模数据处理中允许部分失败
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-data-processing
+  labels:
+    example: batch-processing
+spec:
+  completionMode: Indexed
+  completions: 50  # 处理50个数据分片
+  parallelism: 10
+  backoffLimitPerIndex: 1
+  maxFailedIndexes: 15  # 允许最多15个分片失败
+  successPolicy:
+    rules:
+    - succeededCount: 35  # 至少35个分片成功处理
+  template:
+    spec:
+      containers:
+      - name: data-processor
+        image: alpine:3.18
+        command:
+        - sh
+        - -c
+        - |
+          INDEX=${JOB_COMPLETION_INDEX}
+          echo "Processing data shard $INDEX"
+          
+          # 模拟数据处理
+          PROCESS_TIME=$((10 + RANDOM % 20))
+          echo "Shard $INDEX: Processing for $PROCESS_TIME seconds"
+          sleep $PROCESS_TIME
+          
+          # 模拟处理结果（80%成功率）
+          if [ $((RANDOM % 100)) -lt 80 ]; then
+            echo "Shard $INDEX: Processing completed successfully"
+            echo "Shard $INDEX: Results written to output"
+          else
+            echo "Shard $INDEX: Processing failed - corrupted data"
+            exit 1
+          fi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+      restartPolicy: Never
+
+---
+# 示例6：高性能计算（HPC）场景
+# 适用场景：需要特定计算节点完成的并行计算
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hpc-computation
+  labels:
+    example: hpc
+spec:
+  completionMode: Indexed
+  completions: 16
+  parallelism: 8
+  successPolicy:
+    rules:
+    - succeededIndexes: "0-3"    # 前4个节点是关键计算节点
+    - succeededCount: 10         # 或者总共10个节点成功
+  template:
+    spec:
+      containers:
+      - name: compute-node
+        image: ubuntu:22.04
+        command:
+        - bash
+        - -c
+        - |
+          INDEX=${JOB_COMPLETION_INDEX}
+          
+          if [ $INDEX -le 3 ]; then
+            echo "Critical compute node $INDEX starting"
+            # 关键计算节点执行核心算法
+            echo "Node $INDEX: Executing core computation algorithm"
+            sleep 45
+            echo "Node $INDEX: Core computation completed"
+          else
+            echo "Standard compute node $INDEX starting"
+            # 标准计算节点执行辅助计算
+            echo "Node $INDEX: Executing auxiliary computation"
+            sleep $((20 + INDEX))
+            echo "Node $INDEX: Auxiliary computation completed"
+          fi
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+          limits:
+            cpu: 4000m
+            memory: 8Gi
+      restartPolicy: Never

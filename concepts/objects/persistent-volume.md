@@ -382,6 +382,59 @@ spec:
 
 当开启准入控制 StorageObjectInUseProtection（`--admission-control=StorageObjectInUseProtection`）时，删除使用中的 PV 和 PVC 后，它们会等待使用者删除后才删除（而不是之前的立即删除）。而在使用者删除之前，它们会一直处于 Terminating 状态。
 
+## PersistentVolume 资源泄漏防护（v1.33 GA）
+
+Kubernetes v1.33 引入了防止 PersistentVolume 资源泄漏的功能，该功能在无序删除 PV 和 PVC 时防止存储资源泄漏，现已正式稳定（GA）。
+
+### 主要特性
+
+* **防止存储泄漏** - 当 PV 在 PVC 之前被删除时，确保底层存储资源得到正确回收
+* **自动资源清理** - 通过 finalizer 机制确保存储后端资源在删除确认后才从 PV 中移除
+* **CSI 兼容性** - 专门为使用 CSI external-provisioner 的动态存储卷设计
+
+### 技术实现
+
+该功能通过在 CSI 动态创建的 PV 上添加 finalizer 来实现：
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  - external-provisioner.volume.kubernetes.io/finalizer  # CSI 防泄漏 finalizer
+spec:
+  # PV 规格...
+```
+
+### 使用要求
+
+要启用此功能，需要满足以下条件：
+
+1. **Kubernetes 版本** - 升级到 v1.33 或更高版本
+2. **CSI external-provisioner** - 使用 v5.0.1 或更高版本
+3. **存储类型** - 仅适用于使用 CSI external-provisioner 动态创建的存储卷
+
+### 工作原理
+
+1. 当使用 CSI StorageClass 创建 PVC 时，动态创建的 PV 会自动添加防泄漏 finalizer
+2. 如果 PV 在 PVC 之前被删除，finalizer 会阻止 PV 的最终删除
+3. CSI external-provisioner 确保底层存储资源被正确释放后，才会移除 finalizer
+4. 只有在存储后端确认删除完成后，PV 才会被最终删除
+
+### 限制
+
+* 该功能不适用于静态创建的 PV
+* 不适用于使用树内（in-tree）存储插件的 PV
+* 仅针对使用 CSI external-provisioner 的动态存储卷
+
+### 最佳实践
+
+* 升级集群到 Kubernetes v1.33+
+* 确保 CSI external-provisioner 使用最新版本
+* 验证动态创建的 PV 包含正确的 finalizer
+* 监控存储资源的回收状态，确保没有泄漏
+
 ## 拓扑感知动态调度
 
 拓扑感知动态存储卷调度（topology-aware dynamic provisioning）是 v1.12 版本的一个 Beta 特性，用来支持在多可用区集群中动态创建和调度持久化存储卷。目前的实现支持以下几种存储：
@@ -390,6 +443,32 @@ spec:
 * Azure Disk
 * GCE PD \(including Regional PD\)
 * CSI \(alpha\) - currently only the GCE PD CSI driver has implemented topology support
+
+## 存储容量感知调度（v1.33 Alpha）
+
+Kubernetes v1.33 引入了存储容量感知调度特性，该特性与 kube-scheduler 的存储容量评分功能配合使用，能够根据节点的存储容量状况来优化 Pod 的调度决策。
+
+### 主要特性
+
+* **智能存储调度** - 调度器在做出调度决策时会考虑节点的存储容量情况
+* **动态卷优化** - 特别适用于需要动态创建本地持久化卷的场景
+* **资源效率提升** - 通过合理分配存储资源，提高集群整体的资源利用率
+
+### 与调度器集成
+
+该特性主要通过 kube-scheduler 的 VolumeBinding 插件实现：
+
+* 扩展了调度器的评分机制，在选择节点时考虑存储容量
+* 支持根据可用存储空间对节点进行优先级排序
+* 可配置优先选择存储容量高或低的节点
+
+### 适用场景
+
+1. **本地存储工作负载** - 需要大量本地存储的应用，如数据库和存储服务
+2. **存储敏感应用** - 对存储性能和可用性有特殊要求的应用
+3. **资源优化** - 希望最大化存储资源利用率的集群环境
+
+要使用此特性，需要在 kube-scheduler 中启用 `StorageCapacityScoring` 功能特性，详见调度器文档中的相关配置。
 
 使用示例
 
@@ -478,6 +557,105 @@ logs-web-0      us-central1-f
 www-web-1       us-central1-a
 logs-web-1      us-central1-a
 ```
+
+## 卷数据填充器（Volume Populators，v1.33 GA）
+
+卷数据填充器是 Kubernetes v1.33 正式稳定（GA）的特性，允许用户使用自定义资源作为 PersistentVolumeClaim 的数据源，实现灵活的卷数据初始化。
+
+### 主要特性
+
+* **自定义数据源** - 支持使用任意自定义资源作为 PVC 的数据源
+* **无需填充 Pod** - v1.33 版本引入了基于插件的函数，可选择性地跳过创建填充 Pod
+* **灵活的数据填充** - 支持多种数据填充模式和清理策略
+* **AnyVolumeDataSource 默认启用** - `AnyVolumeDataSource` 特性门控在 v1.33 中默认启用
+
+### 基本用法
+
+使用 `dataSourceRef` 字段指定自定义资源作为数据源：
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: populated-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: example-storageclass
+  dataSourceRef:
+    apiGroup: provider.example.com
+    kind: Provider
+    name: provider1
+```
+
+### 卷填充器插件接口
+
+v1.33 版本为卷填充器插件引入了新的函数接口：
+
+#### 核心函数
+
+* **`PopulateFn()`** - 执行数据填充逻辑的主要函数
+* **`PopulateCompleteFn()`** - 检查数据填充是否完成
+* **`PopulateCleanupFn()`** - 清理填充过程中的临时资源
+
+#### 扩展功能
+
+* **变更器函数** - 允许插件修改 Kubernetes 资源
+* **指标处理** - 支持自定义指标收集和报告
+* **资源清理** - 在 PVC 删除时自动清理临时资源
+
+### 实现示例
+
+```yaml
+# 自定义数据源资源
+apiVersion: provider.example.com/v1
+kind: Provider
+metadata:
+  name: provider1
+spec:
+  sourceURL: "https://example.com/data.tar.gz"
+  extractPath: "/data"
+---
+# 使用自定义数据源的 PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: fast-ssd
+  dataSourceRef:
+    apiGroup: provider.example.com
+    kind: Provider
+    name: provider1
+```
+
+### 优势
+
+1. **灵活性** - 支持从任意自定义资源初始化存储卷
+2. **可扩展性** - 开发者可以创建特定的数据填充逻辑
+3. **高效性** - 新的插件接口减少了资源开销
+4. **自动化** - 支持自动清理和错误处理
+
+### 常见用例
+
+* **数据库初始化** - 从备份或模板初始化数据库存储卷
+* **应用数据预填充** - 为应用预装配置文件或静态资源
+* **多环境数据同步** - 在不同环境间同步数据状态
+* **备份恢复** - 从备份系统恢复数据到新的存储卷
+
+### 注意事项
+
+* 需要相应的卷填充器控制器支持特定的自定义资源类型
+* 数据填充过程可能需要一定时间，Pod 调度会等待填充完成
+* 确保自定义资源和 PVC 在同一命名空间中
 
 ## 存储快照
 

@@ -1,0 +1,216 @@
+# User Namespace Examples for Kubernetes v1.33+
+# This file demonstrates various use cases for user namespaces
+
+---
+# Example 1: Basic user namespace with security-sensitive workload
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-app
+  labels:
+    app: secure-app
+    security-level: high
+spec:
+  hostUsers: false  # Enable user namespace isolation
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 2000
+  containers:
+  - name: app
+    image: nginx:latest
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+        - ALL
+    volumeMounts:
+    - name: app-data
+      mountPath: /usr/share/nginx/html
+      readOnly: true
+  volumes:
+  - name: app-data
+    configMap:
+      name: app-config
+
+---
+# Example 2: Multi-tenant application with user namespace
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tenant-workload
+  labels:
+    tenant: tenant-a
+    app: multi-tenant-app
+spec:
+  hostUsers: false  # Isolate tenant workloads
+  securityContext:
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+  containers:
+  - name: tenant-app
+    image: myapp:v1.0
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+---
+# Example 3: Legacy application requiring root but with user namespace isolation
+apiVersion: v1
+kind: Pod
+metadata:
+  name: legacy-root-app
+  labels:
+    app: legacy-app
+    migration: "true"
+spec:
+  hostUsers: false  # Container runs as root inside, but mapped to unprivileged user on host
+  containers:
+  - name: legacy
+    image: legacy-app:latest
+    securityContext:
+      runAsUser: 0  # Root inside container, but isolated via user namespace
+    command: ["/legacy-start.sh"]
+    volumeMounts:
+    - name: legacy-data
+      mountPath: /data
+  volumes:
+  - name: legacy-data
+    emptyDir: {}
+
+---
+# Example 4: Deployment with user namespace for enhanced security
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-web-app
+  labels:
+    app: secure-web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: secure-web-app
+  template:
+    metadata:
+      labels:
+        app: secure-web-app
+    spec:
+      hostUsers: false  # Enable user namespace for all pods in deployment
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+      - name: web
+        image: nginx:alpine
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: var-cache-nginx
+          mountPath: /var/cache/nginx
+        - name: var-run
+          mountPath: /var/run
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: var-cache-nginx
+        emptyDir: {}
+      - name: var-run
+        emptyDir: {}
+
+---
+# Example 5: StatefulSet with user namespace for database workload
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: secure-database
+spec:
+  serviceName: secure-database
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secure-database
+  template:
+    metadata:
+      labels:
+        app: secure-database
+    spec:
+      hostUsers: false  # Isolate database processes
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      containers:
+      - name: postgres
+        image: postgres:13-alpine
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+# ConfigMap for the secure app example
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head><title>Secure App with User Namespaces</title></head>
+    <body>
+    <h1>Welcome to Secure App</h1>
+    <p>This application is running with user namespace isolation for enhanced security.</p>
+    </body>
+    </html>
+
+---
+# Secret for the database example
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+data:
+  password: c2VjdXJlcGFzc3dvcmQ=  # securepassword (base64 encoded)

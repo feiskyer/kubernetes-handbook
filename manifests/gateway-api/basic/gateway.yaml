@@ -1,0 +1,34 @@
+# Gateway 定义了如何将流量转换为集群内的服务
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: example-gateway
+  namespace: default
+spec:
+  # 引用 GatewayClass
+  gatewayClassName: example-gatewayclass
+  
+  # 定义监听器
+  listeners:
+  # HTTP 监听器
+  - name: http
+    port: 80
+    protocol: HTTP
+    hostname: "*.example.com"
+    
+  # HTTPS 监听器
+  - name: https
+    port: 443
+    protocol: HTTPS
+    hostname: "*.example.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: example-com-tls
+        kind: Secret
+        group: ""
+  
+  # 可选：地址配置
+  # addresses:
+  # - type: IPAddress
+  #   value: "192.168.1.100"

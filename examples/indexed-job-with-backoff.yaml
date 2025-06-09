@@ -1,0 +1,94 @@
+# Indexed Job with per-index backoff limit example
+# This example demonstrates the new backoffLimitPerIndex feature (v1.33+ Stable)
+# which allows setting independent retry limits for each job index
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-test-suite
+  labels:
+    app: test-runner
+spec:
+  # Enable indexed completion mode
+  completionMode: Indexed
+  
+  # Run 10 test suites in parallel
+  completions: 10
+  parallelism: 5
+  
+  # Each index can retry up to 2 times before being marked as failed
+  backoffLimitPerIndex: 2
+  
+  # Allow up to 3 test suites to fail without failing the entire job
+  maxFailedIndexes: 3
+  
+  # Auto-cleanup completed pods after 300 seconds
+  ttlSecondsAfterFinished: 300
+  
+  template:
+    metadata:
+      labels:
+        app: test-runner
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: test-runner
+        image: busybox:1.35
+        env:
+        - name: TEST_INDEX
+          value: "$(JOB_COMPLETION_INDEX)"
+        command:
+        - sh
+        - -c
+        - |
+          echo "Starting test suite $TEST_INDEX"
+          
+          # Simulate different test scenarios
+          case $TEST_INDEX in
+            0|1|2)
+              echo "Test suite $TEST_INDEX: Running stable tests"
+              sleep 5
+              echo "Test suite $TEST_INDEX: All tests passed"
+              ;;
+            3|4)
+              echo "Test suite $TEST_INDEX: Running flaky tests"
+              # Simulate flaky tests that might fail occasionally
+              if [ $((RANDOM % 3)) -eq 0 ]; then
+                echo "Test suite $TEST_INDEX: Tests failed due to flakiness"
+                exit 1
+              else
+                echo "Test suite $TEST_INDEX: Tests passed"
+              fi
+              ;;
+            5|6)
+              echo "Test suite $TEST_INDEX: Running integration tests"
+              sleep 10
+              echo "Test suite $TEST_INDEX: Integration tests completed"
+              ;;
+            7|8)
+              echo "Test suite $TEST_INDEX: Running performance tests"
+              # Simulate performance tests that might timeout
+              if [ $((RANDOM % 4)) -eq 0 ]; then
+                echo "Test suite $TEST_INDEX: Performance tests timed out"
+                exit 1
+              else
+                echo "Test suite $TEST_INDEX: Performance tests passed"
+              fi
+              ;;
+            9)
+              echo "Test suite $TEST_INDEX: Running end-to-end tests"
+              sleep 15
+              echo "Test suite $TEST_INDEX: E2E tests completed"
+              ;;
+            *)
+              echo "Test suite $TEST_INDEX: Unknown test suite"
+              exit 1
+              ;;
+          esac
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi

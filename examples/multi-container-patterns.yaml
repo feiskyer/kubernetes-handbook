@@ -1,0 +1,355 @@
+# 多容器模式示例
+# 本文件包含了四种常见多容器模式的实际示例
+
+---
+# 1. Sidecar 模式示例：主应用 + 日志收集器
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-logging
+  labels:
+    app: web-app
+spec:
+  containers:
+  # 主应用容器
+  - name: web-app
+    image: nginx:1.20
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+    - name: app-content
+      mountPath: /usr/share/nginx/html
+  
+  # Sidecar 日志收集容器
+  - name: log-collector
+    image: fluent/fluent-bit:1.8
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+    - name: fluent-bit-config
+      mountPath: /fluent-bit/etc
+    env:
+    - name: FLUENT_ELASTICSEARCH_HOST
+      value: "elasticsearch.logging.svc.cluster.local"
+    - name: FLUENT_ELASTICSEARCH_PORT
+      value: "9200"
+  
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+  - name: app-content
+    configMap:
+      name: web-content
+  - name: fluent-bit-config
+    configMap:
+      name: fluent-bit-config
+
+---
+# 2. Ambassador 模式示例：应用 + 数据库代理
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ambassador-db-proxy
+  labels:
+    app: data-service
+spec:
+  containers:
+  # 主应用容器
+  - name: data-service
+    image: myapp/data-service:v1.2.0
+    ports:
+    - containerPort: 8080
+    env:
+    - name: DB_HOST
+      value: "localhost"  # 通过ambassador访问数据库
+    - name: DB_PORT
+      value: "5432"
+    - name: DB_NAME
+      value: "appdb"
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  # Ambassador 数据库代理容器
+  - name: db-ambassador
+    image: postgresql-proxy:v2.1.0
+    ports:
+    - containerPort: 5432
+    env:
+    - name: POSTGRES_PRIMARY_HOST
+      value: "postgres-primary.database.svc.cluster.local"
+    - name: POSTGRES_REPLICA_HOST
+      value: "postgres-replica.database.svc.cluster.local"
+    - name: CONNECTION_POOL_SIZE
+      value: "20"
+    - name: HEALTH_CHECK_INTERVAL
+      value: "30s"
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+---
+# 3. Adapter 模式示例：应用 + 监控指标适配器
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter-metrics
+  labels:
+    app: legacy-service
+spec:
+  containers:
+  # 遗留应用容器（输出非标准格式指标）
+  - name: legacy-service
+    image: legacy/monitoring-app:v3.5.1
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+    - name: metrics-data
+      mountPath: /app/metrics
+    env:
+    - name: METRICS_OUTPUT_DIR
+      value: "/app/metrics"
+    - name: METRICS_INTERVAL
+      value: "60"
+  
+  # Adapter 指标适配器容器
+  - name: prometheus-adapter
+    image: metrics/prometheus-adapter:v1.0.5
+    ports:
+    - containerPort: 9090  # Prometheus 格式指标端口
+    volumeMounts:
+    - name: metrics-data
+      mountPath: /input/metrics
+      readOnly: true
+    env:
+    - name: INPUT_FORMAT
+      value: "legacy_json"
+    - name: OUTPUT_FORMAT
+      value: "prometheus"
+    - name: CONVERSION_RULES
+      value: "/etc/adapter/rules.yaml"
+    volumeMounts:
+    - name: adapter-config
+      mountPath: /etc/adapter
+  
+  volumes:
+  - name: metrics-data
+    emptyDir: {}
+  - name: adapter-config
+    configMap:
+      name: metrics-adapter-config
+
+---
+# 4. 配置助手模式示例：应用 + 配置管理器
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-helper
+  labels:
+    app: dynamic-config-app
+spec:
+  containers:
+  # 主应用容器
+  - name: main-app
+    image: myapp/dynamic-app:v2.0.0
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+    - name: app-config
+      mountPath: /etc/app/config
+    - name: app-secrets
+      mountPath: /etc/app/secrets
+      readOnly: true
+    env:
+    - name: CONFIG_WATCH_DIR
+      value: "/etc/app/config"
+    - name: SECRET_DIR
+      value: "/etc/app/secrets"
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 10
+  
+  # 配置管理容器
+  - name: config-manager
+    image: config/dynamic-updater:v1.3.0
+    volumeMounts:
+    - name: app-config
+      mountPath: /shared/config
+    - name: app-secrets
+      mountPath: /shared/secrets
+    env:
+    - name: CONFIG_SOURCE_URL
+      value: "https://config-server.example.com/api/v1/config"
+    - name: CONFIG_UPDATE_INTERVAL
+      value: "300s"  # 5分钟更新一次
+    - name: CONFIG_FORMAT
+      value: "yaml"
+    - name: SECRET_SOURCE
+      value: "kubernetes"  # 从 K8s secrets 读取
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  
+  volumes:
+  - name: app-config
+    emptyDir: {}
+  - name: app-secrets
+    secret:
+      secretName: app-secrets
+
+---
+# 5. Sidecar Init 容器示例 (v1.29.0+)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-init-example
+  labels:
+    app: modern-sidecar-app
+spec:
+  containers:
+  # 主应用容器
+  - name: main-app
+    image: nginx:1.21
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
+    - name: shared-logs
+      mountPath: /var/log/nginx
+  
+  # 使用 Init 容器作为持续运行的 sidecar
+  initContainers:
+  # 数据同步 sidecar（持续运行）
+  - name: data-sync
+    image: alpine/git:latest
+    restartPolicy: Always  # v1.29.0+ 特性
+    command:
+    - sh
+    - -c
+    - |
+      while true; do
+        echo "Syncing data from remote repository..."
+        git clone --depth 1 https://github.com/example/web-content.git /tmp/content
+        cp -r /tmp/content/* /shared/data/
+        rm -rf /tmp/content
+        echo "Data sync completed at $(date)"
+        sleep 3600  # 每小时同步一次
+      done
+    volumeMounts:
+    - name: shared-data
+      mountPath: /shared/data
+  
+  # 传统的 Init 容器（一次性执行）
+  - name: setup
+    image: busybox:1.35
+    command:
+    - sh
+    - -c
+    - |
+      echo "Setting up initial configuration..."
+      echo "Setup completed at $(date)" > /shared/logs/setup.log
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /shared/logs
+  
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+  - name: shared-logs
+    emptyDir: {}
+
+---
+# 6. Sidecar Init 容器模式：带启动探测的 Sidecar 依赖控制
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-startup-control
+  labels:
+    app: dependency-managed-app
+spec:
+  containers:
+  # 主应用容器 - 等待 Sidecar 就绪后启动
+  - name: main-app
+    image: alpine:3.18
+    command: 
+    - sh
+    - -c
+    - |
+      echo "Main application started at $(date)"
+      echo "Connecting to sidecar service..."
+      # 模拟应用逻辑，依赖 sidecar 服务
+      while true; do
+        if curl -sf http://localhost:8080/health; then
+          echo "Successfully connected to sidecar at $(date)"
+          sleep 30
+        else
+          echo "Failed to connect to sidecar"
+          sleep 5
+        fi
+      done
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  
+  initContainers:
+  # Sidecar Init 容器 - 提供服务并控制启动顺序
+  - name: service-sidecar
+    image: nginx:1.25-alpine
+    restartPolicy: Always
+    ports:
+    - containerPort: 8080
+    command:
+    - sh
+    - -c
+    - |
+      # 配置健康检查端点
+      mkdir -p /usr/share/nginx/html
+      echo '{"status":"healthy","timestamp":"'$(date -Iseconds)'"}' > /usr/share/nginx/html/health
+      # 启动 nginx 并更改默认端口
+      sed -i 's/listen       80;/listen       8080;/' /etc/nginx/conf.d/default.conf
+      nginx -g 'daemon off;'
+    # 使用 startupProbe 确保主应用等待 Sidecar 就绪
+    startupProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 3
+      failureThreshold: 10
+      timeoutSeconds: 2
+    # 运行时健康检查
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    resources:
+      requests:
+        memory: "32Mi"
+        cpu: "25m"
+      limits:
+        memory: "64Mi"
+        cpu: "50m"

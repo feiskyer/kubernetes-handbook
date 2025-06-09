@@ -1,3 +1,4 @@
+# Memory-based HPA (autoscaling/v2beta1)
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -5,7 +6,7 @@ metadata:
   namespace: default
 spec:
   scaleTargetRef:
-    apiVersion: extensions/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: nginx
   minReplicas: 2
@@ -15,3 +16,36 @@ spec:
     resource:
       name: memory
       targetAverageUtilization: 60
+
+---
+# Memory-based HPA with configurable tolerance (v1.33+)
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-memory-configurable-tolerance
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
+  minReplicas: 2
+  maxReplicas: 10
+  behavior:
+    scaleUp:
+      tolerance: 0.02    # 2% tolerance for memory-based scale-up (very sensitive)
+    scaleDown:
+      tolerance: 0.20    # 20% tolerance for memory-based scale-down (conservative)
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 60
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70

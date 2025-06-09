@@ -33,6 +33,7 @@ metadata:
 * 地址：包括 hostname、外网 IP 和内网 IP
 * 条件（Condition）：包括 OutOfDisk、Ready、MemoryPressure 和 DiskPressure
 * 容量（Capacity）：Node 上的可用资源，包括 CPU、内存和 Pod 总数
+* 可分配（Allocatable）：Node 上可分配给 Pod 的资源量，包括 CSI 卷附件限制等动态资源
 * 基本信息（Info）：包括内核版本、容器引擎版本、OS 类型等
 
 ## Taints 和 tolerations
@@ -67,6 +68,18 @@ kubectl cordon $NODENAME
 在 Node 发生异常的情况下，Kubelet 可能没有机会检测并执行优雅关闭。在这种情况下，StatefulSet 无法创建同名的新 Pod，如果 Pod 使用了卷，则 VolumeAttachments 不会从原来的已关闭节点上删除，因此这些 Pod 所使用的卷也无法挂接到新的运行节点上。
 
 Node 非优雅关闭正是为了解决这些问题。用户可以手动将具有 `NoExecute` 或 `NoSchedule` 效果的 `node.kubernetes.io/out-of-service` 污点添加到节点上，标记其无法提供服务。如果在 kube-controller-manager 上启用了 `NodeOutOfServiceVolumeDetach` 特性，并且 Pod 上没有设置对应的容忍度，那么这些 Pod 将被强制删除，并且该在节点上被终止的 Pod 将立即进行卷卸载操作。这样就允许那些在无法提供服务节点上的 Pod 能在其他节点上快速恢复。
+
+## 动态节点资源分配
+
+从 Kubernetes 1.33 开始，通过 `MutableCSINodeAllocatableCount` 特性（Alpha），CSI 驱动程序能够动态更新节点的可分配资源信息，特别是卷附件的数量限制。这提高了调度器对节点真实容量的感知能力，避免将 Pod 调度到资源不足的节点上。
+
+该特性主要影响：
+
+* **节点可分配资源的实时更新**：CSI 驱动程序可以根据实际存储后端的状态动态调整节点的卷附件限制
+* **更准确的调度决策**：调度器基于最新的节点可分配信息进行 Pod 调度，减少调度失败
+* **存储资源优化**：提高存储资源的利用效率，避免静态配置的局限性
+
+相关配置详见 [CSI 章节](../../extension/volume/csi.md#kubernetes-133-新特性动态-csi-节点分配计数)。
 
 ## 参考文档
 

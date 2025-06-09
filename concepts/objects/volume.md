@@ -34,6 +34,7 @@
 * FlexVolume
 * StorageOS
 * local
+* image
 
 注意，这些 volume 并非全部都是持久化的，比如 emptyDir、secret、gitRepo 等，这些 volume 会随着 Pod 的消亡而消失。
 
@@ -136,6 +137,50 @@ gitRepo volume 将 git 代码下拉到指定的容器路径中
       repository: "git@somewhere:me/my-git-repository.git"
       revision: "22f1d8406d464b0c0874075539c1f2e96c253775"
 ```
+
+## image
+
+image volume 是 Kubernetes v1.33 中升级为 Beta 的新功能，允许将容器镜像作为 volume 挂载到 Pod 中。这个功能对于需要共享容器镜像内容或访问镜像中的静态文件非常有用。
+
+### 主要特性
+
+* 从 Alpha 升级为 Beta（需要开启 `ImageVolume` 特性开关）
+* 支持 `subPath` 和 `subPathExpr` 挂载方式
+* 卷被挂载为只读，且具有 `noexec` 限制
+* 新增了 kubelet 指标来跟踪镜像卷的请求和挂载操作
+
+### 使用示例
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: image-volume-example
+spec:
+  containers:
+  - name: shell
+    image: debian
+    volumeMounts:
+    - name: volume
+      mountPath: /volume
+      subPath: dir
+  volumes:
+  - name: volume
+    image:
+      reference: quay.io/crio/artifact:v2
+      pullPolicy: IfNotPresent
+```
+
+### 容器运行时支持
+
+* CRI-O 从 v1.31 开始支持此功能
+* containerd 正在开发完整的 Beta 支持
+
+### 注意事项
+
+* 需要开启 `ImageVolume` 特性开关
+* 检查容器运行时是否支持此功能
+* 可以使用新的 kubelet 指标监控镜像卷性能
 
 ## 使用 subPath
 
@@ -343,6 +388,87 @@ spec:
   nodeSelector:
     beta.kubernetes.io/os: windows
 ```
+
+## 卷数据填充器（Volume Populators，v1.33 GA）
+
+卷数据填充器是 Kubernetes v1.33 正式稳定（GA）的特性，允许在创建 PersistentVolumeClaim 时使用自定义资源作为数据源来预填充卷的内容。
+
+### 基本概念
+
+卷数据填充器支持在 PVC 创建时指定自定义资源作为数据源，这些自定义资源可以包含初始化数据的相关信息，如备份位置、模板数据或其他数据源配置。
+
+### 使用方式
+
+通过在 PVC 中使用 `dataSourceRef` 字段指定自定义数据源：
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: example-storage
+  dataSourceRef:
+    apiGroup: backup.example.com
+    kind: BackupSource
+    name: app-backup-20250109
+```
+
+### 主要特性
+
+* **自定义数据源** - 支持任意类型的自定义资源作为数据源
+* **灵活的初始化** - 可从备份、模板、或外部系统初始化数据
+* **AnyVolumeDataSource 默认启用** - v1.33 中该特性门控默认开启
+* **可选填充 Pod** - 支持基于插件的填充方式，可选择性跳过创建填充 Pod
+
+### 应用场景
+
+1. **数据库初始化** - 从备份恢复数据库到新的存储卷
+2. **应用模板** - 使用预配置的应用数据模板
+3. **开发环境** - 快速创建包含测试数据的开发环境
+4. **灾难恢复** - 从备份系统恢复数据到新集群
+
+### 实现示例
+
+```yaml
+# 自定义数据源定义
+apiVersion: template.example.com/v1
+kind: DataTemplate
+metadata:
+  name: wordpress-template
+spec:
+  templateURL: "https://example.com/templates/wordpress-starter.tar.gz"
+  includeDatabase: true
+  sampleContent: true
+---
+# 使用数据源的 PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: fast-ssd
+  dataSourceRef:
+    apiGroup: template.example.com
+    kind: DataTemplate
+    name: wordpress-template
+```
+
+### 注意事项
+
+* 需要相应的卷填充器控制器来处理特定的自定义资源类型
+* 数据填充过程可能需要时间，Pod 会等待填充完成后才能启动
+* 确保自定义资源与 PVC 在相同的命名空间中
 
 ## 挂载传播
 

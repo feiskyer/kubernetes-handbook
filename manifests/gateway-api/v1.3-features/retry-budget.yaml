@@ -1,0 +1,162 @@
+# Gateway API v1.3.0 新特性：重试预算（实验性）
+# XBackendTrafficPolicy 用于配置后端流量策略，包括重试预算
+
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XBackendTrafficPolicy
+metadata:
+  name: api-retry-budget
+  namespace: default
+spec:
+  # 目标服务引用
+  targetRefs:
+  - group: ""
+    kind: Service
+    name: api-service
+    namespace: default
+  
+  # 重试策略配置
+  retry:
+    # 最大重试次数
+    attempts: 3
+    
+    # 重试间隔（指数退避的基础时间）
+    backoff: "1s"
+    
+    # 重试条件
+    retryOn:
+    - "5xx"           # 服务器错误
+    - "gateway-error" # 网关错误
+    - "connect-failure" # 连接失败
+    - "refused-stream"  # 拒绝流
+    
+    # 重试预算配置
+    budget:
+      # 允许重试的请求百分比
+      percentage: 20
+      
+      # 统计时间窗口
+      interval: "10s"
+      
+      # 最小请求数（在达到此数量前不应用百分比限制）
+      minRequestAmount: 10
+
+---
+# 另一个重试预算示例：更保守的配置
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XBackendTrafficPolicy
+metadata:
+  name: critical-service-retry-budget
+  namespace: default
+spec:
+  targetRefs:
+  - group: ""
+    kind: Service
+    name: critical-service
+    namespace: default
+  
+  retry:
+    # 减少重试次数以降低负载
+    attempts: 2
+    
+    # 更长的退避时间
+    backoff: "2s"
+    
+    # 更严格的重试条件
+    retryOn:
+    - "5xx"
+    - "connect-failure"
+    
+    # 更严格的重试预算
+    budget:
+      # 只允许 10% 的请求重试
+      percentage: 10
+      
+      # 更长的统计窗口
+      interval: "30s"
+      
+      # 更高的最小请求数阈值
+      minRequestAmount: 50
+
+---
+# 高可用服务的重试预算
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XBackendTrafficPolicy
+metadata:
+  name: ha-service-retry-budget
+  namespace: default
+spec:
+  targetRefs:
+  - group: ""
+    kind: Service
+    name: ha-service
+    namespace: default
+  
+  retry:
+    # 更多重试次数（因为是高可用服务）
+    attempts: 5
+    
+    # 快速重试
+    backoff: "500ms"
+    
+    # 更宽松的重试条件
+    retryOn:
+    - "5xx"
+    - "4xx"           # 也重试客户端错误（可能是临时的）
+    - "gateway-error"
+    - "connect-failure"
+    - "refused-stream"
+    - "retriable-status-codes"
+    
+    # 相对宽松的重试预算
+    budget:
+      # 允许 30% 的请求重试
+      percentage: 30
+      
+      # 较短的统计窗口
+      interval: "5s"
+      
+      # 较低的最小请求数
+      minRequestAmount: 5
+
+---
+# 将重试预算应用到 HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: api-with-retry-budget
+  namespace: default
+spec:
+  parentRefs:
+  - name: example-gateway
+  
+  hostnames:
+  - "api.example.com"
+  
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/api/v1"
+    
+    # 后端服务将自动应用对应的重试预算策略
+    backendRefs:
+    - name: api-service
+      port: 8080
+  
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/critical"
+    
+    backendRefs:
+    - name: critical-service
+      port: 8080
+  
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/ha"
+    
+    backendRefs:
+    - name: ha-service
+      port: 8080

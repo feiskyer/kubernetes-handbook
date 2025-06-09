@@ -180,6 +180,59 @@ kube-proxy-87dbs   1/1       Running   0          4d
 $ kubectl -n kube-system logs kube-proxy-42zpn
 ```
 
+## API Server 内存不足问题
+
+### 大规模集群中的 API Server OOM
+
+在大规模集群中，API Server 可能会遇到内存不足（OOM）问题，特别是在执行大量 List 操作时：
+
+**常见症状：**
+- API Server Pod 频繁重启
+- kubectl 命令响应缓慢或超时
+- List 操作（如 `kubectl get pods --all-namespaces`）失败
+- 监控系统无法获取集群状态
+
+**排查方法：**
+```bash
+# 查看 API Server 内存使用情况
+kubectl top pod -n kube-system -l component=kube-apiserver
+
+# 查看 API Server 日志中的 OOM 信息
+kubectl logs -n kube-system -l component=kube-apiserver --tail=100 | grep -i "memory\|oom"
+
+# 检查 API Server 配置
+kubectl describe pod -n kube-system -l component=kube-apiserver
+```
+
+**解决方案：**
+
+1. **升级到 Kubernetes v1.33+** 利用流式列表响应优化：
+   - 自动减少大规模 List 操作的内存消耗
+   - 基准测试显示内存使用可降低约 20 倍
+
+2. **调整 API Server 资源限制：**
+```yaml
+# 在 API Server Static Pod 配置中
+resources:
+  requests:
+    memory: "8Gi"
+  limits:
+    memory: "16Gi"  # 对于 1000+ 节点集群
+```
+
+3. **优化 API Server 参数：**
+```bash
+--max-requests-inflight=3000
+--max-mutating-requests-inflight=1000
+--request-timeout=300s
+```
+
+4. **分离 Events 存储：**
+```bash
+--etcd-servers="http://etcd1:2379,http://etcd2:2379,http://etcd3:2379"
+--etcd-servers-overrides="/events#http://etcd4:2379,http://etcd5:2379,http://etcd6:2379"
+```
+
 ## Kube-dns/Dashboard CrashLoopBackOff
 
 由于 Dashboard 依赖于 kube-dns，所以这个问题一般是由于 kube-dns 无法正常启动导致的。查看 kube-dns 的日志

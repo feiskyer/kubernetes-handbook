@@ -1,3 +1,4 @@
+# Basic CPU-based HPA (autoscaling/v1)
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -7,7 +8,34 @@ spec:
   maxReplicas: 10
   minReplicas: 2
   scaleTargetRef:
-    apiVersion: extensions/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: nginx
   targetCPUUtilizationPercentage: 80
+
+---
+# Advanced HPA with configurable tolerance (v1.33+)
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-configurable-tolerance
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
+  minReplicas: 2
+  maxReplicas: 10
+  behavior:
+    scaleUp:
+      tolerance: 0.05    # 5% tolerance for scale-up (sensitive to load increases)
+    scaleDown:
+      tolerance: 0.15    # 15% tolerance for scale-down (stable scaling down)
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80

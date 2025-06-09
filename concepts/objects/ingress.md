@@ -267,9 +267,34 @@ spec:
     name: external-lb
 ```
 
+## Gateway API - Ingress 的下一代演进
+
+[Gateway API](https://gateway-api.sigs.k8s.io/) 是 Kubernetes 社区推出的 Ingress 资源的下一代演进版本，提供了更强大和更灵活的流量管理能力。Gateway API 于 2025年4月24日发布了 v1.3.0 版本，带来了多项新特性。
+
+### Gateway API v1.3.0 主要特性
+
+**标准通道特性：**
+- **基于百分比的请求镜像**：支持将指定百分比的请求镜像到另一个后端，适用于蓝绿部署和性能测试
+
+**实验性通道特性：**
+- **CORS 过滤**：支持跨域资源共享配置，包括允许的来源、方法、头部和凭据
+- **XListenerSets**：标准化的 Gateway 监听器合并机制，支持跨命名空间的监听器配置委托
+- **重试预算 (XBackendTrafficPolicy)**：限制客户端在服务端点间的重试行为，提供可配置的重试百分比和间隔
+
+### 兼容性要求
+
+- 要求 Kubernetes 1.26 或更高版本
+- 发布时已有四个符合标准的实现：Airlock、Cilium、Envoy Gateway 和 Istio
+
+### 与传统 Ingress 的关系
+
+Gateway API 为传统 Ingress 提供了更丰富的功能和更好的可扩展性，建议新项目考虑采用 Gateway API，现有项目可以逐步迁移。
+
 ## 参考文档
 
 * [Kubernetes Ingress Resource](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+* [Gateway API](https://gateway-api.sigs.k8s.io/)
+* [Gateway API v1.3.0 Release](https://kubernetes.io/blog/2025/06/02/gateway-api-v1-3/)
 * [Kubernetes Ingress Controller](https://github.com/kubernetes/ingress/tree/master)
 * [使用 NGINX Plus 负载均衡 Kubernetes 服务](http://dockone.io/article/957)
 * [使用 NGINX 和 NGINX Plus 的 Ingress Controller 进行 Kubernetes 的负载均衡](http://www.cnblogs.com/276815076/p/6407101.html)

@@ -10,6 +10,7 @@
 
 * 集群安全，比如组件（如 kube-apiserver、etcd、kubelet 等）只开放安全 API并开启 TLS 认证、开启 RBAC 等；
 * Security Context：限制容器的行为，包括 Capabilities、ReadOnlyRootFilesystem、Privileged、RunAsNonRoot、RunAsUser 以及 SELinuxOptions 等；
+* User Namespaces：通过隔离容器和主机的用户 ID，提供额外的安全隔离层（v1.33 默认启用）；
 * Pod Security Policy：集群级的 Pod 安全策略，自动为集群内的 Pod 和 Volume 设置 Security Context；
 * Sysctls：允许容器设置内核参数，分为安全 Sysctls 和非安全 Sysctls；
 * AppArmor：限制应用的访问权限；
@@ -91,6 +92,207 @@ spec:
 ```
 
 完整参考见[这里](../concepts/objects/security-context.md)。
+
+## User Namespaces（用户命名空间）
+
+User Namespaces 是 Kubernetes v1.33 中默认启用的重要安全特性，通过隔离容器内的用户和组 ID 与主机系统的用户和组 ID，提供了额外的安全隔离层。
+
+### 安全最佳实践
+
+1. **高安全性工作负载**：对于处理敏感数据或具有高安全要求的工作负载，建议启用用户命名空间：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-workload
+spec:
+  hostUsers: false  # 启用用户命名空间
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+        - ALL
+```
+
+2. **多租户环境**：在多租户 Kubernetes 集群中，用户命名空间可以有效防止租户间的横向攻击：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tenant-app
+  labels:
+    tenant: tenant-a
+spec:
+  hostUsers: false
+  securityContext:
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+  containers:
+  - name: app
+    image: tenant-app:v1.0
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+```
+
+3. **传统应用迁移**：对于需要以 root 身份运行的传统应用，用户命名空间允许在不牺牲安全性的情况下运行：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: legacy-app
+spec:
+  hostUsers: false
+  containers:
+  - name: legacy
+    image: legacy-app:latest
+    securityContext:
+      runAsUser: 0  # 容器内 root，但映射到主机非特权用户
+```
+
+### 安全优势
+
+- **容器逃逸防护**：即使容器被攻破，攻击者获得的 root 权限也被限制在用户命名空间内
+- **权限隔离**：容器内的特权用户无法访问主机系统资源
+- **文件系统保护**：通过 idmap 挂载提供文件系统级别的用户 ID 隔离
+- **横向移动防护**：防止攻击者在获得一个容器的访问权限后影响其他容器或主机
+
+### 注意事项
+
+- **内核版本要求**：需要 Linux 5.19+ 内核（推荐 6.3+）
+- **容器运行时**：需要支持用户命名空间的容器运行时（containerd 2.0+ 或 CRI-O）
+- **卷限制**：NFS 卷当前不支持用户命名空间
+- **应用兼容性**：大多数应用无需修改，但某些特权操作可能受限
+
+### 部署建议
+
+1. **逐步推广**：从非关键工作负载开始，逐步扩展到生产环境
+2. **测试验证**：在启用前充分测试应用的兼容性
+3. **监控观察**：部署后密切监控应用行为和性能指标
+4. **策略制定**：为不同类型的工作负载制定用户命名空间使用策略
+
+## Supplemental Groups Policy（补充组策略）
+
+从 Kubernetes v1.33 开始，`supplementalGroupsPolicy` 特性（Beta）提供了对容器补充组的精细控制，增强了安全性。
+
+### 安全风险
+
+默认情况下，Kubernetes 会将容器镜像中 `/etc/group` 定义的组信息与 Pod 指定的组信息**合并**，这可能带来安全风险：
+
+- **隐式权限提升**：容器可能获得未在 Pod 清单中声明的组权限
+- **策略绕过**：安全策略引擎无法检测这些隐式组
+- **卷访问风险**：意外的组成员身份可能导致对敏感卷的未授权访问
+
+### 使用 Strict 策略
+
+通过设置 `supplementalGroupsPolicy: Strict`，可以确保只有明确指定的组被附加到容器进程：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    supplementalGroups: [4000]
+    supplementalGroupsPolicy: Strict  # 排除隐式组
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      allowPrivilegeEscalation: false
+```
+
+### 最佳实践
+
+1. **默认使用 Strict 策略**：对于新部署的应用，建议默认使用 Strict 策略：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: production-app
+spec:
+  securityContext:
+    supplementalGroupsPolicy: Strict
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 2000
+```
+
+2. **策略强制执行**：通过准入控制器或 OPA 策略强制所有 Pod 使用 Strict 策略：
+
+```yaml
+# OPA Rego 策略示例
+deny[msg] {
+  input.kind == "Pod"
+  not input.spec.securityContext.supplementalGroupsPolicy
+  msg := "Pod must specify supplementalGroupsPolicy"
+}
+
+deny[msg] {
+  input.kind == "Pod"
+  input.spec.securityContext.supplementalGroupsPolicy != "Strict"
+  msg := "Pod must use supplementalGroupsPolicy: Strict"
+}
+```
+
+3. **审计现有工作负载**：使用 Pod 状态中的用户信息审计现有工作负载的组成员身份：
+
+```bash
+# 查看容器的实际组成员身份
+kubectl get pod <pod-name> -o jsonpath='{.status.containerStatuses[0].user.linux}'
+```
+
+4. **逐步迁移策略**：
+   - **阶段 1**：审计并记录现有 Pod 的隐式组
+   - **阶段 2**：在非生产环境测试 Strict 策略
+   - **阶段 3**：为新应用默认启用 Strict 策略
+   - **阶段 4**：逐步迁移现有应用到 Strict 策略
+
+### 升级注意事项
+
+如果您的集群已经在使用 `supplementalGroupsPolicy: Strict`：
+
+1. **确保 CRI 运行时支持**：
+   - containerd v2.0+
+   - CRI-O v1.31+
+
+2. **检查节点支持**：
+```bash
+kubectl get nodes -o custom-columns=NAME:.metadata.name,SUPPORTED:.status.features.supplementalGroupsPolicy
+```
+
+3. **处理不支持的节点**：
+   - 升级 CRI 运行时
+   - 或使用节点选择器避免调度到不支持的节点：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: strict-policy-pod
+spec:
+  nodeSelector:
+    feature.node.kubernetes.io/supplementalGroupsPolicy: "true"
+  securityContext:
+    supplementalGroupsPolicy: Strict
+```
 
 ## Sysctls
 
@@ -263,6 +465,149 @@ $ kubectl logs kube-bench-master-k7jdd
 [INFO] 1.1 API Server
 ...
 ```
+
+## 镜像拉取认证安全（v1.33 新特性）
+
+### Service Account Token Integration for Kubelet Credential Providers
+
+Kubernetes v1.33 引入了 **Service Account Token Integration for Kubelet Credential Providers**（Alpha 特性），这是一个重要的安全改进，允许使用 Pod 特定的服务账户令牌来获取镜像仓库凭证，从而消除了对长期有效的镜像拉取密钥的需求。
+
+#### 现有问题
+
+目前，Kubernetes 管理员在处理私有容器镜像拉取时主要有两种选择：
+
+1. **存储在 Kubernetes API 中的镜像拉取密钥**
+   - 这些密钥通常是长期有效的，因为很难轮换
+   - 必须显式附加到服务账户或 Pod
+   - 密钥泄露可能导致未授权的镜像访问
+
+2. **Kubelet 凭证提供程序**
+   - 这些提供程序在节点级别动态获取凭证
+   - 在节点上运行的任何 Pod 都可以访问相同的凭证
+   - 没有按工作负载隔离，增加了安全风险
+
+这两种方法都不符合**最小权限**和**临时认证**的原则，给 Kubernetes 留下了安全缺口。
+
+#### 解决方案
+
+新的增强功能使 kubelet 凭证提供程序能够在获取镜像仓库凭证时使用**工作负载身份**。凭证提供程序可以使用服务账户令牌来请求与特定 Pod 身份绑定的短期凭证，而不是依赖长期有效的密钥。
+
+这种方法提供了：
+
+- **特定于工作负载的认证**：镜像拉取凭证的范围限定为特定工作负载
+- **临时凭证**：令牌自动轮换，消除了长期有效密钥的风险
+- **无缝集成**：与现有的 Kubernetes 认证机制配合使用，符合云原生安全最佳实践
+
+#### 工作原理
+
+1. **凭证提供程序的服务账户令牌**
+   - Kubelet 为选择接收服务账户令牌进行镜像拉取的凭证提供程序生成**短期、自动轮换**的服务账户令牌
+   - 这些令牌符合 OIDC ID 令牌语义
+   - 令牌作为 `CredentialProviderRequest` 的一部分提供给凭证提供程序
+
+2. **镜像仓库认证流程**
+   - 当 Pod 启动时，kubelet 从**凭证提供程序**请求凭证
+   - 如果凭证提供程序已选择加入，kubelet 为 Pod 生成**服务账户令牌**
+   - **服务账户令牌包含在 `CredentialProviderRequest` 中**
+   - 凭证提供程序使用此令牌进行身份验证，并从仓库（如 AWS ECR、GCP Artifact Registry、Azure ACR）交换**临时镜像拉取凭证**
+   - kubelet 然后使用这些凭证代表 Pod 拉取镜像
+
+#### 优势
+
+- **安全性**：消除长期有效的镜像拉取密钥，减少攻击面
+- **细粒度访问控制**：凭证绑定到单个工作负载，而不是整个节点或集群
+- **操作简化**：管理员无需手动管理和轮换镜像拉取密钥
+- **合规性改进**：帮助组织满足禁止在集群中使用持久凭证的安全策略
+
+#### 如何启用
+
+要尝试此功能：
+
+1. **确保运行 Kubernetes v1.33 或更高版本**
+2. **在 kubelet 上启用 `ServiceAccountTokenForKubeletCredentialProviders` 特性门控**
+   ```bash
+   kubelet --feature-gates=ServiceAccountTokenForKubeletCredentialProviders=true
+   ```
+3. **确保凭证提供程序支持**：修改或更新凭证提供程序以使用服务账户令牌进行身份验证
+4. **更新凭证提供程序配置**：通过配置 `tokenAttributes` 字段，选择为凭证提供程序接收服务账户令牌
+5. **部署 Pod**：使用凭证提供程序从私有仓库拉取镜像
+
+#### 未来计划
+
+对于 Kubernetes **v1.34**，预计此功能将升级为 **Beta** 版本，同时将专注于：
+
+- 实施**缓存机制**以提高令牌生成的性能
+- 为凭证提供程序提供更多**灵活性**，以决定返回给 kubelet 的仓库凭证如何缓存
+- 使该功能与 [Ensure Secret Pulled Images](https://github.com/kubernetes/enhancements/tree/master/keps/sig-node/2535-ensure-secret-pulled-images) 配合工作
+
+更多信息可以参考：
+- [服务账户令牌用于镜像拉取文档](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-credential-provider/#service-account-token-for-image-pulls)
+- [KEP-4412](https://kep.k8s.io/4412) 跟踪进展
+
+## 镜像拉取安全（v1.33 新特性）
+
+### Ensure Secret Pulled Images（确保私密镜像拉取安全）
+
+Kubernetes v1.33 引入了 **Ensure Secret Pulled Images**（Alpha 特性），这是一个重要的安全改进，解决了容器镜像访问的潜在安全漏洞。
+
+#### 现有安全问题
+
+在 v1.33 之前，Kubernetes 存在一个镜像访问安全漏洞：
+- 当一个 Pod 使用私有镜像拉取凭证成功拉取镜像后，该镜像会存储在节点上
+- 同一节点上的其他 Pod（即使没有相应的镜像拉取凭证）也能访问这些私有镜像
+- 这违反了最小权限原则，可能导致敏感镜像的未授权访问
+
+#### 解决方案
+
+新的 `KubeletEnsureSecretPulledImages` 特性门控启用后，Kubelet 会验证 Pod 的镜像拉取凭证：
+
+- **凭证验证**：即使镜像已存在于节点上，Kubelet 也会验证请求 Pod 的凭证
+- **凭证匹配**：只有使用相同凭证（或来自同一 Secret）的 Pod 才能重用已拉取的镜像
+- **兼容性**：支持所有镜像拉取策略（`IfNotPresent`、`Never`、`Always`）
+
+#### 工作原理
+
+1. **首次镜像拉取**：
+   - Pod 请求私有镜像
+   - Kubelet 记录拉取意图
+   - 从 Pod 的 imagePullSecret 提取凭证
+   - 从镜像仓库拉取镜像
+   - 创建包含凭证详情的成功拉取记录
+
+2. **后续镜像请求**：
+   - Kubelet 检查新 Pod 的凭证
+   - 如果凭证与先前成功拉取的记录匹配，允许使用镜像
+   - 如果凭证不匹配，尝试新的镜像仓库拉取
+
+#### 如何启用
+
+要启用此安全特性：
+
+1. **在 Kubelet 上启用特性门控**：
+   ```bash
+   kubelet --feature-gates=KubeletEnsureSecretPulledImages=true
+   ```
+
+2. **配置 Pod 使用镜像拉取密钥**：
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: secure-private-image
+   spec:
+     containers:
+     - name: app
+       image: private-registry.example.com/myapp:v1.0
+     imagePullSecrets:
+     - name: my-registry-secret
+   ```
+
+#### 安全优势
+
+- **访问控制增强**：防止未授权 Pod 访问私有镜像
+- **最小权限原则**：确保只有具备适当凭证的 Pod 才能使用特定镜像
+- **多租户安全**：提高多租户环境中的镜像隔离性
+- **合规性改进**：帮助满足严格的安全合规要求
 
 ## 镜像安全
 

@@ -67,6 +67,51 @@ Sidecar 容器版本
 --feature-gates=CSIPersistentVolume=true,MountPropagation=true
 ```
 
+## Kubernetes 1.33 新特性：动态 CSI 节点分配计数
+
+从 Kubernetes 1.33 开始，引入了一个 Alpha 特性 `MutableCSINodeAllocatableCount`，允许 CSI 驱动程序动态更新节点可以处理的最大卷数量。这解决了静态卷附件限制报告的局限性，提高了 Pod 调度的准确性。
+
+### 主要功能
+
+- **动态更新能力**：CSI 驱动程序可以实时更新节点的卷附件容量限制
+- **两种更新机制**：
+  - 周期性更新：CSI 驱动程序可设置间隔时间来刷新节点附件容量
+  - 反应式更新：当卷附件失败时触发立即更新
+- **改善调度准确性**：防止将 Pod 调度到卷容量不足的节点上
+
+### 配置要求
+
+需要在以下组件上启用 `MutableCSINodeAllocatableCount` 特性门控：
+
+```bash
+# API Server
+--feature-gates=MutableCSINodeAllocatableCount=true
+
+# Kubelet  
+--feature-gates=MutableCSINodeAllocatableCount=true
+```
+
+### CSI 驱动程序配置示例
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: CSIDriver
+metadata:
+  name: example.csi.k8s.io
+spec:
+  # 设置节点分配计数更新周期（秒）
+  nodeAllocatableUpdatePeriodSeconds: 60
+```
+
+### 好处
+
+- 防止 Pod 被调度到卷容量不足的节点
+- 减少 Pod 卡在 "ContainerCreating" 状态的情况
+- 提供更动态和准确的资源分配
+- 改善存储资源的利用效率
+
+> **注意**：这是 Kubernetes v1.33 中的 Alpha 特性。在生产环境中使用前，建议先进行充分测试并向 Kubernetes Storage SIG 提供反馈。
+
 ### 示例
 
 Kubernetes 提供了几个 [CSI 示例](https://github.com/kubernetes-csi/drivers)，包括 NFS、ISCSI、HostPath、Cinder 以及 FlexAdapter 等。在实现 CSI 插件时，这些示例可以用作参考。
@@ -87,6 +132,93 @@ Kubernetes 提供了几个 [CSI 示例](https://github.com/kubernetes-csi/driver
 | [Ember CSI](https://ember-csi.io/) | v0.2.0 \(alpha\) | Multi-vendor CSI plugin supporting over 80 storage drivers to provide block and mount storage to Container Orchestration systems. |
 | [Nutanix](https://portal.nutanix.com/#/page/docs/details?targetId=CSI-Volume-Driver:CSI-Volume-Driver) | beta | A Container Storage Interface \(CSI\) Storage Driver for Nutanix |
 | [Quobyte](https://github.com/quobyte/quobyte-csi) | v0.2.0 | A Container Storage Interface \(CSI\) Plugin for Quobyte |
+
+## CSI 卷数据填充器
+
+从 Kubernetes v1.33 开始，CSI 驱动程序可以实现卷数据填充器（Volume Populators）功能，支持在卷创建时从自定义数据源填充数据。
+
+### 实现方式
+
+CSI 驱动程序可以通过以下方式支持卷数据填充器：
+
+1. **传统方式**：创建填充 Pod 来处理数据填充任务
+2. **插件方式（v1.33 新增）**：实现插件函数，可选择性地跳过创建填充 Pod
+
+### CSI 驱动程序配置
+
+要支持卷数据填充器，CSI 驱动程序需要在 CSIDriver 对象中声明支持的自定义资源类型：
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: CSIDriver
+metadata:
+  name: example.csi.k8s.io
+spec:
+  # 其他 CSI 驱动程序配置...
+  
+  # 声明支持的数据源类型
+  populatorPolicy:
+    # 支持处理的自定义资源类型
+    supportedVolumeDataSources:
+    - apiGroup: backup.example.com
+      kind: VolumeBackup
+    - apiGroup: snapshot.example.com  
+      kind: ExternalSnapshot
+```
+
+### 使用示例
+
+配合 CSI 驱动程序使用卷数据填充器：
+
+```yaml
+# 自定义数据源
+apiVersion: backup.example.com/v1
+kind: VolumeBackup
+metadata:
+  name: database-backup-v1
+  namespace: default
+spec:
+  backupURL: "s3://my-bucket/database-backup-20250101.tar.gz"
+  restorePoint: "2025-01-01T10:00:00Z"
+---
+# 使用自定义数据源的 PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: restored-database
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: fast-csi-storage
+  dataSourceRef:
+    apiGroup: backup.example.com
+    kind: VolumeBackup
+    name: database-backup-v1
+```
+
+### CSI 插件实现要点
+
+实现支持卷数据填充器的 CSI 驱动程序时需要注意：
+
+1. **数据源识别**：解析 PVC 中的 `dataSourceRef` 字段
+2. **填充逻辑**：根据自定义资源的规格实现数据填充
+3. **状态报告**：准确报告填充进度和完成状态
+4. **错误处理**：处理填充失败的情况并提供清晰的错误信息
+
+### 与传统数据源的区别
+
+| 特性 | 传统数据源 (VolumeSnapshot) | CSI 卷数据填充器 |
+|------|------------------------------|------------------|
+| 数据源类型 | 限制于内置类型 | 支持任意自定义资源 |
+| 填充逻辑 | 内置实现 | CSI 驱动程序自定义 |
+| 扩展性 | 有限 | 高度可扩展 |
+| 数据来源 | 仅 Kubernetes 内部 | 可从外部系统获取 |
+
+## NFS CSI 示例
 
 下面以 NFS 为例来看一下 CSI 插件的使用方法。
 

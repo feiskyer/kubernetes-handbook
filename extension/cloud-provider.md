@@ -50,6 +50,125 @@ Kubenretes 内置的 Cloud Provider 包括
   * PersistentVolumeLabel 准入控制负责 PV 标签
   * PersistentVolumeClainResize 准入控制动态扩展 PV 大小
 
+## Cloud Controller Manager 启动时序问题
+
+在集群启动过程中，cloud-controller-manager 会遇到"鸡生蛋蛋生鸡"的启动时序问题：
+
+### 问题描述
+
+1. **节点注册问题**: kubelet 启动时向 API Server 注册 Node 对象，并添加 `node.cloudprovider.kubernetes.io/uninitialized=NoSchedule` taint
+2. **调度依赖**: cloud-controller-manager 负责移除该 taint 并添加云提供商特定信息（如节点地址、标签等）
+3. **启动时序矛盾**: cloud-controller-manager 本身可能因为以下原因无法正常调度：
+   * 节点存在未初始化的 taint
+   * 节点处于 not-ready 状态
+   * 网络初始化依赖关系
+
+### 解决方案
+
+#### 1. 使用主机网络模式
+```yaml
+spec:
+  hostNetwork: true
+```
+
+#### 2. 配置适当的容忍度
+```yaml
+tolerations:
+- key: "node.cloudprovider.kubernetes.io/uninitialized"
+  operator: "Exists"
+  effect: "NoSchedule"
+- key: "node-role.kubernetes.io/control-plane"
+  operator: "Exists"
+  effect: "NoSchedule"
+- key: "node.kubernetes.io/not-ready"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 300
+```
+
+#### 3. 调度到控制平面节点
+```yaml
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+```
+
+#### 4. 使用可扩展的资源类型
+推荐使用 Deployment 或 DaemonSet 而不是静态 Pod，以确保高可用性。
+
+#### 5. 启用 Leader Election
+当运行多个副本时，启用 leader election：
+```bash
+--leader-elect=true
+--leader-elect-lease-duration=15s
+--leader-elect-renew-deadline=10s
+--leader-elect-retry-period=2s
+```
+
+#### 6. 配置反亲和性
+防止多个控制器实例调度到同一主机：
+```yaml
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchLabels:
+            component: cloud-controller-manager
+        topologyKey: kubernetes.io/hostname
+```
+
+### 最佳实践配置示例
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-controller-manager
+  namespace: kube-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: cloud-controller-manager
+  template:
+    metadata:
+      labels:
+        component: cloud-controller-manager
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+      - key: "node.cloudprovider.kubernetes.io/uninitialized"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  component: cloud-controller-manager
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: cloud-controller-manager
+        image: your-cloud-provider/cloud-controller-manager:latest
+        command:
+        - /cloud-controller-manager
+        - --leader-elect=true
+        - --cloud-provider=your-provider
+        - --use-service-account-credentials=true
+```
+
 ## 如何开发 Cloud Provider 扩展
 
 Kubernetes 的 Cloud Provider 目前正在重构中

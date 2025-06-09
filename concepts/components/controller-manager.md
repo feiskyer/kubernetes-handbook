@@ -85,7 +85,7 @@ kube-controller-manager \
 kube-controller-manager 由一系列的控制器组成，这些控制器可以划分为三组
 
 1. 必须启动的控制器
-   * EndpointController
+   * EndpointController（已弃用，Kubernetes 1.33+，但仍需要维持兼容性）
    * ReplicationController
    * PodGCController
    * ResourceQuotaController
@@ -122,11 +122,29 @@ cloud-controller-manager 在 Kubernetes 启用 Cloud Provider 的时候才需要
 * RouteController
 * ServiceController
 
+### cloud-controller-manager 启动时序协调
+
+cloud-controller-manager 在集群启动过程中需要特别注意启动时序问题。由于 kubelet 启动时会给 Node 添加 `node.cloudprovider.kubernetes.io/uninitialized=NoSchedule` taint，而 cloud-controller-manager 负责移除该 taint，这可能导致启动时序冲突。
+
+#### 关键启动参数配置
+
+* `--leader-elect=true`: 启用多实例选主，确保高可用
+* `--node-status-update-frequency`: 与 kubelet 协调节点状态更新频率
+* `--node-monitor-period`: 监控节点状态的检查周期
+* `--use-service-account-credentials=true`: 使用单独的服务账号凭据
+
+#### 部署最佳实践
+
+1. **调度策略**: 使用 nodeSelector 将 cloud-controller-manager 调度到控制平面节点
+2. **容忍度配置**: 配置适当的 tolerations 以处理节点 taint
+3. **高可用性**: 使用 Deployment 或 DaemonSet 而非静态 Pod
+4. **网络模式**: 在某些环境下使用 `hostNetwork: true` 避免网络依赖
+
 ## 高可用
 
 在启动时设置 `--leader-elect=true` 后，controller manager 会使用多节点选主的方式选择主节点。只有主节点才会调用 `StartControllers()` 启动所有控制器，而其他从节点则仅执行选主算法。
 
-多节点选主的实现方法见 [leaderelection.go](https://github.com/kubernetes/client-go/blob/master/tools/leaderelection/leaderelection.go)。它实现了两种资源锁（Endpoint 或 ConfigMap，kube-controller-manager 和 cloud-controller-manager 都使用 Endpoint 锁），通过更新资源的 Annotation（`control-plane.alpha.kubernetes.io/leader`），来确定主从关系。
+多节点选主的实现方法见 [leaderelection.go](https://github.com/kubernetes/client-go/blob/master/tools/leaderelection/leaderelection.go)。它实现了多种资源锁（Endpoint、ConfigMap 或 Lease，kube-controller-manager 和 cloud-controller-manager 传统上使用 Endpoint 锁，但 Endpoint API 已弃用，新版本推荐使用 Lease 锁），通过更新资源的 Annotation（`control-plane.alpha.kubernetes.io/leader`），来确定主从关系。
 
 ## 高性能
 

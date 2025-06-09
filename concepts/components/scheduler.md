@@ -258,6 +258,142 @@ profiles:
       timeRangeInMinutes: 3
 ```
 
+### 存储容量评分（v1.33 Alpha）
+
+Kubernetes v1.33 引入了存储容量评分（Storage Capacity Scoring）这一 Alpha 特性，通过扩展 VolumeBinding 插件来增强基于节点存储容量的 Pod 调度。
+
+#### 主要功能
+
+- 在调度决策中考虑节点的存储容量
+- 根据可用存储空间的多少对节点进行优先级排序
+- 支持动态卷供应和资源优化
+- 特别适用于需要本地持久化卷的工作负载
+
+#### 使用场景
+
+1. **本地持久化卷供应** - 为需要本地存储的应用选择最适合的节点
+2. **资源利用率最大化** - 通过策略性放置工作负载提高存储利用率
+3. **运营成本优化** - 通过高效的节点存储分配降低运营成本
+
+#### 配置方法
+
+该特性默认禁用，需要在调度器启动时开启功能特性：
+
+```bash
+kube-scheduler --feature-gates=StorageCapacityScoring=true
+```
+
+通过 VolumeBinding 插件配置存储容量评分策略：
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+- schedulerName: default-scheduler
+  pluginConfig:
+  - name: VolumeBinding
+    args:
+      # 配置存储利用率和得分的对应关系
+      shape:
+      - utilization: 0     # 0% 利用率对应 0 分
+        score: 0
+      - utilization: 100   # 100% 利用率对应 10 分（优先选择存储使用率高的节点）
+        score: 10
+```
+
+#### 注意事项
+
+- 该特性取代了之前的 `VolumeCapacityPriority` 功能
+- 默认配置优先选择可用存储容量更大的节点
+- 目前处于 Alpha 阶段，生产环境使用需谨慎
+
+### Dynamic Resource Allocation (DRA) 调度支持
+
+从 Kubernetes v1.26 开始，调度器原生支持 Dynamic Resource Allocation (DRA)，为设备资源提供更灵活的调度能力。
+
+#### DRA 调度特性
+
+**v1.33 中的 DRA 调度增强：**
+
+1. **设备感知调度** - 调度器可以根据设备的可用性、特性和状态进行 Pod 调度决策
+2. **优先级列表支持** - 当 Pod 指定多个可接受的设备备选方案时，调度器按优先级顺序尝试分配最佳设备
+3. **设备污点和容忍度** - 支持通过设备污点机制防止 Pod 调度到不合适的设备上
+4. **分区设备调度** - 调度器能够识别和调度可分区的设备资源
+
+#### DRA 调度工作流程
+
+1. **筛选阶段 (Filter)**：
+   - 检查节点是否有足够的设备资源满足 ResourceClaim
+   - 验证设备污点和 Pod 容忍度的匹配关系
+   - 确认设备驱动程序的兼容性
+
+2. **评分阶段 (Score)**：
+   - 根据设备利用率对节点进行评分
+   - 优先选择有更好设备配置的节点
+   - 考虑设备的地理位置和网络拓扑
+
+3. **绑定阶段 (Bind)**：
+   - 通过 DRA 驱动程序分配具体的设备
+   - 更新 ResourceClaim 状态
+   - 确保设备资源的原子性分配
+
+#### 配置示例
+
+启用 DRA 调度功能：
+
+```bash
+kube-scheduler --feature-gates=DynamicResourceAllocation=true
+```
+
+调度器配置：
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+- schedulerName: default-scheduler
+  plugins:
+    filter:
+      enabled:
+      - name: DynamicResources
+    score:
+      enabled:
+      - name: DynamicResources
+  pluginConfig:
+  - name: DynamicResources
+    args:
+      # DRA 调度策略配置
+      scoringStrategy:
+        type: LeastAllocated  # 优先选择资源分配较少的节点
+```
+
+#### Pod 使用 DRA 资源的调度
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-workload
+spec:
+  schedulerName: default-scheduler
+  containers:
+  - name: ml-training
+    image: tensorflow/tensorflow:latest-gpu
+    resources:
+      claims:
+      - name: gpu-resource
+  resourceClaims:
+  - name: gpu-resource
+    source:
+      resourceClaimName: my-gpu-claim
+```
+
+当调度此 Pod 时，调度器会：
+
+1. 查找有可用 GPU 设备的节点
+2. 检查设备兼容性和约束
+3. 选择最优节点并分配设备
+
 详细的插件开发步骤请参考 [Creating a kube-scheduler plugin](https://medium.com/@juliorenner123/k8s-creating-a-kube-scheduler-plugin-8a826c486a1) 和 [kubernetes-sigs/scheduler-plugins](https://github.com/kubernetes-sigs/scheduler-plugins)。
 
 ### 调度策略

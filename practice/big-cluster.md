@@ -41,6 +41,30 @@ Kubernetes v1.6+ 单集群最大支持 5000 个节点，也就是说 Kubernetes 
 * 251-500 nodes: c4.4xlarge
 * more than 500 nodes: c4.8xlarge
 
+## API Server 内存优化
+
+### 流式列表响应优化 (v1.33+)
+
+从 Kubernetes v1.33 开始，API Server 引入流式列表响应机制，专门解决大规模集群的内存消耗问题：
+
+**解决的问题：**
+- 传统 List API 将整个响应加载到内存中，大规模集群下容易导致 API Server OOM
+- 并发 List 请求会导致内存使用量激增
+
+**优化效果：**
+- 基准测试显示内存使用降低约 20 倍（从 70-80GB 降至 3GB）
+- 显著减少大规模集群中 API Server 的内存压力
+- 提高集群在高负载下的稳定性
+
+**建议配置：**
+```bash
+# 为大规模集群配置更大的内存限制
+--max-requests-inflight=3000
+--max-mutating-requests-inflight=1000
+# 适当增加内存限制以处理流式响应
+--memory=16Gi  # 对于 1000+ 节点集群
+```
+
 ## 为扩展分配更多资源
 
 Kubernetes 集群内的扩展也需要分配更多的资源，包括为这些 Pod 分配更大的 CPU 和内存以及增大容器副本数量等。当 Node 本身的容量太小时，还需要增大 Node 本身的 CPU 和内存（特别是在公有云平台上）。

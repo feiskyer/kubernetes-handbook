@@ -184,6 +184,299 @@ physical_device_desc: "device: 0, name: Tesla K80, pci bus id: 0000:00:04.0"
 * 多个容器之间不能共享 GPU
 * 默认假设所有 Node 安装了相同型号的 GPU
 
+## Dynamic Resource Allocation (DRA) 方式使用 GPU
+
+从 Kubernetes v1.26 开始，可以使用 DRA 方式来管理 GPU 资源，相比传统的 Device Plugin 方式，DRA 提供了更灵活的 GPU 分配和管理能力。
+
+### DRA GPU 配置
+
+#### 1. 创建 GPU ResourceClass
+
+```yaml
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClass
+metadata:
+  name: nvidia-gpu-class
+spec:
+  driverName: gpu.nvidia.com
+  parameters:
+    # GPU 内存大小
+    memory: "16Gi"
+    # 计算能力
+    compute: "7.5"
+    # v1.33 新特性：支持 GPU 分区
+    partitionable: true
+    maxPartitions: 7  # MIG 分区数
+    # 支持的 CUDA 版本
+    cudaVersion: "12.0"
+---
+# 用于 AI/ML 工作负载的高性能 GPU 类
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClass
+metadata:
+  name: high-perf-gpu-class
+spec:
+  driverName: gpu.nvidia.com
+  parameters:
+    memory: "80Gi"      # A100 GPU
+    compute: "8.0"
+    tensorCores: true
+    nvlink: true
+---
+# 共享 GPU 资源类
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClass
+metadata:
+  name: shared-gpu-class
+spec:
+  driverName: gpu.nvidia.com
+  parameters:
+    shared: true
+    maxUsers: 4
+    timeSlicing: true
+```
+
+#### 2. 创建 GPU ResourceClaim
+
+```yaml
+# 独占 GPU 资源声明
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClaim
+metadata:
+  name: exclusive-gpu-claim
+  namespace: ml-training
+spec:
+  resourceClassName: nvidia-gpu-class
+  allocationMode: WaitForFirstConsumer
+---
+# v1.33 特性：优先级列表 - 尝试多种 GPU 类型
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClaim
+metadata:
+  name: flexible-gpu-claim
+  namespace: ml-training
+spec:
+  # 按优先级尝试不同的 GPU 类型
+  resourceClassNames:
+  - high-perf-gpu-class   # 优先使用高性能 GPU
+  - nvidia-gpu-class      # 备选标准 GPU
+  - shared-gpu-class      # 最后尝试共享 GPU
+  allocationMode: WaitForFirstConsumer
+```
+
+#### 3. 使用 DRA GPU 的 Pod
+
+```yaml
+# 机器学习训练任务
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ml-training-pod
+  namespace: ml-training
+spec:
+  containers:
+  - name: trainer
+    image: tensorflow/tensorflow:latest-gpu
+    command: ["python", "train.py"]
+    env:
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: "all"
+    resources:
+      claims:
+      - name: gpu-resource
+      limits:
+        memory: "32Gi"
+        cpu: "8"
+  resourceClaims:
+  - name: gpu-resource
+    source:
+      resourceClaimName: exclusive-gpu-claim
+---
+# 推理服务使用共享 GPU
+apiVersion: v1
+kind: Pod
+metadata:
+  name: inference-pod
+  namespace: ml-inference
+spec:
+  containers:
+  - name: inference-server
+    image: tensorrt-inference:latest
+    ports:
+    - containerPort: 8080
+    resources:
+      claims:
+      - name: shared-gpu
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+  resourceClaims:
+  - name: shared-gpu
+    source:
+      resourceClaimName: shared-gpu-claim
+```
+
+### v1.33 DRA GPU 新特性
+
+#### 1. GPU 分区（MIG 支持）
+
+```yaml
+# 支持 NVIDIA MIG 分区的 ResourceClass
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClass
+metadata:
+  name: mig-gpu-class
+spec:
+  driverName: gpu.nvidia.com
+  parameters:
+    # MIG 配置
+    migEnabled: true
+    migProfile: "1g.5gb"  # 1/7 GPU + 5GB 内存
+    partitionable: true
+---
+# 请求 MIG 分区的 Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mig-workload
+spec:
+  containers:
+  - name: light-ml-task
+    image: pytorch/pytorch:latest
+    resources:
+      claims:
+      - name: mig-partition
+  resourceClaims:
+  - name: mig-partition
+    source:
+      resourceClaimName: mig-gpu-claim
+```
+
+#### 2. GPU 污点和容忍度
+
+```yaml
+# 将 GPU 标记为维护状态
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceSlice
+metadata:
+  name: gpu-node-maintenance
+spec:
+  driverName: gpu.nvidia.com
+  devices:
+  - name: gpu-0
+    basic:
+      capacity:
+        memory: "16Gi"
+    # GPU 污点：标记为维护状态
+    taints:
+    - key: "maintenance"
+      value: "scheduled"
+      effect: "NoSchedule"
+    - key: "thermal-throttling"
+      value: "detected"
+      effect: "PreferNoSchedule"
+---
+# 容忍 GPU 污点的 Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: maintenance-tolerant-gpu-pod
+spec:
+  containers:
+  - name: monitoring-task
+    image: gpu-monitor:latest
+    resources:
+      claims:
+      - name: gpu-resource
+  resourceClaims:
+  - name: gpu-resource
+    source:
+      resourceClaimName: maintenance-gpu-claim
+  # 容忍 GPU 设备污点
+  tolerations:
+  - key: "resource.kubernetes.io/device.maintenance"
+    operator: "Equal"
+    value: "scheduled"
+    effect: "NoSchedule"
+  - key: "resource.kubernetes.io/device.thermal-throttling"
+    operator: "Equal"
+    value: "detected"
+    effect: "PreferNoSchedule"
+```
+
+#### 3. 管理员访问控制
+
+```yaml
+# 启用 DRA 管理访问的命名空间
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpu-admin-namespace
+  labels:
+    # v1.33 特性：管理员访问标签
+    resource.kubernetes.io/admin-access: "enabled"
+---
+# 只有管理员命名空间才能创建的 ResourceClaim
+apiVersion: resource.k8s.io/v1alpha2
+kind: ResourceClaim
+metadata:
+  name: admin-gpu-claim
+  namespace: gpu-admin-namespace
+spec:
+  resourceClassName: high-perf-gpu-class
+  # 管理员级别的配置
+  parameters:
+    # 允许超额分配
+    overcommit: true
+    # 强制亲和性
+    requiredNodeAffinity:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: gpu.nvidia.com/class
+          operator: In
+          values: ["A100", "H100"]
+```
+
+### DRA GPU 监控和调试
+
+```yaml
+# GPU 使用情况监控 Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-monitor
+spec:
+  containers:
+  - name: nvidia-smi-exporter
+    image: mindprince/nvidia_gpu_prometheus_exporter:0.1
+    ports:
+    - containerPort: 9445
+      name: metrics
+    securityContext:
+      capabilities:
+        add: ["SYS_ADMIN"]
+    volumeMounts:
+    - name: dev
+      mountPath: /dev
+    - name: proc-driver-nvidia
+      mountPath: /proc/driver/nvidia
+      readOnly: true
+    resources:
+      claims:
+      - name: monitor-gpu
+  resourceClaims:
+  - name: monitor-gpu
+    source:
+      resourceClaimName: monitoring-gpu-claim
+  volumes:
+  - name: dev
+    hostPath:
+      path: /dev
+  - name: proc-driver-nvidia
+    hostPath:
+      path: /proc/driver/nvidia
+```
+
 ## 多种型号的 GPU
 
 如果集群 Node 中安装了多种型号的 GPU，则可以使用 Node Affinity 来调度 Pod 到指定 GPU 型号的 Node 上。
@@ -338,8 +631,150 @@ Fri Jun 16 19:33:35 2017
 +-----------------------------------------------------------------------------+
 ```
 
+## AI/ML 推理工作负载的网关管理
+
+对于运行在 GPU 上的 AI/ML 推理服务，可以使用 Gateway API Inference Extension 来进行智能路由和负载平衡。
+
+### Gateway API Inference Extension 配置
+
+```yaml
+# 定义 GPU 推理服务池
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: InferencePool
+metadata:
+  name: llama2-gpu-pool
+spec:
+  deployment:
+    replicas: 3
+    template:
+      spec:
+        containers:
+        - name: vllm-server
+          image: vllm/vllm-openai:latest
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              memory: "16Gi"
+              cpu: "4"
+            requests:
+              memory: "8Gi"
+              cpu: "2"
+          env:
+          - name: MODEL_NAME
+            value: "meta-llama/Llama-2-7b-chat-hf"
+          - name: GPU_MEMORY_UTILIZATION
+            value: "0.9"
+        nodeSelector:
+          accelerator: nvidia-tesla-v100
+---
+# 定义模型端点
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: InferenceModel
+metadata:
+  name: llama2-7b-chat
+spec:
+  poolRef:
+    name: llama2-gpu-pool
+  routing:
+    # 优先级路由：高优先级请求优先分配
+    priority: high
+    # 智能负载平衡：基于 GPU 利用率
+    loadBalancing:
+      strategy: gpu-aware
+      metrics:
+      - name: gpu_utilization
+        target: 80
+      - name: memory_utilization  
+        target: 85
+    # 金丝雀发布
+    trafficSplit:
+    - weight: 90
+      version: stable
+      poolRef:
+        name: llama2-gpu-pool
+    - weight: 10
+      version: canary
+      poolRef:
+        name: llama2-gpu-pool-canary
+---
+# Gateway 配置
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ai-inference-gateway
+spec:
+  gatewayClassName: inference-gateway-class
+  listeners:
+  - name: https
+    port: 443
+    protocol: HTTPS
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: inference-tls-cert
+---
+# HTTPRoute 将请求路由到推理模型
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: llama2-inference-route
+spec:
+  parentRefs:
+  - name: ai-inference-gateway
+  hostnames:
+  - "api.ai-platform.example.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /v1/chat/completions
+    - headers:
+      - name: x-model-name
+        value: llama2-7b-chat
+    backendRefs:
+    - group: gateway.networking.x-k8s.io
+      kind: InferenceModel
+      name: llama2-7b-chat
+    filters:
+    # 基于请求优先级的路由
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.networking.x-k8s.io
+        kind: PriorityFilter
+        name: inference-priority
+```
+
+### 性能优势
+
+使用 Gateway API Inference Extension 管理 GPU 推理工作负载具有以下优势：
+
+- **智能路由**：基于 GPU 利用率、内存使用情况等实时指标进行路由决策
+- **降低延迟**：特别是在高查询率下，延迟显著降低
+- **提高 GPU 利用率**：更有效的资源分配和负载平衡
+- **支持模型版本管理**：安全的金丝雀发布和 A/B 测试
+- **请求优先级**：重要请求可以获得优先处理
+
+### 监控 GPU 推理服务
+
+```yaml
+# GPU 推理服务监控 ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: inference-gpu-metrics
+spec:
+  selector:
+    matchLabels:
+      app: inference-model
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+```
+
 ## 参考文档
 
 * [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)
 * [Schedule GPUs on Kubernetes](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 * [GoogleCloudPlatform/container-engine-accelerators](https://github.com/GoogleCloudPlatform/container-engine-accelerators)
+* [Gateway API Inference Extension](https://kubernetes.io/blog/2025/06/05/introducing-gateway-api-inference-extension/)

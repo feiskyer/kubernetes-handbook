@@ -140,6 +140,9 @@ kube-dns      10.0.0.10      <none>        53/UDP,53/TCP        1h
 $ kubectl get ep kube-dns --namespace=kube-system
 NAME       ENDPOINTS                       AGE
 kube-dns   10.180.3.17:53,10.180.3.17:53    1h
+
+# 或者使用 EndpointSlices（推荐，Kubernetes 1.33+）
+$ kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=kube-dns
 ```
 
 如果 kube-dns service 不存在，或者 endpoints 列表为空，则说明 kube-dns service 配置错误，可以重新创建 [kube-dns service](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns)，比如
@@ -251,6 +254,11 @@ template:
 kubectl get endpoints <service-name>
 ```
 
+> **注意**: 从 Kubernetes 1.33 开始，建议使用 EndpointSlices 替代 Endpoints 进行调试：
+> ```bash
+> kubectl get endpointslices -l kubernetes.io/service-name=<service-name>
+> ```
+
 如果该列表为空，则有可能是该 Service 的 LabelSelector 配置错误，可以用下面的方法确认一下
 
 ```bash
@@ -339,6 +347,9 @@ kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   25m
 $ kubectl get endpoints kubernetes
 NAME         ENDPOINTS          AGE
 kubernetes   172.17.0.62:6443   25m
+
+# 或者使用 EndpointSlices（推荐，Kubernetes 1.33+）
+$ kubectl get endpointslices -l kubernetes.io/service-name=kubernetes
 ```
 
 然后可以直接访问 endpoints 查看 kube-apiserver 是否可以正常访问。无法访问时通常说明 kube-apiserver 未正常启动，或者有防火墙规则阻止了访问。
@@ -368,10 +379,17 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - endpoints
+  - endpoints  # 传统 Endpoints API（已弃用）
   - services
   - pods
   - namespaces
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices  # 推荐使用 EndpointSlices API
   verbs:
   - list
   - watch

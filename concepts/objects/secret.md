@@ -252,6 +252,12 @@ $ kubectl create secret docker-registry myregistrykey --docker-server=DOCKER_REG
 secret "myregistrykey" created.
 ```
 
+> **重要安全更新（Kubernetes v1.33）**：
+> 
+> 1. **Service Account Token Integration for Kubelet Credential Providers**（Alpha）：推荐使用 Pod 的服务账户令牌动态获取镜像拉取凭证，避免长期密钥的安全风险。详见[安全章节](../../practice/security.md#镜像拉取认证安全v133-新特性)。
+> 
+> 2. **Ensure Secret Pulled Images**（Alpha）：通过 `KubeletEnsureSecretPulledImages` 特性门控，确保只有具备适当凭证的 Pod 才能访问私有镜像，即使镜像已存在于节点上。详见[安全章节](../../practice/security.md#镜像拉取安全v133-新特性)。
+
 查看 secret 的内容：
 
 ```bash

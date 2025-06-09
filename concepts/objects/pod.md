@@ -21,6 +21,15 @@ Pod 的特征
 >   shareProcessNamespace: true
 > ```
 
+> **用户命名空间隔离（Kubernetes v1.33+）**: 从 Kubernetes v1.33 开始，支持通过用户命名空间提供额外的安全隔离。设置 `hostUsers: false` 可以启用用户命名空间，将容器内的用户 ID 映射到主机的非特权用户，大大提高安全性：
+>
+> ```yaml
+> spec:
+>   hostUsers: false  # 启用用户命名空间隔离
+>   securityContext:
+>     runAsUser: 0    # 容器内以 root 运行，但映射到主机非特权用户
+> ```
+
 ## API 版本对照表
 
 | Kubernetes 版本 | Core API 版本 | 默认开启 |
@@ -61,7 +70,7 @@ spec:
 | VOLUME | 数据卷 | 是 | 使用 volumes 和 volumeMounts |
 | USER | 进程运行用户以及用户组 | 是 | securityContext.runAsUser/supplementalGroups |
 | WORKDIR | 工作目录 | 是 | containerSpec.workingDir |
-| STOPSIGNAL | 停止容器时给进程发送的信号 | 是 | SIGKILL |
+| STOPSIGNAL | 停止容器时给进程发送的信号 | 是 | SIGTERM (可通过 lifecycle.stopSignal 自定义，v1.33+) |
 | HEALTHCHECK | 健康检查 | 否 | 使用 livenessProbe 和 readinessProbe 替代 |
 | SHELL | 运行启动命令的 SHELL | 否 | 使用镜像默认 SHELL 启动命令 |
 
@@ -303,7 +312,7 @@ KUBERNETES_PORT_443_TCP_PROTO=tcp
 KUBERNETES_PORT_443_TCP_PORT=443
 ```
 
-由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用 [DNS]() 来解析服务。
+由于环境变量存在创建顺序的局限性（环境变量中不包含后来创建的服务），推荐使用 DNS 来解析服务。
 
 ## 镜像拉取策略
 
@@ -318,6 +327,16 @@ KUBERNETES_PORT_443_TCP_PORT=443
 * 默认为 `IfNotPresent`，但 `:latest` 标签的镜像默认为 `Always`。
 * 拉取镜像时 docker 会进行校验，如果镜像中的 MD5 码没有变，则不会拉取镜像数据。
 * 生产环境中应该尽量避免使用 `:latest` 标签，而开发环境中可以借助 `:latest` 标签自动拉取最新的镜像。
+
+### 镜像拉取安全增强（v1.33）
+
+从 Kubernetes v1.33 开始，新增了 `KubeletEnsureSecretPulledImages` 特性门控，增强了私有镜像的访问控制：
+
+* **安全验证**：即使镜像已存在于节点上，Kubelet 也会验证 Pod 的镜像拉取凭证
+* **凭证匹配**：只有使用相同凭证的 Pod 才能重用已拉取的私有镜像
+* **策略兼容**：支持所有镜像拉取策略（`Always`、`IfNotPresent`、`Never`）
+
+详细信息请参考[镜像拉取安全章节](../../practice/security.md#镜像拉取安全v133-新特性)。
 
 ## 访问 DNS 的策略
 
@@ -524,6 +543,120 @@ spec:
 * 内存的单位则包括 `E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki` 等。
 * 从 v1.10 开始，可以设置 `kubelet ----cpu-manager-policy=static` 为 Guaranteed（即 requests.cpu 与 limits.cpu 相等）Pod 绑定 CPU（通过 cpuset cgroups）。
 
+### 原地资源调整（In-Place Pod Resize）
+
+从 Kubernetes v1.33 开始，**原地 Pod 资源调整**功能升级为 Beta 版本，允许在不重启 Pod 的情况下修改容器的 CPU 和内存资源限制。
+
+#### 特性概述
+
+* **功能**：支持修改运行中 Pod 的 CPU 和内存 requests 和 limits
+* **优势**：避免 Pod 重启导致的服务中断，提升资源利用率
+* **版本**：v1.27+ Alpha，v1.33+ Beta
+
+#### 使用方法
+
+可以通过新增的 `resize` 子资源来更新 Pod 资源：
+
+```bash
+# 编辑 Pod 资源配置
+kubectl edit pod <pod-name> --subresource resize
+
+# 或者使用 patch 命令
+kubectl patch pod <pod-name> --subresource resize --type='merge' -p='
+{
+  "spec": {
+    "containers": [
+      {
+        "name": "nginx",
+        "resources": {
+          "requests": {
+            "cpu": "500m",
+            "memory": "128Mi"
+          },
+          "limits": {
+            "cpu": "1000m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ]
+  }
+}'
+```
+
+#### 资源状态跟踪
+
+Pod 的 `status.containerStatuses[*].resources` 字段反映容器实际配置的资源：
+
+```yaml
+status:
+  containerStatuses:
+  - name: nginx
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "128Mi"
+      limits:
+        cpu: "1000m"
+        memory: "256Mi"
+```
+
+#### 调整策略
+
+可以通过 `spec.containers[*].resizePolicy` 配置资源调整策略：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resize-demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "64Mi"
+      limits:
+        cpu: "200m"
+        memory: "128Mi"
+    resizePolicy:
+    - resourceName: cpu
+      restartPolicy: NotRequired
+    - resourceName: memory
+      restartPolicy: RestartContainer
+```
+
+支持的调整策略：
+* `NotRequired`：无需重启容器即可调整资源
+* `RestartContainer`：需要重启容器才能生效
+
+#### 限制和注意事项
+
+* **存储资源不支持**：目前仅支持 CPU 和内存资源调整
+* **QoS 类变更限制**：不能通过调整改变 Pod 的 QoS 类别
+* **资源约束**：调整后的资源必须在节点可用资源范围内
+* **容器运行时支持**：需要容器运行时支持动态资源调整
+
+#### 与 VPA 集成
+
+原地资源调整功能与 Vertical Pod Autoscaler (VPA) 集成，VPA 可以利用此功能自动调整 Pod 资源而无需重启：
+
+```yaml
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: nginx-vpa
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
+  updatePolicy:
+    updateMode: "InPlace"  # 使用原地调整模式
+```
+
 ## 健康检查
 
 为了确保容器在部署后确实处在正常运行状态，Kubernetes 提供了两种探针（Probe）来探测容器的状态：
@@ -581,13 +714,152 @@ spec:
         periodSeconds: 20
 ```
 
+## 多容器模式
+
+Pod 的核心优势在于能够支持多个容器在同一个Pod中协同工作，共享网络和存储资源。Kubernetes 提供了多种多容器模式来解决不同的架构需求。
+
+### 常见的多容器模式
+
+#### 1. Sidecar 模式（边车模式）
+
+Sidecar 模式是最常见的多容器模式，从 Kubernetes v1.29.0 开始提供原生支持，并在 v1.33.0 中达到稳定版本。在这种模式中，辅助容器为主应用容器提供支持服务，如日志收集、监控、代理等功能。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-example
+spec:
+  containers:
+  - name: main-app
+    image: nginx
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+  - name: log-collector
+    image: fluent/fluent-bit
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+```
+
+#### 2. Ambassador 模式（大使模式）
+
+Ambassador 模式提供Pod本地的网络服务助手，处理服务发现、网络请求等，实现TLS、熔断器等功能。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ambassador-example
+spec:
+  containers:
+  - name: main-app
+    image: myapp:latest
+    env:
+    - name: DB_HOST
+      value: "localhost"
+    - name: DB_PORT
+      value: "5432"
+  - name: db-ambassador
+    image: postgres-proxy:latest
+    env:
+    - name: POSTGRES_HOST
+      value: "postgres.example.com"
+    - name: POSTGRES_PORT
+      value: "5432"
+```
+
+#### 3. Adapter 模式（适配器模式）
+
+Adapter 模式在容器间提供互操作性，翻译数据格式和协议，桥接不匹配服务之间的通信。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter-example
+spec:
+  containers:
+  - name: legacy-app
+    image: legacy-monitoring-app
+    volumeMounts:
+    - name: shared-data
+      mountPath: /legacy-metrics
+  - name: prometheus-adapter
+    image: metrics-adapter:latest
+    volumeMounts:
+    - name: shared-data
+      mountPath: /input
+    ports:
+    - containerPort: 9090
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+```
+
+#### 4. 配置助手模式
+
+动态更新应用配置，获取环境变量和密钥，解耦配置管理。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-helper-example
+spec:
+  containers:
+  - name: main-app
+    image: myapp:latest
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  - name: config-updater
+    image: config-fetcher:latest
+    volumeMounts:
+    - name: config-volume
+      mountPath: /shared/config
+    env:
+    - name: CONFIG_SOURCE
+      value: "https://config-server.example.com"
+  volumes:
+  - name: config-volume
+    emptyDir: {}
+```
+
+### 多容器模式的使用场景
+
+- **扩展功能而不修改代码**：通过sidecar容器添加监控、日志、安全等功能
+- **实现横切关注点**：将通用功能（如身份验证、加密）从主应用中分离
+- **处理遗留应用**：为老旧应用添加现代化功能而无需重写
+- **设计独立可扩展的微服务**：每个容器专注于单一职责
+
+### 最佳实践
+
+- **战略性使用**：仅在必要时使用多容器模式，避免过度复杂化
+- **考虑资源消耗**：多容器会增加资源使用，需要合理规划
+- **评估简单替代方案**：优先考虑是否有更简单的解决方案
+- **最小化运维复杂性**：保持架构的可理解性和可维护性
+
+### 注意事项
+
+- **高资源需求**：多容器Pod会消耗更多CPU和内存
+- **网络延迟敏感性**：容器间通信虽然快速，但仍存在微小延迟
+- **故障排查复杂性**：多容器增加了调试和故障定位的难度
+- **避免不必要的使用**：如果有简单的解决方案，应优先采用
+
 ## Init Container
 
 Pod 能够具有多个容器，应用运行在容器里面，但是它也可能有一个或多个先于应用容器启动的 Init 容器。Init 容器在所有容器运行之前执行（run-to-completion），常用来初始化配置。
 
+从 Kubernetes v1.29.0 开始，Init 容器支持设置 `restartPolicy: Always`，使其能够作为真正的 sidecar 容器持续运行。
+
 如果为一个 Pod 指定了多个 Init 容器，那些容器会按顺序一次运行一个。 每个 Init 容器必须运行成功，下一个才能够运行。 当所有的 Init 容器运行完成时，Kubernetes 初始化 Pod 并像平常一样运行应用容器。
 
-下面是一个 Init 容器的示例：
+下面是一个传统 Init 容器的示例：
 
 ```yaml
 apiVersion: v1
@@ -621,6 +893,130 @@ spec:
     emptyDir: {}
 ```
 
+### Sidecar Init 容器 (v1.29.0+, Stable in v1.33.0)
+
+从 Kubernetes v1.29.0 开始，Init 容器支持设置 `restartPolicy: Always`，使其能够作为 sidecar 容器持续运行。这个特性在 v1.33.0 中达到稳定版本，具有以下特点：
+
+- **启动顺序**：Sidecar 容器在主应用容器之前启动
+- **生命周期**：在整个 Pod 生命周期内保持运行
+- **健康检查**：支持使用探针进行健康检查
+- **OOM 评分对齐**：与主应用容器具有对齐的 OOM 评分
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-init-demo
+spec:
+  containers:
+  - name: main-app
+    image: nginx
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+  initContainers:
+  - name: log-shipper
+    image: alpine:latest
+    restartPolicy: Always
+    command: ['sh', '-c', 'tail -F /opt/logs.txt']
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /opt
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+```
+
+### 控制 Sidecar 启动顺序
+
+在某些场景下，主应用容器对 Sidecar 容器有强依赖，必须等待 Sidecar 完全就绪后才能启动。例如，应用需要通过 Sidecar（如日志代理）发送日志，如果 Sidecar 未准备好，应用可能会因无法连接而启动失败。
+
+为了解决这个问题，可以使用 `startupProbe` 或 `postStart` 生命周期钩子来延迟主应用容器的启动，直到 Sidecar 容器准备就绪。
+
+#### 使用 startupProbe
+
+`startupProbe` 可以用来检测 Sidecar 容器是否已准备好接收流量。只有当 `startupProbe` 成功后，Kubernetes 才会启动主应用容器。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-startup-probe-demo
+spec:
+  containers:
+  - name: main-app
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Main application started' && sleep 3600"]
+  initContainers:
+  - name: nginx-sidecar
+    image: nginx:latest
+    restartPolicy: Always
+    ports:
+    - containerPort: 80
+    startupProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      failureThreshold: 10
+```
+
+在这个例子中，主应用容器 `main-app` 会等待 `nginx-sidecar` 的 `startupProbe` 成功（即 Nginx 在 80 端口上成功响应 HTTP GET 请求）后才会启动。
+
+#### 使用 postStart 生命周期钩子
+
+`postStart` 钩子在容器创建后立即执行。可以利用它来编写一个脚本，循环检测 Sidecar 是否就绪。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-poststart-demo
+spec:
+  containers:
+  - name: main-app
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Main application started' && sleep 3600"]
+  initContainers:
+  - name: nginx-sidecar
+    image: nginx:latest
+    restartPolicy: Always
+    ports:
+    - containerPort: 80
+    lifecycle:
+      postStart:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - |
+            echo "Waiting for readiness at http://localhost:80"
+            until curl -sf http://localhost:80; do
+              echo "Still waiting for http://localhost:80..."
+              sleep 5
+            done
+            echo "Service is ready at http://localhost:80"
+```
+
+#### 不同探测机制的行为总结
+
+| 探针/钩子 | Sidecar 是否在主应用前启动？ | 主应用是否等待 Sidecar 就绪？ | 检查失败时会发生什么？ |
+| :--- | :--- | :--- | :--- |
+| `readinessProbe` | **是**，但几乎是并行启动（效果上**否**） | **否** | Sidecar 状态为未就绪；主应用继续运行 |
+| `livenessProbe` | **是**，但几乎是并行启动（效果上**否**） | **否** | Sidecar 被重启；主应用继续运行 |
+| `startupProbe` | **是** | **是** | 主应用不会启动 |
+| `postStart` | **是**，主应用在 `postStart` 完成后启动 | **是**，但需要自定义逻辑 | 主应用不会启动 |
+
+#### Sidecar 启动策略最佳实践
+
+根据 Kubernetes 官方建议，确保 Sidecar 容器优先启动和就绪的最佳实践包括：
+
+1. **优先使用 startupProbe**：这是确保主应用等待 Sidecar 就绪的最可靠方法
+2. **应用层面的依赖处理**：在应用代码中实现对 Sidecar 依赖的容错和重试机制
+3. **合理设置探测参数**：根据 Sidecar 实际启动时间调整 `initialDelaySeconds` 和 `periodSeconds`
+4. **避免循环依赖**：确保 Sidecar 容器的就绪性检查不依赖于主应用
+
 因为 Init 容器具有与应用容器分离的单独镜像，使用 init 容器启动相关代码具有如下优势：
 
 * 它们可以包含并运行实用工具，出于安全考虑，是不建议在应用容器镜像中包含这些实用工具的。
@@ -646,10 +1042,11 @@ Init 容器的重启策略：
 * postStart： 容器创建后立即执行，注意由于是异步执行，它无法保证一定在 ENTRYPOINT 之前运行。如果失败，容器会被杀死，并根据 RestartPolicy 决定是否重启
 * preStop：容器终止前执行，常用于资源清理。如果失败，容器同样也会被杀死
 
-而钩子的回调函数支持两种方式：
+而钩子的回调函数支持三种方式：
 
 * exec：在容器内执行命令，如果命令的退出状态码是 `0` 表示执行成功，否则表示失败
 * httpGet：向指定 URL 发起 GET 请求，如果返回的 HTTP 状态码在 `[200, 400)` 之间表示请求成功，否则表示失败
+* sleep：暂停指定的时间，从 Kubernetes v1.33 开始支持零持续时间的睡眠（Beta 特性）
 
 postStart 和 preStop 钩子示例：
 
@@ -671,6 +1068,38 @@ spec:
         exec:
           command: ["/usr/sbin/nginx","-s","quit"]
 ```
+
+### 容器终止信号配置（v1.33+ Alpha）
+
+从 Kubernetes v1.33 开始，可以通过 `lifecycle.stopSignal` 配置容器终止时接收的信号。这个功能目前为 Alpha 特性，需要启用 `ContainerStopSignals` 特性门控，并且要求设置 `spec.os.name`。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: custom-stop-signal
+spec:
+  os:
+    name: linux  # 必须指定操作系统
+  containers:
+  - name: nginx
+    image: nginx:latest
+    lifecycle:
+      stopSignal: SIGUSR1  # 自定义终止信号
+      preStop:
+        sleep:
+          seconds: 0  # 支持零持续时间睡眠（v1.33+）
+```
+
+**支持的终止信号**：
+- Linux 节点：支持广泛的信号类型（如 SIGTERM、SIGKILL、SIGUSR1 等）
+- Windows 节点：仅支持 SIGTERM 和 SIGKILL
+- 默认信号：如果未指定，使用运行时的默认信号（通常为 SIGTERM）
+
+**使用要求**：
+- 需要在 kube-apiserver 和 kubelet 上启用 `ContainerStopSignals=true` 特性门控
+- 必须在 Pod spec 中指定 `spec.os.name`（linux 或 windows）
+- 仅在 v1.33+ 版本中可用
 
 ## 使用 Capabilities
 
@@ -700,6 +1129,7 @@ spec:
 
 可以通过给 Pod 增加 `kubernetes.io/ingress-bandwidth` 和 `kubernetes.io/egress-bandwidth` 这两个 annotation 来限制 Pod 的网络带宽
 
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -720,6 +1150,7 @@ spec:
 > **仅 kubenet 支持限制带宽**
 >
 > 目前只有 kubenet 网络插件支持限制网络带宽，其他 CNI 网络插件暂不支持这个功能。
+
 
 kubenet 的网络带宽限制其实是通过 tc 来实现的
 

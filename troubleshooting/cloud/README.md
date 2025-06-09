@@ -17,6 +17,58 @@
 
 通常，在 Kubelet 启动时会自动将自己注册到 kubernetes API 中，然后通过 `kubectl get nodes` 就可以查询到该节点。 如果新的 Node 没有自动注册到 Kubernetes 集群中，那说明这个注册过程有错误发生，需要检查 kubelet 和 kube-controller-manager 的日志，进而再根据日志查找具体的错误原因。
 
+### Cloud Controller Manager 启动时序问题
+
+在使用外部云提供商（external cloud provider）时，可能会遇到 cloud-controller-manager 的启动时序问题：
+
+#### 问题现象
+1. Node 注册后长时间处于 `SchedulingDisabled` 状态
+2. Node 显示 `node.cloudprovider.kubernetes.io/uninitialized` taint
+3. cloud-controller-manager Pod 无法正常调度或启动
+
+#### 排查步骤
+
+1. **检查 Node taint 状态**
+```bash
+kubectl describe node <node-name> | grep -i taint
+```
+
+2. **检查 cloud-controller-manager 状态**
+```bash
+kubectl -n kube-system get pods -l component=cloud-controller-manager
+kubectl -n kube-system describe pod -l component=cloud-controller-manager
+```
+
+3. **检查 cloud-controller-manager 日志**
+```bash
+kubectl -n kube-system logs -l component=cloud-controller-manager --tail=100
+```
+
+#### 解决方案
+
+1. **确保 cloud-controller-manager 具有正确的容忍度**
+```yaml
+tolerations:
+- key: "node.cloudprovider.kubernetes.io/uninitialized"
+  operator: "Exists"
+  effect: "NoSchedule"
+- key: "node-role.kubernetes.io/control-plane"
+  operator: "Exists"
+  effect: "NoSchedule"
+```
+
+2. **使用主机网络模式避免网络依赖**
+```yaml
+spec:
+  hostNetwork: true
+```
+
+3. **调度到控制平面节点**
+```yaml
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+```
+
 ### Kubelet 日志
 
 查看 Kubelet 日志需要首先 SSH 登录到 Node 上，然后运行 `journalctl` 命令查看 kubelet 的日志：
@@ -24,6 +76,11 @@
 ```bash
 journalctl -l -u kubelet
 ```
+
+常见错误信息：
+- `failed to initialize cloud provider`: 云提供商配置错误
+- `node not found`: Node 在云平台中不存在或权限不足
+- `waiting for node to be registered by cloud provider`: 等待 cloud-controller-manager 初始化
 
 ### kube-controller-manager 日志
 

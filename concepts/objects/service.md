@@ -13,6 +13,8 @@ Kubernetes 在设计之初就充分考虑了针对容器的服务发现与负载
 
 Service 是对一组提供相同功能的 Pods 的抽象，并为它们提供一个统一的入口。借助 Service，应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service 通过标签来选取服务后端，一般配合 Replication Controller 或者 Deployment 来保证后端容器的正常运行。这些匹配标签的 Pod IP 和端口列表组成 endpoints，由 kube-proxy 负责将服务 IP 负载均衡到这些 endpoints 上。
 
+> **重要提示 (Kubernetes 1.33+)**: Endpoints API 已在 Kubernetes 1.33 中被标记为弃用，建议迁移到 EndpointSlices API。虽然 Endpoints API 仍然可用并且不会被移除（由于弃用策略），但新的功能（如双栈网络）只在 EndpointSlices 中支持。详情请参见[迁移到 EndpointSlices](#endpoints-迁移到-endpointslices)。
+
 Service 有四种类型：
 
 * ClusterIP：默认类型，自动分配一个仅 cluster 内部可以访问的虚拟 IP
@@ -92,7 +94,7 @@ spec:
 
 ### 协议
 
-Service、Endpoints 和 Pod 支持三种类型的协议：
+Service、Endpoints（已弃用，建议使用 EndpointSlices）和 Pod 支持三种类型的协议：
 
 * TCP（Transmission Control Protocol，传输控制协议）是一种面向连接的、可靠的、基于字节流的传输层通信协议。
 * UDP（User Datagram Protocol，用户数据报协议）是一种无连接的传输层协议，用于不可靠信息传送服务。
@@ -121,6 +123,7 @@ spec:
       port: 80
       targetPort: 9376
 ---
+# 传统 Endpoints 方式（已弃用）
 kind: Endpoints
 apiVersion: v1
 metadata:
@@ -130,6 +133,36 @@ subsets:
       - ip: 1.2.3.4
     ports:
       - port: 9376
+```
+
+推荐使用 EndpointSlices 替代 Endpoints：
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+---
+# 推荐的 EndpointSlices 方式
+kind: EndpointSlice
+apiVersion: discovery.k8s.io/v1
+metadata:
+  name: my-service-abc123
+  labels:
+    kubernetes.io/service-name: my-service
+addressType: IPv4
+endpoints:
+- addresses:
+  - "1.2.3.4"
+ports:
+- name: ""
+  port: 9376
+  protocol: TCP
 ```
 
 （2）通过 DNS 转发，在 service 定义中指定 externalName。此时 DNS 服务会给 `<service-name>.<namespace>.svc.cluster.local` 创建一个 CNAME 记录，其值为 `my.database.example.com`。并且，该服务不会自动分配 Cluster IP，需要通过 service 的 DNS 来访问。
@@ -327,10 +360,125 @@ Service 的 ClusterIP 是 Kubernetes 内部的虚拟 IP 地址，无法直接从
 * 使用 Ingress Controller 在 Service 之上创建 L7 负载均衡并对外开放。
 * 使用 [ECMP](https://en.wikipedia.org/wiki/Equal-cost_multi-path_routing) 将 Service ClusterIP 网段路由到每个 Node，这样可以直接通过 ClusterIP 来访问服务，甚至也可以直接在集群外部使用 kube-dns。这一版用在物理机部署的情况下。
 
+## 多服务 CIDR (v1.33.0 Stable)
+
+从 Kubernetes v1.33.0 开始，支持为 ClusterIP 服务配置多个 CIDR 范围，实现动态 IP 地址分配。这个特性引入了新的 `ServiceCIDR` 和 `IPAddress` API 对象。
+
+### ServiceCIDR 资源
+
+`ServiceCIDR` 资源用于定义集群中可用于服务的 IP 地址范围：
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: ServiceCIDR
+metadata:
+  name: service-cidr-1
+spec:
+  cidrs:
+  - "10.96.0.0/16"   # 主要服务 CIDR
+  - "10.97.0.0/16"   # 额外的服务 CIDR
+```
+
+### IPAddress 资源
+
+`IPAddress` 资源追踪已分配的服务 IP 地址：
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: IPAddress
+metadata:
+  name: service-ip-10-96-0-1
+spec:
+  parentRef:
+    group: ""
+    kind: Service
+    name: my-service
+    namespace: default
+```
+
+### 使用场景
+
+- **大规模集群**：为大量服务提供更多的 IP 地址空间
+- **网络分段**：将不同类型的服务分配到不同的 CIDR 范围
+- **动态扩展**：根据需要动态添加新的服务 CIDR 范围
+- **多租户环境**：为不同租户分配独立的服务 IP 范围
+
+### 配置示例
+
+```yaml
+# 配置多个服务 CIDR
+apiVersion: networking.k8s.io/v1beta1
+kind: ServiceCIDR
+metadata:
+  name: primary-service-cidr
+spec:
+  cidrs:
+  - "10.96.0.0/16"
+---
+apiVersion: networking.k8s.io/v1beta1  
+kind: ServiceCIDR
+metadata:
+  name: secondary-service-cidr
+spec:
+  cidrs:
+  - "10.97.0.0/16"
+```
+
+注意事项：
+- 新的 CIDR 范围不能与现有范围重叠
+- 需要确保网络插件支持多服务 CIDR 功能
+- 删除 ServiceCIDR 时需要确保没有服务正在使用该范围内的 IP
+
+## Endpoints 迁移到 EndpointSlices
+
+从 Kubernetes 1.33 开始，Endpoints API 被正式标记为弃用。建议用户迁移到 EndpointSlices API 以获得更好的性能和功能支持。
+
+### 主要差异
+
+1. **多个 EndpointSlices vs 单个 Endpoints**：
+   - 一个 Service 可以对应多个 EndpointSlices
+   - 需要使用标签选择器 `kubernetes.io/service-name=<servicename>` 来查找相关的 EndpointSlices
+
+2. **API 结构差异**：
+   - EndpointSlices 使用 `discovery.k8s.io/v1` API 组
+   - 明确指定 `addressType`（IPv4 或 IPv6）
+   - 每个 endpoint 通常包含单个地址
+
+### 代码迁移示例
+
+**旧的 Endpoints API 用法**：
+
+```go
+endpoints, err := clientset.CoreV1().Endpoints(namespace).Get(ctx, serviceName, metav1.GetOptions{})
+```
+
+**新的 EndpointSlices API 用法**：
+
+```go
+endpointSlices, err := clientset.DiscoveryV1().EndpointSlices(namespace).List(ctx, metav1.ListOptions{
+    LabelSelector: fmt.Sprintf("kubernetes.io/service-name=%s", serviceName),
+})
+```
+
+### EndpointSlices 的优势
+
+- **支持双栈网络**：可同时支持 IPv4 和 IPv6 地址
+- **更好的性能**：在大规模集群中减少资源开销
+- **流量分发**：支持更灵活的流量分发策略
+- **简化实现**：简化了服务代理和控制器的实现
+
+### 迁移建议
+
+1. **逐步迁移**：在现有代码中同时支持两种 API，然后逐步切换
+2. **测试验证**：确保新的 EndpointSlices 逻辑在生产环境中正常工作
+3. **监控告警**：设置监控来跟踪 Endpoints API 的使用情况
+
 ## 参考资料
 
 * [https://kubernetes.io/docs/concepts/services-networking/service/](https://kubernetes.io/docs/concepts/services-networking/service/)
 * [https://kubernetes.io/docs/concepts/services-networking/ingress/](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+* [https://kubernetes.io/blog/2025/04/24/endpoints-deprecation/](https://kubernetes.io/blog/2025/04/24/endpoints-deprecation/)
+* [https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/)
 * [https://github.com/kubernetes/contrib/tree/master/service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer)
 * [https://www.nginx.com/blog/load-balancing-kubernetes-services-nginx-plus/](https://www.nginx.com/blog/load-balancing-kubernetes-services-nginx-plus/)
 * [https://github.com/weaveworks/flux](https://github.com/weaveworks/flux)

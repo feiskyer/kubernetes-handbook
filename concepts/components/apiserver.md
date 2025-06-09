@@ -142,6 +142,26 @@ kube-apiserver 提供了 Kubernetes 的 REST API，实现了认证、授权、�
 
 ![](../../.gitbook/assets/kube-apiserver.png)
 
+### 流式列表响应 (Streaming List Responses)
+
+从 Kubernetes v1.33 开始，API Server 引入了流式列表响应机制，解决大规模集群中 List API 调用的内存消耗问题：
+
+**技术原理：**
+- 传统方式：将整个响应序列化为单个连续内存块，然后一次性传输
+- 流式编码：逐个处理和传输 "Items" 字段中的项目，允许内存在传输过程中逐步释放
+
+**性能优势：**
+- 显著降低 API Server 内存占用（基准测试显示内存使用从 70-80GB 降至 3GB，提升约 20 倍）
+- 减少大规模集群中出现内存不足 (OOM) 的风险
+- 提高资源利用率和系统稳定性
+- 保持与现有编码器的字节级兼容性，无需客户端修改
+
+**应用场景：**
+- 大规模集群（节点数 > 1000）的资源列表查询
+- 包含大量对象的命名空间列表操作
+- 监控系统的批量数据获取
+- CI/CD 系统的集群状态检查
+
 以 `/apis/batch/v2alpha1/jobs` 为例，GET 请求的处理过程如下图所示：
 
 ![img](../../.gitbook/assets/API-server-flow.png)

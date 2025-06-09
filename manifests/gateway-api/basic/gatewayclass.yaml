@@ -1,0 +1,16 @@
+# GatewayClass 定义了一组网关的共同配置和行为
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: example-gatewayclass
+spec:
+  # 指定控制器名称，需要与实际安装的控制器匹配
+  controllerName: example.com/gateway-controller
+  description: "示例 GatewayClass，用于演示基本配置"
+  
+  # 可选：参数引用，用于传递控制器特定的配置
+  # parametersRef:
+  #   group: example.com
+  #   kind: GatewayParameters
+  #   name: example-params
+  #   namespace: gateway-system
